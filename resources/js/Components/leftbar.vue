@@ -1,0 +1,288 @@
+<template>
+    <div class="container">
+        <div id="sidebar" class="sidebar">
+            <div class="sidebar-content">
+                <div class="logo">
+                    <div class="logo-img-container">
+                        <img
+                            src="/public/assets/images/mdc-logo.png"
+                            class="logo-img"
+                            alt="Logo"
+                        />
+                    </div>
+
+                    <span id="app-name">{{
+                        !isSidebarOpen ? "MDC-HRS" : "MDC-HR System"
+                    }}</span>
+                </div>
+
+                <div>
+                    <span class="role-desc">admin</span>
+                </div>
+                <hr />
+                <div id="menu" class="menu">
+                    <ul id="menu-items">
+                        <li class="menu-li" title="Home">
+                            <i class="fas fa-gauge"></i>
+                            <span>Home</span>
+                        </li>
+                        <li class="menu-li" title="About">
+                            <i class="fas fa-info-circle"></i><span>About</span>
+                        </li>
+                        <li title="Services" @click="openSubMenu('Services')">
+                            <div class="menu-li">
+                                <i class="fa-solid fa-screwdriver-wrench"></i>
+                                <span>Services</span>
+                            </div>
+
+                            <ul id="submenu" class="submenu">
+                                <li><a href="#">Personal Details</a></li>
+                                <li><a href="#">Travel Form</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="menu-li" title="Contact">
+                            <i class="fas fa-users"></i><span>Persons</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="footer">
+                    <!-- <button
+                        id="toggle-btn"
+                        @click="toggleSidebar"
+                        :class="'fas fa-chevron-circle-left fa-xl'"
+                    ></button> -->
+                    <span id="copy-desc">All rights reserved &copy; 2025</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content"></div>
+    </div>
+</template>
+
+<script setup>
+import { ref } from "vue";
+
+const openSubMenu = (menuName) => {
+    if (menuName === "Services") {
+        const submenu = document.getElementById("submenu");
+        // Toggle the display between "block" and "none"
+        if (submenu.style.display === "block") {
+            submenu.style.display = "none";
+        } else {
+            submenu.style.display = "block";
+        }
+    }
+};
+
+const isSidebarOpen = ref(true);
+
+const toggleSidebar = () => {
+    document
+        .getElementById("toggle-btn")
+        .classList.toggle("fa-chevron-circle-left");
+    document
+        .getElementById("toggle-btn")
+        .classList.toggle("fa-chevron-circle-right");
+
+    if (isSidebarOpen.value == true) {
+        document.getElementById("sidebar").style.width = "5%";
+        isSidebarOpen.value = false;
+
+        const spans = document.querySelectorAll("#menu-items span");
+
+        spans.forEach((span) => {
+            span.style.display = "none";
+        });
+
+        document.getElementById("menu").style.justifyContent = "center";
+
+        document.getElementById("app-name").style.fontSize = "10px";
+
+        document.getElementById("menu").style.marginLeft = "0px";
+    } else {
+        document.getElementById("sidebar").style.width = "15%";
+        isSidebarOpen.value = true;
+
+        const spans = document.querySelectorAll("#menu-items span");
+
+        spans.forEach((span) => {
+            span.style.display = "block";
+        });
+        document.getElementById("menu").style.justifyContent = "start";
+        document.getElementById("app-name").style.fontSize = "20px";
+        document.getElementById("menu").style.marginLeft = "20px";
+    }
+};
+</script>
+
+<style scoped>
+hr {
+    border: 0;
+    height: 1px;
+    background-color: #fff;
+    opacity: 20%;
+}
+
+.role-desc {
+    padding: 10px;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body,
+html {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.sidebar-open {
+    width: 20px;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    transition: transform 0.3s ease-in-out;
+}
+
+.sidebar {
+    width: 15%;
+    background: linear-gradient(to bottom, #3b82f6, #1d4ed8);
+
+    color: white;
+    height: 100%;
+    box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.1);
+    transform: translateX(0);
+    transition: transform 0.3s ease-in-out;
+}
+
+.sidebar.hidden {
+    transform: translateX(-100%);
+}
+
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.logo {
+    display: flex;
+    padding: 10px;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.logo-img-container {
+    display: flex;
+    padding: 5px;
+}
+
+.logo-img {
+    display: flex;
+    width: 64px;
+    height: 64px;
+    text-align: center;
+    justify-content: center;
+    object-fit: contain;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.menu {
+    flex-grow: 1;
+    display: flex;
+    justify-content: start;
+    margin-left: 20px;
+    margin-top: 10%;
+}
+
+.menu ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    align-content: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.menu-li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.menu li {
+    cursor: pointer;
+}
+
+.menu li span {
+    opacity: 80%;
+}
+
+.menu li i {
+    opacity: 30%;
+}
+
+.menu li:hover span,
+.menu li:hover i {
+    opacity: 100%;
+}
+
+.submenu {
+    margin-left: 40px;
+}
+
+.menu li ul {
+    display: none;
+}
+
+.submenu li {
+    list-style-type: disc;
+    opacity: 40%;
+}
+
+.submenu li:hover {
+    opacity: 100%;
+}
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+    font-size: 14px;
+    margin-top: auto;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 10px;
+}
+
+.sidebar-toggle {
+    background-color: #3b82f6;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.sidebar-toggle:focus {
+    outline: none;
+}
+.footer span {
+    font-size: 10px;
+    opacity: 60%;
+}
+</style>
