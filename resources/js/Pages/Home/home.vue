@@ -1,13 +1,9 @@
 <script>
-import Leftbar from "@/components/Leftbar.vue";
+import Layout from "@/Layouts/layout.vue";
 
 export default {
-    components: {
-        Leftbar,
-    },
+    layout: Layout,
 };
 </script>
 
-<template>
-    <Leftbar />
-</template>
+<template></template>

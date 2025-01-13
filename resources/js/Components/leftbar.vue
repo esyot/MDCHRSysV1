@@ -1,63 +1,55 @@
 <template>
-    <div class="container">
-        <div id="sidebar" class="sidebar">
-            <div class="sidebar-content">
-                <div class="logo">
-                    <div class="logo-img-container">
-                        <img
-                            src="/public/assets/images/mdc-logo.png"
-                            class="logo-img"
-                            alt="Logo"
-                        />
-                    </div>
-
-                    <span id="app-name">{{
-                        !isSidebarOpen ? "MDC-HRS" : "MDC-HR System"
-                    }}</span>
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-content">
+            <div class="logo">
+                <div class="logo-img-container">
+                    <img
+                        src="/public/assets/images/mdc-logo.png"
+                        class="logo-img"
+                        alt="Logo"
+                    />
                 </div>
 
-                <div>
-                    <span class="role-desc">admin</span>
-                </div>
-                <hr />
-                <div id="menu" class="menu">
-                    <ul id="menu-items">
-                        <li class="menu-li" title="Home">
-                            <i class="fas fa-gauge"></i>
-                            <span>Home</span>
-                        </li>
-                        <li class="menu-li" title="About">
-                            <i class="fas fa-info-circle"></i><span>About</span>
-                        </li>
-                        <li title="Services" @click="openSubMenu('Services')">
-                            <div class="menu-li">
-                                <i class="fa-solid fa-screwdriver-wrench"></i>
-                                <span>Services</span>
-                            </div>
+                <span id="app-name">{{
+                    !isSidebarOpen ? "MDC-HRS" : "MDC-HR System"
+                }}</span>
+            </div>
 
-                            <ul id="submenu" class="submenu">
-                                <li><a href="#">Personal Details</a></li>
-                                <li><a href="#">Travel Form</a></li>
-                            </ul>
-                        </li>
+            <div>
+                <span class="role-desc">admin</span>
+            </div>
+            <hr />
+            <div id="menu" class="menu">
+                <ul id="menu-items">
+                    <li class="menu-li" title="Home">
+                        <i class="fas fa-gauge"></i>
+                        <span>Home</span>
+                    </li>
+                    <li class="menu-li" title="About">
+                        <i class="fas fa-info-circle"></i><span>About</span>
+                    </li>
+                    <li title="Services">
+                        <div class="menu-li" @click="openSubMenu('Services')">
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                            <span>Services</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
 
-                        <li class="menu-li" title="Contact">
-                            <i class="fas fa-users"></i><span>Persons</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="footer">
-                    <!-- <button
-                        id="toggle-btn"
-                        @click="toggleSidebar"
-                        :class="'fas fa-chevron-circle-left fa-xl'"
-                    ></button> -->
-                    <span id="copy-desc">All rights reserved &copy; 2025</span>
-                </div>
+                        <ul id="submenu" class="submenu">
+                            <li><span>Personal Details</span></li>
+                            <li><span>Travel Form</span></li>
+                        </ul>
+                    </li>
+
+                    <li class="menu-li" title="Contact">
+                        <i class="fas fa-users"></i><span>Persons</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="footer">
+                <span id="copy-desc">All rights reserved &copy; 2025</span>
             </div>
         </div>
-
-        <div class="main-content"></div>
     </div>
 </template>
 
@@ -67,7 +59,6 @@ import { ref } from "vue";
 const openSubMenu = (menuName) => {
     if (menuName === "Services") {
         const submenu = document.getElementById("submenu");
-        // Toggle the display between "block" and "none"
         if (submenu.style.display === "block") {
             submenu.style.display = "none";
         } else {
@@ -134,26 +125,13 @@ hr {
     box-sizing: border-box;
 }
 
-body,
-html {
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-    height: 100%;
-    font-family: Arial, sans-serif;
-}
-
 .sidebar-open {
     width: 20px;
 }
 
-.container {
-    display: flex;
-    height: 100vh;
-    transition: transform 0.3s ease-in-out;
-}
-
 .sidebar {
     width: 15%;
-    background: linear-gradient(to bottom, #3b82f6, #1d4ed8);
+    background: linear-gradient(to bottom, #34ace0, #043b5c);
 
     color: white;
     height: 100%;
@@ -191,6 +169,7 @@ html {
     text-align: center;
     justify-content: center;
     object-fit: contain;
+    filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.2));
 }
 
 h1 {
@@ -212,7 +191,7 @@ h1 {
     display: flex;
     align-content: center;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
 }
 
 .menu-li {
@@ -226,7 +205,7 @@ h1 {
 }
 
 .menu li span {
-    opacity: 80%;
+    opacity: 75%;
 }
 
 .menu li i {
@@ -249,6 +228,7 @@ h1 {
 .submenu li {
     list-style-type: disc;
     opacity: 40%;
+    padding: 5px;
 }
 
 .submenu li:hover {
@@ -284,5 +264,6 @@ h1 {
 .footer span {
     font-size: 10px;
     opacity: 60%;
+    margin-bottom: 1rem;
 }
 </style>
