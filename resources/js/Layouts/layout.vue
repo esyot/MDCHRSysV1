@@ -15,6 +15,8 @@ export default {
         <Leftbar />
         <div class="main-content">
             <Topbar />
+
+            <slot> </slot>
         </div>
     </div>
 </template>
@@ -28,5 +30,6 @@ export default {
 }
 .main-content {
     width: 100%;
+    background: linear-gradient(to bottom, #2986c0, #02041d);
 }
 </style>

@@ -13,7 +13,6 @@
             class="dropdown"
             :class="{ show: isDropdownVisible }"
         >
-            <span><i class="fas fa-user"></i> Personal Details</span>
             <span><i class="fas fa-user-cog"></i> Account</span>
             <span class="logout"><i class="fas fa-sign-out"></i> Logout</span>
         </div>

@@ -23,10 +23,7 @@
                 <ul id="menu-items">
                     <li class="menu-li" title="Home">
                         <i class="fas fa-gauge"></i>
-                        <span>Home</span>
-                    </li>
-                    <li class="menu-li" title="About">
-                        <i class="fas fa-info-circle"></i><span>About</span>
+                        <span>Dashboard</span>
                     </li>
                     <li title="Services">
                         <div class="menu-li" @click="openSubMenu('Services')">
@@ -37,12 +34,15 @@
 
                         <ul id="submenu" class="submenu">
                             <li><span>Personal Details</span></li>
-                            <li><span>Travel Form</span></li>
+                            <li><span>Request Travel Application</span></li>
+                            <li><span>Request Leave Application</span></li>
                         </ul>
                     </li>
-
                     <li class="menu-li" title="Contact">
-                        <i class="fas fa-users"></i><span>Persons</span>
+                        <i class="fas fa-users-cog"></i><span>Users</span>
+                    </li>
+                    <li class="menu-li" title="About">
+                        <i class="fas fa-info-circle"></i><span>About</span>
                     </li>
                 </ul>
             </div>
