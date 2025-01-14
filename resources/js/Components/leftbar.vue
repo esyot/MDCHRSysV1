@@ -19,10 +19,12 @@
             <hr />
             <div id="menu" class="menu">
                 <ul id="menu-items">
-                    <li class="menu-li" title="Home">
-                        <i class="fas fa-gauge"></i>
-                        <span>Dashboard</span>
-                    </li>
+                    <InertiaLink :href="'/'" class="link"
+                        ><li class="menu-li" title="Home">
+                            <i class="fas fa-gauge"></i>
+                            <span>Dashboard</span>
+                        </li>
+                    </InertiaLink>
                     <li title="Services">
                         <div class="menu-li" @click="openSubMenu('Services')">
                             <i class="fa-solid fa-screwdriver-wrench"></i>
@@ -30,14 +32,24 @@
                             <i class="fas fa-chevron-down"></i>
                         </div>
 
-                        <ul id="submenu" class="submenu">
+                        <ul id="submenu-services" class="submenu">
                             <li><span>Personal Details</span></li>
                             <li><span>Request Travel Application</span></li>
                             <li><span>Request Leave Application</span></li>
                         </ul>
                     </li>
-                    <li class="menu-li" title="Contact">
-                        <i class="fas fa-users-cog"></i><span>Users</span>
+                    <li title="Users">
+                        <div class="menu-li" @click="openSubMenu('Users')">
+                            <i class="fa-solid fa-users"></i>
+                            <span>Users</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+
+                        <ul id="submenu-users" class="submenu">
+                            <li><span>Tracking</span></li>
+                            <li><span>Travel Application Requests </span></li>
+                            <li><span>Leave Application Requests</span></li>
+                        </ul>
                     </li>
                     <li class="menu-li" title="About">
                         <i class="fas fa-info-circle"></i><span>About</span>
@@ -51,16 +63,32 @@
     </div>
 </template>
 
-<script setup>
-const openSubMenu = (menuName) => {
-    if (menuName === "Services") {
-        const submenu = document.getElementById("submenu");
-        if (submenu.style.display === "block") {
-            submenu.style.display = "none";
-        } else {
-            submenu.style.display = "block";
-        }
-    }
+<script>
+import { InertiaLink } from "@inertiajs/inertia-vue3";
+
+export default {
+    components: {
+        InertiaLink,
+    },
+    methods: {
+        openSubMenu(menuName) {
+            if (menuName === "Services") {
+                const submenu = document.getElementById("submenu-services");
+                if (submenu.style.display === "block") {
+                    submenu.style.display = "none";
+                } else {
+                    submenu.style.display = "block";
+                }
+            } else if (menuName === "Users") {
+                const submenu = document.getElementById("submenu-users");
+                if (submenu.style.display === "block") {
+                    submenu.style.display = "none";
+                } else {
+                    submenu.style.display = "block";
+                }
+            }
+        },
+    },
 };
 </script>
 

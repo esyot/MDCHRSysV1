@@ -171,7 +171,6 @@ export default defineComponent({
     flex-wrap: wrap;
     justify-content: space-between;
     overflow-y: auto;
-    background-color: #fff;
     height: 60vh;
     overflow-x: hidden;
 }
@@ -207,17 +206,18 @@ export default defineComponent({
     flex-wrap: wrap;
     justify-content: space-between;
     height: auto;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
+    gap: 1rem;
+    margin: 0.5rem;
 }
 
 .chart {
     display: flex;
-    flex-grow: 1;
-    flex-basis: 100px;
+    flex-grow: 1; /* Allow the chart to grow and fill available space */
+    flex-basis: 100px; /* The base size of each chart */
     background-color: #fff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    height: auto;
+    height: auto; /* Adjust height based on content */
     min-width: 150px;
+    border-radius: 5px;
 }
 </style>

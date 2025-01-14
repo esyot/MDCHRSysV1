@@ -1,8 +1,7 @@
 <template>
-    <div class="topbar">
-        <div class="userToggleBtn" @click="toggleDropdown">
-            Josefina Pangan
-
+    <div class="topbar" ref="topbar">
+        <div class="userToggleBtn" @click="toggleDropdown" ref="userToggleBtn">
+            <span class="userName">Josefina Pangan</span>
             <div class="userIconBtn">
                 <i class="fas fa-user"></i>
                 <i class="fas fa-chevron-circle-down fa-xs"></i>
@@ -12,35 +11,56 @@
             id="dropdown"
             class="dropdown"
             :class="{ show: isDropdownVisible }"
+            ref="dropdown"
         >
-            <span><i class="fas fa-user-cog"></i> Account</span>
+            <InertiaLink :href="'/account'" class="link">
+                <span><i class="fas fa-user-cog"></i> Account</span>
+            </InertiaLink>
+
             <span class="logout"><i class="fas fa-sign-out"></i> Logout</span>
         </div>
     </div>
 </template>
 
 <script>
+import { InertiaLink } from "@inertiajs/inertia-vue3";
+
 export default {
     data() {
         return {
             isDropdownVisible: false,
         };
     },
+    components: {
+        InertiaLink,
+    },
     methods: {
         toggleDropdown() {
             this.isDropdownVisible = !this.isDropdownVisible;
-
-            if (this.isDropdownVisible == true) {
-                document.getElementById("dropdown").style.display = "flex";
-            } else {
-                document.getElementById("dropdown").style.display = "none";
+        },
+        closeDropdown(event) {
+            if (
+                this.$refs.dropdown &&
+                !this.$refs.dropdown.contains(event.target) &&
+                !this.$refs.userToggleBtn.contains(event.target)
+            ) {
+                this.isDropdownVisible = false;
             }
         },
+    },
+    mounted() {
+        document.addEventListener("click", this.closeDropdown);
+    },
+    beforeDestroy() {
+        document.removeEventListener("click", this.closeDropdown);
     },
 };
 </script>
 
 <style scoped>
+.userName {
+    font-size: 14px;
+}
 .topbar {
     display: flex;
     justify-content: end;
@@ -80,7 +100,7 @@ export default {
 
 .dropdown span {
     cursor: pointer;
-    font-size: 16px;
+    font-size: 12px;
     padding: 10px;
     gap: 0.5rem;
     display: flex;

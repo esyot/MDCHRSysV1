@@ -22,27 +22,27 @@ export default {
 </template>
 
 <style>
-/* Style the scrollbar container (making it thinner) */
+.link {
+    color: currentColor;
+    text-decoration: none;
+}
 ::-webkit-scrollbar {
-    width: 6px; /* Thin vertical scrollbar */
-    height: 6px; /* Thin horizontal scrollbar */
+    width: 3px;
+    height: 6px;
 }
 
-/* Style the scrollbar track (background) */
 ::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Track color */
+    background: #f1f1f1;
     border-radius: 10px;
 }
 
-/* Style the scrollbar thumb (draggable part) */
 ::-webkit-scrollbar-thumb {
-    background: #888; /* Thumb color */
+    background: #888;
     border-radius: 10px;
 }
 
-/* Style the scrollbar thumb on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: #555; /* Thumb color on hover */
+    background: #555;
 }
 
 .container {
