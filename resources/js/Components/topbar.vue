@@ -70,13 +70,10 @@ export default {
 .dropdown {
     display: none;
     flex-direction: column;
-
-    gap: 0.5rem;
     position: fixed;
     background-color: #fff;
     top: 3rem;
     right: 3;
-
     border: solid #eee 1px;
     filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.2));
 }

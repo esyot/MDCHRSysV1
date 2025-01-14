@@ -10,9 +10,7 @@
                     />
                 </div>
 
-                <span id="app-name">{{
-                    !isSidebarOpen ? "MDC-HRS" : "MDC-HR System"
-                }}</span>
+                <span id="app-name">MDC - HR System</span>
             </div>
 
             <div>
@@ -54,8 +52,6 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-
 const openSubMenu = (menuName) => {
     if (menuName === "Services") {
         const submenu = document.getElementById("submenu");
@@ -66,49 +62,14 @@ const openSubMenu = (menuName) => {
         }
     }
 };
-
-const isSidebarOpen = ref(true);
-
-const toggleSidebar = () => {
-    document
-        .getElementById("toggle-btn")
-        .classList.toggle("fa-chevron-circle-left");
-    document
-        .getElementById("toggle-btn")
-        .classList.toggle("fa-chevron-circle-right");
-
-    if (isSidebarOpen.value == true) {
-        document.getElementById("sidebar").style.width = "5%";
-        isSidebarOpen.value = false;
-
-        const spans = document.querySelectorAll("#menu-items span");
-
-        spans.forEach((span) => {
-            span.style.display = "none";
-        });
-
-        document.getElementById("menu").style.justifyContent = "center";
-
-        document.getElementById("app-name").style.fontSize = "10px";
-
-        document.getElementById("menu").style.marginLeft = "0px";
-    } else {
-        document.getElementById("sidebar").style.width = "15%";
-        isSidebarOpen.value = true;
-
-        const spans = document.querySelectorAll("#menu-items span");
-
-        spans.forEach((span) => {
-            span.style.display = "block";
-        });
-        document.getElementById("menu").style.justifyContent = "start";
-        document.getElementById("app-name").style.fontSize = "20px";
-        document.getElementById("menu").style.marginLeft = "20px";
-    }
-};
 </script>
 
 <style scoped>
+@media (orientation: portrait) {
+    .sidebar {
+        display: none;
+    }
+}
 hr {
     border: 0;
     height: 1px;
@@ -118,6 +79,7 @@ hr {
 
 .role-desc {
     padding: 10px;
+    font-size: 12px;
 }
 * {
     margin: 0;
@@ -130,14 +92,16 @@ hr {
 }
 
 .sidebar {
-    width: 15%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    width: 200px;
     background: linear-gradient(to bottom, #34ace0, #043b5c);
-
     color: white;
     height: 100%;
     box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.1);
     transform: translateX(0);
     transition: transform 0.3s ease-in-out;
+    user-select: none;
 }
 
 .sidebar.hidden {
@@ -206,6 +170,7 @@ h1 {
 
 .menu li span {
     opacity: 75%;
+    font-size: 12px;
 }
 
 .menu li i {

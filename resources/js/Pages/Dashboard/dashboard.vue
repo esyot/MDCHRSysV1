@@ -83,11 +83,11 @@ export default defineComponent({
     data() {
         return {
             chartData: {
-                labels: ["users", "on leave", "on travel"],
+                labels: ["on leave", "on travel"],
                 datasets: [
                     {
                         label: "Count",
-                        data: [400, 450, 300],
+                        data: [400, 450],
                         backgroundColor: "#42A5F5",
                         borderColor: "#1E88E5",
                         borderWidth: 1,
@@ -103,7 +103,7 @@ export default defineComponent({
                 plugins: {
                     title: {
                         display: true,
-                        text: "Bar Chart",
+                        text: "Status",
                     },
                     tooltip: {
                         callbacks: {
@@ -121,17 +121,12 @@ export default defineComponent({
             },
 
             pieChartData: {
-                labels: ["On Leave", "On Travel", "Active Users", "Requests"],
+                labels: ["On Leave", "On Travel"],
                 datasets: [
                     {
                         label: "User Status Overview",
-                        data: [23, 2, 10, 12],
-                        backgroundColor: [
-                            "#FFB74D",
-                            "#42A5F5",
-                            "#66BB6A",
-                            "#FF7043",
-                        ],
+                        data: [23, 2],
+                        backgroundColor: ["#FFB74D", "#42A5F5"],
                         hoverOffset: 4,
                     },
                 ],
@@ -144,7 +139,7 @@ export default defineComponent({
                 plugins: {
                     title: {
                         display: true,
-                        text: "User Status Overview",
+                        text: "Status",
                     },
                     tooltip: {
                         callbacks: {
@@ -173,15 +168,22 @@ export default defineComponent({
 .content-container .cards {
     display: flex;
     flex: 1;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    overflow-y: auto;
     background-color: #fff;
+    height: 60vh;
+    overflow-x: hidden;
 }
 
 .content-container .card {
     display: flex;
-    flex-basis: 200px;
+    flex-grow: 1;
+    flex-basis: 400px;
+    min-width: 300px;
     flex-direction: column;
     align-items: center;
-    margin: 1rem;
+    margin: 0.5rem;
     padding: 1rem;
     border-radius: 0.5rem;
     background-color: #59abe3;
@@ -190,7 +192,7 @@ export default defineComponent({
 }
 
 .content-container .card:hover {
-    scale: 110%;
+    scale: 90%;
     transition-duration: 300ms;
     transition-property: all;
 }
@@ -201,16 +203,21 @@ export default defineComponent({
 
 .charts {
     display: flex;
-    margin-top: 0.5rem;
-    gap: 0.5rem;
+    flex: 1;
+    flex-wrap: wrap;
     justify-content: space-between;
+    height: auto;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 .chart {
-    width: 48%;
+    display: flex;
+    flex-grow: 1;
+    flex-basis: 100px;
     background-color: #fff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     height: auto;
-    padding: 1rem;
+    min-width: 150px;
 }
 </style>
