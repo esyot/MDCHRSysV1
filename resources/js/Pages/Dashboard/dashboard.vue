@@ -1,7 +1,6 @@
 <template>
     <div class="container-body">
         <div class="content-container">
-            <!-- Cards Section -->
             <section class="cards">
                 <div class="card">
                     <i class="fas fa-users fa-2x"></i>
