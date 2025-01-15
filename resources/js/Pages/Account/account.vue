@@ -89,14 +89,6 @@ export default {
     font-size: 16px;
 }
 
-.user-overview {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    height: auto;
-    overflow-y: auto;
-}
-
 .nav {
     user-select: none;
     display: flex;

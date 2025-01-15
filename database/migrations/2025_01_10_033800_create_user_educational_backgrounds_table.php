@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('user_educational_backgrounds', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned();
-            $table->enum('level', ['elem', 'sec', 'colege', 'gs', 'pgs']);
+            $table->enum('level', ['elem', 'sec', 'college', 'gs', 'pgs']);
             $table->string('school_name');
             $table->string('school_address');
             $table->string('course');
