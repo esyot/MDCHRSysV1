@@ -323,7 +323,7 @@ export default {
     name: "PersonalDetails",
     data() {
         return {
-            currentPage: 3,
+            currentPage: 1,
             totalPages: 3,
 
             familyMemberType: '',
