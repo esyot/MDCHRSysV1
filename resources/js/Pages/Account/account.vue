@@ -1,14 +1,33 @@
 <script>
-import Layout from "@/Layouts/layout.vue";
+import Layout from "@/Layouts/Layout.vue";
+import Overview from "@/Pages/Account/Components/overview.vue";
+import PersonalDetails from "@/Pages/Account/Components/personalDetails.vue";
+import Security from "@/Pages/Account/Components/security.vue";
 
 export default {
     layout: Layout,
+    data() {
+        return {
+            activeTab: localStorage.getItem("activeTab") || "overview",
+        };
+    },
+    components: {
+        Overview,
+        PersonalDetails,
+        Security,
+    },
+    methods: {
+        setActiveTab(tab) {
+            this.activeTab = tab;
+            localStorage.setItem("activeTab", tab);
+        },
+    },
 };
 </script>
 
 <template>
     <div class="content">
-        <div class="profile-container">
+        <div v-if="activeTab === 'overview'" class="profile-container">
             <div class="user">
                 <div>
                     <img
@@ -16,7 +35,6 @@ export default {
                         src="/public/assets/images/user.png"
                         alt="User Image"
                     />
-
                     <i class="edit-btn fa-solid fa-pen-to-square"></i>
                 </div>
             </div>
@@ -24,112 +42,71 @@ export default {
 
         <nav class="nav">
             <ul class="nav-items">
-                <li>Overview</li>
-                <li>Personal Details</li>
-                <li>Security & passwords</li>
+                <li
+                    :class="{ active: activeTab === 'overview' }"
+                    @click="setActiveTab('overview')"
+                >
+                    Overview
+                </li>
+                <li
+                    :class="{ active: activeTab === 'personalDetails' }"
+                    @click="setActiveTab('personalDetails')"
+                >
+                    Personal Details
+                </li>
+                <li
+                    :class="{ active: activeTab === 'security' }"
+                    @click="setActiveTab('security')"
+                >
+                    Security & Passwords
+                </li>
             </ul>
         </nav>
+
         <section class="user-overview">
-            <div class="overview-item">
-                <i class="fas fa-star"></i>
-                <div>
-                    <p class="title">Rank</p>
-                    <p class="count">Teacher, Staff</p>
-                </div>
+            <div v-if="activeTab === 'overview'">
+                <Overview />
             </div>
-            <div class="overview-item">
-                <i class="fas fa-peso-sign"></i>
-                <div>
-                    <p class="title">Total Requested</p>
-                    <p class="count">15,000.00</p>
-                </div>
+
+            <div v-if="activeTab === 'personalDetails'">
+                <PersonalDetails />
             </div>
-            <div class="overview-item">
-                <i class="fas fa-calendar-day"></i>
-                <div>
-                    <p class="title">Days Leave</p>
-                    <p class="count">20</p>
-                </div>
-            </div>
-            <div class="overview-item">
-                <i class="fas fa-plane-departure"></i>
-                <div>
-                    <p class="title">Days Travel</p>
-                    <p class="count">10</p>
-                </div>
-            </div>
-            <div class="overview-item">
-                <i class="fas fa-plane-arrival"></i>
-                <div>
-                    <p class="title">Days Travel Left</p>
-                    <p class="count">5</p>
-                </div>
-            </div>
-            <div class="overview-item">
-                <i class="fas fa-calendar-check"></i>
-                <div>
-                    <p class="title">Days Leave Left</p>
-                    <p class="count">5</p>
-                </div>
+
+            <div class="security" v-if="activeTab === 'security'">
+                <Security />
             </div>
         </section>
     </div>
 </template>
 
-<style>
+<style scoped>
+.security {
+    width: 100%;
+    height: auto;
+}
+
 .count {
     font-size: 16px;
 }
+
 .user-overview {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    max-height: 320px;
-    min-height: 200px;
+    height: auto;
     overflow-y: auto;
-    padding: 5px;
-}
-
-.overview-item {
-    flex-grow: 1;
-    flex-basis: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    background-color: #f4f4f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 250px;
-    padding-left: 40px;
-}
-
-.overview-item i {
-    font-size: 36px;
-    color: #2282ff;
-    margin-right: 15px;
-}
-
-.overview-item .title {
-    font-weight: bold;
-    font-size: 16px;
-    color: #333;
-}
-
-.overview-item .count {
-    font-size: 20px;
-    color: #000;
-    margin-top: 5px;
-}
-
-.overview-item:hover {
-    background-color: #e0e0e0;
-    cursor: pointer;
 }
 
 .nav {
+    user-select: none;
+    display: flex;
+    padding: 5px;
     background-color: #fff;
-    border-bottom: 1px solid rgb(188, 188, 188);
+    border-bottom: #d3d3d3 1px solid;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
+
 .nav-items {
     display: flex;
     gap: 1.5rem;
@@ -147,8 +124,12 @@ export default {
 .nav-items li:hover {
     opacity: 100%;
 }
+
+.nav-items li.active {
+    color: #2282ff;
+    opacity: 100%;
+}
 .content {
-    background-color: #fff;
     margin: 0.5rem;
     border-radius: 10px;
 }

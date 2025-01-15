@@ -62,6 +62,7 @@ export default {
     font-size: 14px;
 }
 .topbar {
+    user-select: none;
     display: flex;
     justify-content: end;
     background: linear-gradient(to right, #81ecec, #0b7fab);
