@@ -360,6 +360,7 @@ export default {
             // Get the text of the selected option
             this.selectedLevel = event.target.options[event.target.selectedIndex].text;
         }
+
     }
 };
 </script>
