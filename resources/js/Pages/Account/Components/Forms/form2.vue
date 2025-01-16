@@ -8,7 +8,6 @@
         <div class="form-group">
             <label for="type">SELECT FAMILY MEMBER:</label>
             <select v-model="familyMemberType" class="form-control">
-                <option value="">Select Type</option>
                 <option value="spouse">Spouse</option>
                 <option value="father">Father</option>
                 <option value="mother">Mother</option>

@@ -28,13 +28,13 @@
                     @click="goToPage(currentPage - 1)"
                     :disabled="currentPage === 1"
                 >
-                    Previous
+                    <i class="fas fa-chevron-circle-left"></i>
                 </button>
                 <button
                     @click="goToPage(currentPage + 1)"
                     :disabled="currentPage === totalPages"
                 >
-                    Next
+                    <i class="fas fa-chevron-circle-right"></i>
                 </button>
             </div>
         </footer>
@@ -89,16 +89,16 @@ export default {
                 rank: "",
                 department: "",
 
-                    userProfExamDetails:{
-                    title:"",
-                    rating:"",
-                    date:"",
-                    place:"",
-                    license_no:"",
-                    validity:"",
+                userProfExamDetails: {
+                    title: "",
+                    rating: "",
+                    date: "",
+                    place: "",
+                    license_no: "",
+                    validity: "",
                 },
 
-                    educDetails: {
+                educDetails: {
                     school_name: "",
                     school_address: "",
                     course: "",
@@ -106,23 +106,20 @@ export default {
                     year_graduated: "",
                     acads_honors_received: "",
                 },
+                familyMemberType: "",
+                familyDetails: {
+                    lastName: "",
+                    firstName: "",
+                    middleName: "",
+                    ext: "",
+                    occupation: "",
+                    maidenName: "",
+                    children: [],
+                },
+                newChildName: "",
+                educLevel: "",
+                selectedLevel: "",
             },
-
-            familyMemberType: "",
-            familyDetails: {
-                lastName: "",
-                firstName: "",
-                middleName: "",
-                ext: "",
-                occupation: "",
-                maidenName: "",
-                children: [],
-            },
-            newChildName: "",
-            educLevel: "",
-            selectedLevel: "",
-
-
         };
     },
     methods: {
@@ -142,19 +139,24 @@ export default {
 <style>
 .title-container {
     border-bottom: #dedede 1px solid;
+    background-color: #fff;
     box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
     padding: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
 .title {
-    font-size: 18px;
+    font-size: 14px;
     padding: 10px;
     font-weight: bold;
 }
+
 .personal-details-content {
     display: flex;
     flex-wrap: wrap;
-    height: 80vh;
+    height: 78vh;
     overflow-y: auto;
     margin-top: 5px;
     gap: 0.5rem;
@@ -176,7 +178,7 @@ export default {
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .form-group input {
@@ -184,7 +186,7 @@ export default {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .radio-group {
@@ -201,12 +203,31 @@ export default {
 .form-control-radio {
     margin-right: 5px;
 }
-
-.paging-btn {
+.navigation-buttons {
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    padding: 10px;
+    gap: 0.5rem;
 }
+
+.navigation-buttons button {
+    border: none;
+    background-color: transparent;
+}
+
+.navigation-buttons i {
+    color: #fff;
+    font-size: 22px;
+    opacity: 50%;
+    cursor: pointer;
+}
+
+.navigation-buttons i:hover {
+    color: #fff;
+    font-size: 22px;
+    opacity: 100%;
+}
+
 .submit-btn {
     display: flex;
     justify-content: end;
