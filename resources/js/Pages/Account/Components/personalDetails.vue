@@ -15,6 +15,11 @@
             :userDetails="userDetails"
             @update-user-details="updateUserDetails"
         />
+        <Form4
+            v-if="currentPage === 4"
+            :userDetails="userDetails"
+            @update-user-details="updateUserDetails"
+        />
     </div>
     <div class="paging-btn">
         <footer>
@@ -40,6 +45,7 @@
 import Form1 from "@/Pages/Account/Components/Forms/form1.vue";
 import Form2 from "@/Pages/Account/Components/Forms/form2.vue";
 import Form3 from "@/Pages/Account/Components/Forms/form3.vue";
+import Form4 from "@/Pages/Account/Components/Forms/form4.vue";
 
 export default {
     name: "PersonalDetails",
@@ -47,11 +53,12 @@ export default {
         Form1,
         Form2,
         Form3,
+        Form4,
     },
     data() {
         return {
-            currentPage: 1,
-            totalPages: 3,
+            currentPage: 4,
+            totalPages: 4,
 
             userDetails: {
                 last_name: "",
@@ -81,6 +88,24 @@ export default {
                 date_hired: "",
                 rank: "",
                 department: "",
+
+                    userProfExamDetails:{
+                    title:"",
+                    rating:"",
+                    date:"",
+                    place:"",
+                    license_no:"",
+                    validity:"",
+                },
+
+                    educDetails: {
+                    school_name: "",
+                    school_address: "",
+                    course: "",
+                    units: "",
+                    year_graduated: "",
+                    acads_honors_received: "",
+                },
             },
 
             familyMemberType: "",
@@ -96,14 +121,8 @@ export default {
             newChildName: "",
             educLevel: "",
             selectedLevel: "",
-            educDetails: {
-                school_name: "",
-                school_address: "",
-                course: "",
-                units: "",
-                year_graduated: "",
-                acads_honors_received: "",
-            },
+
+
         };
     },
     methods: {
