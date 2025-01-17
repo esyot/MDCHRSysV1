@@ -2,21 +2,25 @@
     <div class="personal-details-content">
         <Form1
             v-if="currentPage === 1"
+            :editMode="editMode"
             :userDetails="userDetails"
             @update-user-details="updateUserDetails"
         />
         <Form2
             v-if="currentPage === 2"
+            :editMode="editMode"
             :userDetails="userDetails"
             @update-user-details="updateUserDetails"
         />
         <Form3
             v-if="currentPage === 3"
+            :editMode="editMode"
             :userDetails="userDetails"
             @update-user-details="updateUserDetails"
         />
         <Form4
             v-if="currentPage === 4"
+            :editMode="editMode"
             :userDetails="userDetails"
             @update-user-details="updateUserDetails"
         />
@@ -27,73 +31,93 @@
         />
         <Form6
             v-if="currentPage === 6"
+            :editMode="editMode"
             :userDetails="userDetails"
             @update-user-details="updateUserDetails"
         />
         <Form7
             v-if="currentPage === 7"
+            :editMode="editMode"
             :userDetails="userDetails"
             @update-user-details="updateUserDetails"
         />
         <Form8
             v-if="currentPage === 8"
+            :editMode="editMode"
             :userDetails="userDetails"
             @update-user-details="updateUserDetails"
         />
         <Form9
             v-if="currentPage === 9"
+            :editMode="editMode"
             :userDetails="userDetails"
             @update-user-details="updateUserDetails"
         />
         <Form10
             v-if="currentPage === 10"
+            :editMode="editMode"
             :userDetails="userDetails"
             @update-user-details="updateUserDetails"
         />
         <Form11
             v-if="currentPage === 11"
+            :editMode="editMode"
             :userDetails="userDetails"
             @update-user-details="updateUserDetails"
         />
         <Form12
             v-if="currentPage === 12"
+            :editMode="editMode"
             :userDetails="userDetails"
             @update-user-details="updateUserDetails"
         />
         <Form13
             v-if="currentPage === 13"
+            :editMode="editMode"
             :userDetails="userDetails"
             @update-user-details="updateUserDetails"
         />
         <Form14
             v-if="currentPage === 14"
+            :editMode="editMode"
             :userDetails="userDetails"
             @update-user-details="updateUserDetails"
         />
     </div>
-        <footer>
-            <div class="navigation-buttons">
-                <button
-                    @click="goToPage(currentPage - 1)"
-                    :disabled="currentPage === 1"
-                >
-                    <i class="fas fa-chevron-circle-left"></i>
-                </button>
-                <span class="pageNum">
+    <div class="footer">
+        <div id="EditModeToggle">
+            <span id="modeText">Edit Mode</span>
+            <label class="switch">
+                <input
+                    type="checkbox"
+                    id="toggleButton"
+                    @click="toggleEditMode"
+                    :checked="editMode == true"
+                />
+                <span class="slider"></span>
+            </label>
 
+            <button class="saveChangesBtn" v-if="editMode">Save Changes</button>
+        </div>
 
+        <div class="navigation-buttons">
+            <button
+                @click="goToPage(currentPage - 1)"
+                :disabled="currentPage === 1"
+            >
+                <i class="fas fa-chevron-circle-left"></i>
+            </button>
+            <span class="pageNum">
                 {{ currentPage }}
-
-                   </span>
-                <button
-                    @click="goToPage(currentPage + 1)"
-                    :disabled="currentPage === totalPages"
-                >
-                    <i class="fas fa-chevron-circle-right"></i>
-                </button>
-            </div>
-        </footer>
-
+            </span>
+            <button
+                @click="goToPage(currentPage + 1)"
+                :disabled="currentPage === totalPages"
+            >
+                <i class="fas fa-chevron-circle-right"></i>
+            </button>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -132,8 +156,9 @@ export default {
     },
     data() {
         return {
-            currentPage: 14,
+            currentPage: 1,
             totalPages: 14,
+            editMode: false,
 
             userDetails: {
                 last_name: "",
@@ -195,34 +220,34 @@ export default {
                 educLevel: "",
                 selectedLevel: "",
 
-                userAwardDetails:{
+                userAwardDetails: {
                     date_recieved: "",
                     title: "",
                     recognition_place: "",
                     awarded_by: "",
                 },
 
-                userAdministrativeAwardDetails:{
-                    date:"",
-                    title:"",
-                    recognition_place:"",
-                    awarded_by:"",
+                userAdministrativeAwardDetails: {
+                    date: "",
+                    title: "",
+                    recognition_place: "",
+                    awarded_by: "",
                 },
 
-                userWorkExpDetails:{
-                    date_from:"",
-                    date_to:"",
-                    position:"",
-                    company_name:"",
-                    rank:"",
-                    status:"",
+                userWorkExpDetails: {
+                    date_from: "",
+                    date_to: "",
+                    position: "",
+                    company_name: "",
+                    rank: "",
+                    status: "",
                 },
 
-                userStudiesDetails:{
-                    date_published:"",
-                    research_title:"",
-                    journal_name:"",
-                    link:"",
+                userStudiesDetails: {
+                    date_published: "",
+                    research_title: "",
+                    journal_name: "",
+                    link: "",
                 },
 
                 userParticipationDetails: {
@@ -230,7 +255,7 @@ export default {
                     date_from: "",
                     date_to: "",
                     hours_no: "",
-                    position:"",
+                    position: "",
                 },
 
                 userSpecialTrainingDetails: {
@@ -239,20 +264,20 @@ export default {
                     attendance_to: "",
                     days: "",
                     type: "",
-                    conducted_by:"",
+                    conducted_by: "",
                 },
 
                 userOtherInfo: {
                     skill: "",
                     recognition_title: "",
-                    org_name:"",
+                    org_name: "",
                 },
 
                 userCurAssignDetails: {
                     designation: "",
                     event_name: "",
                     title: "",
-                    date:"",
+                    date: "",
                 },
 
                 userOtherDetails: {
@@ -260,14 +285,14 @@ export default {
                     criminal_charge: "",
                     tribunal: "",
                     service_separation: "",
-                    election_candidacy:"",
+                    election_candidacy: "",
                 },
 
                 userRefDetails: {
                     name: "",
                     address_id: "",
-                    contact_no:"",
-                }
+                    contact_no: "",
+                },
             },
         };
     },
@@ -281,13 +306,93 @@ export default {
             this.selectedLevel =
                 event.target.options[event.target.selectedIndex].text;
         },
+        toggleEditMode() {
+            this.editMode = !this.editMode;
+            localStorage.setItem("editMode", JSON.stringify(this.editMode));
+        },
+    },
+    created() {
+        const storedEditMode = localStorage.getItem("editMode");
+        if (storedEditMode !== null) {
+            this.editMode = JSON.parse(storedEditMode);
+        }
     },
 };
 </script>
 
 <style>
+.saveChangesBtn {
+    padding: 6px;
+    color: #fff;
+    background-color: #007bff; /* Blue color */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer; /* Adds a pointer on hover */
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+}
 
-.pageNum{
+.saveChangesBtn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+.footer {
+    display: flex;
+    justify-content: space-between;
+}
+#EditModeToggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 5px;
+}
+#EditModeToggle span {
+    color: #fff;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+}
+
+input:checked + .slider {
+    background-color: #4caf50;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+.pageNum {
     color: #fff;
 }
 .title-container {
@@ -371,14 +476,12 @@ export default {
 
 .navigation-buttons i {
     color: #fff;
-    font-size: 22px;
+    font-size: 25px;
     opacity: 50%;
     cursor: pointer;
 }
 
 .navigation-buttons i:hover {
-    color: #fff;
-    font-size: 22px;
     opacity: 100%;
 }
 

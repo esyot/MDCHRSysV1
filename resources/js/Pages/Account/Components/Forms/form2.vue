@@ -1,5 +1,5 @@
 <template>
-    <div class="personal-details-items">
+    <div class="personal-details-items" v-if="editMode">
         <div class="title-container">
             <span class="title">FAMILY BACKGROUND</span>
         </div>
@@ -86,15 +86,10 @@
                     placeholder="e.g. Caingles"
                 />
             </div>
-
-            <!-- Submit Button -->
-            <div class="form-group submit-btn">
-                <button type="submit" @click="submitForm">Submit</button>
-            </div>
         </div>
     </div>
 
-    <div class="personal-details-items">
+    <div class="personal-details-items" v-if="editMode == false">
         <div class="title-container">
             <span class="title">FAMILY MEMBERS: </span>
         </div>
@@ -104,7 +99,8 @@
 <script>
 export default {
     props: {
-        userDetails: Object, // This comes from the parent, holding the familyDetails object
+        userDetails: Object,
+        editMode: Boolean,
     },
     data() {
         return {
@@ -112,7 +108,6 @@ export default {
         };
     },
     watch: {
-        // Watch for changes in userDetails and emit back to parent
         userDetails: {
             handler(newVal) {
                 this.$emit("update-user-details", newVal);
@@ -122,8 +117,6 @@ export default {
     },
     methods: {
         submitForm() {
-            // Handle form submission logic here
-            // You could perform validation or other actions before emitting the updated userDetails.
             this.$emit("update-user-details", this.userDetails);
         },
     },

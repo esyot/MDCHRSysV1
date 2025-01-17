@@ -1,5 +1,5 @@
 <template>
-    <div class="personal-details-items">
+    <div class="personal-details-items" v-if="editMode">
         <div class="title-container">
             <span class="title">EDUCATIONAL BACKGROUND FORM</span>
         </div>
@@ -126,7 +126,7 @@
             </div>
         </div>
     </div>
-    <div class="personal-details-items">
+    <div class="personal-details-items" v-if="editMode == false">
         <div class="title-container">
             <span class="title">EDUCATIONAL BACKGROUND</span>
         </div>
@@ -136,11 +136,12 @@
 <script>
 export default {
     props: {
-        userDetails: Object, // Prop for passing userDetails to the form
+        userDetails: Object,
+        editMode: Boolean,
     },
     data() {
         return {
-            educLevel: "", // Selected educational level
+            educLevel: "",
         };
     },
     computed: {
@@ -162,12 +163,11 @@ export default {
         },
     },
     watch: {
-        // Watch for changes in userDetails to emit to parent component
         userDetails: {
             handler(newVal) {
                 this.$emit("update-user-details", newVal);
             },
-            deep: true, // Make sure nested properties are also tracked
+            deep: true,
         },
     },
 };

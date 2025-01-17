@@ -1,5 +1,5 @@
 <template>
-    <div class="personal-details-items">
+    <div class="personal-details-items" v-if="editMode == true">
         <div class="title-container">
             <span class="title">PERSONAL INFORMATION</span>
         </div>
@@ -261,7 +261,7 @@
         </div>
     </div>
 
-    <div class="personal-details-items">
+    <div class="personal-details-items" v-if="editMode">
         <div class="title-container">
             <span class="title">PERSONAL INFORMATION</span>
         </div>
@@ -468,12 +468,20 @@
             </div>
         </div>
     </div>
+
+    <div class="personal-details-items" v-if="editMode == false">
+        <div class="title-container">
+            <span class="title">PERSONAL INFORMATION</span>
+        </div>
+        <div class="form-group"></div>
+    </div>
 </template>
 
 <script>
 export default {
     props: {
         userDetails: Object,
+        editMode: Boolean,
     },
     watch: {
         userDetails: {
