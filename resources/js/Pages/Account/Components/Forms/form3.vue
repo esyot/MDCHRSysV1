@@ -1,10 +1,9 @@
 <template>
     <div class="personal-details-items">
         <div class="title-container">
-            <span class="title">EDUCATIONAL BACKGROUND</span>
+            <span class="title">EDUCATIONAL BACKGROUND FORM</span>
         </div>
 
-        <!-- Educational Level Selection -->
         <div class="form-group">
             <label for="level">SELECT LEVEL:</label>
             <select
@@ -21,7 +20,6 @@
             </select>
         </div>
 
-        <!-- Dynamic Fields Based on the Selected Educational Level -->
         <div v-if="educLevel">
             <div class="form-group">
                 <label for="school_name"
@@ -126,6 +124,11 @@
                     placeholder="e.g. Dean's Lister, etc."
                 />
             </div>
+        </div>
+    </div>
+    <div class="personal-details-items">
+        <div class="title-container">
+            <span class="title">EDUCATIONAL BACKGROUND</span>
         </div>
     </div>
 </template>

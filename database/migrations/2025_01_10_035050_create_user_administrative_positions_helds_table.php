@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->bigInteger('user_id')->unsigned();
             $table->string('title');
             $table->date('date');
-            $table->string('recohnition_place');
+            $table->string('recognition_place');
             $table->string('awarded_by');
             $table->timestamps();
 

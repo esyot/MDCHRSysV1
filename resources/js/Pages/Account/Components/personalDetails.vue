@@ -20,8 +20,57 @@
             :userDetails="userDetails"
             @update-user-details="updateUserDetails"
         />
+        <Form5
+            v-if="currentPage === 5"
+            :userDetails="userDetails"
+            @update-user-details="updateUserDetails"
+        />
+        <Form6
+            v-if="currentPage === 6"
+            :userDetails="userDetails"
+            @update-user-details="updateUserDetails"
+        />
+        <Form7
+            v-if="currentPage === 7"
+            :userDetails="userDetails"
+            @update-user-details="updateUserDetails"
+        />
+        <Form8
+            v-if="currentPage === 8"
+            :userDetails="userDetails"
+            @update-user-details="updateUserDetails"
+        />
+        <Form9
+            v-if="currentPage === 9"
+            :userDetails="userDetails"
+            @update-user-details="updateUserDetails"
+        />
+        <Form10
+            v-if="currentPage === 10"
+            :userDetails="userDetails"
+            @update-user-details="updateUserDetails"
+        />
+        <Form11
+            v-if="currentPage === 11"
+            :userDetails="userDetails"
+            @update-user-details="updateUserDetails"
+        />
+        <Form12
+            v-if="currentPage === 12"
+            :userDetails="userDetails"
+            @update-user-details="updateUserDetails"
+        />
+        <Form13
+            v-if="currentPage === 13"
+            :userDetails="userDetails"
+            @update-user-details="updateUserDetails"
+        />
+        <Form14
+            v-if="currentPage === 14"
+            :userDetails="userDetails"
+            @update-user-details="updateUserDetails"
+        />
     </div>
-    <div class="paging-btn">
         <footer>
             <div class="navigation-buttons">
                 <button
@@ -30,6 +79,12 @@
                 >
                     <i class="fas fa-chevron-circle-left"></i>
                 </button>
+                <span class="pageNum">
+
+
+                {{ currentPage }}
+
+                   </span>
                 <button
                     @click="goToPage(currentPage + 1)"
                     :disabled="currentPage === totalPages"
@@ -38,7 +93,7 @@
                 </button>
             </div>
         </footer>
-    </div>
+
 </template>
 
 <script>
@@ -46,6 +101,16 @@ import Form1 from "@/Pages/Account/Components/Forms/form1.vue";
 import Form2 from "@/Pages/Account/Components/Forms/form2.vue";
 import Form3 from "@/Pages/Account/Components/Forms/form3.vue";
 import Form4 from "@/Pages/Account/Components/Forms/form4.vue";
+import Form5 from "@/Pages/Account/Components/Forms/form5.vue";
+import Form6 from "@/Pages/Account/Components/Forms/form6.vue";
+import Form7 from "@/Pages/Account/Components/Forms/form7.vue";
+import Form8 from "@/Pages/Account/Components/Forms/form8.vue";
+import Form9 from "@/Pages/Account/Components/Forms/form9.vue";
+import Form10 from "@/Pages/Account/Components/Forms/form10.vue";
+import Form11 from "@/Pages/Account/Components/Forms/form11.vue";
+import Form12 from "@/Pages/Account/Components/Forms/form12.vue";
+import Form13 from "@/Pages/Account/Components/Forms/form13.vue";
+import Form14 from "@/Pages/Account/Components/Forms/form14.vue";
 
 export default {
     name: "PersonalDetails",
@@ -54,11 +119,21 @@ export default {
         Form2,
         Form3,
         Form4,
+        Form5,
+        Form6,
+        Form7,
+        Form8,
+        Form9,
+        Form10,
+        Form11,
+        Form12,
+        Form13,
+        Form14,
     },
     data() {
         return {
-            currentPage: 4,
-            totalPages: 4,
+            currentPage: 14,
+            totalPages: 14,
 
             userDetails: {
                 last_name: "",
@@ -119,6 +194,80 @@ export default {
                 newChildName: "",
                 educLevel: "",
                 selectedLevel: "",
+
+                userAwardDetails:{
+                    date_recieved: "",
+                    title: "",
+                    recognition_place: "",
+                    awarded_by: "",
+                },
+
+                userAdministrativeAwardDetails:{
+                    date:"",
+                    title:"",
+                    recognition_place:"",
+                    awarded_by:"",
+                },
+
+                userWorkExpDetails:{
+                    date_from:"",
+                    date_to:"",
+                    position:"",
+                    company_name:"",
+                    rank:"",
+                    status:"",
+                },
+
+                userStudiesDetails:{
+                    date_published:"",
+                    research_title:"",
+                    journal_name:"",
+                    link:"",
+                },
+
+                userParticipationDetails: {
+                    title: "",
+                    date_from: "",
+                    date_to: "",
+                    hours_no: "",
+                    position:"",
+                },
+
+                userSpecialTrainingDetails: {
+                    title: "",
+                    attendance_from: "",
+                    attendance_to: "",
+                    days: "",
+                    type: "",
+                    conducted_by:"",
+                },
+
+                userOtherInfo: {
+                    skill: "",
+                    recognition_title: "",
+                    org_name:"",
+                },
+
+                userCurAssignDetails: {
+                    designation: "",
+                    event_name: "",
+                    title: "",
+                    date:"",
+                },
+
+                userOtherDetails: {
+                    administrative_offense: "",
+                    criminal_charge: "",
+                    tribunal: "",
+                    service_separation: "",
+                    election_candidacy:"",
+                },
+
+                userRefDetails: {
+                    name: "",
+                    address_id: "",
+                    contact_no:"",
+                }
             },
         };
     },
@@ -137,6 +286,10 @@ export default {
 </script>
 
 <style>
+
+.pageNum{
+    color: #fff;
+}
 .title-container {
     border-bottom: #dedede 1px solid;
     background-color: #fff;
@@ -207,6 +360,7 @@ export default {
     display: flex;
     justify-content: center;
     padding: 10px;
+    align-items: center;
     gap: 0.5rem;
 }
 
