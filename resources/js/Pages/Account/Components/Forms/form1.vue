@@ -473,15 +473,34 @@
         <div class="title-container">
             <span class="title">PERSONAL INFORMATION</span>
         </div>
-        <div class="form-group"></div>
+
+        <div class="form-group">
+            <label for="">Name:</label>
+            <span>
+                {{ personalDetails.first_name }}
+                {{ personalDetails.last_name }}
+                {{ personalDetails.middle_name }}
+            </span>
+
+            <label for="">Address:</label>
+            <span>
+                {{ personalDetails.house_no }}, {{ personalDetails.street }},
+                {{ personalDetails.brgy }}, {{ personalDetails.brgy }},
+
+                {{ personalDetails.municipality }},
+                {{ personalDetails.province }}, {{ personalDetails.zip_code }}.
+            </span>
+        </div>
     </div>
 </template>
 
 <script>
 export default {
+    emits: ["update-user-details"],
     props: {
         userDetails: Object,
         editMode: Boolean,
+        personalDetails: Object,
     },
     watch: {
         userDetails: {
@@ -493,3 +512,5 @@ export default {
     },
 };
 </script>
+
+<style scoped></style>

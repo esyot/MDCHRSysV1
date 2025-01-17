@@ -6,6 +6,9 @@ import Security from "@/Pages/Account/Components/security.vue";
 
 export default {
     layout: Layout,
+    props: {
+        personalDetails: Object,
+    },
     data() {
         return {
             activeTab: localStorage.getItem("activeTab") || "overview",
@@ -69,7 +72,7 @@ export default {
             </div>
 
             <div v-if="activeTab === 'personalDetails'">
-                <PersonalDetails />
+                <PersonalDetails :personalDetails="personalDetails" />
             </div>
 
             <div class="security" v-if="activeTab === 'security'">

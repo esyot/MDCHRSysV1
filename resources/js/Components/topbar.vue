@@ -1,7 +1,10 @@
 <template>
     <div class="topbar" ref="topbar">
         <div class="userToggleBtn" @click="toggleDropdown" ref="userToggleBtn">
-            <span class="userName">Josefina Pangan</span>
+            <span class="userName">
+                {{ user.last_name }} ,{{ user.first_name }}
+                {{ uc_first(user.middle_name) }}.</span
+            >
             <div class="userIconBtn">
                 <i class="fas fa-user"></i>
                 <i class="fas fa-chevron-circle-down fa-xs"></i>
@@ -17,8 +20,20 @@
                 <span><i class="fas fa-user-cog"></i> Account</span>
             </InertiaLink>
 
-            <span class="logout"><i class="fas fa-sign-out"></i> Logout</span>
+            <span @click="logoutConfirm" class="logout"
+                ><i class="fas fa-sign-out"></i> Logout</span
+            >
         </div>
+    </div>
+
+    <div id="logoutConfirmModal" class="modal hidden">
+        <section class="modal-content">
+            <h2>Are you sure to logout?</h2>
+            <footer>
+                <InertiaLink :href="'/logout'"> Yes </InertiaLink>
+                <button @click="logoutConfirm">No</button>
+            </footer>
+        </section>
     </div>
 </template>
 
@@ -30,6 +45,9 @@ export default {
         return {
             isDropdownVisible: false,
         };
+    },
+    props: {
+        user: Object,
     },
     components: {
         InertiaLink,
@@ -47,6 +65,14 @@ export default {
                 this.isDropdownVisible = false;
             }
         },
+        logoutConfirm() {
+            document
+                .getElementById("logoutConfirmModal")
+                .classList.toggle("hidden");
+        },
+        uc_first(text) {
+            return text[0];
+        },
     },
     mounted() {
         document.addEventListener("click", this.closeDropdown);
@@ -58,6 +84,56 @@ export default {
 </script>
 
 <style scoped>
+footer {
+    display: flex;
+    justify-content: end;
+    gap: 0.2rem;
+    padding: 10px;
+}
+
+footer a {
+    text-decoration: none;
+    color: #fff;
+    background-color: #e22020;
+    padding: 8px 10px;
+    border-radius: 5px;
+    opacity: 60%;
+    transition: opacity 0.3s ease, background-color 0.3s ease;
+}
+
+footer button {
+    text-decoration: none;
+    color: #e22020;
+    background-color: #ffffff;
+    padding: 8px 10px;
+    border-radius: 5px;
+    opacity: 60%;
+    border: 1px solid #e22020;
+}
+
+footer a:hover,
+button:hover {
+    opacity: 100%;
+}
+.modal {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-content {
+    display: flex;
+    padding: 0px 20px;
+    border-radius: 5px;
+    flex-direction: column;
+    background-color: #fff;
+}
+.hidden {
+    display: none;
+}
 .userName {
     font-size: 14px;
 }

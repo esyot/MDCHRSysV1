@@ -6,10 +6,13 @@
 
         <div class="form-group">
             <label for="id_type">ID TYPE:</label>
-            <select id="id_type" name="id_type"
-            v-model="selectedId"
-            @change="updateSelectedIds"
-            class="form-control">
+            <select
+                id="id_type"
+                name="id_type"
+                v-model="selectedId"
+                @change="updateSelectedIds"
+                class="form-control"
+            >
                 <option value="">Select Type</option>
                 <option value="SSS">SSS</option>
                 <option value="PAG-IBIG">PAG-IBIG</option>
@@ -31,15 +34,19 @@
             />
         </div>
         <div v-if="selectedId" class="form-group">
-            <label for="date_issued">{{ selectedId.toUpperCase() }} DATE ISSUED:</label>
+            <label for="date_issued"
+                >{{ selectedId.toUpperCase() }} DATE ISSUED:</label
+            >
             <input
                 type="date"
                 v-model="userDetails.userValidId.date_issued"
                 class="form-control"
             />
         </div>
-         <div v-if="selectedId" class="form-group">
-            <label for="date_expiry">{{ selectedId.toUpperCase() }} DATE EXPIRY:</label>
+        <div v-if="selectedId" class="form-group">
+            <label for="date_expiry"
+                >{{ selectedId.toUpperCase() }} DATE EXPIRY:</label
+            >
             <input
                 type="date"
                 v-model="userDetails.userValidId.date_expiry"
@@ -52,7 +59,11 @@
         <div class="title-container">
             <span class="title">USER VALID IDs</span>
         </div>
-        <ul v-if="userDetails.validIds && Object.keys(userDetails.validIds).length">
+        <ul
+            v-if="
+                userDetails.validIds && Object.keys(userDetails.validIds).length
+            "
+        >
             <li v-for="(number, type) in userDetails.validIds" :key="type">
                 <strong>{{ type }}:</strong> {{ number }}
             </li>
@@ -63,6 +74,7 @@
 
 <script>
 export default {
+    emits: ["update-user-details"],
     props: {
         userDetails: Object,
         editMode: Boolean,

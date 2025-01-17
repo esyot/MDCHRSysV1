@@ -14,12 +14,14 @@
             </div>
 
             <div>
-                <span class="role-desc">admin</span>
+                <span v-for="role in roles" :key="role" class="role-desc">{{
+                    role
+                }}</span>
             </div>
             <hr />
             <div id="menu" class="menu">
                 <ul id="menu-items">
-                    <InertiaLink :href="'/'" class="link"
+                    <InertiaLink :href="'/dashboard'" class="link"
                         ><li class="menu-li" title="Home">
                             <i class="fas fa-gauge"></i>
                             <span>Dashboard</span>
@@ -67,6 +69,9 @@
 import { InertiaLink } from "@inertiajs/inertia-vue3";
 
 export default {
+    props: {
+        roles: Object,
+    },
     components: {
         InertiaLink,
     },

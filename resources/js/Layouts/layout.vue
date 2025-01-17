@@ -7,14 +7,18 @@ export default {
         Leftbar,
         Topbar,
     },
+    props: {
+        user: Object,
+        roles: Object,
+    },
 };
 </script>
 
 <template>
     <div class="container">
-        <Leftbar />
+        <Leftbar :roles="roles" />
         <div class="main-content">
-            <Topbar />
+            <Topbar :user="user" />
 
             <slot> </slot>
         </div>

@@ -4,6 +4,7 @@
             v-if="currentPage === 1"
             :editMode="editMode"
             :userDetails="userDetails"
+            :personalDetails="personalDetails"
             @update-user-details="updateUserDetails"
         />
         <Form2
@@ -139,6 +140,10 @@ import Form15 from "@/Pages/Account/Components/Forms/form15.vue";
 
 export default {
     name: "PersonalDetails",
+    props: {
+        personalDetails: Object,
+    },
+
     components: {
         Form1,
         Form2,
@@ -331,6 +336,9 @@ export default {
         toggleEditMode() {
             this.editMode = !this.editMode;
             localStorage.setItem("editMode", JSON.stringify(this.editMode));
+        },
+        updateUserDetails(updatedDetails) {
+            this.userDetails = { ...this.userDetails, ...updatedDetails };
         },
     },
     created() {

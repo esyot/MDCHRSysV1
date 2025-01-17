@@ -266,6 +266,7 @@
 
 <script>
 export default {
+    emits: ["update-user-details"],
     props: {
         userDetails: Object,
         editMode: Boolean,
