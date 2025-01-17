@@ -83,6 +83,12 @@
             :userDetails="userDetails"
             @update-user-details="updateUserDetails"
         />
+        <Form15
+            v-if="currentPage === 15"
+            :editMode="editMode"
+            :userDetails="userDetails"
+            @update-user-details="updateUserDetails"
+        />
     </div>
     <div class="footer">
         <div id="EditModeToggle">
@@ -135,6 +141,7 @@ import Form11 from "@/Pages/Account/Components/Forms/form11.vue";
 import Form12 from "@/Pages/Account/Components/Forms/form12.vue";
 import Form13 from "@/Pages/Account/Components/Forms/form13.vue";
 import Form14 from "@/Pages/Account/Components/Forms/form14.vue";
+import Form15 from "@/Pages/Account/Components/Forms/form15.vue";
 
 export default {
     name: "PersonalDetails",
@@ -153,11 +160,12 @@ export default {
         Form12,
         Form13,
         Form14,
+        Form15,
     },
     data() {
         return {
             currentPage: 1,
-            totalPages: 14,
+            totalPages: 15,
             editMode: false,
 
             userDetails: {
@@ -293,6 +301,14 @@ export default {
                     address_id: "",
                     contact_no: "",
                 },
+
+                seletedId: "",
+
+                userValidId: {
+                    id_no: "",
+                    date_issued: "",
+                    date_expiry:"",
+                }
             },
         };
     },

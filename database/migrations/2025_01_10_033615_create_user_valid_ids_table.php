@@ -10,12 +10,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('user_government_ids', function (Blueprint $table) {
+        Schema::create('user_valid_ids', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned();
             $table->string('id_type');
             $table->string('id_no');
             $table->date('date_issued');
+            $table->date('date_expiry');
             $table->timestamps();
         });
     }
