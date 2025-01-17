@@ -2,17 +2,33 @@
     <div class="security-content">
         <section class="security-items">
             <div class="title-container">
-                <span class="title">Security and Notification Preferences</span>
+                <span class="title">Account Features</span>
             </div>
 
-            <div class="checkbox-group">
-                <input type="checkbox" id="two-auth" />
-                <label for="two-auth">Require Two-authentication</label>
-            </div>
+            <div class="form">
+                <div class="form-items">
+                    <div>
+                        <input type="checkbox" id="username" />
+                        <span>Receive Updates Through Email</span>
+                    </div>
+                    <small>
+                        <i class="fas fa-circle-exclamation"></i>
+                        Note: Receive updates from the system through given
+                        email.</small
+                    >
+                </div>
+                <div class="form-items">
+                    <div>
+                        <input type="checkbox" id="username" />
+                        <span>Two Authentication Mode</span>
+                    </div>
 
-            <div class="checkbox-group">
-                <input type="checkbox" id="email-updates" />
-                <label for="email-updates">Get Updates via your email</label>
+                    <small>
+                        <i class="fas fa-circle-exclamation"></i>
+                        Note: Receive and input a code first when logging
+                        in.</small
+                    >
+                </div>
             </div>
         </section>
 
@@ -20,33 +36,34 @@
             <div class="title-container">
                 <span class="title">Account Settings</span>
             </div>
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" />
-            </div>
+            <section>
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" />
+                </div>
 
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" />
-            </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" />
+                </div>
 
-            <div class="form-group">
-                <label for="old-password">Input Old Password:</label>
-                <input type="password" id="old-password" />
-            </div>
+                <div class="form-group">
+                    <label for="old-password">Input Old Password:</label>
+                    <input type="password" id="old-password" />
+                </div>
 
-            <div class="form-group">
-                <label for="new-password">Input New Password:</label>
-                <input type="password" id="new-password" />
-            </div>
+                <div class="form-group">
+                    <label for="new-password">Input New Password:</label>
+                    <input type="password" id="new-password" />
+                </div>
 
-            <div class="form-group">
-                <label for="retype-password">Re-type Password:</label>
-                <input type="password" id="retype-password" />
-            </div>
-
-            <div class="form-group">
-                <button type="submit" class="submit-btn">Submit</button>
+                <div class="form-group">
+                    <label for="retype-password">Re-type Password:</label>
+                    <input type="password" id="retype-password" />
+                </div>
+            </section>
+            <div class="form-group-foooter">
+                <button>Save Changes</button>
             </div>
         </section>
     </div>
@@ -59,24 +76,13 @@ export default {
 </script>
 
 <style scoped>
-.title-container {
-    border-bottom: #dedede 1px solid;
-    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-}
-
-.title {
-    font-size: 18px;
-    padding: 10px;
-    font-weight: bold;
-}
 .security-content {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    height: 80vh;
+    height: 78vh;
     overflow-y: auto;
     margin-top: 5px;
+    gap: 0.5rem;
 }
 
 .security-items {
@@ -86,49 +92,29 @@ export default {
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
-
-.checkbox-group {
+.form-group-foooter {
     display: flex;
-    align-items: center;
     padding: 10px;
 }
 
-.checkbox-group input {
-    margin-right: 10px;
-}
-
-.form-group {
-    margin-bottom: 15px;
-    padding: 10px;
-}
-
-.form-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    font-size: 14px;
-}
-
-.form-group input {
-    width: 95%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-.submit-btn {
-    background-color: #05affe;
-    color: white;
-    padding: 10px 20px;
+.form-group-foooter button {
+    background-color: rgb(56, 129, 254);
     border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    width: 100%;
+    padding: 10px;
+    color: #fff;
+    border-radius: 5px;
 }
 
-.submit-btn:hover {
-    background-color: #35a9fc;
+.form {
+    padding: 10px;
+    gap: 0.5rem;
+}
+
+.form-items {
+    padding: 10px;
+}
+
+.form-items i {
+    color: rgb(245, 15, 15);
 }
 </style>

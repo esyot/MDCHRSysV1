@@ -107,19 +107,13 @@
         </div>
 
         <div class="navigation-buttons">
-            <button
-                @click="goToPage(currentPage - 1)"
-                :disabled="currentPage === 1"
-            >
+            <button @click="goToPage('prev')">
                 <i class="fas fa-chevron-circle-left"></i>
             </button>
             <span class="pageNum">
                 {{ currentPage }}
             </span>
-            <button
-                @click="goToPage(currentPage + 1)"
-                :disabled="currentPage === totalPages"
-            >
+            <button @click="goToPage('next')">
                 <i class="fas fa-chevron-circle-right"></i>
             </button>
         </div>
@@ -307,15 +301,27 @@ export default {
                 userValidId: {
                     id_no: "",
                     date_issued: "",
-                    date_expiry:"",
-                }
+                    date_expiry: "",
+                },
             },
         };
     },
     methods: {
-        goToPage(page) {
-            if (page >= 1 && page <= this.totalPages) {
-                this.currentPage = page;
+        goToPage(action) {
+            if (action == "next") {
+                if (this.currentPage >= this.totalPages) {
+                    this.currentPage = 1;
+                } else {
+                    this.currentPage = this.currentPage + 1;
+                }
+            }
+
+            if (action == "prev") {
+                if (this.currentPage <= 1) {
+                    this.currentPage = this.totalPages;
+                } else {
+                    this.currentPage = this.currentPage - 1;
+                }
             }
         },
         updateSelectedLevel(event) {
