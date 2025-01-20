@@ -11,5 +11,12 @@ class User extends Authenticatable
 {
     use HasFactory, HasRoles, Notifiable;
 
-    // Your other model properties and methods
+    protected $guarded = ['password'];
+
+    public function personalDetails()
+    {
+        return $this->hasOne(PersonalDetail::class);
+    }
+
+
 }

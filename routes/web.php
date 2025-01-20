@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PersonalDetailController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -13,6 +14,8 @@ Route::post('/login-submit', [LoginController::class, 'login'])->name('login-sub
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/account', [AccountController::class, 'index']);
+
+    Route::post('/personal-details-update-submit', [PersonalDetailController::class, 'updatePersonalDetails']);
 });
 
 

@@ -26,6 +26,9 @@ export default {
 </template>
 
 <style>
+.hidden {
+    display: none;
+}
 .link {
     color: currentColor;
     text-decoration: none;

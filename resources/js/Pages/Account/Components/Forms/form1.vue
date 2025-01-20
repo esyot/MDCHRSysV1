@@ -4,23 +4,16 @@
             <span class="title">PERSONAL INFORMATION</span>
         </div>
         <div class="form-group">
-            <label for="last_name">SURNAME</label>
-            <input
-                type="text"
-                id="last_name"
-                v-model="userDetails.last_name"
-                class="form-control"
-            />
-        </div>
-        <div class="form-group">
             <label for="first_name">FIRST NAME:</label>
             <input
                 type="text"
                 id="first_name"
                 v-model="userDetails.first_name"
                 class="form-control"
+                @input="handleFieldFocus('first_name')"
             />
         </div>
+
         <div class="form-group">
             <label for="middle_name">MIDDLE NAME:</label>
             <input
@@ -28,6 +21,17 @@
                 id="middle_name"
                 v-model="userDetails.middle_name"
                 class="form-control"
+                @input="handleFieldFocus('middle_name')"
+            />
+        </div>
+        <div class="form-group">
+            <label for="last_name">LAST NAME</label>
+            <input
+                type="text"
+                id="last_name"
+                v-model="userDetails.last_name"
+                class="form-control"
+                @input="handleFieldFocus('last_name')"
             />
         </div>
         <div class="form-group">
@@ -35,8 +39,9 @@
             <input
                 type="text"
                 id="name_extension"
-                v-model="userDetails.name_extension"
+                v-model="userDetails.name_ext"
                 class="form-control"
+                @input="handleFieldFocus('name_ext')"
             />
         </div>
         <div class="form-group">
@@ -44,8 +49,9 @@
             <input
                 type="text"
                 id="nick_name"
-                v-model="userDetails.nick_name"
+                v-model="userDetails.nickname"
                 class="form-control"
+                @input="handleFieldFocus('nickname')"
             />
         </div>
         <div class="form-group">
@@ -53,8 +59,9 @@
             <input
                 type="date"
                 id="date_of_birth"
-                v-model="userDetails.date_of_birth"
+                v-model="userDetails.DOB"
                 class="form-control"
+                @input="handleFieldFocus('DOB')"
             />
         </div>
         <div class="form-group">
@@ -62,8 +69,9 @@
             <input
                 type="text"
                 id="place_of_birth"
-                v-model="userDetails.place_of_birth"
+                v-model="userDetails.birthplace"
                 class="form-control"
+                @input="handleFieldFocus('birthplace')"
             />
         </div>
         <div class="form-group">
@@ -77,6 +85,7 @@
                         value="male"
                         class="form-control-radio"
                         v-model="userDetails.sex"
+                        @click="handleFieldFocus('sex')"
                     />
                     Male
                 </label>
@@ -88,6 +97,7 @@
                         value="female"
                         class="form-control-radio"
                         v-model="userDetails.sex"
+                        @click="handleFieldFocus('sex')"
                     />
                     Female
                 </label>
@@ -104,6 +114,7 @@
                         value="single"
                         class="form-control-radio"
                         v-model="userDetails.civil_status"
+                        @click="handleFieldFocus('civil_status')"
                     />
                     Single
                 </label>
@@ -114,6 +125,7 @@
                         value="married"
                         class="form-control-radio"
                         v-model="userDetails.civil_status"
+                        @click="handleFieldFocus('civil_status')"
                     />
                     Married
                 </label>
@@ -124,6 +136,7 @@
                         value="widowed"
                         class="form-control-radio"
                         v-model="userDetails.civil_status"
+                        @click="handleFieldFocus('civil_status')"
                     />
                     Widowed
                 </label>
@@ -134,6 +147,7 @@
                         value="separated"
                         class="form-control-radio"
                         v-model="userDetails.civil_status"
+                        @click="handleFieldFocus('civil_status')"
                     />
                     Separated
                 </label>
@@ -141,19 +155,13 @@
                     <input
                         type="radio"
                         name="civil_status"
-                        value="others"
+                        value="divorced"
                         class="form-control-radio"
                         v-model="userDetails.civil_status"
+                        @click="handleFieldFocus('civil_status')"
                     />
-                    Other/s:
+                    Divorced
                 </label>
-                <input
-                    type="text"
-                    name="others"
-                    id="others"
-                    v-model="userDetails.others"
-                    class="form-control"
-                />
             </div>
         </div>
         <div class="form-group">
@@ -164,6 +172,7 @@
                 id="religion"
                 v-model="userDetails.religion"
                 class="form-control"
+                @input="handleFieldFocus('religion')"
             />
         </div>
         <div class="form-group">
@@ -177,6 +186,7 @@
                 placeholder="Height in Meters"
                 min="0"
                 step="0.01"
+                @click="handleFieldFocus('height')"
             />
         </div>
         <div class="form-group">
@@ -189,60 +199,95 @@
                 class="form-control"
                 placeholder="Weight in Kgs"
                 min="0"
+                @click="handleFieldFocus('weight')"
             />
         </div>
         <div class="form-group">
             <label for="blood_type">BLOOD TYPE:</label>
-            <input
-                type="text"
+            <select
                 name="blood_type"
                 id="blood_type"
                 v-model="userDetails.blood_type"
                 class="form-control"
-            />
+                @input="handleFieldFocus('blood_type')"
+            >
+                <option value="">Select Blood Type</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+            </select>
         </div>
+
         <div class="form-group">
             <label for="contact">TEL NO./MOBILE NO.:</label>
             <input
                 type="text"
                 name="contact"
                 id="contact"
-                v-model="userDetails.contact"
+                v-model="userDetails.contact_no"
                 class="form-control"
                 placeholder="eg. 09123456789"
+                @input="handleFieldFocus('contact_no')"
             />
         </div>
         <div class="form-group">
-            <label for="citizenship">CITIZENSHIP:</label>
-            <div class="select-group">
-                <select
-                    name="citizenship"
-                    id="citizenship"
-                    v-model="userDetails.citizenship"
-                >
-                    <option value="Select">Select Citizenship</option>
-                    <option value="Filipino">Filipino</option>
-                </select>
-            </div>
             <div class="form-group">
+                <label for="citizenship">Citizenship:</label>
+                <div class="radio-group">
+                    <label for="Filipino">
+                        <input
+                            type="radio"
+                            id="filipino"
+                            name="citizenship"
+                            value="filipino"
+                            class="form-control-radio"
+                            v-model="userDetails.citizenship"
+                            @click="handleFieldFocus('citizenship')"
+                        />
+                        Filipino
+                    </label>
+                    <label for="dual_citizenship">
+                        <input
+                            type="radio"
+                            id="dual_citizenship"
+                            name="citizenship"
+                            value="dual_citizenship"
+                            class="form-control-radio"
+                            v-model="userDetails.citizenship"
+                            @click="handleFieldFocus('citizenship')"
+                        />
+                        Dual Citizenship
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="citizenship_type">Citizenship Type:</label>
                 <div class="radio-group">
                     <label>
                         <input
                             type="radio"
-                            name="citizenship"
+                            name="citizenship_type"
                             value="by_birth"
                             class="form-control-radio"
-                            v-model="userDetails.citizenship"
+                            v-model="userDetails.citizenship_type"
+                            @click="handleFieldFocus('citizenship_type')"
                         />
                         By Birth
                     </label>
                     <label>
                         <input
                             type="radio"
-                            name="citizenship"
+                            name="citizenship_type"
                             value="by_naturalization"
                             class="form-control-radio"
-                            v-model="userDetails.citizenship"
+                            v-model="userDetails.citizenship_type"
+                            @click="handleFieldFocus('citizenship_type')"
                         />
                         By Naturalization
                     </label>
@@ -253,10 +298,11 @@
             <label for="messenger_acct">MESSENGER ACCT:</label>
             <input
                 type="text"
-                name="messenger_acct"
-                id="messenger_acct"
-                v-model="userDetails.messenger_acct"
+                name="fb_link"
+                id="fb_link"
+                v-model="userDetails.fb_link"
                 class="form-control"
+                @input="handleFieldFocus('fb_link')"
             />
         </div>
     </div>
@@ -475,42 +521,171 @@
         </div>
 
         <div class="form-group">
-            <label for="">Name:</label>
-            <span>
-                {{ personalDetails.first_name }}
-                {{ personalDetails.last_name }}
+            <label>Full Name:</label>
+            <span
+                >{{ personalDetails.first_name }}
                 {{ personalDetails.middle_name }}
+                {{ personalDetails.last_name }}
+                <span
+                    v-if="personalDetails.personal_details.name_ext != 'none'"
+                >
+                    {{ personalDetails.personal_details.name_ext }}.
+                </span>
             </span>
 
-            <label for="">Address:</label>
+            <label>Nickname:</label>
+            <span> {{ personalDetails.personal_details.nickname }} </span>
+
+            <label>Date of Birth:</label>
+            <span>{{ personalDetails.personal_details.DOB }}</span>
+
+            <label>Place of Birth:</label>
+            <span>{{ personalDetails.personal_details.birthplace }}</span>
+
+            <label>Sex:</label>
+            <span>{{ personalDetails.personal_details.sex }}</span>
+
+            <label>Civil Status:</label>
+            <span>{{ personalDetails.personal_details.civil_status }}</span>
+
+            <label>Religion:</label>
+            <span>{{ personalDetails.personal_details.religion }}</span>
+
+            <label>Height:</label>
+            <span>{{ personalDetails.personal_details.height }}</span>
+
+            <label>Weight:</label>
+            <span>{{ personalDetails.personal_details.weight }}</span>
+
+            <label>Blood Type:</label>
+            <span>{{ personalDetails.personal_details.blood_type }}</span>
+
+            <label>Contact no:</label>
+            <span>{{ personalDetails.personal_details.contact_no }}</span>
+
+            <label>Citizenship:</label>
+            <span
+                >{{ personalDetails.personal_details.citizenship }}
+
+                {{ personalDetails.personal_details.citizenship_type }}</span
+            >
+        </div>
+    </div>
+
+    <div class="personal-details-items" v-if="editMode == false">
+        <div class="title-container">
+            <span class="title">PERSONAL INFORMATION</span>
+        </div>
+
+        <div class="form-group">
+            <label>Permanent Address:</label>
             <span>
-                {{ personalDetails.house_no }}, {{ personalDetails.street }},
-                {{ personalDetails.brgy }}, {{ personalDetails.brgy }},
-
-                {{ personalDetails.municipality }},
-                {{ personalDetails.province }}, {{ personalDetails.zip_code }}.
+                {{
+                    personalDetails.personal_details.permanent_address.house_no
+                }},
+                {{ personalDetails.personal_details.permanent_address.street }},
+                {{ personalDetails.personal_details.permanent_address.brgy }},
+                {{
+                    personalDetails.personal_details.permanent_address
+                        .municipality
+                }},
+                {{
+                    personalDetails.personal_details.permanent_address.province
+                }},
+                {{
+                    personalDetails.personal_details.permanent_address.zip_code
+                }}
             </span>
+
+            <label>Residential Address:</label>
+            <span>
+                {{
+                    personalDetails.personal_details.residential_address
+                        .house_no
+                }},
+                {{
+                    personalDetails.personal_details.residential_address.street
+                }},
+                {{ personalDetails.personal_details.residential_address.brgy }},
+                {{
+                    personalDetails.personal_details.residential_address
+                        .municipality
+                }},
+                {{
+                    personalDetails.personal_details.residential_address
+                        .province
+                }},
+                {{
+                    personalDetails.personal_details.residential_address
+                        .zip_code
+                }}
+            </span>
+
+            <label>Messenger Account:</label>
+            <span>{{ personalDetails.personal_details.fb_link }}</span>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    emits: ["update-user-details"],
+    emits: ["track-touched-field", "update-user-details"],
     props: {
         userDetails: Object,
         editMode: Boolean,
         personalDetails: Object,
     },
+    data() {
+        return {
+            localUserDetails: { ...this.userDetails },
+        };
+    },
+    methods: {
+        handleFieldFocus(fieldName) {
+            this.$emit("track-touched-field", fieldName);
+        },
+
+        handleFieldChange(fieldName) {
+            this.$emit("update-user-details", {
+                [fieldName]: this.userDetails[fieldName],
+            });
+        },
+    },
     watch: {
-        userDetails: {
+        personalDetails: {
             handler(newVal) {
-                this.$emit("update-user-details", newVal);
+                this.userDetails.last_name = newVal.last_name || "";
+                this.userDetails.first_name = newVal.first_name || "";
+                this.userDetails.middle_name = newVal.middle_name || "";
+                this.userDetails.name_ext =
+                    newVal.personal_details.name_ext || "";
+                this.userDetails.nickname =
+                    newVal.personal_details.nickname || "";
+                this.userDetails.DOB = newVal.personal_details.DOB || "";
+                this.userDetails.birthplace =
+                    newVal.personal_details.birthplace || "";
+                this.userDetails.sex = newVal.personal_details.sex || "";
+                this.userDetails.civil_status =
+                    newVal.personal_details.civil_status || "";
+                this.userDetails.religion =
+                    newVal.personal_details.religion || "";
+                this.userDetails.height = newVal.personal_details.height || "";
+                this.userDetails.weight = newVal.personal_details.weight || "";
+                this.userDetails.blood_type =
+                    newVal.personal_details.blood_type || "";
+                this.userDetails.contact_no =
+                    newVal.personal_details.contact_no || "";
+                this.userDetails.citizenship =
+                    newVal.personal_details.citizenship || "";
+
+                this.userDetails.citizenship_type =
+                    newVal.personal_details.citizenship_type || "";
+
+                this.userDetails.messenger_acct =
+                    newVal.personal_details.fb_link || "";
             },
-            deep: true,
+            immediate: true,
         },
     },
 };
 </script>
-
-<style scoped></style>

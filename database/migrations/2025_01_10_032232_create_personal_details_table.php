@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('personal_details', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned();
-            $table->string('ext');
+            $table->string('name_ext');
             $table->string('nickname');
             $table->date('DOB');
             $table->string('birthplace');
@@ -24,6 +24,10 @@ return new class extends Migration {
             $table->decimal('weight', 10, 2);
             $table->enum('blood_type', ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']);
             $table->string('contact_no');
+            $table->string('citizenship');
+            $table->string('citizenship_type');
+
+            $table->string('fb_link');
             $table->bigInteger('permanent_address_id')->unsigned();
             $table->bigInteger('residential_address_id')->unsigned();
             $table->string('img');

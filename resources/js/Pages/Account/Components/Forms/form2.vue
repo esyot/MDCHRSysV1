@@ -4,7 +4,6 @@
             <span class="title">FAMILY BACKGROUND</span>
         </div>
 
-        <!-- Family Member Type Selection -->
         <div class="form-group">
             <label for="type">SELECT FAMILY MEMBER:</label>
             <select v-model="familyMemberType" class="form-control">
@@ -15,7 +14,6 @@
             </select>
         </div>
 
-        <!-- Dynamic Form Fields Based on Family Member Type -->
         <div v-if="familyMemberType">
             <div class="form-group">
                 <label for="last_name"
@@ -65,7 +63,6 @@
                 />
             </div>
 
-            <!-- Spouse Specific Fields -->
             <div class="form-group" v-if="familyMemberType === 'spouse'">
                 <label for="occupation">SPOUSE OCCUPATION:</label>
                 <input
@@ -76,7 +73,6 @@
                 />
             </div>
 
-            <!-- Mother Specific Fields -->
             <div class="form-group" v-if="familyMemberType === 'mother'">
                 <label for="maiden_name">MOTHER'S MAIDEN NAME:</label>
                 <input
@@ -105,7 +101,7 @@ export default {
     },
     data() {
         return {
-            familyMemberType: null, // The selected family member type
+            familyMemberType: null,
         };
     },
     watch: {
@@ -113,7 +109,7 @@ export default {
             handler(newVal) {
                 this.$emit("update-user-details", newVal);
             },
-            deep: true, // Ensures nested changes are captured
+            deep: true,
         },
     },
     methods: {
