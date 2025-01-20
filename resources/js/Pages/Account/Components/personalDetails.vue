@@ -141,13 +141,13 @@
             </div>
 
             <div class="navigation-buttons">
-                <button @click="goToPage('prev')">
+                <button type="button" @click="goToPage('prev')">
                     <i class="fas fa-chevron-circle-left"></i>
                 </button>
                 <span class="pageNum">
                     {{ currentPage }}
                 </span>
-                <button @click="goToPage('next')">
+                <button type="button" @click="goToPage('next')">
                     <i class="fas fa-chevron-circle-right"></i>
                 </button>
             </div>
@@ -349,6 +349,21 @@ export default {
         };
     },
     methods: {
+        goToPage(action) {
+            if (action === "next") {
+                if (this.currentPage >= this.totalPages) {
+                    this.currentPage = 1;
+                } else {
+                    this.currentPage += 1;
+                }
+            } else if (action === "prev") {
+                if (this.currentPage === 1) {
+                    this.currentPage = this.totalPages;
+                } else {
+                    this.currentPage -= 1;
+                }
+            }
+        },
         trackTouchedField(fieldName) {
             this.editModeHasChanged = true;
             let touchedFields =
@@ -454,6 +469,7 @@ export default {
     display: flex;
     justify-content: end;
     gap: 0.3rem;
+    padding: 5px;
 }
 
 .modal-content h3 {

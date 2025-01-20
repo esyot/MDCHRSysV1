@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('personal_details', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned();
-            $table->string('name_ext');
+            $table->string('name_ext')->nullable();
             $table->string('nickname');
             $table->date('DOB');
             $table->string('birthplace');
