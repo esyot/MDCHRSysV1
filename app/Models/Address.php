@@ -10,6 +10,8 @@ class Address extends Model
     /** @use HasFactory<\Database\Factories\AddressFactory> */
     use HasFactory;
 
+    protected $guarded = [];
+
     public function PersonalDetail()
     {
         $this->belongsTo(PersonalDetail::class);

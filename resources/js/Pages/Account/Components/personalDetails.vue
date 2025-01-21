@@ -228,23 +228,23 @@ export default {
                 department: "",
 
                 residential_address: {
-                house_no: "",
-                street: "",
-                subdv: "",
-                brgy: "",
-                municipality: "",
-                province: "",
-                zip_code: "",
+                    house_no: "",
+                    street: "",
+                    subdv: "",
+                    brgy: "",
+                    municipality: "",
+                    province: "",
+                    zip_code: ""
                 },
 
                 permanent_address: {
-                 house_no: "",
-                street: "",
-                subdv: "",
-                brgy: "",
-                municipality: "",
-                province: "",
-                zip_code: ""
+                    house_no: "",
+                    street: "",
+                    subdv: "",
+                    brgy: "",
+                    municipality: "",
+                    province: "",
+                    zip_code: ""
                 },
 
                 userProfExamDetails: {
@@ -378,66 +378,81 @@ export default {
                 }
             }
         },
-        trackTouchedField(fieldName) {
-            this.editModeHasChanged = true;
-            let touchedFields =
-                JSON.parse(localStorage.getItem("touchedFields")) || {};
-
-            touchedFields[fieldName] = true;
-            localStorage.setItem(
-                "touchedFields",
-                JSON.stringify(touchedFields)
-            );
-        },
-
-        updateUserDetails(updatedDetails) {
+         updateUserDetails(updatedDetails) {
             this.userDetails = { ...this.userDetails, ...updatedDetails };
         },
+       trackTouchedField(fieldName) {
+    this.editModeHasChanged = true;
+    let touchedFields =
+        JSON.parse(localStorage.getItem("touchedFields")) || {};
 
-        async personalDetailSubmit() {
-            const touchedFields =
-                JSON.parse(localStorage.getItem("touchedFields")) || {};
+    // Store the field path as is, including nested fields (e.g., "residential_address.house_no")
+    touchedFields[fieldName] = true;
+    localStorage.setItem(
+        "touchedFields",
+        JSON.stringify(touchedFields)
+    );
+},
 
-            if (Object.keys(touchedFields).length === 0) {
-                console.log("No changes to submit.");
-                return;
-            }
+       
 
-            const modifiedFields = {};
+       async personalDetailSubmit() {
+    const touchedFields =
+        JSON.parse(localStorage.getItem("touchedFields")) || {};
 
-            for (const field in touchedFields) {
-                if (touchedFields[field] === true) {
-                    modifiedFields[field] = this.userDetails[field];
+    if (Object.keys(touchedFields).length === 0) {
+        console.log("No changes to submit.");
+        return;
+    }
+
+    const modifiedFields = {};
+
+    for (const field in touchedFields) {
+        if (touchedFields[field] === true) {
+            // Handle nested fields by splitting the path and traversing the object
+            const fieldParts = field.split('.');
+            let value = this.userDetails;
+
+            // Traverse the nested structure
+            for (let part of fieldParts) {
+                if (value && value.hasOwnProperty(part)) {
+                    value = value[part];  // Move deeper into the object
                 }
             }
 
-            if (Object.keys(modifiedFields).length === 0) {
-                console.log("No modified fields to submit.");
-                return;
-            }
+            modifiedFields[field] = value;  // Assign the resolved value to modifiedFields
+        }
+    }
 
-            try {
-                this.toggleConfirmationSubmitModal("close");
-                this.editModeHasChanged = false;
+    if (Object.keys(modifiedFields).length === 0) {
+        console.log("No modified fields to submit.");
+        return;
+    }
 
-                await Inertia.post(
-                    "/personal-details-update-submit",
-                    modifiedFields
-                );
+    try {
+        this.toggleConfirmationSubmitModal("close");
+        this.editModeHasChanged = false;
 
-                localStorage.removeItem("touchedFields");
-                this.editMode = !this.editMode;
-                localStorage.setItem("editMode", JSON.stringify(this.editMode));
+        // Send the modified fields to the backend
+        await Inertia.post(
+            "/personal-details-update-submit",
+            modifiedFields
+        );
 
-                this.$emit(
-                    "showSuccessMessage",
-                    "Personal details updated successfully!"
-                );
-            } catch (error) {
-                console.error("Error submitting personal details:", error);
-            }
-        },
+        // Clean up and reset state
+        localStorage.removeItem("touchedFields");
+        this.editMode = !this.editMode;
+        localStorage.setItem("editMode", JSON.stringify(this.editMode));
 
+        this.$emit(
+            "showSuccessMessage",
+            "Personal details updated successfully!"
+        );
+    } catch (error) {
+        console.error("Error submitting personal details:", error);
+    }
+}
+,
         toggleEditMode() {
             this.editMode = !this.editMode;
             localStorage.setItem("editMode", JSON.stringify(this.editMode));
