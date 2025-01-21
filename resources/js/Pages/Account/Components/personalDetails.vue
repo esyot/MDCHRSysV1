@@ -228,7 +228,7 @@ export default {
                 department: "",
 
                 residential_address: {
-                 house_no: "",
+                house_no: "",
                 street: "",
                 subdv: "",
                 brgy: "",
@@ -237,14 +237,14 @@ export default {
                 zip_code: "",
                 },
 
-            permanent_address: {
+                permanent_address: {
                  house_no: "",
                 street: "",
                 subdv: "",
                 brgy: "",
                 municipality: "",
                 province: "",
-                zip_code: "",
+                zip_code: ""
                 },
 
                 userProfExamDetails: {
