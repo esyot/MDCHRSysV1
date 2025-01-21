@@ -33,8 +33,18 @@ class UserSeeder extends Seeder
             'password' => Hash::make('12345678'),
         ]);
 
+        $user3 = User::create([
+            'first_name' => 'Matt',
+            'last_name' => 'Carillo',
+            'middle_name' => 'Bulilan',
+            'user' => 'mcarillo',
+            'email' => 'carillo@gmail.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
 
         $user1->assignRole('admin');
         $user2->assignRole('admin');
+        $user3->assignRole('admin');
     }
 }
