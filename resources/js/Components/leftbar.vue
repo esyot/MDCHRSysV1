@@ -35,9 +35,15 @@
                         </div>
 
                         <ul id="submenu-services" class="submenu">
-                            <li><span>Personal Details</span></li>
-                            <li><span>Request Travel Application</span></li>
-                            <li><span>Request Leave Application</span></li>
+                            <InertiaLink :href="'/forms/travel-form-request'">
+                                <li>
+                                    <span>Request Travel Application</span>
+                                </li></InertiaLink
+                            >
+
+                            <InertiaLink :href="'/forms/leave-form-request'">
+                                <li><span>Request Leave Application</span></li>
+                            </InertiaLink>
                         </ul>
                     </li>
                     <li title="Users">
