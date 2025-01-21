@@ -180,9 +180,9 @@ export default defineComponent({
     flex-basis: 400px;
     min-width: 300px;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     margin: 0.5rem;
-    padding: 1rem;
     border-radius: 0.5rem;
     background-color: #59abe3;
     color: #fff;
@@ -211,11 +211,11 @@ export default defineComponent({
 
 .chart {
     display: flex;
-    flex-grow: 1; /* Allow the chart to grow and fill available space */
-    flex-basis: 100px; /* The base size of each chart */
+    flex-grow: 1; 
+    flex-basis: 100px; 
     background-color: #fff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    height: auto; /* Adjust height based on content */
+    height: auto; 
     min-width: 150px;
     border-radius: 5px;
 }
