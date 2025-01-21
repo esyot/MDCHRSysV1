@@ -1,22 +1,62 @@
+
+<script>
+import Layout from "@/Layouts/layout.vue";
+
+export default {
+    data() {
+        return {
+            form: {
+                office: "",
+                lastName: "",
+                firstName: "",
+                middleName: "",
+            },
+            travelForm: {
+                dates: "",
+                place: "",
+                purpose: "",
+                organizer: "",
+                description: "",
+            },
+            budget: {
+                registration: false,
+                transportation: false,
+                representation: false,
+                miscellaneous: false,
+                departmentalFund: false,
+                officeBudget: false,
+                schoolFund: false,
+                others: false,
+                othersReason: "",
+            },
+        };
+    },
+    methods: {
+        submitForm() {
+            console.log("Office details:", this.form);
+        },
+        submitTravelDetails() {
+            console.log("Travel details:", this.travelForm);
+        },
+    },
+    layout: Layout,
+};
+</script>
+
 <template>
-    <div class="personal-details-items">
-        <!-- Heading -->
-        <div class="title-container">
+    <div class="forms">
+        <div class="forms-container">
+         <div class="forms-title">
             <span class="title">TRAVEL APPLICATION FORM</span>
         </div>
         <div class="form-group">
-            <label for="office" class="input-label">Office/Department</label>
-            <input
-                type="text"
-                id="office"
-                v-model="form.office"
-                class="form-control"
-                placeholder="Enter office or department"
-                required
-            />
+            <label class="section-title">Office/Department:</label>
+            <select name="" id="">
+                <option value=""></option>
+            </select>
         </div>
 
-        <!-- Last Name -->
+
         <div class="form-group">
             <label for="last_name" class="input-label">Last Name</label>
             <input
@@ -29,7 +69,6 @@
             />
         </div>
 
-        <!-- First Name -->
         <div class="form-group">
             <label for="first_name" class="input-label">First Name</label>
             <input
@@ -42,7 +81,6 @@
             />
         </div>
 
-        <!-- Middle Name -->
         <div class="form-group">
             <label for="middle_name" class="input-label">Middle Name</label>
             <input
@@ -53,10 +91,7 @@
                 placeholder="Enter middle name"
             />
         </div>
-        <!-- </form> -->
 
-        <!-- Details of Official Travel -->
-        <h2 class="section-heading">Details of Official Travel</h2>
         <form @submit.prevent="submitTravelDetails" class="form">
             <div class="form-group">
                 <label for="dates" class="input-label">Date(s) of Travel</label>
@@ -119,15 +154,14 @@
                     rows="4"
                     required
                 ></textarea>
-            </div>
+
+        </div>
         </form>
 
-        <!-- Budgetary Requirements -->
-        <h2 class="section-heading">Budgetary Requirements</h2>
         <div class="form-grid">
-            <!-- Left Side: Budgetary Requirements -->
+
             <div>
-                <h3 class="section-title">Budgetary Requirements</h3>
+                <label class="section-title">Budgetary Requirements</label>
                 <div class="checkbox-group">
                     <div class="checkbox-item">
                         <input
@@ -174,7 +208,7 @@
 
             <!-- Right Side: Budget Charged To -->
             <div>
-                <h3 class="section-title">Budget Charged To</h3>
+                <label class="section-title">Budget Charged To</label>
                 <div class="checkbox-group">
                     <div class="checkbox-item">
                         <input
@@ -227,46 +261,30 @@
                 </div>
             </div>
         </div>
+
+        <div>
+</div>
+    </div>
     </div>
 </template>
 
 <style>
-.title-container {
-    border-bottom: #dedede 1px solid;
+
+.forms{
     background-color: #fff;
-    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-}
-
-.title {
-    font-size: 14px;
-    padding: 10px;
-    font-weight: bold;
-}
-
-.personal-details-content {
-    display: flex;
-    flex-wrap: wrap;
-    height: 78vh;
+    height: 90vh;
     overflow-y: auto;
-    margin-top: 5px;
-    gap: 0.5rem;
+    margin: 0.5rem;
 }
-
-.personal-details-items {
+.forms-container{
+    height: 40vh;
     flex-grow: 1;
     flex-basis: 400px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    overflow-y: auto; /* Make it scrollable */
-    height: 80vh; /* Set a height to enable scrolling */
+    /* background-color: #692424; */
+
 }
 
-.form-group {
+.form-group{
     margin-bottom: 15px;
     padding: 10px;
 }
@@ -285,73 +303,63 @@
     border-radius: 4px;
     font-size: 14px;
 }
-
-.radio-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.forms-title{
+    border-bottom: #dedede 1px solid;
+    background-color: #fff;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 10px;
 }
 
-.radio-group label {
-    display: flex;
-    align-items: center;
+.forms-title .title{
+
+    font-size: 16px;
+    font-weight: bold;
+
 }
 
-.form-control-radio {
-    margin-right: 5px;
+.section-title{
+    font-size: 18px;
 }
 
-.form-grid {
-    display: flex;
-    justify-content: space-between; /* Space out the two sections */
-    gap: 1rem; /* Add space between the left and right sections */
+
+.table-container {
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
 }
 
-.form-grid > div {
-    flex: 1; /* Make both the left and right sections take equal width */
+/* Section title */
+.section-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Input container */
+.input-container {
+    margin-bottom: 20px;
+}
+
+.input-container label {
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-container .input-field {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+
+.overflow-container {
+    overflow-x: auto;
+    margin-top: 10px;
 }
 </style>
-
-<script>
-import Layout from "@/Layouts/Layout.vue";
-
-export default {
-    data() {
-        return {
-            form: {
-                office: "",
-                lastName: "",
-                firstName: "",
-                middleName: "",
-            },
-            travelForm: {
-                dates: "",
-                place: "",
-                purpose: "",
-                organizer: "",
-                description: "",
-            },
-            budget: {
-                registration: false,
-                transportation: false,
-                representation: false,
-                miscellaneous: false,
-                departmentalFund: false,
-                officeBudget: false,
-                schoolFund: false,
-                others: false, // Checkbox state for "Others"
-                othersReason: "",
-            },
-        };
-    },
-    methods: {
-        submitForm() {
-            console.log("Office details:", this.form);
-        },
-        submitTravelDetails() {
-            console.log("Travel details:", this.travelForm);
-        },
-    },
-    layout: Layout,
-};
-</script>

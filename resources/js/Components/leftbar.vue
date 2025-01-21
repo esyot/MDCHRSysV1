@@ -35,13 +35,13 @@
                         </div>
 
                         <ul id="submenu-services" class="submenu">
-                            <InertiaLink :href="'/forms/travel-form-request'">
+                            <InertiaLink :href="'/forms/travel-form-request'" class="link">
                                 <li>
                                     <span>Request Travel Application</span>
                                 </li></InertiaLink
                             >
 
-                            <InertiaLink :href="'/forms/leave-form-request'">
+                            <InertiaLink :href="'/forms/leave-form-request'" class="link">
                                 <li><span>Request Leave Application</span></li>
                             </InertiaLink>
                         </ul>

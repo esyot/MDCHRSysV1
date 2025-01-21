@@ -1,5 +1,5 @@
 <script>
-import Leftbar from "@/components/leftbar.vue";
+import Leftbar from "@/Components/leftbar.vue";
 import Topbar from "@/Components/topbar.vue";
 
 export default {

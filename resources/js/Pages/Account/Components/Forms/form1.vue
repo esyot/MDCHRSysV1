@@ -318,77 +318,73 @@
                     <label for="house_block_lot_no">HOUSE/BLOCK/LOT NO.:</label>
                     <input
                         type="text"
-                        name="house_block_lot_no"
-                        id="house_block_lot_no"
-                        v-model="userDetails.house_block_lot_no"
+                        v-model="userDetails.residential.house_no"
                         class="form-control"
                         placeholder="House No."
+                         @input="handleFieldFocus('residential.house_no')"
                     />
                 </div>
                 <div class="form-group">
                     <label for="street">STREET:</label>
                     <input
                         type="text"
-                        name="street"
-                        id="street"
-                        v-model="userDetails.street"
+
+                        v-model="userDetails.residential_street"
                         class="form-control"
                         placeholder="Street Name"
+                          @input="handleFieldFocus('residential_street')"
                     />
                 </div>
                 <div class="form-group">
                     <label for="sub_village">SUBDIVISION/VILLAGE:</label>
                     <input
                         type="text"
-                        name="sub_village"
-                        id="sub_village"
-                        v-model="userDetails.sub_village"
+                        v-model="userDetails.residential_subdv"
                         class="form-control"
                         placeholder="Subdivision Name"
+                          @input="handleFieldFocus('residential_subdv')"
                     />
                 </div>
                 <div class="form-group">
                     <label for="barangay">BARANGAY:</label>
                     <input
                         type="text"
-                        name="barangay"
-                        id="barangay"
-                        v-model="userDetails.barangay"
+                        v-model="userDetails.residential_barangay"
                         class="form-control"
                         placeholder="Barangay Name"
+                          @input="handleFieldFocus('residential_house_no')"
                     />
                 </div>
                 <div class="form-group">
                     <label for="city_municipality">CITY/MUNICIPALITY:</label>
                     <input
                         type="text"
-                        name="city_municipality"
-                        id="city_municipality"
-                        v-model="userDetails.city_municipality"
+                        v-model="userDetails.residential_municipality"
                         class="form-control"
                         placeholder="City/Municipality Name"
+                          @input="handleFieldFocus('residential_municipality')"
                     />
                 </div>
                 <div class="form-group">
                     <label for="province">PROVINCE:</label>
                     <input
                         type="text"
-                        name="province"
-                        id="province"
-                        v-model="userDetails.province"
+                        v-model="userDetails.residential_province"
                         class="form-control"
                         placeholder="Province Name"
+                          @input="handleFieldFocus('residential_province')"
+
                     />
                 </div>
                 <div class="form-group">
                     <label for="zip_code">ZIP CODE:</label>
                     <input
                         type="text"
-                        name="zip_code"
                         id="zip_code"
-                        v-model="userDetails.zip_code"
+                        v-model="userDetails.residential_zip_code"
                         class="form-control"
                         placeholder="Zip Code"
+                          @input="handleFieldFocus('residential_zip_code')"
                     />
                 </div>
             </div>
@@ -475,6 +471,8 @@
                 </div>
             </div>
         </div>
+
+
         <div class="form-group">
             <label for="date_hired">DATE HIRED:</label>
             <input

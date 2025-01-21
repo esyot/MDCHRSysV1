@@ -1,5 +1,5 @@
 <script>
-import Layout from "@/Layouts/Layout.vue";
+import Layout from "@/Layouts/layout.vue";
 import Overview from "@/Pages/Account/Components/overview.vue";
 import PersonalDetails from "@/Pages/Account/Components/personalDetails.vue";
 import Security from "@/Pages/Account/Components/security.vue";

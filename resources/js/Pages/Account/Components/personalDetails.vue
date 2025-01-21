@@ -222,16 +222,30 @@ export default {
                 citizenship: "",
                 citizenship_type: "",
                 fb_link: "",
-                house_block_lot_no: "",
-                street: "",
-                sub_village: "",
-                barangay: "",
-                city_municipality: "",
-                province: "",
-                zip_code: "",
+
                 date_hired: "",
                 rank: "",
                 department: "",
+
+                residential_address: {
+                 house_no: "",
+                street: "",
+                subdv: "",
+                brgy: "",
+                municipality: "",
+                province: "",
+                zip_code: "",
+                },
+
+            permanent_address: {
+                 house_no: "",
+                street: "",
+                subdv: "",
+                brgy: "",
+                municipality: "",
+                province: "",
+                zip_code: "",
+                },
 
                 userProfExamDetails: {
                     title: "",
