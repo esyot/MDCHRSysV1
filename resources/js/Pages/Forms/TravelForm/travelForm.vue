@@ -10,6 +10,9 @@ export default {
                 lastName: "",
                 firstName: "",
                 middleName: "",
+                dateOfFiling: "",
+                position: "",
+                rank: "",
             },
             travelForm: {
                 dates: "",
@@ -50,11 +53,17 @@ export default {
             <span class="title">TRAVEL APPLICATION FORM</span>
         </div>
         <div class="form-group">
-            <label class="section-title">Office/Department:</label>
-            <select name="" id="">
-                <option value=""></option>
-            </select>
-        </div>
+    <label class="section-title">Office/Department:</label>
+    <select name="office" id="office">
+        <option value="CAST">CAST</option>
+        <option value="CCJ">CCJ</option>
+        <option value="COE">COE</option>
+        <option value="CON">CON</option>
+        <option value="CABM-B">CABM-B</option>
+        <option value="CABM-H">CABM-H</option>
+    </select>
+</div>
+
 
 
         <div class="form-group">
@@ -92,7 +101,41 @@ export default {
             />
         </div>
 
+        <div class="form-group">
+            <label for="date_of_filing" class="input-label">Date of filing</label>
+            <input
+                type="date"
+                id="date_of_filing"
+                v-model="form.dateOfFiling"
+                class="form-control"
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="position" class="input-label">Position</label>
+            <input
+                type="text"
+                id="position"
+                v-model="form.position"
+                class="form-control"
+                placeholder="Enter position"
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="rank" class="input-label">Rank</label>
+            <input
+                type="text"
+                id="rank"
+                v-model="form.rank"
+                class="form-control"
+                placeholder="Enter rank"
+            />
+        </div>
+
         <form @submit.prevent="submitTravelDetails" class="form">
+            <!-- <label class="budget-title">Details of Official Travel</label> -->
             <div class="form-group">
                 <label for="dates" class="input-label">Date(s) of Travel</label>
                 <input
@@ -158,11 +201,12 @@ export default {
         </div>
         </form>
 
+        <label class="budget-title">Budgetary Requirements</label>
         <div class="form-grid">
 
             <div>
-                <label class="section-title">Budgetary Requirements</label>
-                <div class="checkbox-group">
+
+                <div class="budget-group">
                     <div class="checkbox-item">
                         <input
                             type="checkbox"
@@ -208,7 +252,7 @@ export default {
 
             <!-- Right Side: Budget Charged To -->
             <div>
-                <label class="section-title">Budget Charged To</label>
+                <label class="section-title">Budget charged to:</label>
                 <div class="checkbox-group">
                     <div class="checkbox-item">
                         <input
@@ -240,13 +284,13 @@ export default {
                             >School fund</label
                         >
                     </div>
-                    <div class="checkbox-item">
+                    <div class="checkbos-item">
                         <input
                             type="checkbox"
                             id="others"
                             v-model="budget.others"
                         />
-                        <label for="others" class="checkbox-label"
+                        <label for="others" class="checkbos-label"
                             >Others, specify</label
                         >
                         <div v-if="budget.others">
@@ -267,24 +311,24 @@ export default {
     </div>
     </div>
 </template>
-
 <style>
-
-.forms{
+.forms {
     background-color: #fff;
     height: 90vh;
     overflow-y: auto;
     margin: 0.5rem;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
-.forms-container{
-    height: 40vh;
+
+.forms-container {
+    height: auto;
     flex-grow: 1;
     flex-basis: 400px;
-    /* background-color: #692424; */
-
 }
 
-.form-group{
+.form-group {
     margin-bottom: 15px;
     padding: 10px;
 }
@@ -293,73 +337,110 @@ export default {
     display: block;
     font-weight: bold;
     margin-bottom: 5px;
-    font-size: 12px;
+    font-size: 14px;
 }
 
-.form-group input {
-    width: 95%;
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
+    transition: border-color 0.3s;
 }
-.forms-title{
-    border-bottom: #dedede 1px solid;
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #4a90e2;
+    outline: none;
+}
+
+.forms-title {
+    border-bottom: 1px solid #dedede;
     background-color: #fff;
     box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
     z-index: 1;
     padding: 10px;
+    border-radius: 8px 8px 0 0;
 }
 
-.forms-title .title{
-
+.forms-title .title {
     font-size: 16px;
     font-weight: bold;
-
 }
 
-.section-title{
-    font-size: 18px;
-}
-
-
-.table-container {
-    margin: 20px 0;
-    font-family: Arial, sans-serif;
-}
-
-/* Section title */
-.section-title {
+.budget-title {
     font-size: 18px;
     font-weight: bold;
-    margin-bottom: 10px;
-    display: block;
 }
-
-/* Input container */
-.input-container {
-    margin-bottom: 20px;
-}
-
-.input-container label {
+.section-title {
     font-size: 14px;
-    display: block;
-    margin-bottom: 5px;
+    padding: 5px 5px 20px 5px;
+    color: #010000;
+    font-weight: bold;
 }
 
-.input-container .input-field {
-    width: 100%;
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 5px;
+}
+.budget-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-item input {
+    margin-right: 8px;
+}
+
+.checkbox-label {
+    font-size: 14px;
+}
+
+.input-field {
+    width: 90%; /* Makes the input field take the full width of its container */
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
+    transition: border-color 0.3s;
+    margin-top: 8px; /* Adds spacing between the checkbox and input field */
+}
+
+.checkbos-item {
+    margin-bottom: 15px; /* Adds some space below the checkbox item */
+}
+
+.checkbos-label {
+    display: inline-block; /* Ensures the label and checkbox align properly */
+    margin-left: 5px; /* Optional: adds space between the checkbox and label */
 }
 
 
-.overflow-container {
-    overflow-x: auto;
-    margin-top: 10px;
+.input-field:focus {
+    border-color: #4a90e2;
+    outline: none;
 }
+
 </style>
