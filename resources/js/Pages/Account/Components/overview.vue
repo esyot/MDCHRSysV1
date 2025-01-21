@@ -56,8 +56,7 @@ export default {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    max-height: 320px;
-    min-height: 200px;
+  height: 50vh;
     overflow-y: auto;
     padding-top: 5px;
 }

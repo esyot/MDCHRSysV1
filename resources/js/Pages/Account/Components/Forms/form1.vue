@@ -1,7 +1,7 @@
 <template>
     <div class="personal-details-items" v-if="editMode == true">
         <div class="title-container">
-            <span class="title">PERSONAL INFORMATION</span>
+            <span class="title">PERSONAL INFORMATION (Page 1)</span>
         </div>
         <div class="form-group">
             <label for="first_name">FIRST NAME:</label>
@@ -309,19 +309,19 @@
 
     <div class="personal-details-items" v-if="editMode">
         <div class="title-container">
-            <span class="title">PERSONAL INFORMATION</span>
+            <span class="title">PERSONAL INFORMATION (Page 2)</span>
         </div>
         <div class="form-group">
-            <label for="address">ADDRESS:</label>
+            <label for="address">RESIDENTIAL ADDRESS:</label>
             <div class="address-group">
                 <div class="form-group">
-                    <label for="house_block_lot_no">HOUSE/BLOCK/LOT NO.:</label>
+                    <label for="house_block_lot_no">HOUSE/BLOCK/LOT NO:</label>
                     <input
                         type="text"
-                        v-model="userDetails.residential.house_no"
+                        v-model="userDetails.residential_address.house_no"
                         class="form-control"
                         placeholder="House No."
-                         @input="handleFieldFocus('residential.house_no')"
+                        @input="handleFieldFocus('residential_address.house_no')"
                     />
                 </div>
                 <div class="form-group">
@@ -329,50 +329,50 @@
                     <input
                         type="text"
 
-                        v-model="userDetails.residential_street"
+                        v-model="userDetails.residential_address.street"
                         class="form-control"
                         placeholder="Street Name"
-                          @input="handleFieldFocus('residential_street')"
+                          @input="handleFieldFocus('residential_address.street')"
                     />
                 </div>
                 <div class="form-group">
                     <label for="sub_village">SUBDIVISION/VILLAGE:</label>
                     <input
                         type="text"
-                        v-model="userDetails.residential_subdv"
+                        v-model="userDetails.residential_address.subdv"
                         class="form-control"
                         placeholder="Subdivision Name"
-                          @input="handleFieldFocus('residential_subdv')"
+                          @input="handleFieldFocus('residential_address.subdv')"
                     />
                 </div>
                 <div class="form-group">
                     <label for="barangay">BARANGAY:</label>
                     <input
                         type="text"
-                        v-model="userDetails.residential_barangay"
+                        v-model="userDetails.residential_address.brgy"
                         class="form-control"
                         placeholder="Barangay Name"
-                          @input="handleFieldFocus('residential_house_no')"
+                          @input="handleFieldFocus('residential_address.brgy')"
                     />
                 </div>
                 <div class="form-group">
                     <label for="city_municipality">CITY/MUNICIPALITY:</label>
                     <input
                         type="text"
-                        v-model="userDetails.residential_municipality"
+                        v-model="userDetails.residential_address.municipality"
                         class="form-control"
                         placeholder="City/Municipality Name"
-                          @input="handleFieldFocus('residential_municipality')"
+                          @input="handleFieldFocus('residential_address.municipality')"
                     />
                 </div>
                 <div class="form-group">
                     <label for="province">PROVINCE:</label>
                     <input
                         type="text"
-                        v-model="userDetails.residential_province"
+                        v-model="userDetails.residential_address.province"
                         class="form-control"
                         placeholder="Province Name"
-                          @input="handleFieldFocus('residential_province')"
+                          @input="handleFieldFocus('residential_address.province')"
 
                     />
                 </div>
@@ -381,10 +381,10 @@
                     <input
                         type="text"
                         id="zip_code"
-                        v-model="userDetails.residential_zip_code"
+                        v-model="userDetails.residential_address.zip_code"
                         class="form-control"
                         placeholder="Zip Code"
-                          @input="handleFieldFocus('residential_zip_code')"
+                          @input="handleFieldFocus('residential_address.zip_code')"
                     />
                 </div>
             </div>
@@ -398,9 +398,10 @@
                         type="text"
                         name="house_block_lot_no"
                         id="house_block_lot_no"
-                        v-model="userDetails.house_block_lot_no"
+                        v-model="userDetails.permanent_address.house_no"
                         class="form-control"
                         placeholder="House No."
+                          @input="handleFieldFocus('permanent_address.house_no')"
                     />
                 </div>
                 <div class="form-group">
@@ -409,9 +410,10 @@
                         type="text"
                         name="street"
                         id="street"
-                        v-model="userDetails.street"
+                        v-model="userDetails.permanent_address.street"
                         class="form-control"
                         placeholder="Street Name"
+                          @input="handleFieldFocus('permanent_address.street')"
                     />
                 </div>
                 <div class="form-group">
@@ -420,9 +422,10 @@
                         type="text"
                         name="sub_village"
                         id="sub_village"
-                        v-model="userDetails.sub_village"
+                        v-model="userDetails.permanent_address.subdv"
                         class="form-control"
                         placeholder="Subdivision Name"
+                          @input="handleFieldFocus('permanent_address.subdv')"
                     />
                 </div>
                 <div class="form-group">
@@ -431,9 +434,10 @@
                         type="text"
                         name="barangay"
                         id="barangay"
-                        v-model="userDetails.barangay"
+                        v-model="userDetails.permanent_address.brgy"
                         class="form-control"
                         placeholder="Barangay Name"
+                          @input="handleFieldFocus('permanent_address.brgy')"
                     />
                 </div>
                 <div class="form-group">
@@ -442,9 +446,10 @@
                         type="text"
                         name="city_municipality"
                         id="city_municipality"
-                        v-model="userDetails.city_municipality"
+                        v-model="userDetails.permanent_address.municipality"
                         class="form-control"
                         placeholder="City/Municipality Name"
+                          @input="handleFieldFocus('permanent_address.municipality')"
                     />
                 </div>
                 <div class="form-group">
@@ -453,9 +458,10 @@
                         type="text"
                         name="province"
                         id="province"
-                        v-model="userDetails.province"
+                        v-model="userDetails.permanent_address.province"
                         class="form-control"
                         placeholder="Province Name"
+                          @input="handleFieldFocus('permanent_address.province')"
                     />
                 </div>
                 <div class="form-group">
@@ -464,9 +470,10 @@
                         type="text"
                         name="zip_code"
                         id="zip_code"
-                        v-model="userDetails.zip_code"
+                        v-model="userDetails.permanent_address.zip_code"
                         class="form-control"
                         placeholder="Zip Code"
+                          @input="handleFieldFocus('permanent_address.zip_code')"
                     />
                 </div>
             </div>
@@ -515,7 +522,7 @@
 
     <div class="personal-details-items" v-if="editMode == false">
         <div class="title-container">
-            <span class="title">PERSONAL INFORMATION</span>
+            <span class="title">PERSONAL INFORMATION (Page 1)</span>
         </div>
 
         <div class="form-group">
@@ -572,30 +579,11 @@
 
     <div class="personal-details-items" v-if="editMode == false">
         <div class="title-container">
-            <span class="title">PERSONAL INFORMATION</span>
+            <span class="title">PERSONAL INFORMATION (Page 2)</span>
         </div>
 
         <div class="form-group">
-            <label>Permanent Address:</label>
-            <span>
-                {{
-                    personalDetails.personal_details.permanent_address.house_no
-                }},
-                {{ personalDetails.personal_details.permanent_address.street }},
-                {{ personalDetails.personal_details.permanent_address.brgy }},
-                {{
-                    personalDetails.personal_details.permanent_address
-                        .municipality
-                }},
-                {{
-                    personalDetails.personal_details.permanent_address.province
-                }},
-                {{
-                    personalDetails.personal_details.permanent_address.zip_code
-                }}
-            </span>
-
-            <label>Residential Address:</label>
+             <label>Residential Address:</label>
             <span>
                 {{
                     personalDetails.personal_details.residential_address
@@ -603,6 +591,9 @@
                 }},
                 {{
                     personalDetails.personal_details.residential_address.street
+                }},
+                {{
+                    personalDetails.personal_details.residential_address.subdv
                 }},
                 {{ personalDetails.personal_details.residential_address.brgy }},
                 {{
@@ -619,6 +610,27 @@
                 }}
             </span>
 
+            <label>Permanent Address:</label>
+            <span>
+                {{
+                    personalDetails.personal_details.permanent_address.house_no
+                }},
+                {{ personalDetails.personal_details.permanent_address.street }},
+                {{ personalDetails.personal_details.permanent_address.subdv }},
+                {{ personalDetails.personal_details.permanent_address.brgy }},
+                {{
+                    personalDetails.personal_details.permanent_address
+                        .municipality
+                }},
+                {{
+                    personalDetails.personal_details.permanent_address.province
+                }},
+                {{
+                    personalDetails.personal_details.permanent_address.zip_code
+                }}
+            </span>
+
+           
             <label>Messenger Account:</label>
             <span>{{ personalDetails.personal_details.fb_link }}</span>
         </div>
@@ -681,6 +693,51 @@ export default {
 
                 this.userDetails.messenger_acct =
                     newVal.personal_details.fb_link || "";
+
+                    this.userDetails.residential_address.house_no =
+                        newVal.personal_details.residential_address.house_no || "";
+
+                         this.userDetails.residential_address.street =
+                             newVal.personal_details.residential_address.street || "";
+
+                     this.userDetails.residential_address.subdv =
+                         newVal.personal_details.residential_address.subdv || "";
+
+                          this.userDetails.residential_address.brgy =
+                              newVal.personal_details.residential_address.brgy || "";
+
+                     this.userDetails.residential_address.municipality =
+                         newVal.personal_details.residential_address.municipality || "";
+
+                     this.userDetails.residential_address.province =
+                         newVal.personal_details.residential_address.province || "";
+
+                    this.userDetails.residential_address.zip_code =
+                    newVal.personal_details.residential_address.zip_code || "";
+
+
+
+                     this.userDetails.permanent_address.house_no =
+                        newVal.personal_details.permanent_address.house_no || "";
+
+                         this.userDetails.permanent_address.street =
+                             newVal.personal_details.permanent_address.street || "";
+
+                     this.userDetails.permanent_address.subdv =
+                         newVal.personal_details.permanent_address.subdv || "";
+
+                          this.userDetails.permanent_address.brgy =
+                              newVal.personal_details.permanent_address.brgy || "";
+
+                     this.userDetails.permanent_address.municipality =
+                         newVal.personal_details.permanent_address.municipality || "";
+
+                     this.userDetails.permanent_address.province =
+                         newVal.personal_details.permanent_address.province || "";
+
+                    this.userDetails.permanent_address.zip_code =
+                    newVal.personal_details.permanent_address.zip_code || "";
+
             },
             immediate: true,
         },
