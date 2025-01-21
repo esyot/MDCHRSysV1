@@ -11,10 +11,11 @@
                     id="departments"
                     class="forms-controller"
                 >
-                    <option value="">CAST</option>
+                    <option value="">ELEM</option>
                     <option value="">BSCRIM</option>
                     <option value="">BSN</option>
-                    <option value="">CAST</option>
+                    <option value="">BSED</option>
+                    <option value="">CON</option>
                 </select>
             </div>
             <div class="form-details">
@@ -130,6 +131,66 @@
                     <option value="Home Medication">Home Medication</option>
                 </select>
             </div>
+            <div class="form-details" v-show="leave_sick === 'In Hospital'">
+                <label for="leave_sick_hospital"
+                    >If in Hospital, please specify ILLNESS:</label
+                >
+                <input
+                    type="text"
+                    id="leave_sick_hospital"
+                    class="forms-controller"
+                    placeholder="eg., Covid 19"
+                />
+            </div>
+            <div class="form-details" v-show="leave_sick === 'Out Patient'">
+                <label for="leave_sick_outpatient"
+                    >If Out Patient, please specify ILLNESS:</label
+                >
+                <input
+                    type="text"
+                    id="leave_sick_outpatient"
+                    class="forms-controller"
+                    placeholder="eg., Fever"
+                />
+            </div>
+            <div class="form-details" v-show="leave_sick === 'Home Medication'">
+                <label for="leave_sick_home_medication"
+                    >If Home Medication, please specify ILLNESS:</label
+                >
+                <input
+                    type="text"
+                    id="leave_sick_home_medication"
+                    class="forms-controller"
+                    placeholder="eg., Headache"
+                />
+            </div>
+
+            <div class="form-details" v-show="leave_type === 'EDUCATIONAL'">
+                <label for="leave_type_educational">
+                    In case of Educational Leave:
+                </label>
+                <select id="leave_type_educational" v-model="leave_educ">
+                    <option value="Completion of Doctor's Degree">
+                        Completion of Doctor's Degree
+                    </option>
+                    <option value="Completion of Master's Degree">
+                        Completion of Master's Degree
+                    </option>
+                    <option value="Board Examination Review">
+                        Board Examination Review
+                    </option>
+                    <option value="Others">Others</option>
+                </select>
+            </div>
+            <div class="form-details" v-show="leave_educ === 'Others'">
+                <label for="leave_educ_others">Please specify:</label>
+                <input
+                    type="text"
+                    id="leave_educ_others"
+                    class="forms-controller"
+                    placeholder="eg., Completion of Certification"
+                />
+            </div>
 
             <div class="form-details" v-show="leave_type === 'OTHERS'">
                 <label for="leave_type_others"
@@ -140,6 +201,35 @@
                     id="leave_type_others"
                     class="forms-controller"
                     placeholder="Enter details..."
+                />
+            </div>
+            <div class="forms-title">
+                <span class="title">TEACHING SUBSTITUTE</span>
+            </div>
+            <div class="form-detials">
+                <span class="italic">(For MDC Teaching Employee only)</span>
+            </div>
+            <div class="form-details">
+                <label for="sub">SUBJECT</label>
+                <input
+                    type="text"
+                    id="sub"
+                    class="form-controller"
+                    placeholder="eg., Mathematics"
+                />
+            </div>
+            <div class="form-details">
+                <label for="time">TIME</label>
+                <input type="time" id="time" class="form-controller" />
+            </div>
+
+            <div class="form-details">
+                <label for="subs_teacher">SUBSTITUTE TEACHER</label>
+                <input
+                    type="text"
+                    id="subs_teacher"
+                    class="form-controller"
+                    placeholder="eg., John Meward"
                 />
             </div>
         </div>
@@ -154,12 +244,20 @@ export default {
         return {
             leave_type: "",
             leave_vacation: "",
+            leave_sick: "",
+            leave_educ: "",
         };
     },
     watch: {
         leave_type(newVal) {
             if (newVal !== "VACATION") {
                 this.leave_vacation = "";
+            }
+            if (newVal !== "SICK") {
+                this.leave_sick = "";
+            }
+            if (newVal !== "EDUCATIONAL") {
+                this.leave_educ = "";
             }
         },
     },
@@ -247,5 +345,10 @@ export default {
 
 .forms-controller-radio {
     margin-right: 5px;
+}
+.italic {
+    font-style: italic;
+    font-size: 12px;
+    margin-left: 20px;
 }
 </style>
