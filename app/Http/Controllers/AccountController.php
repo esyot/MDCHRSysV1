@@ -17,16 +17,18 @@ class AccountController extends Controller
             'personalDetails',
             'personalDetails.permanentAddress',
             'personalDetails.residentialAddress',
+            'userJobDetails',
 
         ])
             ->where('users.id', Auth::user()->id)
             ->first();
 
-
+          
+            
         return Inertia::render('Pages/Account/account', [
             'user' => Auth::user(),
             'roles' => $roles,
-            'personalDetails' => $personalDetails->toArray()
+            'personalDetails' => $personalDetails
         ]);
     }
 }

@@ -18,5 +18,10 @@ class User extends Authenticatable
         return $this->hasOne(PersonalDetail::class);
     }
 
+    public function userJobDetails()
+    {
+        return $this->hasMany(UserJobDetail::class);
+    }
+
 
 }
