@@ -3,6 +3,7 @@ import Layout from "@/Layouts/layout.vue";
 import Overview from "@/Pages/Account/Components/overview.vue";
 import PersonalDetails from "@/Pages/Account/Components/personalDetails.vue";
 import Security from "@/Pages/Account/Components/security.vue";
+import Cropper from "@/Components/cropper.vue";
 
 export default {
   layout: Layout,
@@ -12,29 +13,43 @@ export default {
   data() {
     return {
       activeTab: localStorage.getItem("activeTab") || "overview",
+      showModal: false,
     };
   },
   components: {
     Overview,
     PersonalDetails,
     Security,
+    Cropper,
   },
   methods: {
     setActiveTab(tab) {
       this.activeTab = tab;
       localStorage.setItem("activeTab", tab);
     },
+    openImageCropper() {
+      this.showModal = true;
+    },
+    closeModal() {
+      this.showModal = false;
+    },
   },
 };
 </script>
 
 <template>
+  <Cropper :showModal="showModal" @close="closeModal" />
+
   <div class="content">
     <div v-if="activeTab === 'overview'" class="profile-container">
       <div class="user">
         <div>
-          <img class="user-img" src="/public/assets/images/user.png" alt="User Image" />
-          <i class="edit-btn fa-solid fa-pen-to-square"></i>
+          <img
+            class="user-img"
+            :src="'storage/users/images/' + personalDetails.img"
+            alt="User Image"
+          />
+          <i @click="openImageCropper" class="edit-btn fa-solid fa-pen-to-square"></i>
         </div>
       </div>
     </div>
@@ -79,6 +94,14 @@ export default {
 </template>
 
 <style scoped>
+.modal {
+  display: flex;
+  position: fixed;
+  background-color: rgba(#000, #0000, #000, 0.2);
+}
+.modal-content {
+  background-color: #fff;
+}
 .security {
   width: 100%;
   height: auto;
