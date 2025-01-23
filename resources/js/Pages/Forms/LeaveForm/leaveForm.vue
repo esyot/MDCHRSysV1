@@ -203,33 +203,91 @@
                     placeholder="Enter details..."
                 />
             </div>
-            <div class="forms-title">
+            <div class="forms-title-content">
                 <span class="title">TEACHING SUBSTITUTE</span>
-            </div>
-            <div class="form-detials">
-                <span class="italic">(For MDC Teaching Employee only)</span>
+                <button @click="addTeachingSubstitute" class="add-btn">
+                    <i class="fa fa-plus"></i> Add
+                </button>
             </div>
             <div class="form-details">
-                <label for="sub">SUBJECT</label>
+                <span class="italic">(For MDC Teaching Employee only)</span>
+            </div>
+
+            <div v-for="(sub, index) in teachingSubstitutes" :key="index">
+                <div class="form-details">
+                    <label :for="'sub' + index">SUBJECT</label>
+                    <input
+                        type="text"
+                        :id="'sub' + index"
+                        class="forms-controller"
+                        v-model="sub.subject"
+                        placeholder="eg., Mathematics"
+                    />
+                </div>
+                <div class="form-details">
+                    <label :for="'time' + index">TIME</label>
+                    <input
+                        type="time"
+                        :id="'time' + index"
+                        class="forms-controller"
+                        v-model="sub.time"
+                    />
+                </div>
+                <div class="form-details">
+                    <label :for="'subs_teacher' + index"
+                        >SUBSTITUTE TEACHER</label
+                    >
+                    <input
+                        type="text"
+                        :id="'subs_teacher' + index"
+                        class="forms-controller"
+                        v-model="sub.teacher"
+                        placeholder="eg., John Meward"
+                    />
+                </div>
+                <button
+                    @click="removeTeachingSubstitute(index)"
+                    class="remove-btn"
+                >
+                    <i class="fa fa-trash"></i> Remove
+                </button>
+            </div>
+            <div class="forms-title-content">
+                <span class="title"> DETAILS OF ACTION ON APPLICATION </span>
+            </div>
+            <div class="form-details">
+                <label for="current_date">AS OF:</label>
+                <input type="date" id="current_date" class="forms-controller" />
+            </div>
+            <div class="form-details">
+                <label for="date_hired">DATE HIRED:</label>
+                <input type="date" id="date_hired" class="forms-controller" />
+            </div>
+            <div class="form-details" v-if="leave_type !== 'SICK'">
+                <label for="previous_leave">PREVIOUS PERSONAL LEAVE:</label>
                 <input
-                    type="text"
-                    id="sub"
-                    class="form-controller"
-                    placeholder="eg., Mathematics"
+                    type="number"
+                    id="previous_leave"
+                    class="forms-controller"
+                    placeholder="eg. 5"
+                />
+            </div>
+            <div class="form-details" v-if="leave_type === 'SICK'">
+                <label for="previous_leave">PREVIOUS SICK LEAVE:</label>
+                <input
+                    type="number"
+                    id="previous_leave"
+                    class="forms-controller"
+                    placeholder="eg., 5"
                 />
             </div>
             <div class="form-details">
-                <label for="time">TIME</label>
-                <input type="time" id="time" class="form-controller" />
-            </div>
-
-            <div class="form-details">
-                <label for="subs_teacher">SUBSTITUTE TEACHER</label>
+                <label for="additional_leave">ADDITIONAL LEAVE:</label>
                 <input
-                    type="text"
-                    id="subs_teacher"
-                    class="form-controller"
-                    placeholder="eg., John Meward"
+                    type="number"
+                    id="additional_leave"
+                    class="forms-controller"
+                    placeholder="eg. 1"
                 />
             </div>
         </div>
@@ -246,7 +304,20 @@ export default {
             leave_vacation: "",
             leave_sick: "",
             leave_educ: "",
+            teachingSubstitutes: [],
         };
+    },
+    methods: {
+        addTeachingSubstitute() {
+            this.teachingSubstitutes.push({
+                subject: "",
+                time: "",
+                teacher: "",
+            });
+        },
+        removeTeachingSubstitute(index) {
+            this.teachingSubstitutes.splice(index, 1);
+        },
     },
     watch: {
         leave_type(newVal) {
@@ -278,6 +349,15 @@ export default {
     flex-basis: 400px;
 }
 .forms-title {
+    border-bottom: #dedede 1px solid;
+    background-color: #fff;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+.forms-title-content {
     border-bottom: #dedede 1px solid;
     background-color: #fff;
     box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
