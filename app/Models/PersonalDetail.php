@@ -14,7 +14,7 @@ class PersonalDetail extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);  // Many-to-One relationship
+        return $this->belongsTo(User::class); 
     }
 
     public function permanentAddress()
@@ -26,6 +26,8 @@ class PersonalDetail extends Model
     {
         return $this->belongsTo(Address::class, 'residential_address_id');
     }
+
+
 
 
 
