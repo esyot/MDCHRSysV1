@@ -2,12 +2,18 @@
   <div class="topbar" ref="topbar">
     <div class="userToggleBtn" @click="toggleDropdown" ref="userToggleBtn">
       <span class="userName">
-        {{ user.last_name }} ,{{ user.first_name }}
+        {{ user.last_name }}, {{ user.first_name }}
         {{ uc_first(user.middle_name) }}.</span
       >
       <div class="userIconBtn">
-        <i class="fas fa-user"></i>
-        <i class="fas fa-chevron-circle-down fa-xs"></i>
+        <div class="user-img">
+          <img
+            class="user-img"
+            :src="'storage/users/images/' + user.img"
+            alt="User Image"
+          />
+          <i class="fas fa-chevron-circle-down fa-xs"></i>
+        </div>
       </div>
     </div>
     <div
@@ -82,6 +88,25 @@ export default {
 </script>
 
 <style scoped>
+.user-img {
+  display: flex;
+  align-items: end;
+  position: relative;
+}
+
+.user-img i {
+  color: rgb(107, 208, 255);
+  font-size: 16px;
+  display: flex;
+  position: fixed;
+  right: 10px;
+}
+.user-img img {
+  width: 35px;
+  border-radius: 100%;
+  border: 2px solid #414141;
+  box-shadow: 1px 2px 10px gray;
+}
 footer {
   display: flex;
   justify-content: end;

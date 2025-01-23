@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->string('user');
             $table->string('password');
             $table->string('email');
+            $table->string('img')->nullable();
             $table->timestamps();
         });
     }
