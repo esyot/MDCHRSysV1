@@ -23,5 +23,9 @@ class User extends Authenticatable
         return $this->hasMany(UserJobDetail::class);
     }
 
+    public function userFamilies(){
+        return $this->hasMany(UserFamily::class);
+    }
+
 
 }

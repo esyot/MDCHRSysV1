@@ -15,8 +15,8 @@
       </footer>
     </div>
   </div>
+  <!-- /Confirmation Modal -->
 
-  <!-- Confirmation Modal -->
   <form @submit.prevent="personalDetailSubmit" @keydown.enter.prevent>
     <div class="personal-details-content">
       <Form1
@@ -31,7 +31,9 @@
         v-if="currentPage === 2"
         :editMode="editMode"
         :userDetails="userDetails"
+        :personalDetails="personalDetails"
         @update-user-details="updateUserDetails"
+        @track-touched-field="trackTouchedField"
       />
       <Form3
         v-if="currentPage === 3"
@@ -193,33 +195,35 @@ export default {
   },
   data() {
     return {
-      currentPage: 1,
+      currentPage: parseInt(localStorage.getItem("currentPage")) || 1,
       totalPages: 15,
       editMode: false,
       editModeHasChanged: false,
 
       userDetails: {
-        last_name: "",
-        first_name: "",
-        middle_name: "",
-        name_ext: "",
-        nickname: "",
-        DOB: "",
-        birthplace: "",
-        sex: "",
-        civil_status: "",
-        religion: "",
-        height: "",
-        weight: "",
-        blood_type: "",
-        contact_no: "",
-        citizenship: "",
-        citizenship_type: "",
-        fb_link: "",
+        personal_details: {
+          last_name: "",
+          first_name: "",
+          middle_name: "",
+          name_ext: "",
+          nickname: "",
+          DOB: "",
+          birthplace: "",
+          sex: "",
+          civil_status: "",
+          religion: "",
+          height: "",
+          weight: "",
+          blood_type: "",
+          contact_no: "",
+          citizenship: "",
+          citizenship_type: "",
+          fb_link: "",
 
-        date_hired: "",
-        rank: "",
-        department: "",
+          date_hired: "",
+          rank: "",
+          department: "",
+        },
 
         residential_address: {
           house_no: "",
@@ -247,6 +251,15 @@ export default {
           rank: "",
         },
 
+        user_families: {
+          type: "",
+          first_name: "",
+          last_name: "",
+          middle_name: "",
+          ext: "",
+          occupation: "",
+        },
+
         userProfExamDetails: {
           title: "",
           rating: "",
@@ -264,16 +277,7 @@ export default {
           year_graduated: "",
           acads_honors_received: "",
         },
-        familyMemberType: "",
-        familyDetails: {
-          lastName: "",
-          firstName: "",
-          middleName: "",
-          ext: "",
-          occupation: "",
-          maidenName: "",
-          children: [],
-        },
+
         newChildName: "",
         educLevel: "",
         selectedLevel: "",
@@ -364,6 +368,8 @@ export default {
   },
   methods: {
     goToPage(action) {
+      this.currentPage = parseInt(localStorage.getItem("currentPage")) || 1;
+
       if (action === "next") {
         if (this.currentPage >= this.totalPages) {
           this.currentPage = 1;
@@ -377,6 +383,8 @@ export default {
           this.currentPage -= 1;
         }
       }
+
+      localStorage.setItem("currentPage", this.currentPage);
     },
     updateUserDetails(updatedDetails) {
       this.userDetails = { ...this.userDetails, ...updatedDetails };

@@ -9,4 +9,11 @@ class UserFamily extends Model
 {
     /** @use HasFactory<\Database\Factories\UserFamilyFactory> */
     use HasFactory;
+
+
+    protected $guarded = [];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

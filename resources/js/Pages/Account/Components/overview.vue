@@ -1,49 +1,71 @@
 <template>
   <div class="user-overview">
-    <div class="overview-item">
-      <i class="fas fa-star"></i>
-      <div class="card-content">
-        <label>Rank</label>
-        <div class="items">
-          <span v-for="jobDetail in personalDetails.user_job_details" :key="jobDetail">
-            {{ jobDetail.rank }}
-          </span>
+    <div class="overview-item-container">
+      <div class="overview-item">
+        <i class="fas fa-star"></i>
+        <div class="card-content">
+          <label>Current Rank</label>
+          <div class="items">
+            <span v-for="jobDetail in personalDetails.user_job_details" :key="jobDetail">
+              {{ jobDetail.rank }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
-    <div class="overview-item">
-      <i class="fas fa-peso-sign"></i>
-      <div>
-        <p class="title">Total Requested</p>
-        <p class="count">15,000.00</p>
+    <div class="overview-item-container">
+      <div class="overview-item">
+        <i class="fas fa-peso-sign"></i>
+        <div class="card-content">
+          <label>Total Requested</label>
+          <div class="items">
+            <span> 2638123.12 </span>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="overview-item">
-      <i class="fas fa-calendar-day"></i>
-      <div>
-        <p class="title">Days Leave</p>
-        <p class="count">20</p>
+    <div class="overview-item-container">
+      <div class="overview-item">
+        <i class="fas fa-calendar-day"></i>
+        <div class="card-content">
+          <label>Total On Leave</label>
+          <div class="items">
+            <span> 12 Days </span>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="overview-item">
-      <i class="fas fa-plane-departure"></i>
-      <div>
-        <p class="title">Days Travel</p>
-        <p class="count">10</p>
+    <div class="overview-item-container">
+      <div class="overview-item">
+        <i class="fas fa-plane-departure"></i>
+        <div class="card-content">
+          <label>Total On Travel </label>
+          <div class="items">
+            <span> 16 Days </span>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="overview-item">
-      <i class="fas fa-plane-arrival"></i>
-      <div>
-        <p class="title">Days Travel Left</p>
-        <p class="count">5</p>
+    <div class="overview-item-container">
+      <div class="overview-item">
+        <i class="fas fa-plane-arrival"></i>
+        <div class="card-content">
+          <label>Travel Days Left</label>
+          <div class="items">
+            <span> 2 days </span>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="overview-item">
-      <i class="fas fa-calendar-check"></i>
-      <div>
-        <p class="title">Days Leave Left</p>
-        <p class="count">5</p>
+    <div class="overview-item-container">
+      <div class="overview-item">
+        <i class="fas fa-calendar-check"></i>
+        <div class="card-content">
+          <label>Leave Days Left</label>
+          <div class="items">
+            <span> 2 days </span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -67,12 +89,9 @@ export default {
   overflow-y: auto;
   padding-top: 5px;
 }
-.card-content {
-  display: flex;
-  flex-direction: column;
-}
 
 .card-content label {
+  margin: 10px;
   font-size: 20px;
   font-weight: bold;
 }
@@ -87,18 +106,24 @@ export default {
   font-size: 18px;
 }
 
-.overview-item {
+.overview-item-container {
   flex-grow: 1;
   flex-basis: 400px;
   display: flex;
-  align-items: center;
-  justify-content: start;
-  text-align: left;
+  justify-content: center; /* This centers items horizontally */
+  align-items: center; /* This centers items vertically */
   background-color: #f4f4f9;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 300px;
+}
+
+.overview-item {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  border-radius: 8px;
   width: 250px;
-  padding-left: 100px;
 }
 
 .items {
@@ -128,7 +153,6 @@ export default {
 }
 
 .overview-item:hover {
-  background-color: #e0e0e0;
   cursor: pointer;
 }
 </style>
