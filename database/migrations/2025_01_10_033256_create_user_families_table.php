@@ -13,12 +13,13 @@ return new class extends Migration {
         Schema::create('user_families', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned();
-            $table->enum('type', ['spouse', 'mother', 'father', 'child']);
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('middle_name');
-            $table->string('ext');
-            $table->string('occupation');
+            $table->enum('type', ['spouse', 'mother', 'father', 'child'])->nullable();
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('middle_name')->nullable();
+            $table->string('maiden_name')->nullable();
+            $table->string('ext')->nullable();
+            $table->string('occupation')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

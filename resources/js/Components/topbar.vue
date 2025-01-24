@@ -206,8 +206,9 @@ button:hover {
   background-color: #fff;
   top: 3rem;
   right: 3;
-  border: solid #eee 1px;
-  filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.2));
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+  border: 1px solid #d1d1d1;
+  border-radius: 5px;
 }
 
 .dropdown span {
