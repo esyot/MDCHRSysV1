@@ -62,6 +62,7 @@ class UserController extends Controller
             ]);
     
             if ($storedPath) {
+                session()->flash('success', 'Image uploaded successfully!');
                 return redirect()->route('account');
             } else {
                 return redirect()->back()->with([

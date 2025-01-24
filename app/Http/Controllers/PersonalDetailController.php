@@ -53,13 +53,11 @@ class PersonalDetailController extends Controller
                 }
             }
 
-
             foreach ($request->all() as $key => $value) {
                 if (strpos($key, 'permanent_address.') === 0 && $value) {
                     $permanentAddressData[str_replace('permanent_address.', '', $key)] = $value;
                 }
             }
-
 
             if ($residentialAddressData) {
                 $residential_address->update($residentialAddressData);
@@ -70,6 +68,7 @@ class PersonalDetailController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Personal details updated successfully!');
+        session()->flash('success', 'Personal details updated successfully!');
+        return redirect()->back();
     }
 }

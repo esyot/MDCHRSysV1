@@ -3,7 +3,7 @@
     <div v-if="showModal" class="modal">
       <div class="modal-content">
         <div class="modal-header">
-          <label for="">Crop Image</label>
+          <label for="">{{ !imageUrl ? "Upload Image" : "Crop image" }}</label>
           <span @click="closeModal" title="Close Croppper">&times;</span>
         </div>
         <div class="modal-content-items">
@@ -117,6 +117,8 @@ export default {
           image: this.croppedImage,
         });
 
+        this.successMessage = this.messageSuccess;
+
         this.closeModal();
       }
     },
@@ -134,6 +136,7 @@ export default {
 }
 
 .modal-header label {
+  padding: 5px;
   font-size: 22px;
   font-weight: bold;
 }

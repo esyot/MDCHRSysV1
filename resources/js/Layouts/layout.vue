@@ -1,23 +1,59 @@
 <script>
-import Leftbar from "@/Components/leftbar.vue";
-import Topbar from "@/Components/topbar.vue";
-import Footer from "@/Components/footer.vue";
+import Leftbar from "@/Components/Leftbar.vue";
+import Topbar from "@/Components/Topbar.vue";
+import Footer from "@/Components/Footer.vue";
+import SuccessModal from "@/Components/SuccessModal.vue";
 
 export default {
   components: {
     Leftbar,
     Topbar,
     Footer,
+    SuccessModal,
   },
   props: {
     user: Object,
     roles: Object,
+    messageSuccess: String,
+  },
+
+  data() {
+    return {
+      successMessage: this.messageSuccess || null, // Initialize with messageSuccess or null if undefined
+    };
+  },
+
+  methods: {
+    closeSuccessModal() {
+      this.successMessage = null; // Close the modal by clearing the successMessage
+    },
+  },
+
+  watch: {
+    messageSuccess(newMessage) {
+      this.successMessage = newMessage && newMessage.trim() !== "" ? newMessage : null;
+    },
+
+    successMessage(newMessage) {
+      this.successMessage = newMessage && newMessage.trim() !== "" ? newMessage : null;
+    },
+  },
+
+  mounted() {
+    if (this.messageSuccess && this.messageSuccess.trim() !== "") {
+      this.successMessage = this.messageSuccess;
+    }
   },
 };
 </script>
 
 <template>
   <div class="container">
+    <SuccessModal
+      :successMessage="successMessage"
+      @close-success-modal="closeSuccessModal"
+      v-if="successMessage"
+    />
     <Leftbar :roles="roles" />
     <div class="main-content">
       <Topbar :user="user" />

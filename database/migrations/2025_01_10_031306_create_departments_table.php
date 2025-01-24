@@ -11,13 +11,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('departments', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+            $table->id();            
             $table->string('acronym');
-            $table->bigInteger('parent_id')->unsigned();
+            $table->string('name');
+            $table->bigInteger('parent_id')->nullable();
             $table->timestamps();
-
-            $table->foreign('parent_id')->references('id')->on('departments');
         });
     }
 

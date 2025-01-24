@@ -1,9 +1,9 @@
 <script>
-import Layout from "@/Layouts/layout.vue";
-import Overview from "@/Pages/Account/Components/overview.vue";
-import PersonalDetails from "@/Pages/Account/Components/personalDetails.vue";
-import Security from "@/Pages/Account/Components/security.vue";
-import Cropper from "@/Components/cropper.vue";
+import Layout from "@/Layouts/Layout.vue";
+import Overview from "@/Pages/Account/Components/Overview.vue";
+import PersonalDetails from "@/Pages/Account/Components/PersonalDetails.vue";
+import Security from "@/Pages/Account/Components/Security.vue";
+import Cropper from "@/Components/Cropper.vue";
 
 export default {
   layout: Layout,
@@ -45,8 +45,16 @@ export default {
       <div class="user">
         <div>
           <img
+            v-if="personalDetails.img"
             class="user-img"
             :src="'storage/users/images/' + personalDetails.img"
+            alt="User Image"
+          />
+
+          <img
+            v-if="!personalDetails.img"
+            class="user-img"
+            src="/public/assets/images/user.png"
             alt="User Image"
           />
           <i @click="openImageCropper" class="edit-btn fa-solid fa-pen-to-square"></i>
@@ -79,7 +87,7 @@ export default {
 
     <section class="user-overview">
       <div v-if="activeTab === 'overview'">
-        <Overview />
+        <Overview :personalDetails="personalDetails" />
       </div>
 
       <div v-if="activeTab === 'personalDetails'">
@@ -157,7 +165,7 @@ export default {
 .user {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  background: linear-gradient(to bottom, rgba(94, 204, 216, 0.3), rgba(10, 124, 137));
+  background: linear-gradient(to top, rgb(1, 48, 45), rgb(20, 176, 193));
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -172,7 +180,7 @@ export default {
   border-radius: 50%;
   object-fit: cover;
   border: #dadada 4px solid;
-  box-shadow: 1px 2px 10px gray;
+  box-shadow: 1px 2px 10px rgb(0, 0, 0);
 }
 
 .edit-btn {
@@ -185,7 +193,7 @@ export default {
   padding: 10px;
   border-radius: 100%;
   cursor: pointer;
-  box-shadow: 1px 2px 10px gray;
+  box-shadow: 1px 2px 10px rgb(0, 0, 0);
 }
 
 .edit-btn:hover {
