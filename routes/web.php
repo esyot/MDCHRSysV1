@@ -24,7 +24,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/forms/leave-form-request', [LeaveFormController::class, 'index']);
 
     Route::post('/upload-cropped-profile-pic', [UserController::class, 'updateProfilePicture']);
+
+
+    Route::get('/success-session-remove', function(){
+        session()->forget('success');
+        return redirect()->back();
+    });
+    
 });
+
+
 
 
 Route::get('/logout', function () {

@@ -8,8 +8,15 @@
       <div class="userIconBtn">
         <div class="user-img">
           <img
+            v-if="user.img"
             class="user-img"
             :src="'storage/users/images/' + user.img"
+            alt="User Image"
+          />
+          <img
+            v-if="!user.img"
+            class="user-img"
+            src="/public/assets/images/user.png"
             alt="User Image"
           />
           <i class="fas fa-chevron-circle-down fa-xs"></i>
@@ -124,13 +131,12 @@ footer a {
   transition: opacity 0.3s ease, background-color 0.3s ease;
 }
 
-footer button {
-  text-decoration: none;
-  color: #e22020;
-  background-color: #ffffff;
+.modal-content button {
+  background-color: transparent;
   padding: 8px 10px;
   border-radius: 5px;
   opacity: 60%;
+  color: #e22020;
   border: 1px solid #e22020;
 }
 
@@ -153,6 +159,11 @@ button:hover {
   border-radius: 5px;
   flex-direction: column;
   background-color: #fff;
+  border: 1px solid #7a7a7a;
+}
+
+.modal-content footer {
+  padding: 10px;
 }
 .hidden {
   display: none;

@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import Layout from "@/Layouts/layout.vue";
+import Layout from "@/Layouts/Layout.vue";
 import { defineComponent } from "vue";
 import { Bar } from "vue-chartjs";
 import { Pie } from "vue-chartjs";

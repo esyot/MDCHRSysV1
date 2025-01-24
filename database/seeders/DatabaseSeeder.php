@@ -21,8 +21,12 @@ class DatabaseSeeder extends Seeder
         $this->call(AddressSeeder::class);
 
         $this->call(PersonalDetailSeeder::class);
+
+        $this->call(DepartmentSeeder::class);
         
         $this->call(UserJobDetailSeeder::class);
+
+       
 
 
 
