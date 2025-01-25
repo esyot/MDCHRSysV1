@@ -3,13 +3,13 @@
     <div class="modal-content">
       <div class="modal-header">
         <label for="">Authentication</label>
-        <span>&times;</span>
       </div>
 
-      <form action="" class="form-items" autocomplete="off">
+      <form @submit.prevent="authCheckSubmit" class="form-items" autocomplete="off">
         <input
           type="password"
-          name="new-password-123"
+          name="password"
+          v-model="password"
           autocomplete="off"
           placeholder="Enter your password"
         />
@@ -26,12 +26,38 @@
 </template>
 
 <script>
+import { Inertia } from "@inertiajs/inertia";
+
 export default {
   name: "Authentication",
+  data() {
+    return {
+      password: "",
+    };
+  },
+  methods: {
+    authCheckSubmit() {
+      Inertia.post("/authentication-check", { password: this.password });
+    },
+  },
 };
 </script>
 
-<style>
+<style scoped>
+.modal {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.modal-content {
+  background-color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+}
 .modal-header {
   padding: 5px;
   display: flex;

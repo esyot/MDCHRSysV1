@@ -135,6 +135,7 @@ hr {
   transform: translateX(0);
   transition: transform 0.3s ease-in-out;
   user-select: none;
+  z-index: 50;
 }
 
 .sidebar.hidden {

@@ -85,7 +85,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  height: 50vh;
+  height: 100%;
   overflow-y: auto;
   padding-top: 5px;
 }
@@ -110,12 +110,11 @@ export default {
   flex-grow: 1;
   flex-basis: 400px;
   display: flex;
-  justify-content: center; /* This centers items horizontally */
-  align-items: center; /* This centers items vertically */
+  justify-content: center;
+  align-items: center;
   background-color: #f4f4f9;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  width: 300px;
 }
 
 .overview-item {
@@ -124,6 +123,7 @@ export default {
   align-items: center;
   border-radius: 8px;
   width: 250px;
+  padding: 10px;
 }
 
 .items {
