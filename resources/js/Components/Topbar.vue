@@ -29,11 +29,11 @@
       :class="{ show: isDropdownVisible }"
       ref="dropdown"
     >
-      <InertiaLink :href="'/account'" class="link">
+      <InertiaLink :href="'/account'" class="link" title="Account Settings">
         <span><i class="fas fa-user-cog"></i> Account</span>
       </InertiaLink>
 
-      <span @click="logoutConfirm" class="logout"
+      <span @click="logoutConfirm" class="logout" title="Logout"
         ><i class="fas fa-sign-out"></i> Logout</span
       >
     </div>
@@ -208,12 +208,13 @@ button:hover {
   right: 3;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #d1d1d1;
-  border-radius: 5px;
 }
 
 .dropdown span {
+  display: flex;
+  align-items: center;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   padding: 10px;
   gap: 0.5rem;
   display: flex;
@@ -223,8 +224,8 @@ button:hover {
   border-top: solid 1px #d3d3d3;
 }
 .dropdown i {
-  color: #d3d3d3;
-  font-size: 12px;
+  color: #686868;
+  font-size: 14px;
 }
 .dropdown span:hover {
   background-color: #ededed;

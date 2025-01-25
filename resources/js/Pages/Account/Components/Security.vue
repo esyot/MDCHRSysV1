@@ -33,7 +33,7 @@
       <div class="title-container">
         <span class="title">Account Settings</span>
       </div>
-      <section>
+      <form>
         <div class="form-group">
           <label for="username">Username:</label>
           <input type="text" id="username" v-model="user.user" />
@@ -59,10 +59,10 @@
           <label for="retype-password">Re-type Password:</label>
           <input type="password" id="retype-password" />
         </div>
-      </section>
-      <div class="form-group-foooter">
-        <button>Save Changes</button>
-      </div>
+        <div class="form-group-foooter">
+          <button>Save Changes</button>
+        </div>
+      </form>
     </section>
   </div>
 </template>

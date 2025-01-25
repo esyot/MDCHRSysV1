@@ -2,17 +2,19 @@
   <!-- Confirmation Modal -->
   <div id="confirmationSubmitModal" class="modal modal-hide">
     <div class="modal-content">
-      <h3>Are you sure to save all changes?</h3>
-      <footer>
+      <div class="modal-content-description">
+        <label>Are you sure to save all changes?</label>
+      </div>
+      <div class="modal-content-btn">
         <button
           type="button"
-          class="no-btn"
           @click="toggleConfirmationSubmitModal('close')"
+          class="no-btn"
         >
           No
         </button>
         <button type="button" @click="personalDetailSubmit" class="yes-btn">Yes</button>
-      </footer>
+      </div>
     </div>
   </div>
   <!-- /Confirmation Modal -->
@@ -392,8 +394,6 @@ export default {
     trackTouchedField(fieldName) {
       this.editModeHasChanged = true;
       let touchedFields = JSON.parse(localStorage.getItem("touchedFields")) || {};
-
-      // Store the field path as is, including nested fields (e.g., "residential_address.house_no")
       touchedFields[fieldName] = true;
       localStorage.setItem("touchedFields", JSON.stringify(touchedFields));
     },
@@ -410,18 +410,16 @@ export default {
 
       for (const field in touchedFields) {
         if (touchedFields[field] === true) {
-          // Handle nested fields by splitting the path and traversing the object
           const fieldParts = field.split(".");
           let value = this.userDetails;
 
-          // Traverse the nested structure
           for (let part of fieldParts) {
             if (value && value.hasOwnProperty(part)) {
-              value = value[part]; // Move deeper into the object
+              value = value[part];
             }
           }
 
-          modifiedFields[field] = value; // Assign the resolved value to modifiedFields
+          modifiedFields[field] = value;
         }
       }
 
@@ -434,10 +432,8 @@ export default {
         this.toggleConfirmationSubmitModal("close");
         this.editModeHasChanged = false;
 
-        // Send the modified fields to the backend
         await Inertia.post("/personal-details-update-submit", modifiedFields);
 
-        // Clean up and reset state
         localStorage.removeItem("touchedFields");
         this.editMode = !this.editMode;
         localStorage.setItem("editMode", JSON.stringify(this.editMode));
@@ -473,65 +469,79 @@ export default {
 .modal {
   display: none;
   position: fixed;
-  z-index: 50;
   inset: 0;
+  z-index: 9;
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.3);
 }
 .modal-content {
   background-color: #fff;
-  padding: 5px;
+  border-top: 3px solid rgb(53, 95, 194);
   border-radius: 5px;
 }
-.modal-content footer {
+
+.modal-content-description {
+  padding: 2px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.modal-content-description label {
+  font-size: 18px;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.modal-content-btn {
+  border-top: 1px solid #b9b9b9;
+  background-color: #f4f4f4;
   display: flex;
   justify-content: end;
-  gap: 0.3rem;
-  padding: 5px;
+  gap: 0.2rem;
+  padding: 10px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
-.modal-content h3 {
-  font-size: 16px;
-  font-weight: bold;
-  padding: 0px 10px 0px 10px;
-}
+.modal-content-btn .no-btn {
+  background-color: #fff;
+  border: 1px solid rgb(0, 52, 224);
+  border-radius: 5px;
+  color: rgb(0, 52, 224);
+  padding: 10px 14px 10px 14px;
+  opacity: 50%;
 
-.modal-content footer button {
-  border: none;
   cursor: pointer;
-  opacity: 60%;
 }
 
-.modal-content footer button:hover {
+.modal-content-btn .yes-btn {
+  background-color: rgb(0, 52, 224);
+  border: none;
+  border-radius: 5px;
+  color: rgb(255, 255, 255);
+  padding: 10px;
+  opacity: 50%;
+  cursor: pointer;
+}
+
+.no-btn:hover,
+.yes-btn:hover {
   opacity: 100%;
 }
 
-.yes-btn {
-  padding: 10px;
-  background-color: #007bff;
-  color: #fff;
-  border-radius: 5px;
-}
-
-.no-btn {
-  padding: 0px 14px 0px 14px;
-  background-color: #b7b7b7;
-  color: #fff;
-  border-radius: 5px;
-}
 .saveChangesBtn {
   padding: 6px;
   color: #fff;
-  background-color: #007bff; /* Blue color */
+  background-color: #007bff;
   border: none;
   border-radius: 5px;
-  cursor: pointer; /* Adds a pointer on hover */
-  transition: background-color 0.3s ease; /* Smooth background color transition */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .saveChangesBtn:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+  background-color: #0056b3;
 }
 .footer {
   display: flex;

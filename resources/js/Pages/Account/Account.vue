@@ -12,6 +12,8 @@ export default {
     personalDetails: Object,
     user: Object,
     authDetails: Object,
+    auth: Boolean,
+    roles: Object,
   },
   data() {
     return {
@@ -48,59 +50,64 @@ export default {
 
 <template>
   <Cropper :showModal="showModal" @close="closeModal" />
-  <Authentication :authDetails="authDetails" />
-
+  <nav>
+    <span
+      :class="{ active: activeTab === 'overview' }"
+      @click="setActiveTab('overview')"
+      title="User Overview"
+    >
+      <i class="fa-solid fa-circle-info fa-xl"></i>
+    </span>
+    <span
+      :class="{ active: activeTab === 'personalDetails' }"
+      @click="setActiveTab('personalDetails')"
+      title="Personal Details"
+    >
+      <i class="fa-solid fa-list fa-xl"></i>
+    </span>
+    <span
+      :class="{ active: activeTab === 'security' }"
+      @click="setActiveTab('security')"
+      title="Security & Password"
+    >
+      <i class="fa-solid fa-lock fa-xl"></i>
+    </span>
+  </nav>
   <div class="content">
-    <div v-if="activeTab === 'overview'" class="profile-container">
-      <div class="user">
+    <div class="user" v-if="activeTab === 'overview'">
+      <div class="user-content">
         <div>
           <img
-            v-if="personalDetails.img"
+            @click="openImageLarge"
             class="user-img"
-            :src="'storage/users/images/' + personalDetails.img"
+            :src="
+              personalDetails.img
+                ? 'storage/users/images/' + personalDetails.img
+                : '/public/assets/images/user.png'
+            "
             alt="User Image"
           />
-
-          <img
-            v-if="!personalDetails.img"
-            class="user-img"
-            src="/public/assets/images/user.png"
-            alt="User Image"
-          />
-          <i @click="openImageCropper" class="edit-btn fa-solid fa-pen-to-square"></i>
+          <i @click="openImageCropper" class="edit-btn fas fa-camera"></i>
+        </div>
+        <div class="user-details">
+          <span class="name">{{ user.first_name }} {{ user.last_name }}</span>
+          <div class="user-role">
+            <i class="fas fa-user-cog"></i>
+            <div>
+              <span v-for="role in roles" :key="role" class="role-desc">{{ role }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+    <Authentication :authDetails="authDetails" v-if="!auth" />
 
-    <nav class="nav">
-      <ul class="nav-items">
-        <li
-          :class="{ active: activeTab === 'overview' }"
-          @click="setActiveTab('overview')"
-        >
-          Overview
-        </li>
-        <li
-          :class="{ active: activeTab === 'personalDetails' }"
-          @click="setActiveTab('personalDetails')"
-        >
-          Personal Details
-        </li>
-        <li
-          :class="{ active: activeTab === 'security' }"
-          @click="setActiveTab('security')"
-        >
-          Security & Passwords
-        </li>
-      </ul>
-    </nav>
-
-    <section class="user-overview">
+    <section :class="!auth ? 'blur' : 'none-blur'">
       <div v-if="activeTab === 'overview'">
         <Overview :personalDetails="personalDetails" />
       </div>
 
-      <div v-if="activeTab === 'personalDetails'">
+      <div v-if="activeTab === 'personalDetails'" class="personal-details-container">
         <PersonalDetails :personalDetails="personalDetails" />
       </div>
 
@@ -112,13 +119,103 @@ export default {
 </template>
 
 <style scoped>
-.modal {
-  display: flex;
-  position: fixed;
-  background-color: rgba(#000, #0000, #000, 0.2);
+.blur {
+  filter: blur(5px);
 }
-.modal-content {
-  background-color: #fff;
+@media (orientation: landscape) {
+  nav {
+    display: flex;
+    justify-content: start;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  nav span {
+    text-align: center;
+    font-weight: bold;
+    z-index: 10;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    opacity: 40%;
+    color: #fff;
+    margin-left: 3rem;
+  }
+
+  nav span:hover {
+    opacity: 100%;
+    scale: 1.2;
+  }
+
+  nav i {
+    filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.3));
+  }
+  nav span.active {
+    color: #fff;
+    opacity: 100%;
+  }
+}
+
+@media (orientation: portrait) {
+  nav {
+    display: flex;
+    justify-content: space-around;
+    margin: 5px;
+    border-radius: 5px;
+  }
+  nav span {
+    text-align: center;
+    font-weight: bold;
+    z-index: 10;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    opacity: 40%;
+    color: #fff;
+  }
+
+  nav span:hover {
+    opacity: 100%;
+  }
+
+  nav i {
+    filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.3));
+  }
+  nav span.active {
+    color: #fff;
+    opacity: 100%;
+  }
+}
+
+.user-content {
+  padding: 10px;
+}
+
+.user-role {
+  display: flex;
+  gap: 0.5rem;
+}
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+.user-details .name {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.user-details h1 {
+  color: #fff;
+}
+
+.user-details i {
+  color: #fff;
+}
+
+.user-details span {
+  color: #fff;
+}
+
+.content {
+  margin: 5px;
 }
 .security {
   width: 100%;
@@ -129,78 +226,44 @@ export default {
   font-size: 16px;
 }
 
-.nav {
-  user-select: none;
-  display: flex;
-  padding: 5px;
-  background-color: #fff;
-  border-bottom: #d3d3d3 1px solid;
-  border-bottom-right-radius: 10px;
-  border-bottom-left-radius: 10px;
-}
-
-.nav-items {
-  display: flex;
-  gap: 1.5rem;
-}
-
-.nav-items li {
-  list-style: none;
-  cursor: pointer;
-  color: #000;
-  opacity: 50%;
-  font-weight: 600;
-  font-size: 12px;
-}
-
-.nav-items li:hover {
-  opacity: 100%;
-}
-
-.nav-items li.active {
-  color: #2282ff;
-  opacity: 100%;
-}
-.content {
-  margin: 0.5rem;
-  border-radius: 10px;
-}
-
 .profile-container {
   display: flex;
-  justify-content: center;
-  width: 100%;
 }
 
 .user {
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  background: linear-gradient(to top, rgb(1, 48, 45), rgb(20, 176, 193));
+  border-radius: 5px;
+  background: linear-gradient(to top, rgb(0, 0, 0), rgba(0, 0, 0, 0.1));
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
+  justify-content: end;
+  align-items: start;
+  height: 30vh;
+  box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .user-img {
-  height: 200px;
-  width: 200px;
+  height: 100px;
+  width: 100px;
   border-radius: 50%;
-  object-fit: cover;
+  object-fit: fill;
   border: #dadada 4px solid;
   box-shadow: 1px 2px 10px rgb(0, 0, 0);
+}
+.user-img:hover {
+  cursor: pointer;
+  opacity: 60%;
 }
 
 .edit-btn {
   display: absolute;
   position: relative;
-  right: 50px;
-  bottom: 20px;
+  right: 30px;
+  bottom: 12px;
   color: #fff;
+  font-size: 12px;
   background-color: rgb(55, 103, 246);
-  padding: 10px;
+  padding: 7px;
   border-radius: 100%;
   cursor: pointer;
   box-shadow: 1px 2px 10px rgb(0, 0, 0);

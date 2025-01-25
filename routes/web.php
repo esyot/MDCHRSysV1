@@ -42,5 +42,6 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/logout', function () {
     Auth::logout();
+    Session::put('authenticate', false);
     return redirect()->route('login');
 });
