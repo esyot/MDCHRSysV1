@@ -23,7 +23,7 @@ class TravelFormController extends Controller
             ->where('users.id', Auth::user()->id)
             ->first();
 
-        return inertia('Pages/Forms/TravelForm/travelForm', [
+        return inertia('Pages/Forms/TravelForm/TravelForm', [
 
             'user' => Auth::user(),
             'roles' => $roles,

@@ -4,16 +4,24 @@ import Overview from "@/Pages/Account/Components/Overview.vue";
 import PersonalDetails from "@/Pages/Account/Components/PersonalDetails.vue";
 import Security from "@/Pages/Account/Components/Security.vue";
 import Cropper from "@/Components/Cropper.vue";
+import Authentication from "../Login/Authentication.vue";
 
 export default {
   layout: Layout,
   props: {
     personalDetails: Object,
+    user: Object,
+    authDetails: Object,
   },
   data() {
     return {
       activeTab: localStorage.getItem("activeTab") || "overview",
       showModal: false,
+      userCredentials: {
+        user: "",
+        email: "",
+        password: "",
+      },
     };
   },
   components: {
@@ -21,6 +29,7 @@ export default {
     PersonalDetails,
     Security,
     Cropper,
+    Authentication,
   },
   methods: {
     setActiveTab(tab) {
@@ -39,6 +48,7 @@ export default {
 
 <template>
   <Cropper :showModal="showModal" @close="closeModal" />
+  <Authentication :authDetails="authDetails" />
 
   <div class="content">
     <div v-if="activeTab === 'overview'" class="profile-container">
@@ -95,7 +105,7 @@ export default {
       </div>
 
       <div class="security" v-if="activeTab === 'security'">
-        <Security />
+        <Security :user="user" :userCredentials="userCredentials" />
       </div>
     </section>
   </div>

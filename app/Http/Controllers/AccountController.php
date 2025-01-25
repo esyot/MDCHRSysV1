@@ -24,10 +24,11 @@ class AccountController extends Controller
             ->where('users.id', Auth::user()->id)
             ->first();
 
+        $user = User::find(Auth::user()->id);
 
         
-        return Inertia::render('Pages/Account/account', [
-            'user' => Auth::user(),
+        return Inertia::render('Pages/Account/Account', [
+            'user' =>  $user,
             'roles' => $roles,
             'personalDetails' => $personalDetails,
             'messageSuccess' => session('success') ?? null,

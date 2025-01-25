@@ -152,21 +152,21 @@
 </template>
 
 <script>
-import Form1 from "@/Pages/Account/Components/Forms/form1.vue";
-import Form2 from "@/Pages/Account/Components/Forms/form2.vue";
-import Form3 from "@/Pages/Account/Components/Forms/form3.vue";
-import Form4 from "@/Pages/Account/Components/Forms/form4.vue";
-import Form5 from "@/Pages/Account/Components/Forms/form5.vue";
-import Form6 from "@/Pages/Account/Components/Forms/form6.vue";
-import Form7 from "@/Pages/Account/Components/Forms/form7.vue";
-import Form8 from "@/Pages/Account/Components/Forms/form8.vue";
-import Form9 from "@/Pages/Account/Components/Forms/form9.vue";
-import Form10 from "@/Pages/Account/Components/Forms/form10.vue";
-import Form11 from "@/Pages/Account/Components/Forms/form11.vue";
-import Form12 from "@/Pages/Account/Components/Forms/form12.vue";
-import Form13 from "@/Pages/Account/Components/Forms/form13.vue";
-import Form14 from "@/Pages/Account/Components/Forms/form14.vue";
-import Form15 from "@/Pages/Account/Components/Forms/form15.vue";
+import Form1 from "@/Pages/Account/Components/Forms/Form1.vue";
+import Form2 from "@/Pages/Account/Components/Forms/Form2.vue";
+import Form3 from "@/Pages/Account/Components/Forms/Form3.vue";
+import Form4 from "@/Pages/Account/Components/Forms/Form4.vue";
+import Form5 from "@/Pages/Account/Components/Forms/Form5.vue";
+import Form6 from "@/Pages/Account/Components/Forms/Form6.vue";
+import Form7 from "@/Pages/Account/Components/Forms/Form7.vue";
+import Form8 from "@/Pages/Account/Components/Forms/Form8.vue";
+import Form9 from "@/Pages/Account/Components/Forms/Form9.vue";
+import Form10 from "@/Pages/Account/Components/Forms/Form10.vue";
+import Form11 from "@/Pages/Account/Components/Forms/Form11.vue";
+import Form12 from "@/Pages/Account/Components/Forms/Form12.vue";
+import Form13 from "@/Pages/Account/Components/Forms/Form13.vue";
+import Form14 from "@/Pages/Account/Components/Forms/Form14.vue";
+import Form15 from "@/Pages/Account/Components/Forms/Form15.vue";
 
 import { Inertia } from "@inertiajs/inertia";
 

@@ -13,7 +13,7 @@ class LoginController extends Controller
     {
 
         $responseData = session('responseData');
-        return inertia('Pages/Login/login', [
+        return inertia('Pages/Login/Login', [
             'responseData' => $responseData
         ]);
     }
