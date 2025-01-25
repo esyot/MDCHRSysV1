@@ -476,40 +476,6 @@
         </div>
       </div>
     </div>
-
-    <div class="form-group">
-      <label for="date_hired">DATE HIRED:</label>
-      <input
-        type="date"
-        name="date_hired"
-        id="date_hired"
-        v-model="userDetails.date_hired"
-        class="form-control"
-      />
-    </div>
-    <div class="form-group">
-      <label for="rank">PRESENT RANK IN MDC:</label>
-      <div class="select-group">
-        <select name="rank" id="rank" v-model="userDetails.rank" class="form-control">
-          <option value="">Select Rank</option>
-          <option value="Dean">Dean</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="department">DEPARTMENT</label>
-      <div class="select-group">
-        <select
-          name="department"
-          id="department"
-          v-model="userDetails.department"
-          class="form-control"
-        >
-          <option value="">Select Department</option>
-          <option value="CAST">CAST</option>
-        </select>
-      </div>
-    </div>
   </div>
 
   <div class="personal-details-items" v-if="editMode == false">

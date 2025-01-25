@@ -16,7 +16,7 @@ class DashboardController extends Controller
 
         //Local Variables
 
-        return Inertia::render('Pages/Dashboard/dashboard', [
+        return Inertia::render('Pages/Dashboard/Dashboard', [
             'user' => Auth::user(),
             'roles' => $roles,
         ]);

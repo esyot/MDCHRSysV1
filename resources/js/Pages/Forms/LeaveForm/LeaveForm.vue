@@ -295,7 +295,7 @@
 </template>
 
 <script>
-import Layout from "@/Layouts/layout.vue";
+import Layout from "@/Layouts/Layout.vue";
 
 export default {
     data() {

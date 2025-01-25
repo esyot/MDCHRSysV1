@@ -23,7 +23,7 @@ class LeaveFormController extends Controller
             ->where('users.id', Auth::user()->id)
             ->first();
 
-        return inertia('Pages/Forms/LeaveForm/leaveForm', [
+        return inertia('Pages/Forms/LeaveForm/LeaveForm', [
 
             'user' => Auth::user(),
             'roles' => $roles,
