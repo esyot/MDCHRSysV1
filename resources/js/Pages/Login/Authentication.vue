@@ -6,14 +6,19 @@
       </div>
 
       <form @submit.prevent="authCheckSubmit" class="form-items" autocomplete="off">
-        <input
-          type="password"
-          name="password"
-          v-model="password"
-          autocomplete="off"
-          placeholder="Enter your password"
-        />
-        <button type="submit">Authenticate</button>
+        <div class="authentication-form">
+          <input
+            type="password"
+            name="password"
+            v-model="password"
+            autocomplete="off"
+            placeholder="Enter your password"
+          />
+
+          <button type="submit">Authenticate</button>
+        </div>
+
+        <small class="error">{{ authError }}</small>
       </form>
       <div class="modal-footer">
         <div class="info">
@@ -35,6 +40,11 @@ export default {
       password: "",
     };
   },
+  props: {
+    authError: {
+      type: Object,
+    },
+  },
   methods: {
     authCheckSubmit() {
       Inertia.post("/authentication-check", { password: this.password });
@@ -44,6 +54,17 @@ export default {
 </script>
 
 <style scoped>
+.authentication-form {
+  display: flex;
+  gap: 0.2rem;
+}
+.error {
+  display: flex;
+  font-style: italic;
+  color: #ff0000;
+  font-weight: lighter;
+  font-size: 12px;
+}
 .modal {
   display: flex;
   position: fixed;
@@ -84,12 +105,14 @@ export default {
 
 .form-items {
   display: flex;
+  flex-direction: column;
   gap: 0.5rem;
   padding: 10px;
 }
 
 .form-items input {
   padding: 10px;
+  border-radius: 5px;
   width: 100%;
 }
 
@@ -99,7 +122,7 @@ export default {
   border-radius: 5px;
   cursor: pointer;
   color: #fff;
-  opacity: 50%;
+  opacity: 75%;
 }
 
 .form-items button:hover {

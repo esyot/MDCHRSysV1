@@ -35,7 +35,7 @@
   @inertia
 </body>
 
-  <!-- <script>
+  <script>
     document.addEventListener('contextmenu', event => event.preventDefault());
     document.addEventListener('keydown', event => {
       
@@ -52,7 +52,7 @@
           event.preventDefault();
       }
     });
-  </script> -->
+  </script>
 
 
 </html>

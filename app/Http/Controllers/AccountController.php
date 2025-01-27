@@ -45,6 +45,7 @@ class AccountController extends Controller
             'auth'=> $auth,
             'personalDetails' => $personalDetails,
             'messageSuccess' => session('success') ?? null,
+            'authError' => session('error') ?? null,
         ]);
     }
 }

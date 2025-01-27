@@ -34,6 +34,8 @@ Route::middleware('auth')->group(function () {
 
 
     Route::post('/authentication-check', [AuthController::class, 'auth']);
+
+    Route::post('/user-account-setting-update', [UserController::class, 'update']);
     
 });
 
