@@ -49,7 +49,6 @@
           <div class="form-field-password">
             <input
               type="password"
-              maxlength="8"
               placeholder="Input old password"
               v-model="old_password"
             />
@@ -67,16 +66,44 @@
           <div class="form-field-password">
             <input
               type="password"
-              maxlength="8"
               placeholder="Input new password"
               v-model="new_password_1"
             />
-            <i class="fas fa-circle-check" v-if="this.new_password_1.length === 8"></i>
+            <i class="fas fa-circle-check" v-if="newPasswordChecked"></i>
           </div>
-          <small>
-            <i class="icon-info fas fa-circle-exclamation"></i>
-            Password must contain atleast 8-12 characters.
-          </small>
+          <div class="requirement-labels">
+            <small>
+              <i
+                :class="
+                  !this.passwordLength
+                    ? 'icon-info fas fa-circle-exclamation'
+                    : 'icon-check fas fa-circle-check'
+                "
+              ></i>
+              At least 12-16 characters.
+            </small>
+            <small>
+              <i
+                :class="
+                  !this.passwordUpperLowerCase
+                    ? 'icon-info fas fa-circle-exclamation'
+                    : 'icon-check fas fa-circle-check'
+                "
+              ></i>
+              At least 1 uppercase and 1 lowercase letter.
+            </small>
+
+            <small>
+              <i
+                :class="
+                  !this.passwordSpecialChar
+                    ? 'icon-info fas fa-circle-exclamation'
+                    : 'icon-check fas fa-circle-check'
+                "
+              ></i>
+              At least 1 special character such as "[!@#$%^&*(),.?":{}|<>]".
+            </small>
+          </div>
         </div>
 
         <div class="form-group" v-if="isPassword">
@@ -84,9 +111,9 @@
           <div class="form-field-password">
             <input
               type="password"
-              maxlength="8"
               placeholder="Re-type password"
               v-model="new_password_2"
+              :disabled="!passwordValidated"
             />
             <i class="fas fa-circle-check" v-if="this.isNewPasswordEqual"></i>
           </div>
@@ -118,6 +145,10 @@ export default {
       new_password_1: "",
       new_password_2: "",
       isNewPasswordEqual: false,
+      passwordLength: false,
+      passwordUpperLowerCase: false,
+      passwordSpecialChar: false,
+      passwordValidated: false,
     };
   },
   watch: {
@@ -126,6 +157,23 @@ export default {
         this.userCredentials.username = newVal.username || "";
       },
       immediate: true,
+    },
+    new_password_1(newValue) {
+      this.passwordUpperLowerCase = /[a-z]/.test(newValue) && /[A-Z]/.test(newValue);
+
+      this.passwordLength = newValue.length > 8;
+
+      this.passwordSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(newValue);
+
+      if (
+        this.passwordUpperLowerCase &&
+        this.passwordLength &&
+        this.passwordSpecialChar
+      ) {
+        this.passwordValidated = true;
+      } else {
+        this.passwordValidated = false;
+      }
     },
     old_password(newValue) {
       this.checkOldPassword();
@@ -172,6 +220,14 @@ export default {
 </script>
 
 <style scoped>
+.requirement-labels {
+  display: flex;
+  flex-direction: column;
+  margin-top: 5px;
+}
+.icon-check {
+  color: green;
+}
 .icon-info {
   color: red;
 }

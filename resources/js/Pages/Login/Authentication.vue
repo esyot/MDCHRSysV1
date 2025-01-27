@@ -12,7 +12,6 @@
             name="password"
             v-model="password"
             autocomplete="off"
-            maxlength="8"
             placeholder="Enter your password"
           />
 

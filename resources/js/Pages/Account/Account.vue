@@ -103,7 +103,7 @@ export default {
     </div>
     <Authentication :authDetails="authDetails" :authError="authError" v-if="!auth" />
 
-    <section :class="!auth ? 'blur' : 'none-blur'">
+    <section id="section" :class="!auth ? 'blur' : 'none-blur'">
       <div v-if="activeTab === 'overview'">
         <Overview :personalDetails="personalDetails" />
       </div>
@@ -120,6 +120,9 @@ export default {
 </template>
 
 <style scoped>
+#section {
+  user-select: none;
+}
 .blur {
   filter: blur(5px);
 }
