@@ -34,9 +34,9 @@ Route::middleware('auth')->group(function () {
 
 
     Route::post('/authentication-check', [AuthController::class, 'auth']);
-    
-});
 
+});
+Route::view('/print-leave-form', view: 'forms.leaveForm')->name('print-leaveForm');
 
 
 
