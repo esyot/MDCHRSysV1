@@ -5,27 +5,40 @@
         <span class="title">Account Features</span>
       </div>
       <div class="form">
-        <div class="form-items">
-          <div>
-            <input type="checkbox" id="username" />
-            <span>Receive Updates Through Email</span>
+        <form @submit.prevent="accountFeatureSettingSubmit">
+          <div class="form-items">
+            <div>
+              <input
+                type="checkbox"
+                name="is_update_with_email"
+                :checked="user.is_update_with_email"
+              />
+              <span>Receive Updates Through Email</span>
+            </div>
+            <small>
+              <i class="fas fa-circle-exclamation"></i>
+              Note: Receive updates from the system through given email.</small
+            >
           </div>
-          <small>
-            <i class="fas fa-circle-exclamation"></i>
-            Note: Receive updates from the system through given email.</small
-          >
-        </div>
-        <div class="form-items">
-          <div>
-            <input type="checkbox" id="username" />
-            <span>Two Authentication Mode</span>
-          </div>
+          <div class="form-items">
+            <div>
+              <input
+                type="checkbox"
+                name="is_two_step_verification"
+                :checked="user.is_two_step_verification"
+              />
+              <span>Two Authentication Mode</span>
+            </div>
 
-          <small>
-            <i class="fas fa-circle-exclamation"></i>
-            Note: Receive and input a code first when logging in.</small
-          >
-        </div>
+            <small>
+              <i class="fas fa-circle-exclamation"></i>
+              Note: Receive and input a code first when logging in.</small
+            >
+          </div>
+          <div>
+            <button type="submit">Save Changes</button>
+          </div>
+        </form>
       </div>
     </section>
 
@@ -138,6 +151,8 @@ export default {
   },
   data() {
     return {
+      is_two_step_verification: "",
+      is_update_with_email: "",
       old_password: "",
       localUserCredentials: { ...this.user },
       isPassword: false,
@@ -214,6 +229,11 @@ export default {
       this.isNewPasswordEqual = false;
 
       Inertia.post("/user-account-setting-update", data);
+    },
+
+    accountFeatureSettingSubmit(event) {
+      const formData = new FormData(event.target);
+      Inertia.post("/user-account-feature-update", formData);
     },
   },
 };
