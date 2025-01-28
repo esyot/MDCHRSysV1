@@ -605,8 +605,8 @@ input:checked + .slider:before {
   color: #fff;
 }
 .title-container {
-  border-bottom: #dedede 1px solid;
-  background-color: #fff;
+  border-bottom: #cecece 1px solid;
+  background-color: #ebebeb;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
   padding: 10px;
   position: sticky;
@@ -633,7 +633,7 @@ input:checked + .slider:before {
   flex-grow: 1;
   flex-basis: 400px;
   background-color: #ffffff;
-  border-radius: 8px;
+  border-radius: 5px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 .form-group {
@@ -649,7 +649,7 @@ input:checked + .slider:before {
 }
 
 .form-group input {
-  width: 95%;
+  width: 96%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
