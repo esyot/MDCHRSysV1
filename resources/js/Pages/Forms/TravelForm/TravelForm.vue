@@ -216,6 +216,11 @@ export default {
               <input type="checkbox" id="miscellaneous" v-model="budget.miscellaneous" />
               <label for="miscellaneous">Miscellaneous</label>
             </div>
+
+            <div class="amount">
+                <label for="total">Total amount requested:</label>
+                <input type="text" class="underline">
+            </div>
           </div>
           <div>
             <label class="sextion-title">Budget charged to:</label>
@@ -403,5 +408,15 @@ export default {
 .input-field:focus {
   border-color: #4a90e2;
   outline: none;
+}
+.amount {
+    padding: 10px;
+    margin-left: 70px;
+}
+.underline {
+    border: none;           /* Remove all borders */
+    border-bottom: 2px solid #121212; /* Add underline */
+    outline: none;          /* Remove outline */
+    padding: 5px 0;         /* Add some padding to the top and bottom */
 }
 </style>

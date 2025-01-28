@@ -34,8 +34,10 @@ Route::middleware('auth')->group(function () {
 
 
     Route::post('/authentication-check', [AuthController::class, 'auth']);
-    
+
 });
+
+Route::view('/travel-form', 'forms.travelForm')->name('travelForm');
 
 
 
