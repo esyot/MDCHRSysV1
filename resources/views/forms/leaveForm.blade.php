@@ -58,7 +58,7 @@
             margin-top: -20px;
         }
 
-        span {
+        .form-title {
             font-size: 25px;
         }
 
@@ -96,6 +96,17 @@
             min-width: 450px;
         }
         .section-two table{
+            width: 96%;
+        }
+        .section-three{
+            display: flex;
+            margin-top: 15px;
+            padding-bottom: 10px;
+        }
+        .section-three div{
+            min-width: 450px;
+        }
+        .section-three table{
             width: 96%;
         }
         .details-box{
@@ -168,6 +179,7 @@
         }
         .employee-sign p {
              margin: 5px 0;
+             padding-right: 10px;
         }
         .section-title{
             display: flex;
@@ -194,6 +206,29 @@
             justify-items: center;
             margin-top: 5px;
             align-items: center;
+        }
+        .recom-div{
+            display: flex;
+            flex-direction: column;
+            margin: 10px 20px;
+        }
+        .additional-section{
+            display: flex;
+        }
+        .italic{
+            font-style: italic;
+            font-size: 10px;
+            margin-bottom: 5px;
+        }
+        .note-section{
+            display: flex;
+            flex-direction: column;
+            margin-top: 10px;
+            align-self: left;
+            margin-bottom: 5px;
+        }
+        .note-section-content{
+            font-size: 10px;
         }
     </style>
 </head>
@@ -334,23 +369,91 @@
                 </div>
                 <div class="details-box">
                     <h5 class="section-title">Recommendation</h5>
+                    <div class="recom-div">
+                        <label><input type="checkbox" name="recommendation_type" id="recommendation_type"> For approval</label>
+                        <label><input type="checkbox" name="recommendation_type" id="recommendation_type"> For disapproval due to: _____________________________ </label>
+                    </div>
+                    <div class="signature">
+                        <div>
+                            <br>
+                            <p>_____________________________<br>Department Head/Head of Office</p>
+                        </div>
+                    </div>
                 </div>
+            </div>
+
+            <div class="section-three">
+                <div class="sub-section">
+                    <h5 class="sub-section-title">APPROVED FOR:</h5>
+                    <label for=""><input type="text" name="" id=""> days with pay</label>
+                    <label for=""><input type="text" name="" id=""> days without pay</label>
+                    <label for=""><input type="text" name="" id=""> others (specify)</label>
+                </div>
+                <div class="sub-section">
+                    <h5 class="sub-section-title">DISAPPROVED DUE TO:</h5>
+                    <label for="">__________________________________________________________
+                        <br> __________________________________________________________
+                        <br> __________________________________________________________
+                        <br> __________________________________________________________
+                    </label>
+                </div>
+
             </div>
 
             <div class="signature">
                 <div>
-                    <p>Approved by:</p>
-                    <p>_____________________________<br>VP for Admin and Finance</p>
+                    <p>
+                        <b>
+                            ARTEMIO M. GULILAT, CPA
+                        </b>
+                        <br>VP for Admin and Finance
+                    </p>
                 </div>
                 <div>
-                    <p>Noted by:</p>
-                    <p>_____________________________<br>VP for Academics</p>
+                    <p>
+                        <b>
+                            MARIA NYMPA S. RESERVA, Ph. D.
+                        </b>
+                        <br>VP for Academics
+                    </p>
                 </div>
                 <div>
-                    <p>Disapproved Due To:</p>
-                    <p>_____________________________<br>President</p>
+                    <p>
+                        <b>
+                            MARIANO M. LERIN, CPA, Ph. D.
+                        </b>
+                        <br>President
+                    </p>
                 </div>
             </div>
+        </div>
+        <div class="note-section">
+            <span class="italic"> Note: This leave application form shall be <u>accomplished in duplicate copies</u> with the
+                following guidelines, as follows:
+            </span>
+            <span class="note-section-content">
+                <b>
+                    1. Vacation Leave
+                </b>
+                <ul>
+                    It shall be filed ten (10) days prior to the effectivity of such leave, except on emergency cases.
+                </ul>
+            </span>
+            <span class="note-section-content">
+                <b>
+                    2. Sick Leave
+                </b>
+                <ul>
+                    <li>
+                        It shall be filed immediately upon employee's return such leave, otherwise application will not be considered.
+                    </li>
+                    <li>
+                        This application shall be accompanied by a <u>medical certificate</u>, if the absent is two days or more.
+                        In case medical consultation was not availed of, a medical certificate from the school physician/school <br>
+                        nurse verified by the of office should be presented.
+                    </li>
+                </ul>
+            </span>
         </div>
     </div>
 </body>
