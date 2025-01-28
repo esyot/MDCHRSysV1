@@ -47,7 +47,7 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::post('/user-account-feature-update', [AccountController::class,'accountFeatureUpdate']);
         
     });
-    });
+    }); 
 
 Route::post('/authentication-check', [AuthController::class, 'auth']);
 
