@@ -53,6 +53,7 @@ Route::middleware([Check2WayVerification::class])->group(function () {
 
 Route::post('/verification-submit', [VerificationController::class, 'verify']);
 
+
 Route::get('/verification', [VerificationController::class, 'index'])->name('verification');
 
 Route::get('/logout', function () {
