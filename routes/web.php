@@ -8,38 +8,57 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PersonalDetailController;
 use App\Http\Controllers\TravelFormController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VerificationController;
+use App\Http\Middleware\Check2WayVerification;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Mail;
 
 
 Route::get('/', [LoginController::class, 'index']);
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login-submit', [LoginController::class, 'login'])->name('login-submit');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/account', [AccountController::class, 'index'])->name('account');
-
-    Route::post('/personal-details-update-submit', [PersonalDetailController::class, 'updatePersonalDetails']);
-
-    Route::get('/forms/travel-form-request', [TravelFormController::class, 'index']);
-    Route::get('/forms/leave-form-request', [LeaveFormController::class, 'index']);
-
-    Route::post('/upload-cropped-profile-pic', [UserController::class, 'updateProfilePicture']);
 
 
-    Route::get('/success-session-remove', function(){
-        session()->forget('success');
-        return redirect()->back();
+Route::middleware([Check2WayVerification::class])->group(function () {
+
+    Route::middleware('auth')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/account', [AccountController::class, 'index'])->name('account');
+    
+        Route::post('/personal-details-update-submit', [PersonalDetailController::class, 'updatePersonalDetails']);
+    
+        Route::get('/forms/travel-form-request', [TravelFormController::class, 'index']);
+        Route::get('/forms/leave-form-request', [LeaveFormController::class, 'index']);
+    
+        Route::post('/upload-cropped-profile-pic', [UserController::class, 'updateProfilePicture']);
+    
+    
+        Route::get('/success-session-remove', function(){
+            session()->forget('success');
+            return redirect()->back();
+        });
+    
+    
+        Route::post('/authentication-check', [AuthController::class, 'auth']);
+    
+        Route::post('/user-account-setting-update', [UserController::class, 'update']);
+
+        Route::post('/user-account-feature-update', [AccountController::class,'accountFeatureUpdate']);
+        
     });
 
 
     Route::post('/authentication-check', [AuthController::class, 'auth']);
 
-});
+Route::post('/verification-submit', [VerificationController::class, 'verify']);
 
+
+Route::get('/verification', [VerificationController::class, 'index'])->name('verification');
 
 Route::get('/logout', function () {
     Auth::logout();
     Session::put('authenticate', false);
+    Session::put('code', null);
     return redirect()->route('login');
 });

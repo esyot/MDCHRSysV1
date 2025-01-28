@@ -46,8 +46,17 @@ class LoginController extends Controller
 
             $responseData['password']['errorMessage'] = 'Invalid password.';
         } else {
-            Auth::login($user);
-            return redirect()->route('dashboard');
+
+            if($user->is_two_step_verification == true){
+
+                Auth::login($user);
+                return redirect()->route('verification');
+    
+            }else{
+
+                Auth::login($user);
+                return redirect()->route('dashboard');
+            }
         }
 
         return redirect()->route('login')->with([

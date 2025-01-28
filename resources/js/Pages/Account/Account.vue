@@ -14,6 +14,7 @@ export default {
     authDetails: Object,
     auth: Boolean,
     roles: Object,
+    authError: String,
   },
   data() {
     return {
@@ -83,7 +84,7 @@ export default {
             :src="
               personalDetails.img
                 ? 'storage/users/images/' + personalDetails.img
-                : '/public/assets/images/user.png'
+                : './assets/images/user.png'
             "
             alt="User Image"
           />
@@ -100,9 +101,9 @@ export default {
         </div>
       </div>
     </div>
-    <Authentication :authDetails="authDetails" v-if="!auth" />
+    <Authentication :authDetails="authDetails" :authError="authError" v-if="!auth" />
 
-    <section :class="!auth ? 'blur' : 'none-blur'">
+    <section id="section" :class="!auth ? 'blur' : 'none-blur'">
       <div v-if="activeTab === 'overview'">
         <Overview :personalDetails="personalDetails" />
       </div>
@@ -119,6 +120,9 @@ export default {
 </template>
 
 <style scoped>
+#section {
+  user-select: none;
+}
 .blur {
   filter: blur(5px);
 }
