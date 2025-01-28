@@ -164,6 +164,7 @@ export default {
       passwordUpperLowerCase: false,
       passwordSpecialChar: false,
       passwordValidated: false,
+      newPasswordChecked: false,
     };
   },
   watch: {
@@ -240,6 +241,24 @@ export default {
 </script>
 
 <style scoped>
+.form button {
+  border: none;
+  float: right;
+  padding: 10px;
+  background-color: rgb(0, 145, 255);
+  color: #fff;
+  border-radius: 5px;
+  opacity: 75%;
+  margin: 10px;
+}
+.form span {
+  font-size: 16px;
+  font-weight: bold;
+}
+.form button:hover {
+  opacity: 100%;
+  cursor: pointer;
+}
 .requirement-labels {
   display: flex;
   flex-direction: column;

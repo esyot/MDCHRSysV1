@@ -2,7 +2,7 @@
   <div class="background">
     <div class="verification-content">
       <div class="header">
-        <label for="">Two Way Verification</label>
+        <label for="">Two Step Verification</label>
       </div>
 
       <section>
@@ -18,9 +18,9 @@
           </div>
         </div>
       </section>
-      <span class="details"
-        >We've sent you a code in your email, please input the code below.</span
-      >
+      <div class="details">
+        We've sent you a code in your email, please input the code below.
+      </div>
       <div class="container-inputs">
         <form @submit.prevent="verificationSubmit">
           <div class="input-container">
@@ -81,6 +81,7 @@ section {
 
 .verification-content {
   background-color: #fff;
+  border-radius: 5px;
 }
 
 .header {

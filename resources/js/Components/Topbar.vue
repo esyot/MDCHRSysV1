@@ -1,10 +1,6 @@
 <template>
   <div class="topbar" ref="topbar">
     <div class="userToggleBtn" @click="toggleDropdown" ref="userToggleBtn">
-      <span class="userName">
-        {{ user.last_name }}, {{ user.first_name }}
-        {{ uc_first(user.middle_name) }}.</span
-      >
       <div class="userIconBtn">
         <div class="user-img">
           <img
@@ -30,7 +26,11 @@
       ref="dropdown"
     >
       <InertiaLink :href="'/account'" class="link" title="Account Settings">
-        <span><i class="fas fa-user-cog"></i> Account</span>
+        <span
+          ><i class="fas fa-user-cog"></i>
+
+          {{ user.first_name }} {{ user.last_name }}
+        </span>
       </InertiaLink>
 
       <span @click="logoutConfirm" class="logout" title="Logout"

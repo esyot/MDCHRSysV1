@@ -57,21 +57,21 @@ export default {
       @click="setActiveTab('overview')"
       title="User Overview"
     >
-      <i class="fa-solid fa-circle-info fa-xl"></i>
+      <i class="fa-solid fa-circle-info fa-lg"></i>
     </span>
     <span
       :class="{ active: activeTab === 'personalDetails' }"
       @click="setActiveTab('personalDetails')"
       title="Personal Details"
     >
-      <i class="fa-solid fa-list fa-xl"></i>
+      <i class="fa-solid fa-list fa-lg"></i>
     </span>
     <span
       :class="{ active: activeTab === 'security' }"
       @click="setActiveTab('security')"
       title="Security & Password"
     >
-      <i class="fa-solid fa-lock fa-xl"></i>
+      <i class="fa-solid fa-lock fa-lg"></i>
     </span>
   </nav>
   <div class="content">
@@ -156,6 +156,7 @@ export default {
   nav span.active {
     color: #fff;
     opacity: 100%;
+    scale: 1.3;
   }
 }
 
@@ -178,6 +179,7 @@ export default {
 
   nav span:hover {
     opacity: 100%;
+    scale: 1.2;
   }
 
   nav i {
@@ -186,6 +188,7 @@ export default {
   nav span.active {
     color: #fff;
     opacity: 100%;
+    scale: 1.3;
   }
 }
 
@@ -264,6 +267,7 @@ export default {
   position: relative;
   right: 30px;
   bottom: 12px;
+  z-index: 9;
   color: #fff;
   font-size: 12px;
   background-color: rgb(55, 103, 246);

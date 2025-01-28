@@ -162,7 +162,7 @@ export default {
   justify-content: center;
   align-items: center;
   position: fixed;
-  z-index: 0;
+  z-index: 10;
   left: 0;
   top: 0;
   width: 100%;
