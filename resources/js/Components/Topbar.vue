@@ -4,17 +4,13 @@
       <div class="userIconBtn">
         <div class="user-img">
           <img
-            v-if="user.img"
             class="user-img"
-            :src="'storage/users/images/' + user.img"
+            :src="
+              user.img ? '/storage/users/images/' + user.img : './assets/images/user.png'
+            "
             alt="User Image"
           />
-          <img
-            v-if="!user.img"
-            class="user-img"
-            src="/public/assets/images/user.png"
-            alt="User Image"
-          />
+
           <i class="fas fa-chevron-circle-down fa-xs"></i>
         </div>
       </div>

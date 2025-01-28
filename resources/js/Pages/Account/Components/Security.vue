@@ -245,7 +245,7 @@ export default {
   border: none;
   float: right;
   padding: 10px;
-  background-color: rgb(0, 145, 255);
+  background-color: #3b82f6;
   color: #fff;
   border-radius: 5px;
   opacity: 75%;
@@ -323,7 +323,7 @@ export default {
 }
 
 .form-group-foooter button {
-  background-color: rgb(56, 129, 254);
+  background-color: #3b82f6;
   border: none;
   padding: 10px;
   color: #fff;
