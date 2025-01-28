@@ -127,7 +127,7 @@ export default {
 }
 
 .usernameField i:hover {
-  opacity: 100%;
+  opacity: 60%;
 }
 .field-icon-user {
   background-color: #0051ff;
@@ -193,7 +193,7 @@ export default {
 }
 
 .passwordField i:hover {
-  opacity: 100%;
+  opacity: 60%;
 }
 #user {
   background-color: transparent;

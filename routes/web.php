@@ -38,13 +38,15 @@ Route::middleware([Check2WayVerification::class])->group(function () {
             session()->forget('success');
             return redirect()->back();
         });
-    
-    
         Route::post('/authentication-check', [AuthController::class, 'auth']);
     
         Route::post('/user-account-setting-update', [UserController::class, 'update']);
 
         Route::post('/user-account-feature-update', [AccountController::class,'accountFeatureUpdate']);
+
+        Route::get('/travel-form-submit', [TravelFormController::class, 'submit']);
+
+        Route::get('/leave-form-preview', [LeaveFormController::class, 'preview']);
         
     });
     }); 
@@ -62,3 +64,4 @@ Route::get('/logout', function () {
     Session::put('code', null);
     return redirect()->route('login');
 });
+

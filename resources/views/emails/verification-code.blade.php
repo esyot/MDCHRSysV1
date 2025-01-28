@@ -81,11 +81,13 @@
     <div class="content">
         <!-- Logo Section -->
         <div class="logo">
-            <img src="public\assets\images\mdc-logo.png" alt="Your Logo">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5HqCbuDQf2bfsr7EMHSCt6ehwaifOmMa9PA&s" alt="Your Logo">
         </div>
 
         <!-- Header Section -->
         <div class="header">
+            
+<h1>MDC HR - SYSTEM</h1>
             <span>Your Authentication Code is:</span>
         </div>
 

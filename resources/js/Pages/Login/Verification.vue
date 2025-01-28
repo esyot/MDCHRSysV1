@@ -8,10 +8,11 @@
       <section>
         <div class="user-img">
           <img
+            class="user-img"
             :src="
-              user.img ? '/public/assets/images/' + user.img : './assets/images/user.png'
+              user.img ? '/storage/users/images/' + user.img : './assets/images/user.png'
             "
-            alt=""
+            alt="User Image"
           />
           <div>
             <span>{{ user.first_name }} {{ user.last_name }}</span>

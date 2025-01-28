@@ -1,5 +1,6 @@
 <script>
 import Layout from "@/Layouts/Layout.vue";
+import { Inertia } from "@inertiajs/inertia";
 
 export default {
   data() {
@@ -34,11 +35,10 @@ export default {
     };
   },
   methods: {
-    submitForm() {
-      console.log("Office details:", this.form);
-    },
-    submitTravelDetails() {
-      console.log("Travel details:", this.travelForm);
+    travelFormSubmit(event) {
+      const formData = new FormData(event.target);
+
+      Inertia.get("/travel-form-submit", formData);
     },
   },
   layout: Layout,
@@ -46,146 +46,181 @@ export default {
 </script>
 
 <template>
-  <div class="forms-container">
-    <div class="forms">
-      <div class="forms-title">
-        <span class="title">Travel details</span>
-      </div>
-      <div class="form-section">
-        <label for="dates">Date of Filing:</label>
-        <input
-          type="date"
-          id="dates"
-          v-model="form.dateOfFiling"
-          class="form-control"
-          required
-        />
-      </div>
-
-      <div class="form-section">
-        <label for="dates">Date(s) of Travel:</label>
-        <input
-          type="date"
-          id="dates"
-          v-model="travelForm.dates"
-          class="form-control"
-          required
-        />
-      </div>
-      <div class="form-section">
-        <label for="place">Place:</label>
-        <input
-          type="text"
-          id="place"
-          v-model="travelForm.place"
-          class="form-control"
-          placeholder="Enter the place of travel"
-          required
-        />
-      </div>
-      <div class="form-section">
-        <label for="purpose">Purpose/Event:</label>
-        <input
-          type="text"
-          id="purpose"
-          v-model="travelForm.purpose"
-          class="form-control"
-          placeholder="Enter the purpose or event"
-          required
-        />
-      </div>
-      <div class="form-section">
-        <label for="organizer">Organizer/Contact Person:</label>
-        <input
-          type="text"
-          id="organizer"
-          v-model="travelForm.organizer"
-          class="form-control"
-          placeholder="Enter the organizer or contact person"
-          required
-        />
-      </div>
-      <div class="form-section">
-        <label for="description">Short Description:</label>
-        <textarea
-          id="description"
-          v-model="travelForm.description"
-          class="form-control"
-          placeholder="Enter a short description of the purpose or event"
-          rows="4"
-          required
-        ></textarea>
-      </div>
-    </div>
-
-    <div class="forms">
-      <div class="forms-title">
-        <span class="title">Budget Requirements</span>
-      </div>
-      <div class="forms-separation">
-        <div class="grid">
-          <div class="sub-section-title">
-            <label class="section-title">Budget Type:</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="registration" v-model="budget.registration" />
-            <label for="registration">Registration</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="transportation" v-model="budget.transportation" />
-            <label for="transportation">Transportation</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="representation" v-model="budget.representation" />
-            <label for="representation">Representation Allowance</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="miscellaneous" v-model="budget.miscellaneous" />
-            <label for="miscellaneous">Miscellaneous</label>
-          </div>
-
-          <div class="checkbox-item">
-            <label for="total">Total amount requested:</label><br />
-            <input type="text" class="input-field" />
-          </div>
+  <form @submit.prevent="travelFormSubmit">
+    <div class="forms-container">
+      <div class="forms">
+        <div class="forms-title">
+          <span class="title">Travel details</span>
+        </div>
+        <div class="form-section">
+          <label for="dates">Date of Filing:</label>
+          <input
+            type="date"
+            id="dates"
+            v-model="form.dateOfFiling"
+            class="form-control"
+            required
+          />
         </div>
 
-        <div class="grid">
-          <div class="sub-section-title">
-            <label class="section-title">Budget cherged to:</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="registration" v-model="budget.registration" />
-            <label for="registration">Department Fund</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="transportation" v-model="budget.transportation" />
-            <label for="transportation">Departmental/Office fund</label>
-          </div>
-          <div class="checkbox-item">
-            <input type="checkbox" id="representation" v-model="budget.representation" />
-            <label for="representation">School Fund</label>
+        <div class="form-section">
+          <label for="dates">Date(s) of Travel:</label>
+          <input
+            type="date"
+            id="dates"
+            v-model="travelForm.dates"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="form-section">
+          <label for="place">Place:</label>
+          <input
+            type="text"
+            id="place"
+            v-model="travelForm.place"
+            class="form-control"
+            placeholder="Enter the place of travel"
+            required
+          />
+        </div>
+        <div class="form-section">
+          <label for="purpose">Purpose/Event:</label>
+          <input
+            type="text"
+            id="purpose"
+            v-model="travelForm.purpose"
+            class="form-control"
+            placeholder="Enter the purpose or event"
+            required
+          />
+        </div>
+        <div class="form-section">
+          <label for="organizer">Organizer/Contact Person:</label>
+          <input
+            type="text"
+            id="organizer"
+            v-model="travelForm.organizer"
+            class="form-control"
+            placeholder="Enter the organizer or contact person"
+            required
+          />
+        </div>
+        <div class="form-section">
+          <label for="description">Short Description:</label>
+          <textarea
+            id="description"
+            v-model="travelForm.description"
+            class="form-control"
+            placeholder="Enter a short description of the purpose or event"
+            rows="4"
+            required
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="forms">
+        <div class="forms-title">
+          <span class="title">Budget Requirements</span>
+        </div>
+        <div class="forms-separation">
+          <div class="grid">
+            <div class="sub-section-title">
+              <label class="section-title">Budget Type:</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="registration" v-model="budget.registration" />
+              <label for="registration">Registration</label>
+            </div>
+            <div class="checkbox-item">
+              <input
+                type="checkbox"
+                id="transportation"
+                v-model="budget.transportation"
+              />
+              <label for="transportation">Transportation</label>
+            </div>
+            <div class="checkbox-item">
+              <input
+                type="checkbox"
+                id="representation"
+                v-model="budget.representation"
+              />
+              <label for="representation">Representation Allowance</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="miscellaneous" v-model="budget.miscellaneous" />
+              <label for="miscellaneous">Miscellaneous</label>
+            </div>
+
+            <div class="checkbox-item">
+              <label for="total">Total amount requested:</label><br />
+              <input type="text" class="input-field" />
+            </div>
           </div>
 
-          <div class="checkbox-item">
-            <input type="checkbox" id="representation" v-model="budget.representation" />
-            <label for="total">Others, specify</label><br />
-            <input type="text" class="input-field" />
+          <div class="grid">
+            <div class="sub-section-title">
+              <label class="section-title">Budget charged to:</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="registration" v-model="budget.registration" />
+              <label for="registration">Department Fund</label>
+            </div>
+            <div class="checkbox-item">
+              <input
+                type="checkbox"
+                id="transportation"
+                v-model="budget.transportation"
+              />
+              <label for="transportation">Departmental/Office fund</label>
+            </div>
+            <div class="checkbox-item">
+              <input
+                type="checkbox"
+                id="representation"
+                v-model="budget.representation"
+              />
+              <label for="representation">School Fund</label>
+            </div>
+
+            <div class="checkbox-item">
+              <input
+                type="checkbox"
+                id="representation"
+                v-model="budget.representation"
+              />
+              <label for="total">Others, specify</label><br />
+              <input type="text" class="input-field" />
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="form-submit">
-    <button>Submit to Printing</button>
-  </div>
+    <div class="form-submit">
+      <button class="preview" title="Preview form">
+        <i class="fas fa-eye"></i>
+        <span> Preview</span>
+      </button>
+      <button class="submit" title="Submit for approval">
+        <i class="fas fa-check"></i>
+        <span> Submit</span>
+      </button>
+    </div>
+  </form>
 </template>
 
 <style scoped>
+.preview {
+  background-color: rgb(33, 208, 33);
+}
+.submit {
+  background-color: rgb(35, 134, 200);
+}
 .forms-container {
   display: flex;
   flex-wrap: wrap;
-  max-height: 90vh;
+  max-height: 75vh;
   overflow-y: auto;
   overflow-x: hidden;
   margin-top: 5px;
@@ -245,7 +280,6 @@ export default {
   padding: 10px 15px 10px 15px;
   border-radius: 5px;
   color: white;
-  background-color: rgb(35, 134, 200);
   opacity: 75%;
   margin: 5px;
 }

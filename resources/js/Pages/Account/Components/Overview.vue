@@ -17,7 +17,7 @@
       <div class="overview-item">
         <i class="fas fa-peso-sign"></i>
         <div class="card-content">
-          <label>Total Requested</label>
+          <label>Amount Requested</label>
           <div class="items">
             <span> 2638123.12 </span>
           </div>
@@ -28,7 +28,19 @@
       <div class="overview-item">
         <i class="fas fa-calendar-day"></i>
         <div class="card-content">
-          <label>Total On Leave</label>
+          <label>Personal Leave</label>
+          <div class="items">
+            <span> 12 Days </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="overview-item-container">
+      <div class="overview-item">
+        <i class="fas fa-calendar-day"></i>
+        <div class="card-content">
+          <label>Sick Leave</label>
           <div class="items">
             <span> 12 Days </span>
           </div>
@@ -39,24 +51,14 @@
       <div class="overview-item">
         <i class="fas fa-plane-departure"></i>
         <div class="card-content">
-          <label>Total On Travel </label>
+          <label>Days Traveled </label>
           <div class="items">
             <span> 16 Days </span>
           </div>
         </div>
       </div>
     </div>
-    <div class="overview-item-container">
-      <div class="overview-item">
-        <i class="fas fa-plane-arrival"></i>
-        <div class="card-content">
-          <label>Travel Days Left</label>
-          <div class="items">
-            <span> 2 days </span>
-          </div>
-        </div>
-      </div>
-    </div>
+
     <div class="overview-item-container">
       <div class="overview-item">
         <i class="fas fa-calendar-check"></i>

@@ -30,4 +30,9 @@ class LeaveFormController extends Controller
             'personalDetails' => $personalDetails->toArray()
         ]);
     }
+
+    public function preview(){
+
+        return view('forms.leaveForm');
+    }
 }

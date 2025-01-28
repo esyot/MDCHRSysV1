@@ -38,6 +38,10 @@
               <InertiaLink :href="'/forms/leave-form-request'" class="link">
                 <li><span>Request Leave Application</span></li>
               </InertiaLink>
+
+              <InertiaLink :href="'/forms/leave-form-request'" class="link">
+                <li><span>Evaluation</span></li>
+              </InertiaLink>
             </ul>
           </li>
           <li title="Users">
