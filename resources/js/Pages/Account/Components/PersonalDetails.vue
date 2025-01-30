@@ -47,6 +47,7 @@
                 v-if="currentPage === 3"
                 :editMode="editMode"
                 :userDetails="userDetails"
+                :personalDetails="personalDetails"
                 @update-user-details="updateUserDetails"
                 @track-touched-field="trackTouchedField"
             />
@@ -287,7 +288,8 @@ export default {
                     validity: "",
                 },
 
-                educDetails: {
+                user_educational_backgrounds: {
+                    educLevel: "",
                     school_name: "",
                     school_address: "",
                     course: "",
@@ -297,7 +299,6 @@ export default {
                 },
 
                 newChildName: "",
-                educLevel: "",
                 selectedLevel: "",
 
                 userAwardDetails: {

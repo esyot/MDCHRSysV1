@@ -193,7 +193,7 @@
         </div>
 
         <div
-            v-for="userFamily in userDetails.user_families"
+            v-for="userFamily in personalDetails.user_families"
             :key="userFamily.id"
             class="form-group"
         >

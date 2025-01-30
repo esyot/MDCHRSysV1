@@ -28,4 +28,9 @@ class User extends Authenticatable
     }
 
 
+    public function userEducationalBackgrounds(){
+        return $this->hasMany(UserEducationalBackground::class);
+    }
+
+
 }

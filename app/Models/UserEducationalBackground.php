@@ -9,4 +9,8 @@ class UserEducationalBackground extends Model
 {
     /** @use HasFactory<\Database\Factories\UserEducationalBackgroundFactory> */
     use HasFactory;
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }
