@@ -44,7 +44,7 @@ Route::middleware([Check2WayVerification::class])->group(function () {
 
         Route::post('/user-account-feature-update', [AccountController::class,'accountFeatureUpdate']);
 
-        Route::get('/travel-form-submit', [TravelFormController::class, 'submit']);
+        Route::post('/travel-form-submit', [TravelFormController::class, 'submit']);
 
         Route::get('/leave-form-preview', [LeaveFormController::class, 'preview']);
         

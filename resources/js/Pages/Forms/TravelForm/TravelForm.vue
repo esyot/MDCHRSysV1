@@ -1,50 +1,3 @@
-<script>
-import Layout from "@/Layouts/Layout.vue";
-import { Inertia } from "@inertiajs/inertia";
-
-export default {
-  data() {
-    return {
-      form: {
-        office: "",
-        lastName: "",
-        firstName: "",
-        middleName: "",
-        dateOfFiling: "",
-        position: "",
-        rank: "",
-      },
-      travelForm: {
-        dates: "",
-        place: "",
-        purpose: "",
-        organizer: "",
-        description: "",
-      },
-      budget: {
-        registration: false,
-        transportation: false,
-        representation: false,
-        miscellaneous: false,
-        departmentalFund: false,
-        officeBudget: false,
-        schoolFund: false,
-        others: false,
-        othersReason: "",
-      },
-    };
-  },
-  methods: {
-    travelFormSubmit(event) {
-      const formData = new FormData(event.target);
-
-      Inertia.get("/travel-form-submit", formData);
-    },
-  },
-  layout: Layout,
-};
-</script>
-
 <template>
   <form @submit.prevent="travelFormSubmit">
     <div class="forms-container">
@@ -52,27 +5,30 @@ export default {
         <div class="forms-title">
           <span class="title">Travel details</span>
         </div>
+        <!-- Travel details form sections -->
+
         <div class="form-section">
-          <label for="dates">Date of Filing:</label>
+          <label for="dates">Date Start of Travel:</label>
           <input
             type="date"
             id="dates"
-            v-model="form.dateOfFiling"
+            v-model="travelForm.date_start"
             class="form-control"
             required
           />
         </div>
 
         <div class="form-section">
-          <label for="dates">Date(s) of Travel:</label>
+          <label for="dates">Date End of Travel:</label>
           <input
             type="date"
             id="dates"
-            v-model="travelForm.dates"
+            v-model="travelForm.date_end"
             class="form-control"
             required
           />
         </div>
+
         <div class="form-section">
           <label for="place">Place:</label>
           <input
@@ -84,6 +40,7 @@ export default {
             required
           />
         </div>
+
         <div class="form-section">
           <label for="purpose">Purpose/Event:</label>
           <input
@@ -95,17 +52,31 @@ export default {
             required
           />
         </div>
+
         <div class="form-section">
-          <label for="organizer">Organizer/Contact Person:</label>
+          <label for="contact_person">Contact Person:</label>
           <input
             type="text"
-            id="organizer"
-            v-model="travelForm.organizer"
+            id="contact_person"
+            v-model="travelForm.contact_person"
             class="form-control"
             placeholder="Enter the organizer or contact person"
             required
           />
         </div>
+
+        <div class="form-section">
+          <label for="contact_person_no">Organizer/Contact Person's No:</label>
+          <input
+            type="text"
+            id="contact_person_no"
+            v-model="travelForm.contact_person_no"
+            class="form-control"
+            placeholder="Enter the organizer or contact person's contact number"
+            required
+          />
+        </div>
+
         <div class="form-section">
           <label for="description">Short Description:</label>
           <textarea
@@ -123,80 +94,55 @@ export default {
         <div class="forms-title">
           <span class="title">Budget Requirements</span>
         </div>
+
         <div class="forms-separation">
           <div class="grid">
             <div class="sub-section-title">
               <label class="section-title">Budget Type:</label>
             </div>
-            <div class="checkbox-item">
-              <input type="checkbox" id="registration" v-model="budget.registration" />
-              <label for="registration">Registration</label>
-            </div>
-            <div class="checkbox-item">
-              <input
-                type="checkbox"
-                id="transportation"
-                v-model="budget.transportation"
-              />
-              <label for="transportation">Transportation</label>
-            </div>
-            <div class="checkbox-item">
-              <input
-                type="checkbox"
-                id="representation"
-                v-model="budget.representation"
-              />
-              <label for="representation">Representation Allowance</label>
-            </div>
-            <div class="checkbox-item">
-              <input type="checkbox" id="miscellaneous" v-model="budget.miscellaneous" />
-              <label for="miscellaneous">Miscellaneous</label>
-            </div>
 
-            <div class="checkbox-item">
-              <label for="total">Total amount requested:</label><br />
-              <input type="text" class="input-field" />
+            <div class="radio-item" v-for="item in budgetTypes" :key="item.id">
+              <input
+                type="radio"
+                :id="item.value"
+                v-model="budget.selectedBudgetType"
+                :value="item.value"
+              />
+              <label :for="item.id">{{ item.label }}</label>
             </div>
           </div>
 
           <div class="grid">
             <div class="sub-section-title">
-              <label class="section-title">Budget charged to:</label>
-            </div>
-            <div class="checkbox-item">
-              <input type="checkbox" id="registration" v-model="budget.registration" />
-              <label for="registration">Department Fund</label>
-            </div>
-            <div class="checkbox-item">
-              <input
-                type="checkbox"
-                id="transportation"
-                v-model="budget.transportation"
-              />
-              <label for="transportation">Departmental/Office fund</label>
-            </div>
-            <div class="checkbox-item">
-              <input
-                type="checkbox"
-                id="representation"
-                v-model="budget.representation"
-              />
-              <label for="representation">School Fund</label>
+              <label class="section-title">Budget Charged To:</label>
             </div>
 
-            <div class="checkbox-item">
+            <div class="radio-item" v-for="item in budgetCharges" :key="item.id">
               <input
-                type="checkbox"
-                id="representation"
-                v-model="budget.representation"
+                type="radio"
+                :id="item.value"
+                v-model="budget.selectedChargedTo"
+                :value="item.value"
               />
-              <label for="total">Others, specify</label><br />
-              <input type="text" class="input-field" />
+              <label :for="item.value">{{ item.label }}</label>
             </div>
           </div>
         </div>
+
+        <div class="form-section">
+          <label for="amount">Budget Amount:</label>
+          <input
+            type="number"
+            id="amount"
+            v-model="budget.amount"
+            class="form-control"
+            placeholder="Enter amount requested"
+            required
+          />
+        </div>
       </div>
     </div>
+
     <div class="form-submit">
       <button class="preview" title="Preview form">
         <i class="fas fa-eye"></i>
@@ -209,6 +155,57 @@ export default {
     </div>
   </form>
 </template>
+
+<script>
+import Layout from "@/Layouts/Layout.vue";
+import { Inertia } from "@inertiajs/inertia";
+
+export default {
+  props: {
+    budgetTypes: Object,
+    budgetCharges: Object,
+  },
+  data() {
+    return {
+      travelForm: {
+        date_start: "",
+        date_end: "",
+        place: "",
+        purpose: "",
+        contact_person: "",
+        contact_person_no: "",
+        description: "",
+      },
+      budget: {
+        amount: "",
+        selectedChargedTo: "",
+        othersReason: "",
+      },
+    };
+  },
+  methods: {
+    travelFormSubmit(event) {
+      event.preventDefault();
+
+      const formData = {
+        date_start: this.travelForm.date_start,
+        date_end: this.travelForm.date_end,
+        description: this.travelForm.description,
+        place: this.travelForm.place,
+        purpose: this.travelForm.purpose,
+        contact_person: this.travelForm.contact_person,
+        contact_person_no: this.travelForm.contact_person_no,
+        amount: this.budget.amount,
+        budget_type: this.budget.selectedBudgetType,
+        budget_charged_to: this.budget.selectedChargedTo,
+      };
+
+      Inertia.post("/travel-form-submit", formData);
+    },
+  },
+  layout: Layout,
+};
+</script>
 
 <style scoped>
 .preview {
@@ -241,17 +238,10 @@ export default {
   width: auto;
   align-items: start;
 }
-.form-grid {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  gap: 10px;
-  margin: 10px 10px 10px 10px;
-}
 .grid {
   padding: 10px;
 }
-.checkbox-item {
+.radio-item {
   margin-top: 10px;
   font-size: 12px;
 }

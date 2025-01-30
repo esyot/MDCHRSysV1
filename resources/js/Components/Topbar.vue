@@ -6,7 +6,7 @@
           <img
             class="user-img"
             :src="
-              user.img ? '/storage/users/images/' + user.img : './assets/images/user.png'
+              user.img ? 'storage/users/images/' + user.img : '../assets/images/user.png'
             "
             alt="User Image"
           />
