@@ -48,6 +48,7 @@
                 :editMode="editMode"
                 :userDetails="userDetails"
                 @update-user-details="updateUserDetails"
+                @track-touched-field="trackTouchedField"
             />
             <Form4
                 v-if="currentPage === 4"
