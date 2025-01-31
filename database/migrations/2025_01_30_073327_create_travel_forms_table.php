@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('budget_type');
             $table->string('budget_charged_to');
             $table->enum('status', ['pending', 'approved', 'declined']) ->default('pending');
+            $table->date('filing_date');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('travel_forms');

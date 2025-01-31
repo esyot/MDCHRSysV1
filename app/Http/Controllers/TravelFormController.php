@@ -44,7 +44,7 @@ class TravelFormController extends Controller
     }
 
     public function preview(Request $request ){
-      
+     
         $request->validate([
             'date_start' => 'required|date',
             'date_end' => 'required|date|after_or_equal:date_start',
@@ -58,9 +58,12 @@ class TravelFormController extends Controller
             'amount' => 'required|numeric|min:0', 
         ]);
 
-        $user = Auth::user()->only(['id','first_name', 'last_name', 'middle_name']);
+        $user = Auth::user()->only(['first_name', 'last_name', 'middle_name']);
 
         $request->merge($user);
+        $request->merge([
+            'user_id'=>Auth::user()->id
+        ]);
 
        $departments = Department::whereIn('id', UserDepartment::where('user_id', auth()
             ->id())
@@ -87,12 +90,25 @@ class TravelFormController extends Controller
 
    
 
-    public function submit($travelFormData){
+    public function submit(Request $request){
 
-            $travelForm = TravelForm::create($travelFormData->all());
+            $travelForm = TravelForm::create($request->only([
+                'user_id',
+                'date_start',
+                'date_end',
+                'description',
+                'place',
+                'purpose',
+                'budget_type',
+                'budget_charged_to',
+                'contact_person',
+                'contact_person_no',
+                'amount',
+                'filing_date',
+            ]));
 
             if($travelForm){
-                return redirect()->back()->with('success', 'Travel request submitted successfully!.');
+                return redirect()->route('forms.travel-form')->with('success', 'Travel request submitted successfully!.');
             }else{
                 return redirect()->back()->with('error', 'Travel request submission failed!.');
             }

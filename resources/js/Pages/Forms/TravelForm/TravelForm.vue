@@ -192,7 +192,7 @@ export default {
         amount: this.budget.amount,
         budget_type: this.budget.selectedBudgetType,
         budget_charged_to: this.budget.selectedChargedTo,
-        filing_date: this.formData.filing_date ?? new Date().toString().split("T")[0],
+        filing_date: this.formData.filing_date ?? new Date().toISOString().split("T")[0],
       };
 
       Inertia.get("/forms/travel-form-preview", formData);

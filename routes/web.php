@@ -28,7 +28,7 @@ Route::middleware([Check2WayVerification::class])->group(function () {
     
         Route::post('/personal-details-update-submit', [PersonalDetailController::class, 'updatePersonalDetails']);
     
-        Route::get('/forms/travel-form-request', [TravelFormController::class, 'index']);
+        Route::get('/forms/travel-form-request', [TravelFormController::class, 'index'])->name('forms.travel-form');
         Route::get('/forms/leave-form-request', [LeaveFormController::class, 'index']);
     
         Route::post('/upload-cropped-profile-pic', [UserController::class, 'updateProfilePicture']);

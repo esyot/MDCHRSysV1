@@ -201,9 +201,9 @@ export default {
               id="departmental-office-budget"
               name="budget_charged"
               value="departmental-office-budget"
-              :checked="formData.budget_charged_to == 'Departmental/Office Budget'"
+              :checked="formData.budget_charged_to == 'Departmental/Office Fund'"
             />
-            <label for="departmental-office-budget">Departmental/Office Budget</label>
+            <label for="departmental-office-budget">Departmental/Office Fund</label>
           </div>
           <div class="mb-2">
             <input
@@ -813,8 +813,8 @@ textarea {
   flex-direction: column;
   font-size: 12px;
   color: #333;
-  text-align: center; /* Center align text if needed */
-  flex: 1; /* Make all labels take up equal space */
+  text-align: center;
+  flex: 1;
 }
 
 .input-group span {
@@ -822,12 +822,12 @@ textarea {
   font-weight: bold;
   padding: 5px;
   display: inline-block;
-  text-align: center; /* Center align dynamic content */
-  min-width: 120px; /* Ensure consistent width for span */
+  text-align: center;
+  min-width: 120px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Add ellipsis for overflow */
-  text-decoration: none; /* Ensure no underline from text styles */
+  text-overflow: ellipsis;
+  text-decoration: none;
 }
 
 .note label {
