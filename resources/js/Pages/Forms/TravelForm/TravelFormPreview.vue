@@ -1,12 +1,55 @@
 <script>
+import { Inertia } from "@inertiajs/inertia";
+
 export default {
   props: {
     formData: Object,
+    roles: Object,
+  },
+
+  data() {
+    return {
+      action: "",
+      confirmation_modal: false,
+    };
+  },
+
+  methods: {
+    confirmationModal(action) {
+      this.action = action;
+      this.confirmation_modal = !this.confirmation_modal;
+    },
+    submitForm() {
+      if (this.action == "edit") {
+        Inertia.get("/forms/travel-form-request/", this.formData);
+      } else if (this.action == "submit") {
+        Inertia.post("/forms/travel-form-submit", this.formData);
+      }
+    },
   },
 };
 </script>
 
 <template>
+  <div v-if="confirmation_modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-title">Confirmation</span>
+        <span class="x-btn">&times;</span>
+      </div>
+      <section>
+        {{
+          action === "edit"
+            ? "Are you sure to edit the contents?"
+            : "Are you sure to submit your form to your dean?"
+        }}
+      </section>
+      <footer>
+        <button class="no-btn" @click="confirmationModal">No</button>
+        <button class="yes-btn" @click="submitForm">Yes</button>
+      </footer>
+    </div>
+  </div>
   <div class="form-container">
     <div class="heading-container">
       <div class="heading-img">
@@ -18,11 +61,11 @@ export default {
         <text class="third">HUMAN RESOURCE OFFICE</text>
       </div>
     </div>
-    <h3 class="title-form">Travel Application Form</h3>
+    <h3 class="title title-form">Travel Application Form</h3>
     <div class="section">
       <div class="input-group">
         <label
-          >Office Department:
+          >Office/Department:
           <span v-for="department in formData.departments" :key="department">
             {{ department.name }}
           </span>
@@ -97,6 +140,7 @@ export default {
             name="budget_requirement"
             value="registration"
             :checked="formData.budget_type === 'Registration'"
+            readonly
           />
           <label for="registration">Registration</label>
         </div>
@@ -107,6 +151,7 @@ export default {
             name="budget_requirement"
             value="transportation"
             :checked="formData.budget_type === 'Transportation'"
+            readonly
           />
           <label for="transportation">Transportation</label>
         </div>
@@ -117,6 +162,7 @@ export default {
             name="budget_requirement"
             value="representation"
             :checked="formData.budget_type === 'Representation Allowance'"
+            readonly
           />
           <label for="representation">Representation Allowance</label>
         </div>
@@ -127,12 +173,13 @@ export default {
             name="budget_requirement"
             value="miscellaneous"
             :checked="formData.budget_type === 'Miscellaneous'"
+            readonly
           />
           <label for="miscellaneous">Miscellaneous</label>
         </div>
         <div class="amount">
           <label for="total">Total amount requested: </label>
-          <span>₱ {{ formData.amount }}.00 only</span>
+          <span class="underline"> ₱ {{ formData.amount }}.00 only </span>
         </div>
       </div>
 
@@ -184,7 +231,7 @@ export default {
             formData.last_name.toUpperCase()
           }}
         </p>
-        <p>Signature of Employee</p>
+        <p>Employee</p>
         <small
           >Note: this is a computer generated form and it doenst require a
           signature.</small
@@ -192,7 +239,7 @@ export default {
       </div>
       <div class="signature-box">
         <p>Endorsed by:</p>
-        <p>__________________________________</p>
+        <p class="underline">{{ formData.endorser_name }}</p>
         <p>Dean/Principal/Chairman/Head of Office</p>
         <small
           >Note: this is a computer generated form and it doenst require a
@@ -201,128 +248,175 @@ export default {
       </div>
     </div>
 
-    <h3 class="title">Details of Action on Application</h3>
-    <div class="box-container">
-      <div class="sextion">
-        <div class="lef-side">
-          <label>NUMBER OF DAYS TRAVELLED</label>
-          <div class="as-group">
-            <label>As of</label>
-            <input type="text" class="others" />
-          </div>
+    <div class="buttons-container">
+      <button type="button" class="edit" @click="confirmationModal('edit')">Edit</button>
+      <button type="button" class="submit" @click="confirmationModal('submit')">
+        Submit
+      </button>
+    </div>
 
-          <table>
-            <tr>
-              <th></th>
-              <th>1st sem</th>
-              <th>2nd sem</th>
-              <th>Summer</th>
-            </tr>
-            <tr>
-              <td>Previous total number of days travelled</td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Add this application</td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Total Days</td>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-          </table>
-
-          <div class="hr-officer">
-            <label for="">JOSEFINA J. PANGAN</label>
-            <label for="">HR Officer</label>
-          </div>
-        </div>
-
-        <div class="righ-section">
-          <div class="recommendation">
-            <h4>RECOMMENDATION</h4>
-            <div>
-              <input type="checkbox" id="approval" />
-              <label for="approval">For approval</label>
-            </div>
-            <div class="disapproval-section">
-              <input type="checkbox" id="disapproval" />
-              <label for="disapproval">For disapproval due to</label>
-
-              <textarea class="big-input"></textarea>
-            </div>
-
-            <div class="department-head">
+    <div v-if="formData.status">
+      <h3 class="title">Details of Action on Application</h3>
+      <div class="box-container">
+        <div class="sextion">
+          <div class="lef-side">
+            <label>NUMBER OF DAYS TRAVELLED</label>
+            <div class="as-group">
+              <label>As of</label>
               <input type="text" class="others" />
-              <label for="department_head">Department Head/Head of Office</label>
+            </div>
+
+            <table>
+              <tr>
+                <th></th>
+                <th>1st sem</th>
+                <th>2nd sem</th>
+                <th>Summer</th>
+              </tr>
+              <tr>
+                <td>Previous total number of days travelled</td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Add this application</td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Total Days</td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </table>
+
+            <div class="hr-officer">
+              <label for="">JOSEFINA J. PANGAN</label>
+              <label for="">HR Officer</label>
+            </div>
+          </div>
+
+          <div class="righ-section">
+            <div class="recommendation">
+              <h4>RECOMMENDATION</h4>
+
+              <div>
+                <input type="radio" id="approval" name="recommendation" />
+                <label for="approval">For approval</label>
+              </div>
+
+              <div class="disapproval-section">
+                <input type="radio" id="disapproval" name="recommendation" />
+                <label for="disapproval">For disapproval due to</label>
+
+                <textarea class="big-input"></textarea>
+              </div>
+
+              <div class="department-head">
+                <input type="text" class="others" />
+                <label for="department_head">Department Head/Head of Office</label>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <div class="backs-container">
+        <div class="last">
+          <div>
+            <label>Approved for:</label>
+            <input type="text" class="underlast" />
+            <label>days with pay</label>
+          </div>
+
+          <div>
+            <input type="text" class="underlast" />
+            <label>days without pay</label>
+          </div>
+
+          <div>
+            <input type="text" class="underlast" />
+            <label>others (Specify)</label>
+          </div>
+        </div>
+
+        <div class="disapproved">
+          <div>
+            <label>Disapproved due to:</label>
+            <textarea class="dis" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="names">
+          <div>
+            <label>ARTEMIO M. GULILAT, CPA</label>
+            <label>VP for Admin and Finance</label>
+          </div>
+          <div>
+            <label>MARIA NYMPA S. RESERVA, Ph.D.</label>
+            <label>VP for Academics</label>
+          </div>
+          <div>
+            <label>MARIANO M. LERIN, CPA, Ph.D.</label>
+            <label>President</label>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <div class="backs-container">
-      <div class="last">
-        <div>
-          <label>Approved for:</label>
-          <input type="text" class="underlast" />
-          <label>days with pay</label>
-        </div>
-
-        <div>
-          <input type="text" class="underlast" />
-          <label>days without pay</label>
-        </div>
-
-        <div>
-          <input type="text" class="underlast" />
-          <label>others (Specify)</label>
-        </div>
-      </div>
-
-      <div class="disapproved">
-        <div>
-          <label>Disapproved due to:</label>
-          <textarea class="dis" rows="2"></textarea>
-        </div>
-      </div>
-      <div class="names">
-        <div>
-          <label>ARTEMIO M. GULILAT, CPA</label>
-          <label>VP for Admin and Finance</label>
-        </div>
-        <div>
-          <label>MARIA NYMPA S. RESERVA, Ph.D.</label>
-          <label>VP for Academics</label>
-        </div>
-        <div>
-          <label>MARIANO M. LERIN, CPA, Ph.D.</label>
-          <label>President</label>
-        </div>
-      </div>
-    </div>
-
-    <div class="note">
+    <!-- <div class="note">
       <label for=""
         >Note: This form should be submitted in duplicate copy at least 10 days in
         advance.</label
       >
-    </div>
+    </div> -->
   </div>
 </template>
 <style scoped>
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  gap: 0.2rem;
+}
+
+.buttons-container .submit {
+  padding: 10px;
+  border: none;
+  background-color: rgb(0, 184, 34);
+  color: #fff;
+  border-radius: 5px;
+}
+
+.buttons-container .edit {
+  padding: 10px;
+  border: none;
+  background-color: rgb(28, 118, 245);
+  color: #fff;
+  border-radius: 5px;
+}
+
+.buttons-container .edit,
+.submit {
+  opacity: 75%;
+}
+.buttons-container .edit:hover,
+.submit:hover {
+  opacity: 100%;
+  cursor: pointer;
+}
 @font-face {
   font-family: "RM New Albion";
   src: url("/public/assets/fonts/rm_new_albion.woff") format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
+}
+
+.amount span {
+  font-size: 16px;
+  font-weight: bold;
 }
 
 .heading-text {
@@ -353,11 +447,7 @@ export default {
   gap: 1rem;
 }
 
-input {
-  pointer-events: none;
-}
 .form-container {
-  user-select: none;
   max-width: 1000px;
   margin: 20px auto;
   background-color: #fff;
@@ -564,9 +654,10 @@ table th {
   font-size: 12px;
   justify-content: space-between;
   align-items: flex-start;
+  pointer-events: none;
 }
 .left-side,
-.right-side {
+.righ-side {
   width: 48%;
 }
 
@@ -577,7 +668,7 @@ table th {
 }
 .amount {
   display: flex;
-  align-items: center;
+  align-items: start;
   gap: 10px;
 }
 .amount input {
@@ -600,7 +691,7 @@ table th {
   gap: 20px;
 }
 .lef-side,
-.righ-section {
+.right-section {
   flex: 1;
 }
 .disapproval-section {
@@ -687,7 +778,7 @@ textarea {
 .heading-text {
   align-items: center;
   text-align: center;
-  margin-right: 90px;
+  margin-righ: 90px;
 }
 .heading-img img {
   width: 80px;
@@ -710,27 +801,26 @@ textarea {
   margin-top: 10px;
 }
 
-.iinput-group {
+.input-group {
   display: flex;
-  justify-content: space-between; /* Equal spacing between items */
-  align-items: center; /* Align items vertically */
-  gap: 15px; /* Optional, for consistent spacing if needed */
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
 }
 
-.iinput-group label {
+.input-group label {
   display: flex;
-  flex-direction: column; /* Stack label and span vertically */
+  flex-direction: column;
   font-size: 12px;
   color: #333;
   text-align: center; /* Center align text if needed */
   flex: 1; /* Make all labels take up equal space */
 }
 
-.iinput-group span {
+.input-group span {
   font-size: 14px;
   font-weight: bold;
   padding: 5px;
-
   display: inline-block;
   text-align: center; /* Center align dynamic content */
   min-width: 120px; /* Ensure consistent width for span */
@@ -744,5 +834,86 @@ textarea {
   margin: 0 50px;
   font-size: 13px;
   font-weight: 600;
+}
+
+.modal {
+  display: flex;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+.modal-content {
+  background-color: #fff;
+  border-top: 4px solid rgb(45, 93, 235);
+  border-radius: 5px;
+  box-shadow: 20px 20px 20px 1.2px rgba(0, 0, 0, 0.1);
+  border: 1px solid #cccccc;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  padding: 2px;
+  border-bottom: 1px solid rgb(178, 178, 178);
+}
+
+.modal-header .modal-title {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 2px;
+}
+
+.modal-header .x-btn {
+  padding-right: 5px;
+  padding-top: 2px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.modal-header .x-btn:hover {
+  cursor: pointer;
+  opacity: 75%;
+}
+.modal-content section {
+  border-bottom: 1px solid #b2b2b2;
+  padding: 10px;
+}
+
+.modal-content footer {
+  display: flex;
+  justify-content: end;
+  padding: 5px;
+  gap: 0.2rem;
+  background-color: #ececec;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+.modal-content footer button {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  opacity: 75%;
+}
+
+.modal-content footer button:hover {
+  opacity: 100%;
+  cursor: pointer;
+}
+
+.modal-content .yes-btn {
+  background-color: rgb(28, 118, 245);
+  color: #fff;
+}
+
+.modal-content .no-btn {
+  background-color: rgb(190, 2, 2);
+  color: #fff;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 </style>

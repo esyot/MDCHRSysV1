@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Auth;
 
 class TravelFormController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-
+   
         $this->globalVariables();
         $roles = $this->roles;
 
@@ -31,7 +31,6 @@ class TravelFormController extends Controller
         $budgetTypes = config('local_variables.budget_types');
         $budgetCharges = config('local_variables.budget_charges');
 
-       
         return inertia('Pages/Forms/TravelForm/TravelForm', [
 
             'user' => Auth::user(),
@@ -40,11 +39,12 @@ class TravelFormController extends Controller
             'budgetTypes' =>  $budgetTypes,
             'budgetCharges'=>  $budgetCharges,
             'messageSuccess' => session('success') ?? null,
+            'formData' => $request ?? null
         ]);
     }
 
     public function preview(Request $request ){
-
+      
         $request->validate([
             'date_start' => 'required|date',
             'date_end' => 'required|date|after_or_equal:date_start',
@@ -61,17 +61,26 @@ class TravelFormController extends Controller
         $user = Auth::user()->only(['id','first_name', 'last_name', 'middle_name']);
 
         $request->merge($user);
-        $departments_ids = UserDepartment::where('user_id', Auth::user()->id)->pluck('id'); 
 
-        $departments = Department::whereIn('id', $departments_ids)->get();
+       $departments = Department::whereIn('id', UserDepartment::where('user_id', auth()
+            ->id())
+            ->pluck('id'))
+            ->get();
+
         
         $request->merge([
             'departments' => $departments->toArray()
         ]);
+
+        $request->merge(['status'=>null]);
+
+        $this->globalVariables();
+        $roles = $this->roles;
         
       
         return inertia('Pages/Forms/TravelForm/TravelFormPreview', [
             'formData' => $request,
+            'roles' =>  $roles
         ]);
         
     }

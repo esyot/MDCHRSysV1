@@ -5,8 +5,6 @@
         <div class="forms-title">
           <span class="title">Travel details</span>
         </div>
-        <!-- Travel details form sections -->
-
         <div class="form-section">
           <label for="dates">Date Start of Travel:</label>
           <input
@@ -141,12 +139,7 @@
           />
         </div>
         <div class="form-submit">
-          <button class="preview" title="Preview form">
-            <i class="fas fa-eye"></i>
-            <span> Preview</span>
-          </button>
           <button class="submit" title="Submit for approval">
-            <i class="fas fa-check"></i>
             <span> Submit</span>
           </button>
         </div>
@@ -163,21 +156,23 @@ export default {
   props: {
     budgetTypes: Object,
     budgetCharges: Object,
+    formData: Object,
   },
   data() {
     return {
       travelForm: {
-        date_start: "",
-        date_end: "",
-        place: "",
-        purpose: "",
-        contact_person: "",
-        contact_person_no: "",
-        description: "",
+        date_start: this.formData.date_start ?? "",
+        date_end: this.formData.date_end ?? "",
+        place: this.formData.place ?? "",
+        purpose: this.formData.purpose ?? "",
+        contact_person: this.formData.contact_person ?? "",
+        contact_person_no: this.formData.contact_person_no ?? "",
+        description: this.formData.description ?? "",
       },
       budget: {
-        amount: "",
-        selectedChargedTo: "",
+        amount: this.formData.amount ?? "",
+        selectedChargedTo: this.formData.budget_charged_to ?? "",
+        selectedBudgetType: this.formData.budget_type ?? "",
         othersReason: "",
       },
     };
@@ -197,7 +192,7 @@ export default {
         amount: this.budget.amount,
         budget_type: this.budget.selectedBudgetType,
         budget_charged_to: this.budget.selectedChargedTo,
-        filing_date: new Date(),
+        filing_date: this.formData.filing_date ?? new Date().toString().split("T")[0],
       };
 
       Inertia.get("/forms/travel-form-preview", formData);
