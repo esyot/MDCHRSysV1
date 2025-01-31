@@ -41,6 +41,13 @@ class TravelFormController extends Controller
         ]);
     }
 
+    public function preview(Request $request ){
+
+        return inertia('Pages/Forms/TravelForm/TravelFormPreview', [
+          
+        ]);
+    }
+
     public function submit(Request $request){
 
         $request->validate([

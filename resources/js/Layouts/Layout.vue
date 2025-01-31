@@ -57,7 +57,7 @@ export default {
     <Leftbar :roles="roles" />
     <div class="main-content">
       <Topbar :user="user" />
-      <slot></slot>
+      <slot> </slot>
       <Footer />
     </div>
   </div>

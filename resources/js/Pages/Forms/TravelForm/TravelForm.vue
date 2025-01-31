@@ -140,18 +140,17 @@
             required
           />
         </div>
+        <div class="form-submit">
+          <button class="preview" title="Preview form">
+            <i class="fas fa-eye"></i>
+            <span> Preview</span>
+          </button>
+          <button class="submit" title="Submit for approval">
+            <i class="fas fa-check"></i>
+            <span> Submit</span>
+          </button>
+        </div>
       </div>
-    </div>
-
-    <div class="form-submit">
-      <button class="preview" title="Preview form">
-        <i class="fas fa-eye"></i>
-        <span> Preview</span>
-      </button>
-      <button class="submit" title="Submit for approval">
-        <i class="fas fa-check"></i>
-        <span> Submit</span>
-      </button>
     </div>
   </form>
 </template>
@@ -217,7 +216,7 @@ export default {
 .forms-container {
   display: flex;
   flex-wrap: wrap;
-  max-height: 75vh;
+  max-height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   margin-top: 5px;

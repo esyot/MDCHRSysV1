@@ -47,6 +47,8 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::post('/travel-form-submit', [TravelFormController::class, 'submit']);
 
         Route::get('/leave-form-preview', [LeaveFormController::class, 'preview']);
+
+        Route::get('/forms/travel-form-preview', [TravelFormController::class, 'preview']);
         
     });
     }); 
@@ -63,5 +65,11 @@ Route::get('/logout', function () {
     Session::put('authenticate', false);
     Session::put('code', null);
     return redirect()->route('login');
+});
+
+
+Route::get('/forms/evaluation-form', function(){
+
+    return inertia('Pages/Forms/Evaluation/Evaluation');
 });
 
