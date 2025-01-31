@@ -295,7 +295,7 @@ export default {
                     course: "",
                     units: "",
                     year_graduated: "",
-                    acads_honors_received: "",
+                    acad_honors_received: "",
                 },
 
                 newChildName: "",
