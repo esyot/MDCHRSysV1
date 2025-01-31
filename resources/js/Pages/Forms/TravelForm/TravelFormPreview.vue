@@ -1,3 +1,11 @@
+<script>
+export default {
+  props: {
+    formData: Object,
+  },
+};
+</script>
+
 <template>
   <div class="form-container">
     <div class="heading-container">
@@ -5,33 +13,47 @@
         <img src="/public/assets/images/mdc-logo.png" alt="MDC LOGO" />
       </div>
       <div class="heading-text">
-        <h1 class="school-name">Mater Dei College</h1>
-        <h4 class="location">Tubigon, Bohol</h4>
-        <h4 class="department">HUMAN RESOURCE OFFICE</h4>
+        <text class="first">Mater Dei College</text>
+        <text class="second">Tubigon, Bohol</text>
+        <text class="third">HUMAN RESOURCE OFFICE</text>
       </div>
     </div>
     <h3 class="title-form">Travel Application Form</h3>
     <div class="section">
       <div class="input-group">
-        <label>Office/Department: </label>
-        <label>Last Name: </label>
-        <label>First Name: </label>
-        <label>Middle Name: </label>
+        <label
+          >Office Department:
+          <span v-for="department in formData.departments" :key="department">
+            {{ department.name }}
+          </span>
+        </label>
+        <label
+          >Last Name:
+          <span>{{ formData.last_name }}</span>
+        </label>
+        <label
+          >First Name:
+          <span>{{ formData.first_name }}</span>
+        </label>
+        <label
+          >Middle Name:
+          <span>{{ formData.middle_name }}</span>
+        </label>
       </div>
     </div>
-    <div class="ssection">
+    <div class="section">
       <div class="input-group">
         <label
           >Date of Filing:
-          <span></span>
+          <span>{{ formData.filing_date }}</span>
         </label>
         <label
           >Position:
-          <span></span>
+          <span>{{ formData.position }}</span>
         </label>
         <label
           >Rank:
-          <span></span>
+          <span>{{ formData.rank }}</span>
         </label>
       </div>
     </div>
@@ -41,23 +63,26 @@
       <div class="travel-group">
         <div>
           <label>Date(s) of Travel:</label>
-          <span></span>
+          <span>Start: {{ formData.date_start }} End: {{ formData.date_end }} </span>
         </div>
+
         <div>
           <label>Place:</label>
-          <span></span>
+          <span>{{ formData.place }}</span>
         </div>
         <div>
           <label>Purpose/Event:</label>
-          <span></span>
+          <span>{{ formData.purpose }}</span>
         </div>
         <div>
-          <label>Organizer/Contact Person:</label>
-          <span></span>
+          <label>Contact Person:</label>
+          <span>{{ formData.contact_person }} - {{ formData.contact_person_no }}</span>
         </div>
         <div class="full-width">
           <label>Short Description:</label>
-          <div class="description"></div>
+          <div class="description">
+            {{ formData.description }}
+          </div>
         </div>
       </div>
     </div>
@@ -71,6 +96,7 @@
             id="registration"
             name="budget_requirement"
             value="registration"
+            :checked="formData.budget_type === 'Registration'"
           />
           <label for="registration">Registration</label>
         </div>
@@ -80,6 +106,7 @@
             id="transportation"
             name="budget_requirement"
             value="transportation"
+            :checked="formData.budget_type === 'Transportation'"
           />
           <label for="transportation">Transportation</label>
         </div>
@@ -89,6 +116,7 @@
             id="representation"
             name="budget_requirement"
             value="representation"
+            :checked="formData.budget_type === 'Representation Allowance'"
           />
           <label for="representation">Representation Allowance</label>
         </div>
@@ -98,12 +126,13 @@
             id="miscellaneous"
             name="budget_requirement"
             value="miscellaneous"
+            :checked="formData.budget_type === 'Miscellaneous'"
           />
           <label for="miscellaneous">Miscellaneous</label>
         </div>
         <div class="amount">
           <label for="total">Total amount requested: </label>
-          <input type="text" class="underline" />
+          <span>₱ {{ formData.amount }}.00 only</span>
         </div>
       </div>
 
@@ -125,6 +154,7 @@
               id="departmental-office-budget"
               name="budget_charged"
               value="departmental-office-budget"
+              :checked="formData.budget_charged_to == 'Departmental/Office Budget'"
             />
             <label for="departmental-office-budget">Departmental/Office Budget</label>
           </div>
@@ -134,13 +164,9 @@
               id="school-fund"
               name="budget_charged"
               value="school-fund"
+              :checked="formData.budget_charged_to == 'School Fund'"
             />
             <label for="school-fund">School Fund</label>
-          </div>
-          <div>
-            <input type="checkbox" id="others" name="budget_charged" value="others" />
-            <label for="others">Others,specify</label>
-            <input type="text" class="others" />
           </div>
         </div>
       </div>
@@ -149,13 +175,29 @@
     <div class="signature-section">
       <div class="signature-box">
         <p>Requested by:</p>
-        <p>_________________________</p>
+        <p class="underline">
+          {{
+            formData.first_name.toUpperCase() +
+            " " +
+            formData.middle_name.toUpperCase() +
+            " " +
+            formData.last_name.toUpperCase()
+          }}
+        </p>
         <p>Signature of Employee</p>
+        <small
+          >Note: this is a computer generated form and it doenst require a
+          signature.</small
+        >
       </div>
       <div class="signature-box">
         <p>Endorsed by:</p>
         <p>__________________________________</p>
         <p>Dean/Principal/Chairman/Head of Office</p>
+        <small
+          >Note: this is a computer generated form and it doenst require a
+          signature.</small
+        >
       </div>
     </div>
 
@@ -275,7 +317,47 @@
   </div>
 </template>
 <style scoped>
+@font-face {
+  font-family: "RM New Albion";
+  src: url("/public/assets/fonts/rm_new_albion.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.heading-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.heading-text .first {
+  font-size: 42pt !important;
+  font-family: "RM New Albion";
+  font-weight: bold;
+}
+.heading-text .second {
+  font-weight: bold;
+}
+
+.heading-text .third {
+  font-weight: bold;
+}
+
+.heading-container {
+  margin-left: 10px;
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  width: 100%;
+  gap: 1rem;
+}
+
+input {
+  pointer-events: none;
+}
 .form-container {
+  user-select: none;
   max-width: 1000px;
   margin: 20px auto;
   background-color: #fff;
@@ -601,13 +683,7 @@ textarea {
   word-wrap: break-word;
   white-space: normal;
 }
-.heading-container {
-  margin-left: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
+
 .heading-text {
   align-items: center;
   text-align: center;

@@ -9,4 +9,6 @@ class UserDepartment extends Model
 {
     /** @use HasFactory<\Database\Factories\UserDepartmentFactory> */
     use HasFactory;
+
+    protected $guarded = [];
 }

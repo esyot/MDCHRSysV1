@@ -197,9 +197,10 @@ export default {
         amount: this.budget.amount,
         budget_type: this.budget.selectedBudgetType,
         budget_charged_to: this.budget.selectedChargedTo,
+        filing_date: new Date(),
       };
 
-      Inertia.post("/travel-form-submit", formData);
+      Inertia.get("/forms/travel-form-preview", formData);
     },
   },
   layout: Layout,

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
 use App\Models\TravelForm;
 use App\Models\User;
+use App\Models\UserDepartment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -43,13 +45,6 @@ class TravelFormController extends Controller
 
     public function preview(Request $request ){
 
-        return inertia('Pages/Forms/TravelForm/TravelFormPreview', [
-          
-        ]);
-    }
-
-    public function submit(Request $request){
-
         $request->validate([
             'date_start' => 'required|date',
             'date_end' => 'required|date|after_or_equal:date_start',
@@ -60,17 +55,32 @@ class TravelFormController extends Controller
             'description' => 'required|string',
             'budget_type' => 'required|string|max:255',
             'budget_charged_to' => 'required|string|max:255',
-            'amount' => 'required|numeric|min:0',
-           
+            'amount' => 'required|numeric|min:0', 
         ]);
 
-        if($request){
+        $user = Auth::user()->only(['id','first_name', 'last_name', 'middle_name']);
 
-            $request->merge([
-                'user_id'=>Auth::user()->id
-            ]);
+        $request->merge($user);
+        $departments_ids = UserDepartment::where('user_id', Auth::user()->id)->pluck('id'); 
 
-            $travelForm = TravelForm::create($request->all());
+        $departments = Department::whereIn('id', $departments_ids)->get();
+        
+        $request->merge([
+            'departments' => $departments->toArray()
+        ]);
+        
+      
+        return inertia('Pages/Forms/TravelForm/TravelFormPreview', [
+            'formData' => $request,
+        ]);
+        
+    }
+
+   
+
+    public function submit($travelFormData){
+
+            $travelForm = TravelForm::create($travelFormData->all());
 
             if($travelForm){
                 return redirect()->back()->with('success', 'Travel request submitted successfully!.');
@@ -79,5 +89,5 @@ class TravelFormController extends Controller
             }
         }
         
-    }
+    
 }
