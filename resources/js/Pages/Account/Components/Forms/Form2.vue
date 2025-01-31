@@ -12,11 +12,7 @@
                 <option value="child">Children</option>
             </select>
         </div>
-        <div
-            v-if="selectedFamilyType === 'child'"
-            @click="addChild"
-            class="btn btn-primary mt-2"
-        >
+        <div v-if="selectedFamilyType === 'child'" @click="addChild">
             <button>+ Add Another Child</button>
         </div>
 

@@ -22,6 +22,7 @@ class AccountController extends Controller
             'userJobDetails',
             'userFamilies',
             'userEducationalBackgrounds',
+            'userProfessionalExaminations',
 
         ])
             ->where('users.id', Auth::user()->id)

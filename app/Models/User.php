@@ -31,6 +31,9 @@ class User extends Authenticatable
     public function userEducationalBackgrounds(){
         return $this->hasMany(UserEducationalBackground::class);
     }
+    public function userProfessionalExaminations(){
+        return $this->hasMany(UserProfessionalExamination::class);
+    }
 
 
 }

@@ -55,7 +55,9 @@
                 v-if="currentPage === 4"
                 :editMode="editMode"
                 :userDetails="userDetails"
+                :personalDetails="personalDetails"
                 @update-user-details="updateUserDetails"
+                @track-touched-field="trackTouchedField"
             />
             <Form5
                 v-if="currentPage === 5"
@@ -279,7 +281,7 @@ export default {
                     occupation: "",
                 },
 
-                userProfExamDetails: {
+                user_professional_examinations: {
                     title: "",
                     rating: "",
                     date: "",
