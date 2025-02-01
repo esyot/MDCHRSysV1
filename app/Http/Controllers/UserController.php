@@ -94,5 +94,6 @@ class UserController extends Controller
     
         return redirect()->back()->with('success', 'Account updated successfully!');
     }
+
     
 }    

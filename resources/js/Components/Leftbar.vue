@@ -39,8 +39,8 @@
                 <li><span>Request Leave Application</span></li>
               </InertiaLink>
 
-              <InertiaLink :href="'/forms/evaluation-form'" class="link">
-                <li><span>Evaluation</span></li>
+              <InertiaLink :href="'/forms/tracking'" class="link">
+                <li><span>Track Forms</span></li>
               </InertiaLink>
             </ul>
           </li>
@@ -55,6 +55,9 @@
               <li><span>Tracking</span></li>
               <li><span>Travel Application Requests </span></li>
               <li><span>Leave Application Requests</span></li>
+              <InertiaLink :href="'/forms/evaluation-form'" class="link">
+                <li><span>Evaluation</span></li>
+              </InertiaLink>
             </ul>
           </li>
           <li class="menu-li" title="About">

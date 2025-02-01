@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FormsController;
 use App\Http\Controllers\LeaveFormController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PersonalDetailController;
@@ -49,6 +50,8 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::get('/forms/leave-form-preview', [LeaveFormController::class, 'preview']);
 
         Route::get('/forms/travel-form-preview', [TravelFormController::class, 'preview']);
+
+        Route::get('/forms/tracking', [FormsController::class, 'index']);
         
     });
     }); 
