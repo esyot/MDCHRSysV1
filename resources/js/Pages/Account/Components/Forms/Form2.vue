@@ -12,6 +12,9 @@
                 <option value="child">Children</option>
             </select>
         </div>
+        <div v-if="selectedFamilyType === 'child'" @click="addChild">
+            <button>+ Add Another Child</button>
+        </div>
 
         <div v-if="selectedFamilyType">
             <div
@@ -96,6 +99,7 @@
                         @input="handleFieldFocus('user_families')"
                     />
                 </div>
+                <hr v-show="selectedFamilyType === 'child'" />
             </div>
 
             <div v-else>
@@ -185,7 +189,7 @@
         </div>
 
         <div
-            v-for="userFamily in userDetails.user_families"
+            v-for="userFamily in personalDetails.user_families"
             :key="userFamily.id"
             class="form-group"
         >
@@ -260,6 +264,15 @@ export default {
         handleFieldChange(fieldName) {
             this.$emit("update-user-details", {
                 [fieldName]: this.userDetails[fieldName],
+            });
+        },
+        addChild() {
+            this.userDetails.user_families.push({
+                type: "child",
+                last_name: "",
+                first_name: "",
+                middle_name: "",
+                ext: "",
             });
         },
     },

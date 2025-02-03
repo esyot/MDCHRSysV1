@@ -47,78 +47,105 @@
                 v-if="currentPage === 3"
                 :editMode="editMode"
                 :userDetails="userDetails"
+                :personalDetails="personalDetails"
                 @update-user-details="updateUserDetails"
+                @track-touched-field="trackTouchedField"
             />
             <Form4
                 v-if="currentPage === 4"
                 :editMode="editMode"
                 :userDetails="userDetails"
+                :personalDetails="personalDetails"
                 @update-user-details="updateUserDetails"
+                @track-touched-field="trackTouchedField"
             />
             <Form5
                 v-if="currentPage === 5"
+                :editMode="editMode"
                 :userDetails="userDetails"
+                :personalDetails="personalDetails"
                 @update-user-details="updateUserDetails"
+                @track-touched-field="trackTouchedField"
             />
             <Form6
                 v-if="currentPage === 6"
                 :editMode="editMode"
                 :userDetails="userDetails"
+                :personalDetails="personalDetails"
                 @update-user-details="updateUserDetails"
+                @track-touched-field="trackTouchedField"
             />
             <Form7
                 v-if="currentPage === 7"
                 :editMode="editMode"
                 :userDetails="userDetails"
+                :personalDetails="personalDetails"
                 @update-user-details="updateUserDetails"
+                @track-touched-field="trackTouchedField"
             />
             <Form8
                 v-if="currentPage === 8"
                 :editMode="editMode"
                 :userDetails="userDetails"
+                :personalDetails="personalDetails"
                 @update-user-details="updateUserDetails"
+                @track-touched-field="trackTouchedField"
             />
             <Form9
                 v-if="currentPage === 9"
                 :editMode="editMode"
                 :userDetails="userDetails"
+                :personalDetails="personalDetails"
                 @update-user-details="updateUserDetails"
+                @track-touched-field="trackTouchedField"
             />
             <Form10
                 v-if="currentPage === 10"
                 :editMode="editMode"
                 :userDetails="userDetails"
+                :personalDetails="personalDetails"
                 @update-user-details="updateUserDetails"
+                @track-touched-field="trackTouchedField"
             />
             <Form11
                 v-if="currentPage === 11"
                 :editMode="editMode"
                 :userDetails="userDetails"
+                :personalDetails="personalDetails"
                 @update-user-details="updateUserDetails"
+                @track-touched-field="trackTouchedField"
             />
             <Form12
                 v-if="currentPage === 12"
                 :editMode="editMode"
                 :userDetails="userDetails"
+                :personalDetails="personalDetails"
                 @update-user-details="updateUserDetails"
+                @track-touched-field="trackTouchedField"
             />
             <Form13
                 v-if="currentPage === 13"
                 :editMode="editMode"
                 :userDetails="userDetails"
+                :personalDetails="personalDetails"
                 @update-user-details="updateUserDetails"
+                @track-touched-field="trackTouchedField"
             />
             <Form14
                 v-if="currentPage === 14"
                 :editMode="editMode"
                 :userDetails="userDetails"
+                :personalDetails="personalDetails"
                 @update-user-details="updateUserDetails"
+                @track-touched-field="trackTouchedField"
             />
             <Form15
                 v-if="currentPage === 15"
                 :editMode="editMode"
                 :userDetails="userDetails"
+                :personalDetails="personalDetails"
                 @update-user-details="updateUserDetails"
+                @track-touched-field="trackTouchedField"
             />
         </div>
         <div class="footer">
@@ -277,7 +304,7 @@ export default {
                     occupation: "",
                 },
 
-                userProfExamDetails: {
+                user_professional_examinations: {
                     title: "",
                     rating: "",
                     date: "",
@@ -286,34 +313,34 @@ export default {
                     validity: "",
                 },
 
-                educDetails: {
+                user_educational_backgrounds: {
+                    educLevel: "",
                     school_name: "",
                     school_address: "",
                     course: "",
                     units: "",
                     year_graduated: "",
-                    acads_honors_received: "",
+                    acad_honors_received: "",
                 },
 
                 newChildName: "",
-                educLevel: "",
                 selectedLevel: "",
 
-                userAwardDetails: {
-                    date_recieved: "",
+                user_award_receives: {
+                    date_received: "",
                     title: "",
                     recognition_place: "",
                     awarded_by: "",
                 },
 
-                userAdministrativeAwardDetails: {
+                user_admin_pos_helds: {
                     date: "",
                     title: "",
                     recognition_place: "",
                     awarded_by: "",
                 },
 
-                userWorkExpDetails: {
+                user_work_experiences: {
                     date_from: "",
                     date_to: "",
                     position: "",
@@ -322,14 +349,14 @@ export default {
                     status: "",
                 },
 
-                userStudiesDetails: {
+                user_studies: {
                     date_published: "",
                     research_title: "",
                     journal_name: "",
                     link: "",
                 },
 
-                userParticipationDetails: {
+                user_participations: {
                     title: "",
                     date_from: "",
                     date_to: "",
@@ -337,7 +364,7 @@ export default {
                     position: "",
                 },
 
-                userSpecialTrainingDetails: {
+                user_special_trainings: {
                     title: "",
                     attendance_from: "",
                     attendance_to: "",
@@ -346,20 +373,20 @@ export default {
                     conducted_by: "",
                 },
 
-                userOtherInfo: {
+                user_other_infos: {
                     skill: "",
                     recognition_title: "",
                     org_name: "",
                 },
 
-                userCurAssignDetails: {
+                user_school_curriculars: {
                     designation: "",
                     event_name: "",
                     title: "",
                     date: "",
                 },
 
-                userOtherDetails: {
+                user_other_details: {
                     administrative_offense: "",
                     criminal_charge: "",
                     tribunal: "",
@@ -367,7 +394,7 @@ export default {
                     election_candidacy: "",
                 },
 
-                userRefDetails: {
+                user_references: {
                     name: "",
                     address_id: "",
                     contact_no: "",

@@ -21,10 +21,23 @@ class AccountController extends Controller
             'personalDetails.residentialAddress',
             'userJobDetails',
             'userFamilies',
+            'userEducationalBackgrounds',
+            'userProfessionalExaminations',
+            'userAwardReceives',
+            'userAdminPosHelds',
+            'userWorkExperiences',
+            'userStudies',
+            'userParticipations',
+            'userSpecialTrainings',
+            'userOtherInfos',
+            'userSchoolCurriculars',
+            'userOtherDetails',
+            'userReferences',
 
         ])
             ->where('users.id', Auth::user()->id)
             ->first();
+
 
         $user = User::find(Auth::user()->id);
 
@@ -33,13 +46,13 @@ class AccountController extends Controller
         if($auth == true){
 
             $auth = true;
-            
+
         }else if($auth == null){
 
             $auth = false;
         }
 
-        
+
         return Inertia::render('Pages/Account/Account', [
             'user' =>  $user,
             'roles' => $roles,
@@ -52,15 +65,15 @@ class AccountController extends Controller
 
     public function accountFeatureUpdate(Request $request)
     {
-      
+
         $user = Auth::user();
-    
+
         $user->update([
             'is_update_with_email' => $request->is_update_with_email == 'on' ?  1 : 0 ,
             'is_two_step_verification' => $request->is_two_step_verification == 'on' ? 1 : 0,
         ]);
-       
+
         return redirect()->back()->with('success', 'Account settings updated successfully!');
     }
-    
+
 }
