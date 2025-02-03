@@ -9,4 +9,9 @@ class UserOtherDetail extends Model
 {
     /** @use HasFactory<\Database\Factories\UserOtherDetailFactory> */
     use HasFactory;
+
+     public function user(){
+        return $this->belongsTo(User::class);
+    }
+
 }

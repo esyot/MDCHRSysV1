@@ -23,6 +23,16 @@ class AccountController extends Controller
             'userFamilies',
             'userEducationalBackgrounds',
             'userProfessionalExaminations',
+            'userAwardReceives',
+            'userAdminPosHelds',
+            'userWorkExperiences',
+            'userStudies',
+            'userParticipations',
+            'userSpecialTrainings',
+            'userOtherInfos',
+            'userSchoolCurriculars',
+            'userOtherDetails',
+            'userReferences',
 
         ])
             ->where('users.id', Auth::user()->id)

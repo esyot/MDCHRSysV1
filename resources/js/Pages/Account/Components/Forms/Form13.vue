@@ -15,10 +15,12 @@
                         name="administrative_offense"
                         id="administrative_offense"
                         v-model="
-                            userDetails.userOtherDetails.administrative_offense
+                            userDetails.user_other_details
+                                .administrative_offense
                         "
                         value="yes"
                         class="form-control-radio"
+                        @input="handleFieldFocus(`user_other_details`)"
                     />
                     YES
                 </label>
@@ -28,10 +30,12 @@
                         name="administrative_offense"
                         id="administrative_offense"
                         v-model="
-                            userDetails.userOtherDetails.administrative_offense
+                            userDetails.user_other_details
+                                .administrative_offense
                         "
                         value="no"
                         class="form-control-radio"
+                        @input="handleFieldFocus(`user_other_details`)"
                     />
                     NO
                 </label>
@@ -39,7 +43,7 @@
             <div
                 class="form-group"
                 v-show="
-                    userDetails.userOtherDetails.administrative_offense ===
+                    userDetails.user_other_details.administrative_offense ===
                     'yes'
                 "
             >
@@ -48,11 +52,15 @@
                 >
                 <input
                     type="text"
-                    name="administrative_offense_details"
-                    id="administrative_offense_details"
-                    v-model="userDetails.administrative_offense_details"
+                    name="administrative_offense_details_yes"
+                    id="administrative_offense_details_yes"
+                    v-model="
+                        userDetails.user_other_details
+                            .administrative_offense_details
+                    "
                     class="form-control"
                     placeholder="Enter details..."
+                    @input="handleFieldFocus(`user_other_details`)"
                 />
             </div>
         </div>
@@ -66,9 +74,10 @@
                         type="radio"
                         name="criminal_charge"
                         id="criminal_charge"
-                        v-model="userDetails.userOtherDetails.criminal_charge"
+                        v-model="userDetails.user_other_details.criminal_charge"
                         value="yes"
                         class="form-control-radio"
+                        @input="handleFieldFocus(`user_other_details`)"
                     />
                     YES
                 </label>
@@ -77,27 +86,33 @@
                         type="radio"
                         name="criminal_charge"
                         id="criminal_charge"
-                        v-model="userDetails.userOtherDetails.criminal_charge"
+                        v-model="userDetails.user_other_details.criminal_charge"
                         value="no"
                         class="form-control-radio"
+                        @input="handleFieldFocus(`user_other_details`)"
                     />
                     NO
                 </label>
             </div>
             <div
                 class="form-group"
-                v-show="userDetails.userOtherDetails.criminal_charge === 'yes'"
+                v-show="
+                    userDetails.user_other_details.criminal_charge === 'yes'
+                "
             >
                 <label for="criminal_charge_details"
                     >If YES, give details:</label
                 >
                 <input
                     type="text"
-                    name="criminal_charge_details"
-                    id="criminal_charge_details"
-                    v-model="userDetails.criminal_charge_details"
+                    name="criminal_charge_details_yes"
+                    id="criminal_charge_details_yes"
+                    v-model="
+                        userDetails.user_other_details.criminal_charge_details
+                    "
                     class="form-control"
                     placeholder="Enter details..."
+                    @input="handleFieldFocus(`user_other_details`)"
                 />
             </div>
         </div>
@@ -113,9 +128,10 @@
                         type="radio"
                         name="tribunal"
                         id="tribunal"
-                        v-model="userDetails.userOtherDetails.tribunal"
+                        v-model="userDetails.user_other_details.tribunal"
                         value="yes"
                         class="form-control-radio"
+                        @input="handleFieldFocus(`user_other_details`)"
                     />
                     YES
                 </label>
@@ -124,25 +140,27 @@
                         type="radio"
                         name="tribunal"
                         id="tribunal"
-                        v-model="userDetails.userOtherDetails.tribunal"
+                        v-model="userDetails.user_other_details.tribunal"
                         value="no"
                         class="form-control-radio"
+                        @input="handleFieldFocus(`user_other_details`)"
                     />
                     NO
                 </label>
             </div>
             <div
                 class="form-group"
-                v-show="userDetails.userOtherDetails.tribunal === 'yes'"
+                v-show="userDetails.user_other_details.tribunal === 'yes'"
             >
                 <label for="tribunal_details">If YES, give details:</label>
                 <input
                     type="text"
-                    name="tribunal_details"
-                    id="tribunal_details"
-                    v-model="userDetails.tribunal_details"
+                    name="tribunal_details_yes"
+                    id="tribunal_details_yes"
+                    v-model="userDetails.user_other_details.tribunal_details"
                     class="form-control"
                     placeholder="Enter details..."
+                    @input="handleFieldFocus(`user_other_details`)"
                 />
             </div>
         </div>
@@ -161,10 +179,11 @@
                         name="service_separation"
                         id="service_separation"
                         v-model="
-                            userDetails.userOtherDetails.service_separation
+                            userDetails.user_other_details.service_separation
                         "
                         value="yes"
                         class="form-control-radio"
+                        @input="handleFieldFocus(`user_other_details`)"
                     />
                     YES
                 </label>
@@ -174,10 +193,11 @@
                         name="service_separation"
                         id="service_separation"
                         v-model="
-                            userDetails.userOtherDetails.service_separation
+                            userDetails.user_other_details.service_separation
                         "
                         value="no"
                         class="form-control-radio"
+                        @input="handleFieldFocus(`user_other_details`)"
                     />
                     NO
                 </label>
@@ -185,7 +205,7 @@
             <div
                 class="form-group"
                 v-show="
-                    userDetails.userOtherDetails.service_separation === 'yes'
+                    userDetails.user_other_details.service_separation === 'yes'
                 "
             >
                 <label for="service_separation_details"
@@ -193,11 +213,15 @@
                 >
                 <input
                     type="text"
-                    name="service_separation_details"
-                    id="service_separation_details"
-                    v-model="userDetails.service_separation_details"
+                    name="service_separation_details_yes"
+                    id="service_separation_details_yes"
+                    v-model="
+                        userDetails.user_other_details
+                            .service_separation_details
+                    "
                     class="form-control"
                     placeholder="Enter details..."
+                    @input="handleFieldFocus(`user_other_details`)"
                 />
             </div>
         </div>
@@ -213,10 +237,11 @@
                         name="election_candidacy"
                         id="election_candidacy"
                         v-model="
-                            userDetails.userOtherDetails.election_candidacy
+                            userDetails.user_other_details.election_candidacy
                         "
                         value="yes"
                         class="form-control-radio"
+                        @input="handleFieldFocus(`user_other_details`)"
                     />
                     YES
                 </label>
@@ -226,10 +251,11 @@
                         name="election_candidacy"
                         id="election_candidacy"
                         v-model="
-                            userDetails.userOtherDetails.election_candidacy
+                            userDetails.user_other_details.election_candidacy
                         "
                         value="no"
                         class="form-control-radio"
+                        @input="handleFieldFocus(`user_other_details`)"
                     />
                     NO
                 </label>
@@ -237,7 +263,7 @@
             <div
                 class="form-group"
                 v-show="
-                    userDetails.userOtherDetails.election_candidacy === 'yes'
+                    userDetails.user_other_details.election_candidacy === 'yes'
                 "
             >
                 <label for="election_candidacy_details"
@@ -245,11 +271,15 @@
                 >
                 <input
                     type="text"
-                    name="election_candidacy_details"
-                    id="election_candidacy"
-                    v-model="userDetails.election_candidacy_details"
+                    name="election_candidacy_details_yes"
+                    id="election_candidacy_details_yes"
+                    v-model="
+                        userDetails.user_other_details
+                            .election_candidacy_details
+                    "
                     class="form-control"
                     placeholder="Enter details..."
+                    @input="handleFieldFocus(`user_other_details`)"
                 />
             </div>
         </div>
@@ -257,9 +287,7 @@
 
     <div class="personal-details-items" v-if="editMode == false">
         <div class="title-container">
-            <span class="title"
-                >CURRICULAR AND SCHOOL COMMITTEE ASSIGNMENTS</span
-            >
+            <span class="title">ADDITIONAL DETAILS</span>
         </div>
     </div>
 </template>
@@ -270,13 +298,32 @@ export default {
     props: {
         userDetails: Object,
         editMode: Boolean,
+        personalDetails: Object,
+    },
+    methods: {
+        handleFieldFocus(fieldName) {
+            this.$emit("track-touched-field", fieldName);
+        },
+
+        handleFieldChange(fieldName) {
+            this.$emit("update-user-details", {
+                [fieldName]: this.userDetails[fieldName],
+            });
+        },
     },
     watch: {
-        userDetails: {
+        personalDetails: {
             handler(newVal) {
-                this.$emit("update-user-details", newVal);
+                this.userDetails.user_other_details =
+                    newVal.user_other_details || {
+                        administrative_offense: "",
+                        criminal_charge: "",
+                        tribunal: "",
+                        service_separation: "",
+                        election_candidacy: "",
+                    };
             },
-            deep: true,
+            immediate: true,
         },
     },
 };

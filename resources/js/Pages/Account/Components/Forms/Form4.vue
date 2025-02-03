@@ -4,7 +4,7 @@
             <span class="title">PROFESSIONAL EXAMINATION FORM</span>
         </div>
         <div>
-            <button @click="addField">+ Add Another Field</button>
+            <button @click="addField">Add Field</button>
         </div>
         <div
             v-for="(

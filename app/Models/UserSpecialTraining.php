@@ -9,4 +9,8 @@ class UserSpecialTraining extends Model
 {
     /** @use HasFactory<\Database\Factories\UserSpecialTrainingFactory> */
     use HasFactory;
+
+     public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

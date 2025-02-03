@@ -34,6 +34,35 @@ class User extends Authenticatable
     public function userProfessionalExaminations(){
         return $this->hasMany(UserProfessionalExamination::class);
     }
+    public function userAwardReceives(){
+        return $this->hasMany(UserAwardReceive::class);
+    }
+    public function userAdminPosHelds(){
+        return $this->hasMany(UserAdministrativePositionsHeld::class);
+    }
+    public function userWorkExperiences(){
+        return $this->hasMany(UserWorkExperience::class);
+    }
+    public function userStudies(){
+        return $this->hasMany(UserStudy::class);
+    }
 
-
+    public function userParticipations(){
+        return $this->hasMany(UserParticipation::class);
+    }
+    public function userSpecialTrainings(){
+        return $this->hasMany(UserSpecialTraining::class);
+    }
+    public function userOtherInfos(){
+        return $this->hasMany(UserOtherInformation::class);
+    }
+    public function userSchoolCurriculars(){
+        return $this->hasMany(UserSchoolCurricular::class);
+    }
+    public function userOtherDetails(){
+        return $this->hasMany(UserOtherDetail::class);
+    }
+    public function userReferences(){
+        return $this->hasMany(UserReference::class);
+    }
 }

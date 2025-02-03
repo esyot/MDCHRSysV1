@@ -9,4 +9,8 @@ class UserAdministrativePositionsHeld extends Model
 {
     /** @use HasFactory<\Database\Factories\UserAdministrativePositionsHeldFactory> */
     use HasFactory;
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

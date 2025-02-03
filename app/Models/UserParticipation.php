@@ -9,4 +9,8 @@ class UserParticipation extends Model
 {
     /** @use HasFactory<\Database\Factories\UserParticipationFactory> */
     use HasFactory;
+
+     public function user(){
+        return $this->belongsTo(User::class);
+    }
 }
