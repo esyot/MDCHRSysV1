@@ -39,7 +39,9 @@ class TravelFormController extends Controller
             'budgetTypes' =>  $budgetTypes,
             'budgetCharges'=>  $budgetCharges,
             'messageSuccess' => session('success') ?? null,
-            'formData' => $request ?? null
+            'formData' => $request ?? null,
+            'pageTitle' => 'Travel Form'
+
         ]);
     }
 
@@ -108,7 +110,7 @@ class TravelFormController extends Controller
             ]));
 
             if($travelForm){
-                return redirect()->route('forms.travel-form')->with('success', 'Travel request submitted successfully!.');
+                return redirect()->route('forms.tracking')->with('success', 'Travel request submitted successfully!.');
             }else{
                 return redirect()->back()->with('error', 'Travel request submission failed!.');
             }

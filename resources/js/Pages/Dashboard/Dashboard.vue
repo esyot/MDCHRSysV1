@@ -32,15 +32,6 @@
           <span>7</span>
         </div>
       </section>
-      <section class="charts">
-        <div class="chart">
-          <BarChart :data="chartData" :options="chartOptions" />
-        </div>
-
-        <div class="chart">
-          <PieChart :data="pieChartData" :options="pieChartOptions" />
-        </div>
-      </section>
     </div>
   </div>
 </template>
@@ -48,109 +39,10 @@
 <script>
 import Layout from "@/Layouts/Layout.vue";
 import { defineComponent } from "vue";
-import { Bar } from "vue-chartjs";
-import { Pie } from "vue-chartjs";
-
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  ArcElement,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-
-ChartJS.register(
-  ArcElement,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
 
 export default defineComponent({
   name: "BarChartComponent",
   layout: Layout,
-  components: {
-    BarChart: Bar,
-    PieChart: Pie,
-  },
-  data() {
-    return {
-      chartData: {
-        labels: ["on leave", "on travel"],
-        datasets: [
-          {
-            label: "Count",
-            data: [400, 450],
-            backgroundColor: "#42A5F5",
-            borderColor: "#1E88E5",
-            borderWidth: 1,
-            textColor: "#fff",
-          },
-        ],
-      },
-
-      chartOptions: {
-        responsive: true,
-        maintainAspectRatio: false,
-        aspectRatio: 2,
-        plugins: {
-          title: {
-            display: true,
-            text: "Status",
-          },
-          tooltip: {
-            callbacks: {
-              label: function (tooltipItem) {
-                return tooltipItem.raw;
-              },
-            },
-          },
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
-      },
-
-      pieChartData: {
-        labels: ["On Leave", "On Travel"],
-        datasets: [
-          {
-            label: "User Status Overview",
-            data: [23, 2],
-            backgroundColor: ["#FFB74D", "#42A5F5"],
-            hoverOffset: 4,
-          },
-        ],
-      },
-
-      pieChartOptions: {
-        responsive: true,
-        maintainAspectRatio: false,
-        aspectRatio: 2,
-        plugins: {
-          title: {
-            display: true,
-            text: "Status",
-          },
-          tooltip: {
-            callbacks: {
-              label: function (tooltipItem) {
-                return tooltipItem.label + ": " + tooltipItem.raw + " users";
-              },
-            },
-          },
-        },
-      },
-    };
-  },
 });
 </script>
 
@@ -189,8 +81,9 @@ export default defineComponent({
 
 .content-container .card:hover {
   scale: 90%;
-  transition-duration: 300ms;
+  transition-duration: 600ms;
   transition-property: all;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .content-container .card span {

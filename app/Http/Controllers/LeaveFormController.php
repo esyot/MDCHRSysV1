@@ -27,7 +27,8 @@ class LeaveFormController extends Controller
 
             'user' => Auth::user(),
             'roles' => $roles,
-            'personalDetails' => $personalDetails->toArray()
+            'personalDetails' => $personalDetails->toArray(),
+            'pageTitle'=> 'Leave Form'
         ]);
     }
 

@@ -19,6 +19,7 @@ class DashboardController extends Controller
         return Inertia::render('Pages/Dashboard/Dashboard', [
             'user' => Auth::user(),
             'roles' => $roles,
+            'pageTitle'=> 'Dashboard',
         ]);
     }
 }

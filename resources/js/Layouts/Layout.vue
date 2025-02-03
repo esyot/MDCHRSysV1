@@ -15,6 +15,7 @@ export default {
     user: Object,
     roles: Object,
     messageSuccess: String,
+    pageTitle: String,
   },
 
   data() {
@@ -56,7 +57,7 @@ export default {
     />
     <Leftbar :roles="roles" />
     <div class="main-content">
-      <Topbar :user="user" />
+      <Topbar :pageTitle="pageTitle" :user="user" />
       <slot> </slot>
       <Footer />
     </div>

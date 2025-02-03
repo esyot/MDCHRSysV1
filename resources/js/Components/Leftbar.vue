@@ -1,3 +1,35 @@
+<script>
+import { InertiaLink } from "@inertiajs/inertia-vue3";
+
+export default {
+  props: {
+    roles: Object,
+  },
+  components: {
+    InertiaLink,
+  },
+  methods: {
+    openSubMenu(menuName) {
+      if (menuName === "Services") {
+        const submenu = document.getElementById("submenu-services");
+        if (submenu.style.display === "block") {
+          submenu.style.display = "none";
+        } else {
+          submenu.style.display = "block";
+        }
+      } else if (menuName === "Users") {
+        const submenu = document.getElementById("submenu-users");
+        if (submenu.style.display === "block") {
+          submenu.style.display = "none";
+        } else {
+          submenu.style.display = "block";
+        }
+      }
+    },
+  },
+};
+</script>
+
 <template>
   <div id="sidebar" class="sidebar">
     <div class="sidebar-content">
@@ -5,10 +37,8 @@
         <div class="logo-img-container">
           <img src="/public/assets/images/mdc-logo.png" class="logo-img" alt="Logo" />
         </div>
-
-        <span id="app-name">MDC - HR System</span>
+        <span id="app-name">MDC - HR Sys v1.0</span>
       </div>
-
       <div>
         <span v-for="role in roles" :key="role" class="role-desc">{{ role }}</span>
       </div>
@@ -53,8 +83,8 @@
 
             <ul id="submenu-users" class="submenu">
               <li><span>Tracking</span></li>
-              <li><span>Travel Application Requests </span></li>
-              <li><span>Leave Application Requests</span></li>
+              <li><span>Travel Requests </span></li>
+              <li><span>Leave Requests</span></li>
               <InertiaLink :href="'/forms/evaluation-form'" class="link">
                 <li><span>Evaluation</span></li>
               </InertiaLink>
@@ -72,44 +102,40 @@
   </div>
 </template>
 
-<script>
-import { InertiaLink } from "@inertiajs/inertia-vue3";
-
-export default {
-  props: {
-    roles: Object,
-  },
-  components: {
-    InertiaLink,
-  },
-  methods: {
-    openSubMenu(menuName) {
-      if (menuName === "Services") {
-        const submenu = document.getElementById("submenu-services");
-        if (submenu.style.display === "block") {
-          submenu.style.display = "none";
-        } else {
-          submenu.style.display = "block";
-        }
-      } else if (menuName === "Users") {
-        const submenu = document.getElementById("submenu-users");
-        if (submenu.style.display === "block") {
-          submenu.style.display = "none";
-        } else {
-          submenu.style.display = "block";
-        }
-      }
-    },
-  },
-};
-</script>
-
 <style scoped>
 @media (orientation: portrait) {
   .sidebar {
     display: none;
   }
 }
+.sidebar {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  width: 200px;
+  background: linear-gradient(to bottom, #34ace0, #012c46);
+  color: white;
+  height: 100%;
+  user-select: none;
+  z-index: 100;
+  box-shadow: 5px 0px 10px rgba(0, 0, 0, 0.4);
+}
+
+.sidebar.hidden {
+  transform: translateX(-100%);
+}
+
+#app-name {
+  font-weight: bold;
+  margin-top: 5px;
+  filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.5));
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 hr {
   border: 0;
   height: 1px;
@@ -129,30 +155,6 @@ hr {
 
 .sidebar-open {
   width: 20px;
-}
-
-.sidebar {
-  overflow-x: hidden;
-  overflow-y: hidden;
-  width: 200px;
-  background: linear-gradient(to bottom, #34ace0, #043b5c);
-  color: white;
-  height: 100%;
-  box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.1);
-  transform: translateX(0);
-  transition: transform 0.3s ease-in-out;
-  user-select: none;
-  z-index: 50;
-}
-
-.sidebar.hidden {
-  transform: translateX(-100%);
-}
-
-.sidebar-content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
 }
 
 .logo {
@@ -207,20 +209,25 @@ h1 {
 
 .menu li {
   cursor: pointer;
+  width: 150px;
 }
 
 .menu li span {
   opacity: 75%;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .menu li i {
   opacity: 30%;
 }
 
-.menu li:hover span,
+.menu li:hover span:hover,
 .menu li:hover i {
   opacity: 100%;
+  filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.5));
+  scale: 1.2;
+  padding: 5px;
+  transition-duration: 600ms;
 }
 
 .submenu {
