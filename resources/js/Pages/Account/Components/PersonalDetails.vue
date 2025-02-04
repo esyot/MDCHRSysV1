@@ -402,7 +402,8 @@ export default {
 
                 seletedId: "",
 
-                userValidId: {
+                user_valid_ids: {
+                    id_type: "",
                     id_no: "",
                     date_issued: "",
                     date_expiry: "",

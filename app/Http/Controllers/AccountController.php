@@ -33,6 +33,7 @@ class AccountController extends Controller
             'userSchoolCurriculars',
             'userOtherDetails',
             'userReferences',
+            'userValidIds',
 
         ])
             ->where('users.id', Auth::user()->id)
