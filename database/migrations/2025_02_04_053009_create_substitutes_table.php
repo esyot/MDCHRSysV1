@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('subject');
             $table->bigInteger('user_id')->unsigned();
             $table->string('days');
-            $table->time('time_start');
-            $table->time('time_end');
+            $table->time('start_time');
+            $table->time('end_time');
             $table->timestamps();
 
             $table->foreign('leave_form_id')->references('id')->on('leave_forms');

@@ -3,6 +3,7 @@ import Layout from "@/Layouts/Layout.vue";
 import { Inertia } from "@inertiajs/inertia";
 
 export default {
+  layout: Layout,
   props: {
     users: Object,
   },
@@ -10,10 +11,13 @@ export default {
     return {
       formData: {
         leave_type: "",
-        leave_vacation: "",
-        leave_sick: "",
-        leave_educ: "",
+        vacation_option: "",
+        convalescence_place: "",
         address: "",
+        sick_type: "",
+        illness: "",
+        reason: "",
+        other_reason: "",
       },
       teachingSubstitutes: [],
       days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -40,7 +44,7 @@ export default {
     },
     leaveFormPreview(event) {
       Inertia.get("/leave-form-preview", {
-        teachingSubstitutes: this.teachingSubstitutes,
+        substitutes: this.teachingSubstitutes,
         formData: this.formData,
       });
     },
@@ -73,19 +77,16 @@ export default {
     },
   },
   watch: {
-    "formData.leave_type"(newVal) {
-      if (newVal !== "VACATION") {
-        this.formData.leave_vacation = "";
-      }
-      if (newVal !== "SICK") {
-        this.formData.leave_sick = "";
-      }
-      if (newVal !== "EDUCATIONAL") {
-        this.formData.leave_educ = "";
-      }
+    "formData.leave_type": function () {
+      this.formData.vacation_option = "";
+      this.formData.convalescence_place = "";
+      this.formData.address = "";
+      this.formData.sick_type = "";
+      this.formData.illness = "";
+      this.formData.reason = "";
+      this.formData.other_reason = "";
     },
   },
-  layout: Layout,
 };
 </script>
 
@@ -100,26 +101,29 @@ export default {
         <div class="form-section">
           <label for="leave_name">TYPE OF LEAVE:</label>
           <select id="leave_name" v-model="formData.leave_type" class="forms-controller">
-            <option value="VACATION">VACATION</option>
-            <option value="MATERNITY">MATERNITY</option>
-            <option value="PATERNITY">PATERNITY</option>
-            <option value="SICK">SICK</option>
-            <option value="EDUCATIONAL">EDUCATIONAL</option>
-            <option value="OTHERS">OTHERS</option>
+            <option value="" disabled selected>Select a type of leave</option>
+            <option value="Vacation">VACATION</option>
+            <option value="Maternity">MATERNITY</option>
+            <option value="Paternity">PATERNITY</option>
+            <option value="Sick">SICK</option>
+            <option value="Educational">EDUCATIONAL</option>
+            <option value="Others">OTHERS</option>
           </select>
         </div>
-        <div class="form-section" v-show="formData.leave_type === 'VACATION'">
+
+        <div class="form-section" v-if="formData.leave_type === 'Vacation'">
           <label for="leave_type_vacation">In case of Vacation Leave:</label>
-          <select id="leave_type_vacation" v-model="formData.leave_vacation">
+          <select id="leave_type_vacation" v-model="formData.vacation_option">
+            <option value="" disabled selected>Select a country</option>
             <option value="Within the Philippines">Within the Philippines</option>
             <option value="Abroad">Abroad</option>
           </select>
         </div>
         <div
           class="form-section"
-          v-show="
-            formData.leave_type === 'VACATION' &&
-            formData.leave_vacation === 'Within the Philippines'
+          v-if="
+            formData.leave_type === 'Vacation' &&
+            formData.vacation_option === 'Within the Philippines'
           "
         >
           <label for="leave_vacation_phil"
@@ -133,7 +137,7 @@ export default {
             placeholder="eg., Bohol, Tubigon"
           />
         </div>
-        <div class="form-section" v-show="formData.leave_vacation === 'Abroad'">
+        <div class="form-section" v-if="formData.vacation_option === 'Abroad'">
           <label for="leave_vacation_abroad">If Abroad, please specify:</label>
           <input
             type="text"
@@ -143,24 +147,58 @@ export default {
             placeholder="eg., Tokyo, Japan"
           />
         </div>
-        <div class="form-section" v-show="formData.leave_type === 'SICK'">
+        <div class="form-section" v-if="formData.leave_type === 'Sick'">
           <label for="leave_type_sick">In case of Sick Leave:</label>
-          <select id="leave_type_sick" v-model="formData.leave_sick">
+          <select id="leave_type_sick" v-model="formData.convalescence_place">
             <option value="In Hospital">In Hospital</option>
             <option value="Out Patient">Out Patient</option>
             <option value="Home Medication">Home Medication</option>
           </select>
         </div>
-        <div class="form-section" v-show="formData.leave_sick === 'In Hospital'">
-          <label for="leave_sick_hospital">If in Hospital, please specify ILLNESS:</label>
+        <div
+          class="form-section"
+          v-if="
+            formData.leave_type === 'Sick' &&
+            formData.convalescence_place === 'In Hospital'
+          "
+        >
+          <label for="leave_sick_hospital"
+            >If in Hospital, please specify your illness: (optional)</label
+          >
           <input
             type="text"
             id="leave_sick_hospital"
             class="forms-controller"
-            placeholder="eg., Covid 19"
+            placeholder="eg., Fever"
+            v-model="formData.illness"
           />
         </div>
-        <div class="form-section" v-show="formData.leave_sick === 'Out Patient'">
+
+        <div
+          class="form-section"
+          v-if="
+            formData.leave_type === 'Sick' &&
+            formData.convalescence_place === 'In Hospital'
+          "
+        >
+          <label for="leave_sick_hospital_address"
+            >If in Hospital, please specify address of Hospital:</label
+          >
+          <input
+            type="text"
+            id="leave_sick_hospital_address"
+            class="forms-controller"
+            placeholder="eg., Tubigon Center"
+            v-model="formData.address"
+          />
+        </div>
+        <div
+          class="form-section"
+          v-if="
+            formData.leave_type === 'Sick' &&
+            formData.convalescence_place === 'Out Patient'
+          "
+        >
           <label for="leave_sick_outpatient"
             >If Out Patient, please specify ILLNESS:</label
           >
@@ -169,9 +207,17 @@ export default {
             id="leave_sick_outpatient"
             class="forms-controller"
             placeholder="eg., Fever"
+            v-model="formData.illness"
           />
         </div>
-        <div class="form-section" v-show="formData.leave_sick === 'Home Medication'">
+
+        <div
+          class="form-section"
+          v-if="
+            formData.leave_type === 'Sick' &&
+            formData.convalescence_place === 'Home Medication'
+          "
+        >
           <label for="leave_sick_home_medication"
             >If Home Medication, please specify ILLNESS:</label
           >
@@ -179,13 +225,14 @@ export default {
             type="text"
             id="leave_sick_home_medication"
             class="forms-controller"
+            v-model="formData.illness"
             placeholder="eg., Headache"
           />
         </div>
 
-        <div class="form-section" v-show="formData.leave_type === 'EDUCATIONAL'">
+        <div class="form-section" v-if="formData.leave_type === 'Educational'">
           <label for="leave_type_educational"> In case of Educational Leave: </label>
-          <select id="leave_type_educational" v-model="formData.leave_educ">
+          <select id="leave_type_educational" v-model="formData.reason">
             <option value="Completion of Doctor's Degree">
               Completion of Doctor's Degree
             </option>
@@ -196,23 +243,28 @@ export default {
             <option value="Others">Others</option>
           </select>
         </div>
-        <div class="form-section" v-show="formData.leave_educ === 'Others'">
+        <div
+          class="form-section"
+          v-if="formData.leave_type == 'Educational' && formData.reason === 'Others'"
+        >
           <label for="leave_educ_others">Please specify:</label>
           <input
             type="text"
             id="leave_educ_others"
             class="forms-controller"
+            v-model="formData.other_reason"
             placeholder="eg., Completion of Certification"
           />
         </div>
 
-        <div class="form-section" v-show="formData.leave_type === 'OTHERS'">
+        <div class="form-section" v-if="formData.leave_type === 'Others'">
           <label for="leave_type_others">If Others, please specify:</label>
           <input
             type="text"
             id="leave_type_others"
             class="forms-controller"
             placeholder="Enter details..."
+            v-model="formData.other_reason"
           />
         </div>
       </div>
@@ -237,7 +289,7 @@ export default {
               :id="'subject' + index"
               class="forms-controller"
               v-model="substitute.subject"
-              placeholder="eg., Mathematics"
+              placeholder="eg., Math 101"
               required
             />
           </div>
@@ -276,7 +328,6 @@ export default {
                   :id="'day' + index + '-' + dayIndex"
                   :value="day"
                   v-model="substitute.days"
-                  required
                 />
                 <span>{{ day }}</span>
               </div>
