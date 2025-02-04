@@ -23,16 +23,27 @@ class LeaveFormController extends Controller
             ->where('users.id', Auth::user()->id)
             ->first();
 
+            $users = User::whereNot('id', Auth::user()->id)
+            ->orderBy('last_name')
+            ->get([
+                'id','first_name', 'last_name'
+            ]); 
+            
         return inertia('Pages/Forms/LeaveForm/LeaveForm', [
 
             'user' => Auth::user(),
             'roles' => $roles,
             'personalDetails' => $personalDetails->toArray(),
-            'pageTitle'=> 'Leave Form'
+            'pageTitle'=> 'Leave Form',
+            'users'=> $users->toArray(),
         ]);
     }
 
-    public function preview(){
+    public function preview(Request $request){
+
+
+
+        dd($request->toArray());
 
         return view('forms.leaveForm');
     }
