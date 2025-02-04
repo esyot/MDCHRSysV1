@@ -221,9 +221,16 @@ button:hover {
   background-color: #fff;
   z-index: 120;
   top: 3rem;
+<<<<<<< HEAD:resources/js/Components/Topbar.vue
   right: 10px;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
   border: 1px solid #d1d1d1;
+=======
+  right: 3;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+  border: 1px solid #d1d1d1;
+  border-radius: 5px;
+>>>>>>> ab2a90d (updated codes -main):resources/js/Components/topbar.vue
 }
 
 .dropdown span {

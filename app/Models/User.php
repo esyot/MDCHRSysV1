@@ -26,6 +26,10 @@ class User extends Authenticatable
     public function userFamilies(){
         return $this->hasMany(UserFamily::class);
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> ab2a90d (updated codes -main)
 
 
     public function userEducationalBackgrounds(){

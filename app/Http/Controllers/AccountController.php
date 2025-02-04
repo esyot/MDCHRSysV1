@@ -21,6 +21,7 @@ class AccountController extends Controller
             'personalDetails.residentialAddress',
             'userJobDetails',
             'userFamilies',
+<<<<<<< HEAD
             'userEducationalBackgrounds',
             'userProfessionalExaminations',
             'userAwardReceives',
@@ -33,12 +34,15 @@ class AccountController extends Controller
             'userSchoolCurriculars',
             'userOtherDetails',
             'userReferences',
+=======
+>>>>>>> ab2a90d (updated codes -main)
 
         ])
             ->where('users.id', Auth::user()->id)
             ->first();
 
 
+<<<<<<< HEAD
         $user = User::find(Auth::user()->id);
 
         $auth = Session::get('authenticate');
@@ -55,6 +59,11 @@ class AccountController extends Controller
 
         return Inertia::render('Pages/Account/Account', [
             'user' =>  $user,
+=======
+        
+        return Inertia::render('Pages/Account/account', [
+            'user' => Auth::user(),
+>>>>>>> ab2a90d (updated codes -main)
             'roles' => $roles,
             'auth'=> $auth,
             'personalDetails' => $personalDetails,
