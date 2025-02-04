@@ -18,6 +18,8 @@ return new class extends Migration {
             $table->date('date_issued');
             $table->date('date_expiry');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

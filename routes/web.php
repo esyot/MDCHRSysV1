@@ -52,6 +52,8 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::get('/forms/travel-form-preview', [TravelFormController::class, 'preview']);
 
         Route::get('/forms/tracking', [FormsController::class, 'index'])->name('forms.tracking');
+
+        Route::get('/leave-form-preview', [LeaveFormController::class, 'preview'])->name('forms.leave-form-preview');
         
     });
     }); 

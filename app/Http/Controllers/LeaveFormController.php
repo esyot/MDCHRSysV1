@@ -32,7 +32,11 @@ class LeaveFormController extends Controller
         ]);
     }
 
-    public function preview(){
+    public function preview(Request $request){
+
+
+
+        dd($request->toArray());
 
         return view('forms.leaveForm');
     }
