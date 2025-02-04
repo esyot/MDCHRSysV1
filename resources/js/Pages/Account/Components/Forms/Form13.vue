@@ -289,12 +289,32 @@
         <div class="title-container">
             <span class="title">ADDITIONAL DETAILS</span>
         </div>
+        <div
+            v-for="otherDetails in personalDetails.user_other_details"
+            :key="otherDetails.id"
+            class="form-group"
+        >
+            <label>ADMINISTRATIVE OFFENSES:</label>
+            <span>{{ otherDetails.administrative_offense }}</span>
+
+            <label>CRIMINAL CHARGES:</label>
+            <span>{{ otherDetails.criminal_charge }}</span>
+            >
+            <label>ADMINISTRATIVE OFFENSES:</label>
+            <span>{{ otherDetails.tribunal }}</span>
+            >
+            <label>ADMINISTRATIVE OFFENSES:</label>
+            <span>{{ otherDetails.service_separation }}</span>
+            >
+            <label>ADMINISTRATIVE OFFENSES:</label>
+            <span>{{ otherDetails.election_candidacy }}</span>
+        </div>
     </div>
 </template>
 
 <script>
 export default {
-    emits: ["update-user-details"],
+    emits: ["track-touched-field", "update-user-details"],
     props: {
         userDetails: Object,
         editMode: Boolean,
