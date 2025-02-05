@@ -21,6 +21,7 @@ class AccountController extends Controller
             'personalDetails.residentialAddress',
             'userJobDetails',
             'userFamilies',
+
             'userEducationalBackgrounds',
             'userProfessionalExaminations',
             'userAwardReceives',
@@ -33,11 +34,14 @@ class AccountController extends Controller
             'userSchoolCurriculars',
             'userOtherDetails',
             'userReferences',
+
             'userValidIds',
+
 
         ])
             ->where('users.id', Auth::user()->id)
             ->first();
+
 
 
         $user = User::find(Auth::user()->id);
@@ -53,9 +57,9 @@ class AccountController extends Controller
             $auth = false;
         }
 
-
-        return Inertia::render('Pages/Account/Account', [
-            'user' =>  $user,
+        
+        return Inertia::render('Pages/Account/account', [
+            'user' => Auth::user(),
             'roles' => $roles,
             'auth'=> $auth,
             'personalDetails' => $personalDetails,
