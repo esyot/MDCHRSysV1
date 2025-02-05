@@ -2,17 +2,19 @@
   <!-- Confirmation Modal -->
   <div id="confirmationSubmitModal" class="modal modal-hide">
     <div class="modal-content">
-      <h3>Are you sure to save all changes?</h3>
-      <footer>
+      <div class="modal-content-description">
+        <label>Are you sure to save all changes?</label>
+      </div>
+      <div class="modal-content-btn">
         <button
           type="button"
-          class="no-btn"
           @click="toggleConfirmationSubmitModal('close')"
+          class="no-btn"
         >
           No
         </button>
         <button type="button" @click="personalDetailSubmit" class="yes-btn">Yes</button>
-      </footer>
+      </div>
     </div>
   </div>
   <!-- /Confirmation Modal -->
@@ -39,78 +41,105 @@
         v-if="currentPage === 3"
         :editMode="editMode"
         :userDetails="userDetails"
+        :personalDetails="personalDetails"
         @update-user-details="updateUserDetails"
+        @track-touched-field="trackTouchedField"
       />
       <Form4
         v-if="currentPage === 4"
         :editMode="editMode"
         :userDetails="userDetails"
+        :personalDetails="personalDetails"
         @update-user-details="updateUserDetails"
+        @track-touched-field="trackTouchedField"
       />
       <Form5
         v-if="currentPage === 5"
+        :editMode="editMode"
         :userDetails="userDetails"
+        :personalDetails="personalDetails"
         @update-user-details="updateUserDetails"
+        @track-touched-field="trackTouchedField"
       />
       <Form6
         v-if="currentPage === 6"
         :editMode="editMode"
         :userDetails="userDetails"
+        :personalDetails="personalDetails"
         @update-user-details="updateUserDetails"
+        @track-touched-field="trackTouchedField"
       />
       <Form7
         v-if="currentPage === 7"
         :editMode="editMode"
         :userDetails="userDetails"
+        :personalDetails="personalDetails"
         @update-user-details="updateUserDetails"
+        @track-touched-field="trackTouchedField"
       />
       <Form8
         v-if="currentPage === 8"
         :editMode="editMode"
         :userDetails="userDetails"
+        :personalDetails="personalDetails"
         @update-user-details="updateUserDetails"
+        @track-touched-field="trackTouchedField"
       />
       <Form9
         v-if="currentPage === 9"
         :editMode="editMode"
         :userDetails="userDetails"
+        :personalDetails="personalDetails"
         @update-user-details="updateUserDetails"
+        @track-touched-field="trackTouchedField"
       />
       <Form10
         v-if="currentPage === 10"
         :editMode="editMode"
         :userDetails="userDetails"
+        :personalDetails="personalDetails"
         @update-user-details="updateUserDetails"
+        @track-touched-field="trackTouchedField"
       />
       <Form11
         v-if="currentPage === 11"
         :editMode="editMode"
         :userDetails="userDetails"
+        :personalDetails="personalDetails"
         @update-user-details="updateUserDetails"
+        @track-touched-field="trackTouchedField"
       />
       <Form12
         v-if="currentPage === 12"
         :editMode="editMode"
         :userDetails="userDetails"
+        :personalDetails="personalDetails"
         @update-user-details="updateUserDetails"
+        @track-touched-field="trackTouchedField"
       />
       <Form13
         v-if="currentPage === 13"
         :editMode="editMode"
         :userDetails="userDetails"
+        :personalDetails="personalDetails"
         @update-user-details="updateUserDetails"
+        @track-touched-field="trackTouchedField"
       />
       <Form14
         v-if="currentPage === 14"
         :editMode="editMode"
         :userDetails="userDetails"
+        :personalDetails="personalDetails"
         @update-user-details="updateUserDetails"
+        @track-touched-field="trackTouchedField"
       />
       <Form15
         v-if="currentPage === 15"
         :editMode="editMode"
         :userDetails="userDetails"
+        :personalDetails="personalDetails"
         @update-user-details="updateUserDetails"
+        @track-touched-field="trackTouchedField"
       />
     </div>
     <div class="footer">
@@ -152,21 +181,21 @@
 </template>
 
 <script>
-import Form1 from "@/Pages/Account/Components/Forms/form1.vue";
-import Form2 from "@/Pages/Account/Components/Forms/form2.vue";
-import Form3 from "@/Pages/Account/Components/Forms/form3.vue";
-import Form4 from "@/Pages/Account/Components/Forms/form4.vue";
-import Form5 from "@/Pages/Account/Components/Forms/form5.vue";
-import Form6 from "@/Pages/Account/Components/Forms/form6.vue";
-import Form7 from "@/Pages/Account/Components/Forms/form7.vue";
-import Form8 from "@/Pages/Account/Components/Forms/form8.vue";
-import Form9 from "@/Pages/Account/Components/Forms/form9.vue";
-import Form10 from "@/Pages/Account/Components/Forms/form10.vue";
-import Form11 from "@/Pages/Account/Components/Forms/form11.vue";
-import Form12 from "@/Pages/Account/Components/Forms/form12.vue";
-import Form13 from "@/Pages/Account/Components/Forms/form13.vue";
-import Form14 from "@/Pages/Account/Components/Forms/form14.vue";
-import Form15 from "@/Pages/Account/Components/Forms/form15.vue";
+import Form1 from "@/Pages/Account/Components/Forms/Form1.vue";
+import Form2 from "@/Pages/Account/Components/Forms/Form2.vue";
+import Form3 from "@/Pages/Account/Components/Forms/Form3.vue";
+import Form4 from "@/Pages/Account/Components/Forms/Form4.vue";
+import Form5 from "@/Pages/Account/Components/Forms/Form5.vue";
+import Form6 from "@/Pages/Account/Components/Forms/Form6.vue";
+import Form7 from "@/Pages/Account/Components/Forms/Form7.vue";
+import Form8 from "@/Pages/Account/Components/Forms/Form8.vue";
+import Form9 from "@/Pages/Account/Components/Forms/Form9.vue";
+import Form10 from "@/Pages/Account/Components/Forms/Form10.vue";
+import Form11 from "@/Pages/Account/Components/Forms/Form11.vue";
+import Form12 from "@/Pages/Account/Components/Forms/Form12.vue";
+import Form13 from "@/Pages/Account/Components/Forms/Form13.vue";
+import Form14 from "@/Pages/Account/Components/Forms/Form14.vue";
+import Form15 from "@/Pages/Account/Components/Forms/Form15.vue";
 
 import { Inertia } from "@inertiajs/inertia";
 
@@ -260,7 +289,16 @@ export default {
           occupation: "",
         },
 
-        userProfExamDetails: {
+        new_user_families: {
+          type: "",
+          first_name: "",
+          last_name: "",
+          middle_name: "",
+          ext: "",
+          occupation: "",
+        },
+
+        user_professional_examinations: {
           title: "",
           rating: "",
           date: "",
@@ -269,34 +307,34 @@ export default {
           validity: "",
         },
 
-        educDetails: {
+        user_educational_backgrounds: {
+          educLevel: "",
           school_name: "",
           school_address: "",
           course: "",
           units: "",
           year_graduated: "",
-          acads_honors_received: "",
+          acad_honors_received: "",
         },
 
         newChildName: "",
-        educLevel: "",
         selectedLevel: "",
 
-        userAwardDetails: {
-          date_recieved: "",
+        user_award_receives: {
+          date_received: "",
           title: "",
           recognition_place: "",
           awarded_by: "",
         },
 
-        userAdministrativeAwardDetails: {
+        user_admin_pos_helds: {
           date: "",
           title: "",
           recognition_place: "",
           awarded_by: "",
         },
 
-        userWorkExpDetails: {
+        user_work_experiences: {
           date_from: "",
           date_to: "",
           position: "",
@@ -305,14 +343,14 @@ export default {
           status: "",
         },
 
-        userStudiesDetails: {
+        user_studies: {
           date_published: "",
           research_title: "",
           journal_name: "",
           link: "",
         },
 
-        userParticipationDetails: {
+        user_participations: {
           title: "",
           date_from: "",
           date_to: "",
@@ -320,7 +358,7 @@ export default {
           position: "",
         },
 
-        userSpecialTrainingDetails: {
+        user_special_trainings: {
           title: "",
           attendance_from: "",
           attendance_to: "",
@@ -329,20 +367,20 @@ export default {
           conducted_by: "",
         },
 
-        userOtherInfo: {
+        user_other_infos: {
           skill: "",
           recognition_title: "",
           org_name: "",
         },
 
-        userCurAssignDetails: {
+        user_school_curriculars: {
           designation: "",
           event_name: "",
           title: "",
           date: "",
         },
 
-        userOtherDetails: {
+        user_other_details: {
           administrative_offense: "",
           criminal_charge: "",
           tribunal: "",
@@ -350,7 +388,7 @@ export default {
           election_candidacy: "",
         },
 
-        userRefDetails: {
+        user_references: {
           name: "",
           address_id: "",
           contact_no: "",
@@ -358,7 +396,8 @@ export default {
 
         seletedId: "",
 
-        userValidId: {
+        user_valid_ids: {
+          id_type: "",
           id_no: "",
           date_issued: "",
           date_expiry: "",
@@ -392,8 +431,6 @@ export default {
     trackTouchedField(fieldName) {
       this.editModeHasChanged = true;
       let touchedFields = JSON.parse(localStorage.getItem("touchedFields")) || {};
-
-      // Store the field path as is, including nested fields (e.g., "residential_address.house_no")
       touchedFields[fieldName] = true;
       localStorage.setItem("touchedFields", JSON.stringify(touchedFields));
     },
@@ -410,18 +447,16 @@ export default {
 
       for (const field in touchedFields) {
         if (touchedFields[field] === true) {
-          // Handle nested fields by splitting the path and traversing the object
           const fieldParts = field.split(".");
           let value = this.userDetails;
 
-          // Traverse the nested structure
           for (let part of fieldParts) {
             if (value && value.hasOwnProperty(part)) {
-              value = value[part]; // Move deeper into the object
+              value = value[part];
             }
           }
 
-          modifiedFields[field] = value; // Assign the resolved value to modifiedFields
+          modifiedFields[field] = value;
         }
       }
 
@@ -434,10 +469,8 @@ export default {
         this.toggleConfirmationSubmitModal("close");
         this.editModeHasChanged = false;
 
-        // Send the modified fields to the backend
         await Inertia.post("/personal-details-update-submit", modifiedFields);
 
-        // Clean up and reset state
         localStorage.removeItem("touchedFields");
         this.editMode = !this.editMode;
         localStorage.setItem("editMode", JSON.stringify(this.editMode));
@@ -473,65 +506,79 @@ export default {
 .modal {
   display: none;
   position: fixed;
-  z-index: 50;
   inset: 0;
+  z-index: 9;
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.3);
 }
 .modal-content {
   background-color: #fff;
-  padding: 5px;
+  border-top: 3px solid rgb(53, 95, 194);
   border-radius: 5px;
 }
-.modal-content footer {
+
+.modal-content-description {
+  padding: 2px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.modal-content-description label {
+  font-size: 18px;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.modal-content-btn {
+  border-top: 1px solid #b9b9b9;
+  background-color: #f4f4f4;
   display: flex;
   justify-content: end;
-  gap: 0.3rem;
-  padding: 5px;
+  gap: 0.2rem;
+  padding: 10px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
-.modal-content h3 {
-  font-size: 16px;
-  font-weight: bold;
-  padding: 0px 10px 0px 10px;
-}
+.modal-content-btn .no-btn {
+  background-color: #fff;
+  border: 1px solid rgb(0, 52, 224);
+  border-radius: 5px;
+  color: rgb(0, 52, 224);
+  padding: 10px 14px 10px 14px;
+  opacity: 50%;
 
-.modal-content footer button {
-  border: none;
   cursor: pointer;
-  opacity: 60%;
 }
 
-.modal-content footer button:hover {
+.modal-content-btn .yes-btn {
+  background-color: rgb(0, 52, 224);
+  border: none;
+  border-radius: 5px;
+  color: rgb(255, 255, 255);
+  padding: 10px;
+  opacity: 50%;
+  cursor: pointer;
+}
+
+.no-btn:hover,
+.yes-btn:hover {
   opacity: 100%;
 }
 
-.yes-btn {
-  padding: 10px;
-  background-color: #007bff;
-  color: #fff;
-  border-radius: 5px;
-}
-
-.no-btn {
-  padding: 0px 14px 0px 14px;
-  background-color: #b7b7b7;
-  color: #fff;
-  border-radius: 5px;
-}
 .saveChangesBtn {
   padding: 6px;
   color: #fff;
-  background-color: #007bff; /* Blue color */
+  background-color: #007bff;
   border: none;
   border-radius: 5px;
-  cursor: pointer; /* Adds a pointer on hover */
-  transition: background-color 0.3s ease; /* Smooth background color transition */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .saveChangesBtn:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+  background-color: #0056b3;
 }
 .footer {
   display: flex;
@@ -595,8 +642,8 @@ input:checked + .slider:before {
   color: #fff;
 }
 .title-container {
-  border-bottom: #dedede 1px solid;
-  background-color: #fff;
+  border-bottom: #cecece 1px solid;
+  background-color: #ebebeb;
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
   padding: 10px;
   position: sticky;
@@ -623,7 +670,7 @@ input:checked + .slider:before {
   flex-grow: 1;
   flex-basis: 400px;
   background-color: #ffffff;
-  border-radius: 8px;
+  border-radius: 5px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 .form-group {
@@ -639,7 +686,7 @@ input:checked + .slider:before {
 }
 
 .form-group input {
-  width: 95%;
+  width: 96%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
