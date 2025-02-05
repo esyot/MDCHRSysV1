@@ -1,9 +1,13 @@
 
-.container-body {
+  .container-body {
+    display: block;
+    position: relative;
     height: 100%;
+    z-index: 1;
   }
   .content-container {
     margin: 0.5rem;
+   
   }
   
   .content-container .cards {
@@ -14,6 +18,7 @@
     overflow-y: auto;
     height: 60vh;
     overflow-x: hidden;
+
   }
   
   .content-container .card {
@@ -29,13 +34,14 @@
     background-color: #59abe3;
     color: #fff;
     cursor: pointer;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
   }
   
   .content-container .card:hover {
     scale: 90%;
     transition-duration: 600ms;
     transition-property: all;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.2);
   }
   
   .content-container .card span {
@@ -61,5 +67,24 @@
     height: auto;
     min-width: 150px;
     border-radius: 5px;
+  }
+  .back-img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 100px;
+    z-index: -1;
+  }
+  
+  .back-img img {
+    width: 300px;
+    pointer-events: none;
+    opacity: 5%;
+    user-select: none;
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.4);
   }
   

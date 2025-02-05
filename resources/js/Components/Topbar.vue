@@ -48,7 +48,7 @@ export default {
     <div class="page-title">
       <span class="app-name">MDC HR Sys v1.0</span>
       <i class="fas fa-chevron-right"></i>
-      <span>{{ pageTitle }}</span>
+      <span class="text">{{ pageTitle }}</span>
     </div>
     <div
       class="userToggleBtn"

@@ -182,3 +182,8 @@
   .userName {
     font-size: 14px;
   }
+
+  .text{
+    opacity: 50%;
+    font-weight: lighter;
+  }
