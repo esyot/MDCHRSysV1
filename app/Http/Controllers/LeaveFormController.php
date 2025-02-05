@@ -103,11 +103,9 @@ class LeaveFormController extends Controller
             
             Substitute::create($sub);
         }
-        
-
-
-
-        return view('forms.leaveForm');
+    
+        return redirect()->route('forms.tracking')->with('success', 'Leave request submitted successfully!.');
+            
     }
     
 }

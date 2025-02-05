@@ -1,4 +1,24 @@
 
+@media (orientation: portrait) {
+
+  .td-title span{
+    display: none;
+  }
+
+  .td-title{
+    text-align: center;
+  }
+
+  .td-action{
+    text-align: center;
+  }
+
+  .td-action span{
+    display: none;
+  }
+  
+}
+
 .container {
     background-color: #fff;
     display: flex;
@@ -20,14 +40,11 @@
   }
   
   table {
+    user-select: none;
     width: 100%;
     border-collapse: collapse;
   }
-  
-  .td-action {
-    width: 100px;
-    text-align: center;
-  }
+
   
   thead {
     background-color: #e0e0e0;
@@ -42,16 +59,14 @@
   
   tbody tr {
     border-bottom: 1px solid #ddd;
+    cursor: pointer;
   }
-  
-  tbody tr:nth-child(even) {
-    background-color: #f8f9fa;
-  }
-  
+    
   tbody tr:hover {
     background-color: #f1f1f1;
   }
-  
+
+
   td {
     padding: 12px 15px;
     text-align: left;
@@ -84,4 +99,38 @@
   button i {
     font-size: 16px;
   }
-  
+
+  .td-title i, .td-title span{
+    padding-inline: 2px;
+  }
+
+    
+  .td-action {
+    width: 100px;
+    text-align: center;
+  }
+
+  .td-action i, .td-action span{
+    padding-inline: 2px;
+  }
+
+  .td-status{
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+   
+  }
+
+
+  .td-status .green{
+    color: rgb(19, 212, 19)
+   
+  }
+
+  .td-status .red{
+    color: rgb(206, 27, 27)
+   
+  }
+  .loading{
+    width: 17px;
+  }

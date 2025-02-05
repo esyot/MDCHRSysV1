@@ -18,6 +18,8 @@ export default {
         illness: "",
         reason: "",
         other_reason: "",
+        date_start: "",
+        date_end: "",
       },
       teachingSubstitutes: [],
       days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -265,6 +267,26 @@ export default {
             class="forms-controller"
             placeholder="Enter details..."
             v-model="formData.other_reason"
+          />
+        </div>
+
+        <div class="form-section">
+          <label for="date_start">Date Start:</label>
+          <input
+            type="date"
+            id="date_start"
+            class="forms-controller"
+            v-model="formData.date_start"
+          />
+        </div>
+
+        <div class="form-section">
+          <label for="date_end">Date End:</label>
+          <input
+            type="date"
+            id="date_end"
+            class="forms-controller"
+            v-model="formData.date_end"
           />
         </div>
       </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LeaveForm;
 use App\Models\TravelForm;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,9 @@ class FormsController extends Controller
         $user = Auth::user();
     
        
-        $travelForms = TravelForm::where('user_id', $user->id)->get();
+        $travelForms = TravelForm::where('user_id', $user->id)
+        ->orderBy('created_at', 'ASC')
+        ->get();
     
         
         $travelForms->transform(function ($form) use ($user) {
@@ -26,9 +29,16 @@ class FormsController extends Controller
             return $form;
         });
     
+        
+        $leaveForms = LeaveForm::where('user_id', Auth::user()->id)
+        ->with([
+            'substitutes',
+            'substitutes.user'
+        ])->orderBy('created_at', 'ASC')->get();
        
         $forms = [];
         $forms['Travel Form'] = $travelForms;
+        $forms['Leave Form'] = $leaveForms;
     
       
         $flattenedForms = [];
@@ -38,7 +48,11 @@ class FormsController extends Controller
                 $flattenedForms[] = $form;
             }
         }
-    
+        
+        usort($flattenedForms, function($a, $b) {
+           return strtotime($b['created_at']) - strtotime($a['created_at']);
+        });
+        
        
         return inertia('Pages/Forms/Tracking/Tracking', [
             'roles' => $roles,

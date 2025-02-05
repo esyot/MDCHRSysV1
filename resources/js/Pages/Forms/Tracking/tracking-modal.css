@@ -16,6 +16,7 @@
   }
   
   .modal-content {
+    user-select: none;
     background-color: #fff;
     display: flex;
     flex-direction: column;
@@ -45,7 +46,7 @@
     border-bottom: 1px solid #b5b5b5;
   }
   .modal-header .title {
-    font-size: 18pt !important;
+    font-size: 16pt !important;
     margin-left: 10px;
   }
   
@@ -53,6 +54,7 @@
     font-size: 18pt !important;
     opacity: 50%;
     font-weight: bold;
+    margin-right: 8px;
   }
   
   .x-btn:hover {
@@ -70,7 +72,7 @@
   }
   
   .heading-container img {
-    width: 80px;
+    width: 60px;
   }
   
   .heading-text {
@@ -81,16 +83,16 @@
   
   .heading-text .first {
     font-family: RM New Albion;
-    font-size: 50pt !important;
+    font-size: 40pt !important;
   }
   
   .heading-text .second {
-    font-size: 12pt !important;
+    font-size: 8pt !important;
     font-weight: bold;
   }
   
   .heading-text .third {
-    font-size: 12pt !important;
+    font-size: 9pt !important;
     font-weight: bold;
   }
   .title {
@@ -117,6 +119,7 @@
   }
   
   .section-budget {
+    pointer-events: none;
     display: flex;
     justify-content: space-between;
     padding: 10px;
@@ -147,3 +150,6 @@
     opacity: 100%;
     cursor: pointer;
   }
+
+
+  
