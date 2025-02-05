@@ -61,12 +61,12 @@ export default {
             <ul id="submenu-services" class="submenu">
               <InertiaLink :href="'/forms/travel-form-request'" class="link">
                 <li>
-                  <span>Request Travel Application</span>
+                  <span>Travel Form</span>
                 </li></InertiaLink
               >
 
               <InertiaLink :href="'/forms/leave-form-request'" class="link">
-                <li><span>Request Leave Application</span></li>
+                <li><span>Leave Form</span></li>
               </InertiaLink>
 
               <InertiaLink :href="'/forms/tracking'" class="link">
@@ -83,8 +83,7 @@ export default {
 
             <ul id="submenu-users" class="submenu">
               <li><span>Tracking</span></li>
-              <li><span>Travel Requests </span></li>
-              <li><span>Leave Requests</span></li>
+
               <InertiaLink :href="'/forms/evaluation-form'" class="link">
                 <li><span>Evaluation</span></li>
               </InertiaLink>
@@ -103,180 +102,5 @@ export default {
 </template>
 
 <style scoped>
-@media (orientation: portrait) {
-  .sidebar {
-    display: none;
-  }
-}
-.sidebar {
-  overflow-x: hidden;
-  overflow-y: hidden;
-  width: 200px;
-  background: linear-gradient(to bottom, #34ace0, #012c46);
-  color: white;
-  height: 100%;
-  user-select: none;
-  z-index: 100;
-  box-shadow: 5px 0px 10px rgba(0, 0, 0, 0.4);
-}
-
-.sidebar.hidden {
-  transform: translateX(-100%);
-}
-
-#app-name {
-  font-weight: bold;
-  margin-top: 5px;
-  filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.5));
-}
-
-.sidebar-content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-hr {
-  border: 0;
-  height: 1px;
-  background-color: #fff;
-  opacity: 20%;
-}
-
-.role-desc {
-  padding: 10px;
-  font-size: 12px;
-}
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.sidebar-open {
-  width: 20px;
-}
-
-.logo {
-  display: flex;
-  padding: 10px;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 20px;
-}
-.logo-img-container {
-  display: flex;
-  padding: 5px;
-}
-
-.logo-img {
-  display: flex;
-  width: 64px;
-  height: 64px;
-  text-align: center;
-  justify-content: center;
-  object-fit: contain;
-  filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.2));
-}
-
-h1 {
-  text-align: center;
-  margin-top: 10px;
-}
-
-.menu {
-  flex-grow: 1;
-  display: flex;
-  justify-content: start;
-  margin-left: 20px;
-  margin-top: 10%;
-}
-
-.menu ul {
-  list-style-type: none;
-  padding: 0;
-  display: flex;
-  align-content: center;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.menu-li {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.menu li {
-  cursor: pointer;
-  width: 150px;
-}
-
-.menu li span {
-  opacity: 75%;
-  font-size: 14px;
-}
-
-.menu li i {
-  opacity: 30%;
-}
-
-.menu li:hover span:hover,
-.menu li:hover i {
-  opacity: 100%;
-  filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.5));
-  scale: 1.2;
-  padding: 5px;
-  transition-duration: 600ms;
-}
-
-.submenu {
-  margin-left: 40px;
-}
-
-.menu li ul {
-  display: none;
-}
-
-.submenu li {
-  list-style-type: disc;
-  opacity: 40%;
-  padding: 5px;
-}
-
-.submenu li:hover {
-  opacity: 100%;
-}
-
-.footer {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  text-align: center;
-  font-size: 14px;
-  margin-top: auto;
-}
-
-.main-content {
-  flex-grow: 1;
-  padding: 10px;
-}
-
-.sidebar-toggle {
-  background-color: #3b82f6;
-  color: white;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-  font-size: 20px;
-}
-
-.sidebar-toggle:focus {
-  outline: none;
-}
-.footer span {
-  font-size: 10px;
-  opacity: 60%;
-  margin-bottom: 1rem;
-}
+@import "./leftbar.css";
 </style>

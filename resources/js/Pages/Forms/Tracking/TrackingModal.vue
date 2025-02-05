@@ -4,30 +4,45 @@ export default {
   props: {
     forms: Object,
     selected_id: String,
+    selected_type: String,
   },
   data() {
     return {
       modal_id: this.selected_id ?? null,
+      modal_type: this.selected_type ?? null,
     };
   },
   watch: {
     selected_id(newVal) {
       this.modal_id = newVal;
     },
+
+    selected_type(newVal, oldVal) {
+      this.modal_type = newVal ?? oldVal;
+    },
     modal_id(newVal, oldVal) {
       if (oldVal) {
-        document.getElementById("modal-" + oldVal).classList.add("hidden");
-        document.getElementById("modal-" + oldVal).classList.remove("flex");
+        const modalId = `modal-${this.modal_type
+          .toLowerCase()
+          .replace(" ", "-")}-${oldVal}`;
+
+        document.getElementById(modalId).classList.add("hidden");
+        document.getElementById(modalId).classList.remove("flex");
       }
+
       if (newVal) {
-        document.getElementById("modal-" + newVal).classList.remove("hidden");
-        document.getElementById("modal-" + newVal).classList.add("flex");
+        const modalId = `modal-${this.modal_type
+          .toLowerCase()
+          .replace(" ", "-")}-${newVal}`;
+
+        document.getElementById(modalId).classList.remove("hidden");
+        document.getElementById(modalId).classList.add("flex");
       }
     },
   },
   methods: {
     closeFormModal() {
-      this.$emit("toggleFormModal", this.selected_id);
+      this.$emit("toggleFormModal", this.selected_id, this.selected_type);
     },
   },
 };
@@ -35,7 +50,7 @@ export default {
 
 <template>
   <div
-    :id="'modal-' + formData.id"
+    :id="'modal-travel-form-' + formData.id"
     class="hidden modal"
     v-for="formData in forms"
     :key="formData.id"
@@ -54,33 +69,6 @@ export default {
           <text class="second">Tubigon, Bohol</text>
           <text class="third">HUMAN RESOURCE OFFICE</text>
         </div>
-      </div>
-      <h3 class="title">Travel Application Form</h3>
-      <div class="section-user-info">
-        <label>Office/Department: </label>
-
-        <span v-for="department in formData.departments" :key="department">
-          {{ department.name }}
-        </span>
-
-        <label>Last Name: </label>
-
-        <span>{{ formData.last_name }}</span>
-
-        <label>First Name: </label>
-        <span>{{ formData.first_name }}</span>
-
-        <label>Middle Name: </label>
-        <span>{{ formData.middle_name }}</span>
-      </div>
-      <div class="section-user-info">
-        <label>Date of Filing: </label>
-        <span>{{ formData.filing_date }}</span>
-
-        <label>Position: </label>
-        <span>{{ formData.position }}</span>
-        <label>Rank: </label>
-        <span>{{ formData.rank }}</span>
       </div>
 
       <h3 class="title">Details of Official Travel</h3>
@@ -206,154 +194,275 @@ export default {
       </div>
     </div>
   </div>
+
+  <div
+    :id="'modal-leave-form-' + formData.id"
+    class="hidden modal"
+    v-for="formData in forms"
+    :key="formData.id"
+  >
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="title">Preview</span>
+        <span @click="closeFormModal" class="x-btn">&times;</span>
+      </div>
+      <div class="heading-container">
+        <div class="heading-img">
+          <img src="/public/assets/images/mdc-logo.png" alt="MDC LOGO" />
+        </div>
+        <div class="heading-text">
+          <text class="first">Mater Dei College</text>
+          <text class="second">Tubigon, Bohol</text>
+          <text class="third">HUMAN RESOURCE OFFICE</text>
+        </div>
+      </div>
+      <h3 class="title">Travel Application Form</h3>
+      <span class="sub-title">Leave type</span>
+      <div class="content-details">
+        <div class="row">
+          <div class="radio-group">
+            <label
+              ><input
+                type="radio"
+                :checked="formData.leave_type === 'Vacation'"
+                name="leave_type"
+              />
+              Vacation
+            </label>
+            <label
+              ><input
+                type="radio"
+                :checked="formData.leave_type == 'Maternity'"
+                name="leave_type"
+              />
+              Maternity</label
+            >
+            <label
+              ><input
+                type="radio"
+                :checked="formData.leave_type == 'Paternity'"
+                name="leave_type"
+              />
+              Paternity Leave</label
+            >
+            <label
+              ><input
+                type="radio"
+                :checked="formData.leave_type == 'Sick'"
+                name="leave_type"
+              />
+              Sick Leave</label
+            >
+            <label
+              ><input
+                type="radio"
+                :checked="formData.leave_type == 'Educational'"
+                name="leave_type"
+              />
+              Educational Leave</label
+            >
+            <label>
+              <input type="radio" name="leave_type" /> Others: <input type="text" />
+            </label>
+          </div>
+
+          <div class="section-dates">
+            <div class="input-group">
+              <label for="date_start">Start date: </label>
+
+              <input
+                type="text"
+                id="date_start"
+                v-model="formData.date_start"
+                name="date_start"
+              />
+
+              <label for="date_end">End date:</label>
+              <input
+                type="text"
+                id="date_end"
+                v-model="formData.date_end"
+                name="date_end"
+              />
+            </div>
+          </div>
+        </div>
+        <span class="sub-title">Details of Leave</span>
+        <div class="container-details">
+          <div class="radio-group" v-if="formData.leave_type == 'Vacation'">
+            <span class="sub-title">Vacation:</span>
+            <label
+              ><input
+                type="checkbox"
+                class="sub-checkbox"
+                :checked="formData.vacation_option === 'Within the Philippines'"
+              />
+              Within Philippines (Specify)
+            </label>
+            <input type="text" v-model="formData.address" />
+
+            <label v-if="formData.leave_type == 'Abroad'"
+              ><input
+                type="checkbox"
+                class="sub-checkbox"
+                name="vacation_abroad"
+                :checked="formData.vacation_option === 'Abroad'" />
+              Abroad (Specify):
+
+              <input
+                type="text"
+                :value="formData.vacation_option === 'Abroad' ? formData.address : ''"
+            /></label>
+          </div>
+
+          <div class="checkbox-group" v-if="formData.leave_type == 'Sick'">
+            <span class="sub-title"> Incase of Sick Leave: </span>
+            <label
+              ><input type="checkbox" class="sub-checkbox" name="sick_hospital" />
+              Hospital:
+            </label>
+            <label
+              ><input type="checkbox" class="sub-checkbox" name="sick_outpatient" />
+              Outpatient:
+            </label>
+            <label
+              ><input type="checkbox" class="sub-checkbox" name="sick_home" /> Home
+              Medication:
+            </label>
+          </div>
+          <div class="checkbox-group" v-if="formData.leave_type == 'Educational'">
+            <span class="sub-title">Incase of Educational Leave: </span>
+            <label
+              ><input type="checkbox" class="sub-checkbox" name="sick_hospital" />
+              Completion of Doctor's Degree</label
+            >
+            <label
+              ><input type="checkbox" class="sub-checkbox" name="sick_outpatient" />
+              Completion of Master's Degree</label
+            >
+            <label
+              ><input type="checkbox" class="sub-checkbox" name="sick_home" /> Board
+              Examination Review</label
+            >
+          </div>
+        </div>
+
+        <div class="close-btn-container">
+          <button @click="closeFormModal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-.hidden {
-  display: none;
-}
-
-.flex {
-  display: flex;
-}
-.modal {
-  position: fixed;
-  z-index: 100;
-  justify-content: center;
-  align-items: center;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.2);
-}
-
-.modal-content {
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  margin: 10px;
-  border-radius: 5px;
-  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
-}
-
-@font-face {
-  font-family: "RM New Albion";
-  src: url("/public/assets/fonts/rm_new_albion.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 2px;
-  padding-right: 10px;
-}
-.modal-header {
-  padding: 5px;
-  border-bottom: 1px solid #b5b5b5;
-}
-.modal-header .title {
-  font-size: 18pt !important;
-  margin-left: 10px;
-}
-
-.x-btn {
-  font-size: 18pt !important;
-  opacity: 50%;
-  font-weight: bold;
-}
-
-.x-btn:hover {
-  opacity: 100%;
-  cursor: pointer;
-}
-
-.heading-container {
-  display: flex;
-  justify-content: center;
-  align-items: end;
-  gap: 1rem;
-  padding: 10px;
-  border-bottom: 1px solid #adadad;
-}
-
-.heading-container img {
-  width: 80px;
-}
-
-.heading-text {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-}
-
-.heading-text .first {
-  font-family: RM New Albion;
-  font-size: 50pt !important;
-}
-
-.heading-text .second {
-  font-size: 12pt !important;
-  font-weight: bold;
-}
-
-.heading-text .third {
-  font-size: 12pt !important;
-  font-weight: bold;
-}
-.title {
-  text-align: center;
-}
+@import "./tracking-modal.css";
 
 .section-user-info {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.2rem;
-  padding: 10px;
+  margin-bottom: 20px;
 }
 
-.section-user-info label {
-  font-weight: bold;
-}
-
-.section-details {
-  padding: 10px;
-}
-
-.section-details label {
-  font-weight: bold;
-}
-
-.section-budget {
+.section-user-info .user-info {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.user-info label {
+  font-size: 16px;
+}
+
+.content-details {
+  margin-top: 10px;
+  padding: 5px;
+}
+
+.content-details .row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.radio-group {
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   padding: 10px;
 }
 
-.amount {
+.radio-group label {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.radio-group input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.input-group {
+  margin-bottom: 10px;
+}
+
+.input-group label {
+  font-size: 16px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.input-group input {
+  padding: 5px;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.section-dates {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-right: 10px;
+}
+
+.container-details {
+  display: flex;
   padding: 10px;
 }
-.amount label {
-  font-weight: bold;
+
+.sub-checkbox {
+  margin-left: 15px;
 }
-.modal-footer {
+
+.sub-checkbox + input[type="text"] {
+  margin-top: 5px;
+  padding: 5px;
+  font-size: 16px;
+}
+
+span.sub-title {
+  display: flex;
+  margin-top: 8px;
+  margin-left: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  padding-inline: 5px;
+}
+
+.close-btn-container {
   display: flex;
   justify-content: center;
   padding: 10px;
 }
 
-.modal-footer button {
+.close-btn-container button {
   padding: 10px;
-  background-color: rgb(106, 106, 106);
   border: none;
-  color: #fff;
+  background-color: rgb(173, 160, 160);
   border-radius: 5px;
   opacity: 75%;
 }
 
-.modal-footer button:hover {
+.close-btn-container button:hover {
   opacity: 100%;
   cursor: pointer;
 }

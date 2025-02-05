@@ -3,79 +3,293 @@ import Layout from "@/Layouts/Layout.vue";
 import { Inertia } from "@inertiajs/inertia";
 
 export default {
+  layout: Layout,
+  props: {
+    users: Object,
+  },
   data() {
     return {
       formData: {
         leave_type: "",
-        leave_vacation: "",
-        leave_sick: "",
-        leave_educ: "",
+        vacation_option: "",
+        convalescence_place: "",
+        address: "",
+        sick_type: "",
+        illness: "",
+        reason: "",
+        other_reason: "",
+        date_start: "",
+        date_end: "",
       },
-      teachingSubstitutes: [], // Add this array to store multiple substitutes
-      days: ["M", "T", "W", "Th", "F", "S"], // Days for the substitute form
+      teachingSubstitutes: [],
+      days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      searchTeacher: false,
+      filteredUsers: this.users,
     };
   },
+
   methods: {
     addTeachingSubstitute() {
-      this.teachingSubstitutes.push({
+      const newSubstitute = {
         subject: "",
+        user_id: "",
         teacher: "",
         days: [],
         start_time: "",
         end_time: "",
-      });
+      };
+
+      this.teachingSubstitutes.push(newSubstitute);
     },
     removeTeachingSubstitute(index) {
       this.teachingSubstitutes.splice(index, 1);
     },
     leaveFormPreview(event) {
       Inertia.get("/leave-form-preview", {
-        teachingSubstitutes: this.teachingSubstitutes, // Send teachingSubstitutes instead of substitute
+        substitutes: this.teachingSubstitutes,
         formData: this.formData,
       });
     },
-  },
-  watch: {
-    "formData.leave_type"(newVal) {
-      if (newVal !== "VACATION") {
-        this.formData.leave_vacation = "";
-      }
-      if (newVal !== "SICK") {
-        this.formData.leave_sick = "";
-      }
-      if (newVal !== "EDUCATIONAL") {
-        this.formData.leave_educ = "";
+    toggleSearchTeacher(value) {
+      if (value) {
+        this.searchTeacher = true;
+
+        const searchValue = value.toLowerCase();
+
+        this.filteredUsers = this.users.filter(
+          (user) =>
+            user.first_name.toLowerCase().includes(searchValue) ||
+            user.last_name.toLowerCase().includes(searchValue)
+        );
+
+        if (this.filteredUsers.length === 0) {
+        }
+      } else {
+        this.searchTeacher = false;
+        this.filteredUsers = [...this.users];
       }
     },
+    selectTeacher(id, index) {
+      const user = this.users.find((user) => user.id === id);
+      if (user) {
+        this.teachingSubstitutes[index].user_id = `${id}`;
+        this.teachingSubstitutes[index].teacher = `${user.last_name}, ${user.first_name}`;
+      }
+      this.searchTeacher = false;
+    },
   },
-  layout: Layout,
+  watch: {
+    "formData.leave_type": function () {
+      this.formData.vacation_option = "";
+      this.formData.convalescence_place = "";
+      this.formData.address = "";
+      this.formData.sick_type = "";
+      this.formData.illness = "";
+      this.formData.reason = "";
+      this.formData.other_reason = "";
+    },
+  },
 };
 </script>
+
 <template>
+  {{ console.table(teachingSubstitutes) }}
   <form @submit.prevent="leaveFormPreview">
     <div class="forms-container">
-      <!-- Leave Details Form -->
       <div class="forms">
         <div class="forms-title">
           <span class="title">DETAILS OF APPLICATION</span>
         </div>
-        <!-- Leave Type Dropdown -->
         <div class="form-section">
           <label for="leave_name">TYPE OF LEAVE:</label>
           <select id="leave_name" v-model="formData.leave_type" class="forms-controller">
-            <option value="VACATION">VACATION</option>
-            <option value="MATERNITY">MATERNITY</option>
-            <option value="PATERNITY">PATERNITY</option>
-            <option value="SICK">SICK</option>
-            <option value="EDUCATIONAL">EDUCATIONAL</option>
-            <option value="OTHERS">OTHERS</option>
+            <option value="" disabled selected>Select a type of leave</option>
+            <option value="Vacation">VACATION</option>
+            <option value="Maternity">MATERNITY</option>
+            <option value="Paternity">PATERNITY</option>
+            <option value="Sick">SICK</option>
+            <option value="Educational">EDUCATIONAL</option>
+            <option value="Others">OTHERS</option>
           </select>
         </div>
-        <!-- Conditional Leave Details -->
-        <!-- ... (rest of your leave details form) ... -->
-      </div>
 
-      <!-- Substitute Form -->
+        <div class="form-section" v-if="formData.leave_type === 'Vacation'">
+          <label for="leave_type_vacation">In case of Vacation Leave:</label>
+          <select id="leave_type_vacation" v-model="formData.vacation_option">
+            <option value="" disabled selected>Select a country</option>
+            <option value="Within the Philippines">Within the Philippines</option>
+            <option value="Abroad">Abroad</option>
+          </select>
+        </div>
+        <div
+          class="form-section"
+          v-if="
+            formData.leave_type === 'Vacation' &&
+            formData.vacation_option === 'Within the Philippines'
+          "
+        >
+          <label for="leave_vacation_phil"
+            >If within the Philippines, please specify:</label
+          >
+          <input
+            type="text"
+            id="leave_vacation_phil"
+            class="forms-controller"
+            v-model="formData.address"
+            placeholder="eg., Bohol, Tubigon"
+          />
+        </div>
+        <div class="form-section" v-if="formData.vacation_option === 'Abroad'">
+          <label for="leave_vacation_abroad">If Abroad, please specify:</label>
+          <input
+            type="text"
+            id="leave_vacation_abroad"
+            class="forms-controller"
+            v-model="formData.address"
+            placeholder="eg., Tokyo, Japan"
+          />
+        </div>
+        <div class="form-section" v-if="formData.leave_type === 'Sick'">
+          <label for="leave_type_sick">In case of Sick Leave:</label>
+          <select id="leave_type_sick" v-model="formData.convalescence_place">
+            <option value="In Hospital">In Hospital</option>
+            <option value="Out Patient">Out Patient</option>
+            <option value="Home Medication">Home Medication</option>
+          </select>
+        </div>
+        <div
+          class="form-section"
+          v-if="
+            formData.leave_type === 'Sick' &&
+            formData.convalescence_place === 'In Hospital'
+          "
+        >
+          <label for="leave_sick_hospital"
+            >If in Hospital, please specify your illness: (optional)</label
+          >
+          <input
+            type="text"
+            id="leave_sick_hospital"
+            class="forms-controller"
+            placeholder="eg., Fever"
+            v-model="formData.illness"
+          />
+        </div>
+
+        <div
+          class="form-section"
+          v-if="
+            formData.leave_type === 'Sick' &&
+            formData.convalescence_place === 'In Hospital'
+          "
+        >
+          <label for="leave_sick_hospital_address"
+            >If in Hospital, please specify address of Hospital:</label
+          >
+          <input
+            type="text"
+            id="leave_sick_hospital_address"
+            class="forms-controller"
+            placeholder="eg., Tubigon Center"
+            v-model="formData.address"
+          />
+        </div>
+        <div
+          class="form-section"
+          v-if="
+            formData.leave_type === 'Sick' &&
+            formData.convalescence_place === 'Out Patient'
+          "
+        >
+          <label for="leave_sick_outpatient"
+            >If Out Patient, please specify ILLNESS:</label
+          >
+          <input
+            type="text"
+            id="leave_sick_outpatient"
+            class="forms-controller"
+            placeholder="eg., Fever"
+            v-model="formData.illness"
+          />
+        </div>
+
+        <div
+          class="form-section"
+          v-if="
+            formData.leave_type === 'Sick' &&
+            formData.convalescence_place === 'Home Medication'
+          "
+        >
+          <label for="leave_sick_home_medication"
+            >If Home Medication, please specify ILLNESS:</label
+          >
+          <input
+            type="text"
+            id="leave_sick_home_medication"
+            class="forms-controller"
+            v-model="formData.illness"
+            placeholder="eg., Headache"
+          />
+        </div>
+
+        <div class="form-section" v-if="formData.leave_type === 'Educational'">
+          <label for="leave_type_educational"> In case of Educational Leave: </label>
+          <select id="leave_type_educational" v-model="formData.reason">
+            <option value="Completion of Doctor's Degree">
+              Completion of Doctor's Degree
+            </option>
+            <option value="Completion of Master's Degree">
+              Completion of Master's Degree
+            </option>
+            <option value="Board Examination Review">Board Examination Review</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
+        <div
+          class="form-section"
+          v-if="formData.leave_type == 'Educational' && formData.reason === 'Others'"
+        >
+          <label for="leave_educ_others">Please specify:</label>
+          <input
+            type="text"
+            id="leave_educ_others"
+            class="forms-controller"
+            v-model="formData.other_reason"
+            placeholder="eg., Completion of Certification"
+          />
+        </div>
+
+        <div class="form-section" v-if="formData.leave_type === 'Others'">
+          <label for="leave_type_others">If Others, please specify:</label>
+          <input
+            type="text"
+            id="leave_type_others"
+            class="forms-controller"
+            placeholder="Enter details..."
+            v-model="formData.other_reason"
+          />
+        </div>
+
+        <div class="form-section">
+          <label for="date_start">Date Start:</label>
+          <input
+            type="date"
+            id="date_start"
+            class="forms-controller"
+            v-model="formData.date_start"
+          />
+        </div>
+
+        <div class="form-section">
+          <label for="date_end">Date End:</label>
+          <input
+            type="date"
+            id="date_end"
+            class="forms-controller"
+            v-model="formData.date_end"
+          />
+        </div>
+      </div>
       <div class="forms">
         <div class="forms-title">
           <span class="title">SUBSTITUTE</span>
@@ -85,21 +299,47 @@ export default {
           <small><i>(For MDC Teaching Employee only)</i></small>
         </div>
 
-        <!-- Dynamic Substitute Forms -->
         <div
-          v-for="(sub, index) in teachingSubstitutes"
+          v-for="(substitute, index) in teachingSubstitutes"
           :key="index"
           class="substitute-form"
         >
           <div class="form-section">
-            <label :for="'sub' + index">SUBJECT</label>
+            <label for="'subject' + index">Subject</label>
             <input
               type="text"
-              :id="'sub' + index"
+              :id="'subject' + index"
               class="forms-controller"
-              v-model="sub.subject"
-              placeholder="eg., Mathematics"
+              v-model="substitute.subject"
+              placeholder="eg., Math 101"
+              required
             />
+          </div>
+
+          <div class="form-section">
+            <label for="'teacher' + index">Substitute Teacher</label>
+            <div class="search-bar">
+              <input
+                title="Add teacher"
+                type="text"
+                :id="'teacher' + index"
+                v-model="teachingSubstitutes[index].teacher"
+                placeholder="Click to search teacher"
+                @input="toggleSearchTeacher(teachingSubstitutes[index].teacher, index)"
+                required
+              />
+            </div>
+            <div class="dropdown-teachers">
+              <ul v-if="searchTeacher">
+                <li
+                  @click="selectTeacher(user.id, index)"
+                  v-for="user in filteredUsers"
+                  :key="user.id"
+                >
+                  {{ user.last_name }}, {{ user.first_name }}
+                </li>
+              </ul>
+            </div>
           </div>
 
           <div class="form-section">
@@ -109,59 +349,46 @@ export default {
                   type="checkbox"
                   :id="'day' + index + '-' + dayIndex"
                   :value="day"
-                  v-model="sub.days"
+                  v-model="substitute.days"
                 />
-                <label :for="'day' + index + '-' + dayIndex">{{ day }}</label>
+                <span>{{ day }}</span>
               </div>
             </div>
           </div>
 
           <div class="form-section">
-            <label :for="'start_time' + index">Start TIME</label>
+            <label for="'start_time' + index">Start Time</label>
             <input
               type="time"
               :id="'start_time' + index"
+              required
               class="forms-controller"
-              v-model="sub.start_time"
+              v-model="substitute.start_time"
             />
           </div>
 
           <div class="form-section">
-            <label :for="'end_time' + index">End TIME</label>
+            <label for="'end_time' + index">End Time</label>
             <input
               type="time"
               :id="'end_time' + index"
               class="forms-controller"
-              v-model="sub.end_time"
+              v-model="substitute.end_time"
+              required
             />
           </div>
 
-          <div class="form-section">
-            <label :for="'subs_teacher' + index">SUBSTITUTE TEACHER</label>
-            <input
-              type="text"
-              :id="'subs_teacher' + index"
-              class="forms-controller"
-              v-model="sub.teacher"
-              placeholder="eg., John Meward"
-            />
+          <div class="button-container">
+            <button @click="removeTeachingSubstitute(index)" class="remove-btn">
+              <i class="fa fa-trash"></i> Remove
+            </button>
           </div>
-
-          <button @click="removeTeachingSubstitute(index)" class="remove-btn">
-            <i class="fa fa-trash"></i> Remove
-          </button>
         </div>
       </div>
     </div>
 
-    <!-- Form Submit Buttons -->
     <div class="form-submit">
-      <button type="submit" class="preview" title="Preview form">
-        <i class="fas fa-eye"></i>
-        <span> Preview</span>
-      </button>
       <button class="submit" title="Submit for approval">
-        <i class="fas fa-check"></i>
         <span> Submit</span>
       </button>
     </div>
@@ -169,159 +396,5 @@ export default {
 </template>
 
 <style scoped>
-.days {
-  display: flex;
-}
-
-.days-item {
-  display: flex;
-  align-items: center;
-}
-
-.checkbox {
-  padding: 20px;
-}
-.preview {
-  background-color: rgb(33, 208, 33);
-}
-.submit {
-  background-color: rgb(35, 134, 200);
-}
-.forms-container {
-  display: flex;
-  overflow-y: auto;
-  height: 80vh;
-  padding: 10px;
-}
-
-.forms-title {
-  display: flex;
-  align-items: center;
-  border-bottom: #dedede 1px solid;
-  background-color: #fff;
-  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.forms-title small {
-  margin-left: 10px;
-}
-.forms-title button {
-  background-color: #3b82f6;
-  color: #fff;
-  border: none;
-  padding: 5px 10px 5px 10px;
-  border-radius: 5px;
-  opacity: 75%;
-}
-
-.forms-title button:hover {
-  opacity: 100%;
-  cursor: pointer;
-}
-
-.remove-btn {
-  padding: 10px;
-  margin: 10px;
-  color: #fff;
-  border: none;
-  background-color: #ed1a1a;
-  border-radius: 5px;
-  opacity: 75%;
-}
-
-.remove-btn:hover {
-  opacity: 100%;
-  cursor: pointer;
-}
-
-.title {
-  font-size: 14px;
-  padding: 10px;
-  font-weight: bold;
-}
-
-.forms-container {
-  display: flex;
-  flex-wrap: wrap;
-  max-height: 90vh;
-  overflow-y: auto;
-  margin-top: 5px;
-  gap: 0.5rem;
-}
-
-.forms {
-  flex-grow: 1;
-  flex-basis: 400px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.form-section {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
-  padding: 10px;
-}
-
-.form-section label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
-  font-size: 12px;
-}
-
-.form-section input {
-  display: flex;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.form-section select {
-  display: flex;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.radio-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.radio-group label {
-  display: flex;
-  align-items: center;
-}
-
-.forms-controller-radio {
-  margin-right: 5px;
-}
-
-.form-submit {
-  display: flex;
-  justify-content: end;
-  padding-right: 10px;
-}
-
-.form-submit button {
-  border: none;
-  padding: 10px 15px 10px 15px;
-  border-radius: 5px;
-  color: white;
-  opacity: 75%;
-  margin: 5px;
-}
-
-.form-submit button:hover {
-  cursor: pointer;
-  opacity: 100%;
-}
+@import "./leave-form.css";
 </style>

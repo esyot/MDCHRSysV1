@@ -10,7 +10,6 @@
                 id="id_type"
                 name="id_type"
                 v-model="selectedId"
-                @change="updateSelectedIds"
                 class="form-control"
             >
                 <option value="">Select Type</option>
@@ -25,82 +24,130 @@
         </div>
 
         <div v-if="selectedId" class="form-group">
-            <label for="id_no">{{ selectedId.toUpperCase() }} NO:</label>
-            <input
-                type="text"
-                v-model="userDetails.userValidId.id_no"
-                class="form-control"
-                placeholder="Enter ID No."
-            />
-        </div>
-        <div v-if="selectedId" class="form-group">
-            <label for="date_issued"
-                >{{ selectedId.toUpperCase() }} DATE ISSUED:</label
+            <div
+                v-if="filteredID.length > 0"
+                v-for="Id in filteredID"
+                :key="Id.id"
             >
-            <input
-                type="date"
-                v-model="userDetails.userValidId.date_issued"
-                class="form-control"
-            />
-        </div>
-        <div v-if="selectedId" class="form-group">
-            <label for="date_expiry"
-                >{{ selectedId.toUpperCase() }} DATE EXPIRY:</label
-            >
-            <input
-                type="date"
-                v-model="userDetails.userValidId.date_expiry"
-                class="form-control"
-            />
+                <div class="form-group">
+                    <label for="id_no"
+                        >{{ selectedId.toUpperCase() }} NO:</label
+                    >
+                    <input
+                        type="text"
+                        v-model="Id.id_no"
+                        class="form-control"
+                        :placeholder="`e.g. Enter ID No. ${Id.id_no}`"
+                        :id="`id_no_${Id.id_no}`"
+                        @input="handleFieldFocus(`user_valid_ids`)"
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="date_issued"
+                        >{{ selectedId.toUpperCase() }} DATE ISSUED:</label
+                    >
+                    <input
+                        type="date"
+                        v-model="Id.date_issued"
+                        class="form-control"
+                        :placeholder="`e.g. Enter date issued. ${Id.date_issued}`"
+                        :id="`date_issued_${Id.date_issued}`"
+                        @input="handleFieldFocus(`user_valid_ids`)"
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="date_expiry"
+                        >{{ selectedId.toUpperCase() }} DATE EXPIRY:</label
+                    >
+                    <input
+                        type="date"
+                        v-model="Id.date_expiry"
+                        class="form-control"
+                        :placeholder="`e.g. Enter expiry date. ${Id.date_expiry}`"
+                        :id="`date_expiry_${Id.date_expiry}`"
+                        @input="handleFieldFocus(`user_valid_ids`)"
+                    />
+                </div>
+            </div>
         </div>
     </div>
-
     <div class="personal-details-items" v-if="!editMode">
         <div class="title-container">
             <span class="title">USER VALID IDs</span>
         </div>
-        <ul
-            v-if="
-                userDetails.validIds && Object.keys(userDetails.validIds).length
-            "
+        <div
+            v-for="userValidIds in personalDetails.user_valid_ids"
+            :key="userValidIds.id"
+            class="form-group"
         >
-            <li v-for="(number, type) in userDetails.validIds" :key="type">
-                <strong>{{ type }}:</strong> {{ number }}
-            </li>
-        </ul>
-        <p v-else>No valid IDs provided.</p>
+            <label>{{ userValidIds.id_type }}</label>
+            <span>
+                {{ userValidIds.id_no }} || {{ userValidIds.date_issued }} ||
+                {{ userValidIds.date_expiry }}
+            </span>
+        </div>
     </div>
 </template>
 
 <script>
 export default {
-    emits: ["update-user-details"],
+    emits: ["track-touched-field", "update-user-details"],
     props: {
         userDetails: Object,
         editMode: Boolean,
+        personalDetails: Object,
     },
     data() {
         return {
             selectedId: "",
+            newId: {
+                id_no: "",
+                date_issued: "",
+                date_expiry: "",
+            },
         };
     },
+    computed: {
+        filteredID() {
+            return this.userDetails.user_valid_ids.filter(
+                (id) => id.id_type === this.selectedId
+            );
+        },
+    },
     methods: {
-        updateSelectedIds() {
-            if (!this.userDetails.validIds) {
-                this.userDetails.validIds = {};
-            }
-            if (!this.selectedId) return;
-            if (!this.userDetails.validIds[this.selectedId]) {
-                this.userDetails.validIds[this.selectedId] = "";
-            }
+        handleFieldFocus(fieldName) {
+            this.$emit("track-touched-field", fieldName);
+        },
+
+        handleFieldChange(fieldName) {
+            this.$emit("update-user-details", {
+                [fieldName]: this.userDetails[fieldName],
+            });
         },
     },
     watch: {
-        userDetails: {
+        selectedId(newVal) {
+            if (
+                newVal &&
+                !this.userDetails.user_valid_ids.some(
+                    (id) => id.id_type === newVal
+                )
+            ) {
+                this.userDetails.user_valid_ids.push({
+                    id_type: newVal,
+                    id_no: "",
+                    date_issued: "",
+                    date_expiry: "",
+                });
+            }
+        },
+        personalDetails: {
             handler(newVal) {
-                this.$emit("update-user-details", newVal);
+                this.userDetails.user_valid_ids = [
+                    ...(newVal.user_valid_ids || []),
+                ];
             },
-            deep: true,
+            immediate: true,
         },
     },
 };

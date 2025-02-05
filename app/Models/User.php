@@ -69,4 +69,11 @@ class User extends Authenticatable
     public function userReferences(){
         return $this->hasMany(UserReference::class);
     }
+    public function userValidIds(){
+        return $this->hasMany(UserValidId::class);
+    }
+
+    public function substitute(){
+        return $this->hasMany(Substitute::class);
+    }
 }
