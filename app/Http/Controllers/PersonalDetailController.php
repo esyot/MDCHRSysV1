@@ -26,7 +26,7 @@ use Illuminate\Support\Arr;
 class PersonalDetailController extends Controller
 {
     public function updatePersonalDetails(Request $request)
-    {  
+    {
         if ($request->isMethod('post') && $request->all() == []) {
             return redirect()->back()->with('error', 'No changes to update.');
         }
@@ -36,7 +36,7 @@ class PersonalDetailController extends Controller
         $fieldsToCheck = ['first_name', 'last_name', 'middle_name'];
 
         $requestData = $request->except([
-            'user_families', 
+            'user_families',
             'user_educational_backgrounds',
             'user_professional_examinations',
             'user_award_receives',
@@ -45,7 +45,7 @@ class PersonalDetailController extends Controller
             'user_studies',
             'user_participations',
             'user_special_trainings',
-            'user_other_infos', 
+            'user_other_infos',
             'user_school_curriculars',
             'user_references',
             'user_valid_ids'
@@ -103,20 +103,20 @@ class PersonalDetailController extends Controller
                 }
             }
         }
-       
+
         if ($request->has('user_families')) {
             foreach ($request->user_families as $family) {
-                
+
                 if(isset($family['id'])){
                     $existFamilyMember = UserFamily::where('id', $family['id'] )->first();
                 }else{
                     $existFamilyMember = null;
                 }
-            
+
                 if($existFamilyMember){
                     unset($family['created_at']);
                     unset($family['updated_at']);
-                   
+
                     UserFamily::where('id',  $existFamilyMember->id)
                     ->update($family);
 
@@ -124,7 +124,7 @@ class PersonalDetailController extends Controller
                     $family['user_id'] = Auth::user()->id;
                     UserFamily::create($family);
                 }
-              
+
             }
         }
 
@@ -150,10 +150,10 @@ class PersonalDetailController extends Controller
 
                     $user_educational_background['user_id'] = Auth::user()->id;
                     UserEducationalBackground::create($user_educational_background);
-    
+
                 }
 
-              
+
             }
 
         }
@@ -183,7 +183,7 @@ class PersonalDetailController extends Controller
                 UserProfessionalExamination::create($user_professional_examination);
 
             }
-         
+
             }
 
         }
@@ -198,7 +198,7 @@ class PersonalDetailController extends Controller
                $userAwardExist = UserAwardReceive::find($award['id']);
 
             }else{
-                $userAwardExist = null; 
+                $userAwardExist = null;
             }
 
             if($userAwardExist){
@@ -208,10 +208,10 @@ class PersonalDetailController extends Controller
 
                 UserAwardReceive::where('id', $userAwardExist->id)
                 ->update($award);
-               
+
             }else{
 
-                $award['user_id'] = Auth::user()->id;               
+                $award['user_id'] = Auth::user()->id;
                 UserAwardReceive::create($award);
 
             }
@@ -226,13 +226,13 @@ class PersonalDetailController extends Controller
 
 
                 if(isset($admin_position_held['id'])){
-                   
+
                     $adminPosHeldExist = UserAdministrativePositionsHeld::find($admin_position_held['id']);
 
                 }else{
 
                     $adminPosHeldExist = null;
-                
+
                 }
 
                 if($adminPosHeldExist){
@@ -323,9 +323,9 @@ class PersonalDetailController extends Controller
         if($request->has('user_participations')){
 
             foreach($request->user_participations as $participation){
-                        
+
                   $participationExist = isset($participation['id']) ? UserParticipation::find($participation['id']) : null;
-                
+
                   if($participationExist){
 
                     unset($participation['created_at']);
@@ -365,7 +365,7 @@ class PersonalDetailController extends Controller
                     $training['user_id'] = Auth::user()->id;
                     UserSpecialTraining::create($training);
                 }
-                       
+
             }
         }
 
@@ -385,11 +385,11 @@ class PersonalDetailController extends Controller
 
                     $info['user_id'] = Auth::user()->id;
                     UserOtherInformation::create($info);
-                }    
-              
+                }
+
             }
         }
-        
+
         if($request->has('user_school_curriculars')){
 
             foreach($request->user_school_curriculars as $curricular){
@@ -403,7 +403,7 @@ class PersonalDetailController extends Controller
 
                     UserSchoolCurricular::where('id', $curricularExist->id)
                     ->update($curricular);
-                    
+
                 }else{
 
                     $curricular['user_id'] = Auth::user()->id;
@@ -415,29 +415,29 @@ class PersonalDetailController extends Controller
         }
 
 
-       
+
         if($request->has('user_references')){
 
             foreach($request->user_references as $reference){
 
                 $referenceExist = isset($reference['id']) ? UserReference::find($reference['id']) : null;
-                
+
                 if ($referenceExist) {
 
                     unset($reference['address']['id']);
                     unset($reference['address']['updated_at']);
                     unset($reference['address']['created_at']);
 
-                                
+
                     Address::where('id', $reference['address_id'])->update($reference['address']);
-                
+
                     unset($reference['address']);
                     unset($reference['address_id']);
                     unset($reference['created_at']);
                     unset($reference['updated_at']);
-                 
+
                     UserReference::where('id', $referenceExist->id)->update($reference);
-                
+
                 }else{
 
                     $address = Address::create($reference['address']);
@@ -455,7 +455,7 @@ class PersonalDetailController extends Controller
         if($request->has('user_valid_ids')){
 
             foreach($request->user_valid_ids as $id){
-          
+
                 $idExist = isset($id['id']) ? UserValidId::find($id['id']) : null;
 
             if($idExist){
@@ -474,8 +474,8 @@ class PersonalDetailController extends Controller
 
             }
         }
-          
-    
+
+
         session()->flash('success', 'Personal details updated successfully!');
 
         return redirect()->back();
