@@ -10,6 +10,9 @@ class UserOtherInformation extends Model
     /** @use HasFactory<\Database\Factories\UserOtherInformationFactory> */
     use HasFactory;
 
+
+    protected $guarded = [];
+    
      public function user(){
         return $this->belongsTo(User::class);
     }

@@ -16,4 +16,9 @@ class Address extends Model
     {
         $this->belongsTo(PersonalDetail::class);
     }
+
+    public function userReferences()
+    {
+        return $this->hasMany(UserReference::class); 
+    }
 }

@@ -16,12 +16,12 @@ return new class extends Migration {
             $table->enum('level', ['elem', 'sec', 'college', 'gs', 'pgs']);
             $table->string('school_name');
             $table->string('school_address');
-            $table->string('course');
+            $table->string('course')->nullable();
             $table->date('period_attendance_from');
             $table->date('period_attendance_to');
-            $table->string('units');
+            $table->string('units')->nullable();
             $table->year('year_graduated');
-            $table->string('acad_honors_received');
+            $table->string('acad_honors_received')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

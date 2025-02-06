@@ -33,12 +33,15 @@ class AccountController extends Controller
             'userSchoolCurriculars',
             'userOtherDetails',
             'userReferences',
+            'userReferences.address',
             'userValidIds',
 
         ])
             ->where('users.id', Auth::user()->id)
             ->first();
 
+
+           
 
         $user = User::find(Auth::user()->id);
 
@@ -53,6 +56,8 @@ class AccountController extends Controller
             $auth = false;
         }
 
+        
+
 
         return Inertia::render('Pages/Account/Account', [
             'user' =>  $user,
@@ -61,6 +66,7 @@ class AccountController extends Controller
             'personalDetails' => $personalDetails,
             'messageSuccess' => session('success') ?? null,
             'authError' => session('error') ?? null,
+            'pageTitle' => 'Account',
         ]);
     }
 

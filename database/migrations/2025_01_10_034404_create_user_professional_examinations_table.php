@@ -14,11 +14,11 @@ return new class extends Migration {
             $table->id();
             $table->bigInteger('user_id')->unsigned();
             $table->string('title');
-            $table->string('rating');
+            $table->string('rating')->nullable();
             $table->date('date');
             $table->string('place');
-            $table->string('license_no');
-            $table->date('validity');
+            $table->string('license_no')->nullable();
+            $table->string('validity')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
