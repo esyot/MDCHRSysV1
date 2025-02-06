@@ -58,6 +58,10 @@ Route::middleware([Check2WayVerification::class])->group(function () {
     });
     }); 
 
+    Route::get('/personal-data-sheet', function(){
+        return view('forms.personalDataSheet');
+    });
+
 Route::post('/authentication-check', [AuthController::class, 'auth']);
 
 Route::post('/verification-submit', [VerificationController::class, 'verify']);
