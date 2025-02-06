@@ -3,7 +3,7 @@
   <div id="confirmationSubmitModal" class="modal modal-hide">
     <div class="modal-content">
       <div class="modal-content-description">
-        <label>Are you sure to save all changes?</label>
+        <label>Are you sure to save all your changes?</label>
       </div>
       <div class="modal-content-btn">
         <button
