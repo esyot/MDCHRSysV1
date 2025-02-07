@@ -2,7 +2,7 @@
   <div class="personal-details-items" v-if="editMode">
     <div class="title-container">
       <span class="title">CURRICULAR AND SCHOOL COMMITTEE ASSIGNMENTS</span>
-      <small >(Last 2 years.)</small>
+      <small>(Last 2 years.)</small>
     </div>
 
     <div class="add-field-btn">
@@ -83,7 +83,7 @@
 
 <script>
 export default {
-  emits: ["update-user-details"],
+  emits: ["track-touched-field", "update-user-details"],
   props: {
     userDetails: Object,
     editMode: Boolean,

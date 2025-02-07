@@ -4,7 +4,7 @@
       <span class="title"
         >SPECIAL TRAINING COURSES, SEMINARS, SYMPOSIA PARTICIPATED FORM
       </span>
-      <small 
+      <small
         >(Note: Start from the most recent training and include only the relevant training
         or program for the last 5 years.)</small
       >
@@ -116,7 +116,7 @@
 
 <script>
 export default {
-  emits: ["update-user-details"],
+  emits: ["track-touched-field", "update-user-details"],
   props: {
     userDetails: Object,
     editMode: Boolean,

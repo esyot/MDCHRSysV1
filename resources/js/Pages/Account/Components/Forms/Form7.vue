@@ -105,7 +105,7 @@
 
 <script>
 export default {
-  emits: ["update-user-details"],
+  emits: ["track-touched-field", "update-user-details"],
   props: {
     userDetails: Object,
     editMode: Boolean,
