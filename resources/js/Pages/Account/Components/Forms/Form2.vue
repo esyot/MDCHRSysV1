@@ -5,15 +5,12 @@
     </div>
     <div class="form-group">
       <label for="type">SELECT FAMILY MEMBER:</label>
-      <select v-model="selectedFamilyType" class="form-control">
+      <select v-model="selectedFamilyType" class="select-field">
         <option value="spouse">Spouse</option>
         <option value="father">Father</option>
         <option value="mother">Mother</option>
         <option value="child">Children</option>
       </select>
-    </div>
-    <div v-if="selectedFamilyType === 'child'" @click="addChild">
-      <button>+ Add Another Child</button>
     </div>
 
     <div v-if="selectedFamilyType">
@@ -169,6 +166,9 @@
           />
         </div>
       </div>
+    </div>
+    <div class="add-field-btn" v-if="selectedFamilyType === 'child'" @click="addChild">
+      <button>+ Add Another Child</button>
     </div>
   </div>
 

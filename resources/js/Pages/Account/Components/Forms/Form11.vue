@@ -51,10 +51,21 @@
           @input="handleFieldFocus(`user_other_infos`)"
         />
       </div>
+      <button
+        v-if="
+          userOtherInfo.skill == '' &&
+          userOtherInfo.org_name == '' &&
+          userOtherInfo.recognition_title == ''
+        "
+        @click="removeField(index)"
+        class="remove-btn"
+      >
+        Remove
+      </button>
       <hr />
     </div>
   </div>
-  <div class="personal-details-items" v-if="editMode == false">
+  <div class="personal-details-items" v-if="!editMode">
     <div class="title-container">
       <span class="title">OTHER INFORMATION</span>
     </div>
@@ -90,12 +101,17 @@ export default {
         [fieldName]: this.userDetails[fieldName],
       });
     },
+
     addField() {
       this.userDetails.user_other_infos.push({
         skill: "",
         recognition_title: "",
         org_name: "",
       });
+    },
+
+    removeField(index) {
+      this.userDetails.user_other_infos.splice(index, 1);
     },
   },
   watch: {
@@ -108,3 +124,38 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.remove-btn {
+  margin-top: 10px;
+  color: red;
+  background: none;
+  border: 1px solid red;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.remove-btn:hover {
+  background-color: red;
+  color: white;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+.add-field-btn {
+  margin-bottom: 20px;
+}
+
+.title-container .title {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+input.form-control {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+}
+</style>
