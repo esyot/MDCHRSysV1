@@ -194,8 +194,8 @@ export default {
         </div>
       </div>
       <div class="amount">
-        <label for="total">Total amount requested: </label>
-        <span class="underline"> ₱ {{ formData.amount }}.00 only </span>
+        <label for="total">Amount requested: </label>
+        <span class="underline"> ₱ {{ formData.amount }} only </span>
       </div>
 
       <div class="modal-footer">
@@ -208,7 +208,7 @@ export default {
     :id="'modal-leave-form-' + formData.id"
     class="hidden modal"
     v-for="formData in leaveForms"
-    :key="formData"
+    :key="formData.id"
     @click.self="closeFormModal"
   >
     <div class="modal-content">
@@ -226,7 +226,7 @@ export default {
           <text class="third">HUMAN RESOURCE OFFICE</text>
         </div>
       </div>
-      <h3 class="title">Travel Application Form</h3>
+      <h3 class="title">Leave Application Form</h3>
       <span class="sub-title">Leave type</span>
       <div class="content-details">
         <div class="row">
@@ -247,6 +247,7 @@ export default {
               />
               Maternity</label
             >
+
             <label
               ><input
                 type="radio"
@@ -256,12 +257,8 @@ export default {
               Paternity Leave</label
             >
 
-            <label
-              ><input
-                type="radio"
-                :checked="formData.leave_type == 'Sick'"
-                name="leave_type"
-              />
+            <label>
+              <input type="radio" :checked="formData.leave_type" name="leave_type" />
               Sick Leave</label
             >
             <label
@@ -327,7 +324,7 @@ export default {
           </div>
 
           <div class="checkbox-group" v-if="formData.leave_type == 'Sick'">
-            <span class="sub-title"> Incase of Sick Leave: </span>
+            <span class="sub-title">Sick Leave: </span>
             <label
               ><input
                 type="checkbox"
@@ -335,7 +332,7 @@ export default {
                 class="sub-checkbox"
                 name="sick_hospital"
               />
-              Hospital:
+              Hospital
             </label>
             <label
               ><input
@@ -343,7 +340,7 @@ export default {
                 :checked="formData.convalescence_place == 'Out Patient'"
                 class="sub-checkbox"
               />
-              Out Patient:
+              Out Patient
             </label>
             <label
               ><input
@@ -352,8 +349,18 @@ export default {
                 class="sub-checkbox"
                 name="sick_home"
               />
-              Home Medication:
+              Home Medication
             </label>
+
+            <div class="input-group">
+              <span class="sub-title"> Illness: </span>
+              <input
+                type="input"
+                v-model="formData.illness"
+                class="sub-checkbox"
+                name="sick_home"
+              />
+            </div>
           </div>
           <div class="checkbox-group" v-if="formData.leave_type == 'Educational'">
             <span class="sub-title">Incase of Educational Leave: </span>
@@ -372,8 +379,17 @@ export default {
           </div>
         </div>
 
-        <div class="close-btn-container">
-          <button @click="closeFormModal">Close</button>
+        <div class="btn-container">
+          <button class="approval" title="Proceed to Approval" @click="closeFormModal">
+            Proceed to Approval
+          </button>
+          <button
+            class="disapproval"
+            title="Proceed to Disapproval"
+            @click="closeFormModal"
+          >
+            Proceed to Disapproval
+          </button>
         </div>
       </div>
     </div>
@@ -381,120 +397,5 @@ export default {
 </template>
 
 <style scoped>
-@import "./tracking-modal.css";
-
-.section-user-info {
-  margin-bottom: 20px;
-}
-
-.section-user-info .user-info {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.user-info label {
-  font-size: 16px;
-}
-
-.content-details {
-  margin-top: 10px;
-  padding: 5px;
-}
-
-.content-details .row {
-  display: flex;
-  justify-content: space-between;
-}
-
-.radio-group {
-  pointer-events: none;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px;
-}
-
-.radio-group label {
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-}
-
-.radio-group input[type="checkbox"] {
-  margin-right: 10px;
-}
-
-.input-group {
-  margin-bottom: 10px;
-}
-
-.input-group label {
-  font-size: 16px;
-  margin-bottom: 5px;
-  display: block;
-}
-
-.input-group input {
-  padding: 5px;
-  font-size: 16px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.section-dates {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  padding-right: 10px;
-}
-
-.container-details {
-  display: flex;
-  padding: 10px;
-}
-
-.sub-checkbox {
-  margin-left: 15px;
-}
-
-.sub-checkbox + input[type="text"] {
-  margin-top: 5px;
-  padding: 5px;
-  font-size: 16px;
-}
-
-span.sub-title {
-  display: flex;
-  margin-top: 8px;
-  margin-left: 5px;
-  font-size: 16px;
-  font-weight: bold;
-  padding-inline: 5px;
-}
-
-.close-btn-container {
-  display: flex;
-  justify-content: center;
-  padding: 10px;
-}
-
-.close-btn-container button {
-  padding: 10px;
-  border: none;
-  background-color: rgb(173, 160, 160);
-  border-radius: 5px;
-  opacity: 75%;
-}
-
-.close-btn-container button:hover {
-  opacity: 100%;
-  cursor: pointer;
-}
-.checkbox-group {
-  pointer-events: none;
-}
-.section-dates {
-  pointer-events: none;
-}
+@import "./checking-modal.css";
 </style>

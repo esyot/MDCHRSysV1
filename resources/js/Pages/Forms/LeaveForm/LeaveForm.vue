@@ -20,11 +20,13 @@ export default {
         other_reason: "",
         date_start: "",
         date_end: "",
+        description: "",
       },
       teachingSubstitutes: [],
       days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
       searchTeacher: false,
       filteredUsers: this.users,
+      substitute: false,
     };
   },
 
@@ -46,7 +48,7 @@ export default {
     },
     leaveFormPreview(event) {
       Inertia.get("/leave-form-preview", {
-        substitutes: this.teachingSubstitutes,
+        substitutes: this.teachingSubstitutes ?? null,
         formData: this.formData,
       });
     },
@@ -103,7 +105,7 @@ export default {
         <div class="form-section">
           <label for="leave_name">TYPE OF LEAVE:</label>
           <select id="leave_name" v-model="formData.leave_type" class="forms-controller">
-            <option value="" disabled selected>Select a type of leave</option>
+            <option value="" disabled selected>Select type of leave</option>
             <option value="Vacation">VACATION</option>
             <option value="Maternity">MATERNITY</option>
             <option value="Paternity">PATERNITY</option>
@@ -289,8 +291,45 @@ export default {
             v-model="formData.date_end"
           />
         </div>
+
+        <div class="form-section">
+          <label for="date_end">Need a substitute?</label>
+
+          <div class="radio-container">
+            <div class="radio" for="yes-substitute">
+              <input
+                type="radio"
+                id="yes-substitute"
+                class="forms-controller"
+                v-model="substitute"
+                :value="true"
+              />
+              <span> Yes</span>
+            </div>
+
+            <div class="radio" for="no-substitute">
+              <input
+                type="radio"
+                id="no-substitute"
+                class="forms-controller"
+                v-model="substitute"
+                :value="false"
+              />
+              <span> No</span>
+            </div>
+          </div>
+        </div>
+        <div v-if="!substitute" class="form-section">
+          <label for="date_end">Please specify the alternatives used to the class.</label>
+          <textarea
+            type="text"
+            v-model="description"
+            placeholder="Input text here."
+            required
+          />
+        </div>
       </div>
-      <div class="forms">
+      <div class="forms" v-if="substitute">
         <div class="forms-title">
           <span class="title">SUBSTITUTE</span>
           <button type="button" @click="addTeachingSubstitute">
@@ -397,4 +436,29 @@ export default {
 
 <style scoped>
 @import "./leave-form.css";
+
+.radio-container {
+  display: flex;
+}
+.radio {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.radio input {
+  margin-bottom: 4px;
+}
+
+.radio label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.form-section textarea {
+  border-radius: 5px;
+  margin-top: 10px;
+  padding: 5px;
+}
 </style>

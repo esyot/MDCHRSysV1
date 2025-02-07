@@ -11,4 +11,13 @@ class LeaveForm extends Model
     public function substitutes(){
         return $this->hasMany(Substitute::class);
     }
+
+    public function user(){
+        return $this->belongsTo(User::class)->select([
+            'id',
+            'first_name',
+            'last_name',
+            'middle_name'
+        ]);
+    }
 }

@@ -70,10 +70,16 @@ export default {
               </InertiaLink>
 
               <InertiaLink :href="'/forms/tracking'" class="link">
-                <li><span>Track Forms</span></li>
+                <li><span>Track Submitted Forms</span></li>
               </InertiaLink>
             </ul>
           </li>
+          <InertiaLink :href="'/forms/checking'" class="link"
+            ><li class="menu-li" title="Check Forms">
+              <i class="fas fa-desktop"></i>
+              <span>Check Forms</span>
+            </li>
+          </InertiaLink>
           <li title="Users">
             <div class="menu-li" @click="openSubMenu('Users')">
               <i class="fa-solid fa-users"></i>

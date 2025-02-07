@@ -70,4 +70,14 @@ class User extends Authenticatable
     public function substitute(){
         return $this->hasMany(Substitute::class);
     }
+
+  
+
+    public function travelForm(){
+        return $this->hasOne(TravelForm::class);
+    }
+
+    public function leaveForm(){
+        return $this->hasOne(LeaveForm::class);
+    }
 }
