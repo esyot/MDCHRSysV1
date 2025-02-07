@@ -258,7 +258,7 @@
     <div class="title-container">
       <span class="title">ADDITIONAL DETAILS</span>
     </div>
-    <div class="details-group">
+    <div class="details-group" v-if="personalDetails.user_other_details">
       <b>1. Have you ever been found guilty of any administrative offense?</b>
       <span>
         <div v-if="personalDetails.user_other_details.administrative_offense !== 'no'">
