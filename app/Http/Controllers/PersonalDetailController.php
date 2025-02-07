@@ -48,7 +48,8 @@ class PersonalDetailController extends Controller
             'user_other_infos',
             'user_school_curriculars',
             'user_references',
-            'user_valid_ids'
+            'user_valid_ids',
+            'user_other_details'
         ]);
 
         $filteredData = Arr::only($requestData, $fieldsToCheck);
@@ -475,6 +476,33 @@ class PersonalDetailController extends Controller
             }
         }
 
+        
+
+        if ($request->has('user_other_details')) {
+
+           
+            $userOtherDetails = $request->input('user_other_details');
+        
+            $detailExist = isset($userOtherDetails['id']) ? UserOtherDetail::find($userOtherDetails['id']) : null;
+        
+            if ($detailExist) {
+        
+                unset($userOtherDetails['created_at']);
+                unset($userOtherDetails['updated_at']);
+        
+              
+                UserOtherDetail::where('id', $userOtherDetails['id'])->update($userOtherDetails);
+            } else {
+        
+              
+                $userOtherDetails['user_id'] = Auth::user()->id;
+                
+                
+                UserOtherDetail::create($userOtherDetails);
+            }
+        
+        }
+        
 
         session()->flash('success', 'Personal details updated successfully!');
 

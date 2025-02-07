@@ -35,6 +35,7 @@ class AccountController extends Controller
             'userReferences',
             'userReferences.address',
             'userValidIds',
+            
 
         ])
             ->where('users.id', Auth::user()->id)

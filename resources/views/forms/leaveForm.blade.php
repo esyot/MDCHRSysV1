@@ -428,7 +428,7 @@
             </div>
         </div>
         <div class="note-section">
-            <span class="italic"> Note: This leave application form shall be <u>accomplished in duplicate copies</u> with the
+            <span > Note: This leave application form shall be <u>accomplished in duplicate copies</u> with the
                 following guidelines, as follows:
             </span>
             <span class="note-section-content">

@@ -3,7 +3,7 @@
     <div class="title-container">
       <span class="title">ADMINISTRATIVE POSITIONS HELD FORM</span>
     </div>
-    <div>
+    <div class="add-field-btn">
       <button @click="addField">Add Field</button>
     </div>
     <div

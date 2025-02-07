@@ -58,7 +58,7 @@ class User extends Authenticatable
         return $this->hasMany(UserSchoolCurricular::class);
     }
     public function userOtherDetails(){
-        return $this->hasMany(UserOtherDetail::class);
+        return $this->hasOne(UserOtherDetail::class);
     }
     public function userReferences(){
         return $this->hasMany(UserReference::class);

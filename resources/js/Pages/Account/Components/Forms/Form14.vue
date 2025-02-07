@@ -1,15 +1,14 @@
 <template>
   <div class="personal-details-items" v-if="editMode">
     <div class="title-container">
-      <span class="title">REFERENCES FORM</span>
-    </div>
-    <div class="form-control">
-      <span class="italic"
+      <span class="title">REFERENCES FORM </span>
+      <small
         >(Note: Person not related by consanguinity or affinity to
-        applicant/appointee.)</span
+        applicant/appointee.)</small
       >
     </div>
-    <div>
+
+    <div class="add-field-btn">
       <button @click="addField">Add Field</button>
     </div>
 

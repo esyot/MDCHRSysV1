@@ -6,7 +6,7 @@
 
     <div class="form-group">
       <label for="level">SELECT LEVEL:</label>
-      <select v-model="educLevel" class="form-control">
+      <select v-model="educLevel" class="select-field">
         <option value="" selected disabled>Select Type</option>
         <option value="elem">Elementary</option>
         <option value="sec">Secondary</option>

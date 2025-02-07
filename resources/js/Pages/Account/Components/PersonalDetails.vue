@@ -735,4 +735,28 @@ input:checked + .slider:before {
   display: flex;
   justify-content: end;
 }
+
+.add-field-btn {
+  margin: 10px;
+}
+
+.add-field-btn button {
+  padding: 10px 14px 10px 14px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  opacity: 75%;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.add-field-btn button:hover {
+  opacity: 100%;
+  cursor: pointer;
+}
+
+.select-field {
+  padding: 10px;
+  border-radius: 5px;
+}
 </style>
