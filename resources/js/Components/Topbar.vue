@@ -45,27 +45,32 @@ export default {
 
 <template>
   <div class="topbar" ref="topbar">
-    <div class="page-title">
-      <span class="app-name">MDC HR Sys v1.0</span>
-      <i class="fas fa-chevron-right"></i>
-      <span class="text">{{ pageTitle }}</span>
+    <div class="left">
+      <div class="page-title">
+        <span class="app-name">MDC HR Sys v1.0</span>
+        <i class="fas fa-chevron-right"></i>
+        <span class="text">{{ pageTitle }}</span>
+      </div>
     </div>
-    <div
-      class="userToggleBtn"
-      @click="toggleDropdown"
-      title="Dropdown settings"
-      ref="userToggleBtn"
-    >
-      <div class="userIconBtn">
-        <div class="user-img">
-          <img
-            class="user-img"
-            :src="
-              user.img ? 'storage/users/images/' + user.img : '../assets/images/user.png'
-            "
-            alt="User Image"
-          />
-          <i class="fas fa-cog fa-xs"></i>
+    <div class="right">
+      <div class="notif">
+        <i class="fas fa-bell fa-lg"></i>
+      </div>
+
+      <div class="userToggleBtn" title="Dropdown settings" ref="userToggleBtn">
+        <div class="userIconBtn" @click="toggleDropdown">
+          <div class="user-img">
+            <img
+              class="user-img"
+              :src="
+                user.img
+                  ? 'storage/users/images/' + user.img
+                  : '../assets/images/user.png'
+              "
+              alt="User Image"
+            />
+            <i class="fas fa-cog fa-xs"></i>
+          </div>
         </div>
       </div>
     </div>
@@ -101,6 +106,5 @@ export default {
 </template>
 
 <style scoped>
-
 @import "./topbar.css";
 </style>

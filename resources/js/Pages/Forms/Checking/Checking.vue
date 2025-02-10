@@ -67,8 +67,12 @@ export default {
               <span>Status</span>
             </td>
             <td class="td-title">
+              <i class="fa-solid fa-user-cog"></i>
+              <span>Endorsed by</span>
+            </td>
+            <td class="td-title">
               <i class="fa-solid fa-share-from-square"></i>
-              <span>Submitted on</span>
+              <span>Filed on</span>
             </td>
             <td class="td-action">
               <i class="fa-solid fa-gear"></i>
@@ -97,7 +101,12 @@ export default {
               />
               <i v-if="form.status == 'approved'" class="green fas fa-circle-check"></i>
               <i v-if="form.status == 'declined'" class="fas fa-circle-xmark red"></i>
+              <i v-if="form.status == 'endorsed'" class="green fas fa-book-reader"></i>
               <span>{{ form.status }}</span>
+            </td>
+            <td>
+              {{ form.endorser.last_name }}, {{ form.endorser.first_name }}
+              {{ form.endorser.middle_name[0] }}.
             </td>
             <td>{{ formatDate(form.created_at) }}</td>
             <td class="td-action">

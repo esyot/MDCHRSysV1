@@ -186,4 +186,25 @@
   .text{
     opacity: 50%;
     font-weight: lighter;
+
+  }
+
+  .right{
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  
+  .right .notif{
+    opacity: 50%;
+  }
+
+  .right .notif:hover{
+    opacity: 100%;
+    cursor: pointer;
+  }
+
+  .right .notif i{
+    color: #fff;
+    filter: drop-shadow(3px 3px 3px rgba(0,0,0,0.2));
   }

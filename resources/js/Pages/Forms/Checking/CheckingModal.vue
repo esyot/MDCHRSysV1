@@ -1,4 +1,5 @@
 <script>
+import { Inertia } from "@inertiajs/inertia";
 export default {
   emits: ["toggleFormModal"],
   props: {
@@ -10,6 +11,8 @@ export default {
     return {
       modal_id: this.selected_id ?? null,
       modal_type: this.selected_type ?? null,
+      submission_type: "approval",
+      disapproval_description: "",
     };
   },
   watch: {
@@ -43,6 +46,18 @@ export default {
   methods: {
     closeFormModal() {
       this.$emit("toggleFormModal", this.selected_id, this.selected_type);
+    },
+
+    submitForm(id, action) {
+      const formData = {
+        id: id,
+        form_type: this.modal_type,
+        submission_type: this.submission_type,
+        submission_description: this.submission_description,
+        action: action,
+      };
+
+      Inertia.post("/forms/checking/forward", formData);
     },
   },
   computed: {
@@ -227,18 +242,18 @@ export default {
         </div>
       </div>
       <h3 class="title">Leave Application Form</h3>
-      <span class="sub-title">Leave type</span>
       <div class="content-details">
+        <span class="sub-title">Leave type</span>
         <div class="row">
           <div class="radio-group">
             <label
               ><input
                 type="radio"
-                :checked="formData.leave_type === 'Vacation'"
+                :checked="formData.leave_type == 'Vacation'"
                 name="leave_type"
               />
-              Vacation
-            </label>
+              Vacation</label
+            >
             <label
               ><input
                 type="radio"
@@ -258,7 +273,7 @@ export default {
             >
 
             <label>
-              <input type="radio" :checked="formData.leave_type" name="leave_type" />
+              <input type="radio" :checked="formData.leave_type == 'Sick'" />
               Sick Leave</label
             >
             <label
@@ -295,6 +310,7 @@ export default {
             </div>
           </div>
         </div>
+
         <span class="sub-title">Details of Leave</span>
         <div class="container-details">
           <div class="radio-group" v-if="formData.leave_type == 'Vacation'">
@@ -362,6 +378,7 @@ export default {
               />
             </div>
           </div>
+
           <div class="checkbox-group" v-if="formData.leave_type == 'Educational'">
             <span class="sub-title">Incase of Educational Leave: </span>
             <label
@@ -378,17 +395,78 @@ export default {
             >
           </div>
         </div>
+        <div class="radio-group" v-if="formData.status === 'pending'">
+          <span class="sub-title">Submit for: </span>
+          <label>
+            <input
+              type="radio"
+              v-model="submission_type"
+              value="approval"
+              class="sub-radio"
+            />
+            Approval
+          </label>
+          <label>
+            <input
+              type="radio"
+              v-model="submission_type"
+              value="disapproval"
+              class="sub-radio"
+            />
+            Disapproval
+          </label>
+        </div>
+        <div class="textarea-container" v-if="submission_type === 'disapproval'">
+          <textarea name="" v-model="disapproval_description" id="" required></textarea>
+        </div>
+
+        <div class="certitification-credits">
+          <label class="title">Certification of Leave Credits as of 2025</label>
+
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Personal Leave</th>
+                <th>Sick Leave</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Previous Leave</td>
+                <td class="end">10</td>
+                <td class="end">10</td>
+              </tr>
+              <tr>
+                <td>Add this Application</td>
+                <td class="end">20</td>
+                <td class="end">20</td>
+              </tr>
+              <tr>
+                <td>Total</td>
+                <td class="end">30</td>
+                <td class="end">40</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <div class="btn-container">
-          <button class="approval" title="Proceed to Approval" @click="closeFormModal">
-            Proceed to Approval
-          </button>
           <button
-            class="disapproval"
-            title="Proceed to Disapproval"
+            type="button"
+            class="close-btn"
+            title="Proceed to Approval"
             @click="closeFormModal"
           >
-            Proceed to Disapproval
+            Close
+          </button>
+          <button
+            type="submit"
+            @click="submitForm(formData.id, 'endorse')"
+            class="submit-btn"
+            title="Proceed to Disapproval"
+          >
+            Submit
           </button>
         </div>
       </div>
