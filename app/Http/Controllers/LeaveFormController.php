@@ -52,6 +52,10 @@ class LeaveFormController extends Controller
 
         $leave_form = LeaveForm::create($formData);
 
+        if($request->has('substitutes')){
+
+     
+
         $substitutes = $request->input('substitutes');
         $groupedSubstitutes = [];
         $currentGroup = [];
@@ -103,6 +107,7 @@ class LeaveFormController extends Controller
             
             Substitute::create($sub);
         }
+    }
     
         return redirect()->route('forms.tracking')->with('success', 'Leave request submitted successfully!.');
             

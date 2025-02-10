@@ -22,10 +22,14 @@ return new class extends Migration
             $table->string('illness')->nullable();
             $table->string('reason')->nullable();
             $table->string('other_reason')->nullable();
-            $table->enum('status', ['pending', 'declined', 'reviewed', 'approved'])->default('pending');
+            $table->string('description')->nullable();
+            $table->enum('status', ['pending', 'endorsed', 'reviewed', 'declined', 'approved'])->default('pending');
+            $table->string('endorsed_by')->nullable();
             $table->date('date_start');
             $table->date('date_end');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

@@ -1,4 +1,5 @@
 <script>
+import { Inertia } from "@inertiajs/inertia";
 export default {
   emits: ["toggleFormModal"],
   props: {
@@ -10,6 +11,8 @@ export default {
     return {
       modal_id: this.selected_id ?? null,
       modal_type: this.selected_type ?? null,
+      submission_type: "approval",
+      disapproval_description: "",
     };
   },
   watch: {
@@ -43,6 +46,18 @@ export default {
   methods: {
     closeFormModal() {
       this.$emit("toggleFormModal", this.selected_id, this.selected_type);
+    },
+
+    submitForm(id, action) {
+      const formData = {
+        id: id,
+        form_type: this.modal_type,
+        submission_type: this.submission_type,
+        submission_description: this.submission_description,
+        action: action,
+      };
+
+      Inertia.post("/forms/checking/forward", formData);
     },
   },
   computed: {
@@ -194,8 +209,8 @@ export default {
         </div>
       </div>
       <div class="amount">
-        <label for="total">Total amount requested: </label>
-        <span class="underline"> ₱ {{ formData.amount }}.00 only </span>
+        <label for="total">Amount requested: </label>
+        <span class="underline"> ₱ {{ formData.amount }} only </span>
       </div>
 
       <div class="modal-footer">
@@ -208,7 +223,7 @@ export default {
     :id="'modal-leave-form-' + formData.id"
     class="hidden modal"
     v-for="formData in leaveForms"
-    :key="formData"
+    :key="formData.id"
     @click.self="closeFormModal"
   >
     <div class="modal-content">
@@ -226,19 +241,19 @@ export default {
           <text class="third">HUMAN RESOURCE OFFICE</text>
         </div>
       </div>
-      <h3 class="title">Travel Application Form</h3>
-      <span class="sub-title">Leave type</span>
+      <h3 class="title">Leave Application Form</h3>
       <div class="content-details">
+        <span class="sub-title">Leave type</span>
         <div class="row">
           <div class="radio-group">
             <label
               ><input
                 type="radio"
-                :checked="formData.leave_type === 'Vacation'"
+                :checked="formData.leave_type == 'Vacation'"
                 name="leave_type"
               />
-              Vacation
-            </label>
+              Vacation</label
+            >
             <label
               ><input
                 type="radio"
@@ -247,6 +262,7 @@ export default {
               />
               Maternity</label
             >
+
             <label
               ><input
                 type="radio"
@@ -256,12 +272,8 @@ export default {
               Paternity Leave</label
             >
 
-            <label
-              ><input
-                type="radio"
-                :checked="formData.leave_type == 'Sick'"
-                name="leave_type"
-              />
+            <label>
+              <input type="radio" :checked="formData.leave_type == 'Sick'" />
               Sick Leave</label
             >
             <label
@@ -298,6 +310,7 @@ export default {
             </div>
           </div>
         </div>
+
         <span class="sub-title">Details of Leave</span>
         <div class="container-details">
           <div class="radio-group" v-if="formData.leave_type == 'Vacation'">
@@ -327,7 +340,7 @@ export default {
           </div>
 
           <div class="checkbox-group" v-if="formData.leave_type == 'Sick'">
-            <span class="sub-title"> Incase of Sick Leave: </span>
+            <span class="sub-title">Sick Leave: </span>
             <label
               ><input
                 type="checkbox"
@@ -335,7 +348,7 @@ export default {
                 class="sub-checkbox"
                 name="sick_hospital"
               />
-              Hospital:
+              Hospital
             </label>
             <label
               ><input
@@ -343,7 +356,7 @@ export default {
                 :checked="formData.convalescence_place == 'Out Patient'"
                 class="sub-checkbox"
               />
-              Out Patient:
+              Out Patient
             </label>
             <label
               ><input
@@ -352,9 +365,20 @@ export default {
                 class="sub-checkbox"
                 name="sick_home"
               />
-              Home Medication:
+              Home Medication
             </label>
+
+            <div class="input-group">
+              <span class="sub-title"> Illness: </span>
+              <input
+                type="input"
+                v-model="formData.illness"
+                class="sub-checkbox"
+                name="sick_home"
+              />
+            </div>
           </div>
+
           <div class="checkbox-group" v-if="formData.leave_type == 'Educational'">
             <span class="sub-title">Incase of Educational Leave: </span>
             <label
@@ -371,9 +395,79 @@ export default {
             >
           </div>
         </div>
+        <div class="radio-group" v-if="formData.status === 'pending'">
+          <span class="sub-title">Submit for: </span>
+          <label>
+            <input
+              type="radio"
+              v-model="submission_type"
+              value="approval"
+              class="sub-radio"
+            />
+            Approval
+          </label>
+          <label>
+            <input
+              type="radio"
+              v-model="submission_type"
+              value="disapproval"
+              class="sub-radio"
+            />
+            Disapproval
+          </label>
+        </div>
+        <div class="textarea-container" v-if="submission_type === 'disapproval'">
+          <textarea name="" v-model="disapproval_description" id="" required></textarea>
+        </div>
 
-        <div class="close-btn-container">
-          <button @click="closeFormModal">Close</button>
+        <div class="certitification-credits">
+          <label class="title">Certification of Leave Credits as of 2025</label>
+
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>Personal Leave</th>
+                <th>Sick Leave</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Previous Leave</td>
+                <td class="end">10</td>
+                <td class="end">10</td>
+              </tr>
+              <tr>
+                <td>Add this Application</td>
+                <td class="end">20</td>
+                <td class="end">20</td>
+              </tr>
+              <tr>
+                <td>Total</td>
+                <td class="end">30</td>
+                <td class="end">40</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="btn-container">
+          <button
+            type="button"
+            class="close-btn"
+            title="Proceed to Approval"
+            @click="closeFormModal"
+          >
+            Close
+          </button>
+          <button
+            type="submit"
+            @click="submitForm(formData.id, 'endorse')"
+            class="submit-btn"
+            title="Proceed to Disapproval"
+          >
+            Submit
+          </button>
         </div>
       </div>
     </div>
@@ -381,120 +475,5 @@ export default {
 </template>
 
 <style scoped>
-@import "./tracking-modal.css";
-
-.section-user-info {
-  margin-bottom: 20px;
-}
-
-.section-user-info .user-info {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.user-info label {
-  font-size: 16px;
-}
-
-.content-details {
-  margin-top: 10px;
-  padding: 5px;
-}
-
-.content-details .row {
-  display: flex;
-  justify-content: space-between;
-}
-
-.radio-group {
-  pointer-events: none;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px;
-}
-
-.radio-group label {
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-}
-
-.radio-group input[type="checkbox"] {
-  margin-right: 10px;
-}
-
-.input-group {
-  margin-bottom: 10px;
-}
-
-.input-group label {
-  font-size: 16px;
-  margin-bottom: 5px;
-  display: block;
-}
-
-.input-group input {
-  padding: 5px;
-  font-size: 16px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.section-dates {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  padding-right: 10px;
-}
-
-.container-details {
-  display: flex;
-  padding: 10px;
-}
-
-.sub-checkbox {
-  margin-left: 15px;
-}
-
-.sub-checkbox + input[type="text"] {
-  margin-top: 5px;
-  padding: 5px;
-  font-size: 16px;
-}
-
-span.sub-title {
-  display: flex;
-  margin-top: 8px;
-  margin-left: 5px;
-  font-size: 16px;
-  font-weight: bold;
-  padding-inline: 5px;
-}
-
-.close-btn-container {
-  display: flex;
-  justify-content: center;
-  padding: 10px;
-}
-
-.close-btn-container button {
-  padding: 10px;
-  border: none;
-  background-color: rgb(173, 160, 160);
-  border-radius: 5px;
-  opacity: 75%;
-}
-
-.close-btn-container button:hover {
-  opacity: 100%;
-  cursor: pointer;
-}
-.checkbox-group {
-  pointer-events: none;
-}
-.section-dates {
-  pointer-events: none;
-}
+@import "./checking-modal.css";
 </style>
