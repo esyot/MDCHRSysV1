@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('user_id')->unsigned();
             $table->string('leave_type')->nullable();
+            $table->string('leave_type_option')->nullable();
             $table->string('vacation_option')->nullable();
             $table->string('convalescence_place')->nullable();
             $table->string('address')->nullable();
@@ -23,8 +24,9 @@ return new class extends Migration
             $table->string('reason')->nullable();
             $table->string('other_reason')->nullable();
             $table->string('description')->nullable();
-            $table->enum('status', ['pending', 'endorsed', 'reviewed', 'declined', 'approved'])->default('pending');
+            $table->enum('status', ['pending', 'endorsed', 'recommended','processing','declined', 'approved'])->default('pending');
             $table->string('endorsed_by')->nullable();
+            $table->string('recommended_by')->nullable();
             $table->date('date_start');
             $table->date('date_end');
             $table->timestamps();

@@ -29,8 +29,17 @@ class LeaveForm extends Model
             'first_name',
             'last_name',
             'middle_name'
-        ]);
+        ]); 
     }
 
- 
+    public function userJobDetail()
+    {
+        return $this->hasOne(UserJobDetail::class, 'user_id', 'user_id')
+                    ->oldest('date_hired')
+                    ->select([
+                        'user_id',
+                        'date_hired'
+        ]);
+    }
+    
 }

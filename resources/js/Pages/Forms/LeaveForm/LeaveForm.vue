@@ -11,6 +11,7 @@ export default {
     return {
       formData: {
         leave_type: "",
+        leave_type_option: "",
         vacation_option: "",
         convalescence_place: "",
         address: "",
@@ -95,7 +96,6 @@ export default {
 </script>
 
 <template>
-  {{ console.table(teachingSubstitutes) }}
   <form @submit.prevent="leaveFormPreview">
     <div class="forms-container">
       <div class="forms">
@@ -106,16 +106,31 @@ export default {
           <label for="leave_name">TYPE OF LEAVE:</label>
           <select id="leave_name" v-model="formData.leave_type" class="forms-controller">
             <option value="" disabled selected>Select type of leave</option>
-            <option value="Vacation">VACATION</option>
-            <option value="Maternity">MATERNITY</option>
-            <option value="Paternity">PATERNITY</option>
-            <option value="Sick">SICK</option>
-            <option value="Educational">EDUCATIONAL</option>
-            <option value="Others">OTHERS</option>
+            <option value="Personal">Personal</option>
+            <option value="Maternity">Maternity</option>
+            <option value="Paternity">Peternity</option>
+            <option value="Sick">Sick</option>
+            <option value="Educational">Educational</option>
+            <option value="Others">Others</option>
           </select>
         </div>
 
-        <div class="form-section" v-if="formData.leave_type === 'Vacation'">
+        <div class="form-section" v-if="formData.leave_type == 'Personal'">
+          <label for="leave_name">Select type of Personal leave:</label>
+          <select
+            id="leave_name"
+            v-model="formData.leave_type_option"
+            class="forms-controller"
+          >
+            <option value="" disabled selected>Select type of Personal Leave</option>
+            <option value="Vacation">Vacation Leave</option>
+            <option value="Fiesta">Fiesta Leave</option>
+            <option value="Birthday">Birthday Leave</option>
+            <option value="Birthday">Wake Leave</option>
+          </select>
+        </div>
+
+        <div class="form-section" v-if="formData.leave_type_option === 'Vacation'">
           <label for="leave_type_vacation">In case of Vacation Leave:</label>
           <select id="leave_type_vacation" v-model="formData.vacation_option">
             <option value="" disabled selected>Select a country</option>
@@ -123,10 +138,11 @@ export default {
             <option value="Abroad">Abroad</option>
           </select>
         </div>
+
         <div
           class="form-section"
           v-if="
-            formData.leave_type === 'Vacation' &&
+            formData.leave_type_option === 'Vacation' &&
             formData.vacation_option === 'Within the Philippines'
           "
         >
@@ -323,7 +339,7 @@ export default {
           <label for="date_end">Please specify the alternatives used to the class.</label>
           <textarea
             type="text"
-            v-model="description"
+            v-model="formData.description"
             placeholder="Input text here."
             required
           />

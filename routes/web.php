@@ -57,6 +57,7 @@ Route::middleware([Check2WayVerification::class])->group(function () {
    
         
         Route::get('/forms/checking', [FormsController::class, 'checking']);
+        Route::get('/forms/checking/{action}', [FormsController::class, 'checking']);
 
         Route::post('/forms/checking/forward', [FormsController::class, 'forward']);
     });

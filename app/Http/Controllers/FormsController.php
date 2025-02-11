@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\LeaveForm;
 use App\Models\TravelForm;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -59,56 +60,61 @@ class FormsController extends Controller
             
     }
 
-    public function checking(){
+    public function checking($action=null){
 
         $this->globalVariables();
-    
         $roles = $this->roles;
-        $user = Auth::user();
+        $user = $this->user;
 
-        $travelForms = TravelForm::orderBy('created_at', 'ASC')
-        ->with('user')
-        ->get();
+            $travelForms = TravelForm::orderBy('created_at', 'ASC')
+            ->with('user')
+            ->get();
+            
+            $travelForms->transform(function ($form) use ($user) {
+                $form->first_name = $user->first_name;
+                $form->last_name = $user->last_name;
+                $form->middle_name = $user->middle_name;
+                return $form;
+            });
+           
+            $leaveForms = LeaveForm::with([
+                'substitutes',
+                'substitutes.user',
+                'user',
+                'endorser',
+                'userJobDetail',
+               
+            ])->orderBy('created_at', 'ASC')->get();
+           
+           
+            $forms = [];
+            $forms['Travel Form'] = $travelForms;
+            $forms['Leave Form'] = $leaveForms;
         
-        $travelForms->transform(function ($form) use ($user) {
-            $form->first_name = $user->first_name;
-            $form->last_name = $user->last_name;
-            $form->middle_name = $user->middle_name;
-            return $form;
-        });
-       
-        $leaveForms = LeaveForm::with([
-            'substitutes',
-            'substitutes.user',
-            'user',
-            'endorser'
-        ])->orderBy('created_at', 'ASC')->get();
-       
-        $forms = [];
-        $forms['Travel Form'] = $travelForms;
-        $forms['Leave Form'] = $leaveForms;
-    
-        $flattenedForms = [];
-        foreach ($forms as $formType => $formArray) {
-            foreach ($formArray as $form) {
-                $form['form_type'] = $formType;
-                $flattenedForms[] = $form;
+            $flattenedForms = [];
+            foreach ($forms as $formType => $formArray) {
+                foreach ($formArray as $form) {
+                    $form['form_type'] = $formType;
+                    $flattenedForms[] = $form;
+                }
             }
-        }
+    
+            
+            usort($flattenedForms, function($a, $b) {
+               return strtotime($b['created_at']) - strtotime($a['created_at']);
+            });
+              
+            return inertia('Pages/Forms/Checking/Checking', [
+                'user' => $user,
+                'pageTitle' => 'Checking',
+                'selected' => $action ?? 'all',
+                'forms' => $flattenedForms, 
+            ]);
         
-        usort($flattenedForms, function($a, $b) {
-           return strtotime($b['created_at']) - strtotime($a['created_at']);
-        });
-          
-        return inertia('Pages/Forms/Checking/Checking', [
-            'user' => $user,
-            'pageTitle' => 'Checking',
-            'forms' => $flattenedForms, 
-        ]);
     }
 
     public function forward(Request $request){
-
+        
        if($request->action == 'endorse'){
 
        if($request->form_type == 'Leave Form'){
@@ -120,6 +126,17 @@ class FormsController extends Controller
         ]);
        }
        
+       }
+
+       if($request->action == 'recommend'){
+        if($request->form_type == 'Leave Form'){
+
+            LeaveForm::find($request->id)
+            ->update([
+                'status' => 'recommended',
+                'recommended_by' => Auth::user()->id,
+            ]);
+           }
        }
 
     }

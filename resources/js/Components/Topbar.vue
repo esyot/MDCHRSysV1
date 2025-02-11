@@ -1,5 +1,5 @@
 <script>
-import { InertiaLink } from "@inertiajs/inertia-vue3";
+import { InertiaLink, useRemember } from "@inertiajs/inertia-vue3";
 
 export default {
   data() {
@@ -64,7 +64,7 @@ export default {
               class="user-img"
               :src="
                 user.img
-                  ? 'storage/users/images/' + user.img
+                  ? '/storage/users/images/' + user.img
                   : '../assets/images/user.png'
               "
               alt="User Image"

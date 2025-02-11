@@ -1,26 +1,31 @@
 <script>
 import Layout from "@/Layouts/Layout.vue";
-import Modal from "@/Pages/Forms/Checking/CheckingModal.vue";
+import LeaveFormModal from "./Modals/LeaveFormModal.vue";
+import TravelFormModal from "./Modals/TravelFormModal.vue";
+
 export default {
   layout: Layout,
   props: {
     forms: {
-      type: Object,
+      type: Array,
     },
+    selected: String,
   },
   data() {
     return {
-      selected_id: null,
-      selected_type: null,
+      selected_id: "",
+      selected_type: "",
+      form_selection: this.selected ?? "all",
+      isNavigating: false,
     };
   },
   components: {
-    Modal,
+    LeaveFormModal,
+    TravelFormModal,
   },
   methods: {
     formatDate(date) {
       const convertedDate = new Date(date);
-
       const options = {
         month: "short",
         day: "numeric",
@@ -29,27 +34,56 @@ export default {
         minute: "numeric",
         hour12: true,
       };
-
       return convertedDate.toLocaleString("en-US", options);
     },
 
     toggleFormModal(id, type) {
-      this.selected_id = this.selected_id === id ? null : id + "";
-      this.selected_type = this.selected_type === type ? null : type + "";
+      const isSelected = this.selected_id === id && this.selected_type === type;
+      this.selected_id = isSelected ? null : id + "";
+      this.selected_type = isSelected ? null : type + "";
+    },
+  },
+  computed: {
+    filteredForms() {
+      if (this.form_selection === "travel") {
+        return this.forms.filter((item) => item.form_type === "Travel Form");
+      } else if (this.form_selection === "leave") {
+        return this.forms.filter((item) => item.form_type === "Leave Form");
+      } else {
+        return this.forms;
+      }
     },
   },
 };
 </script>
 
 <template>
-  <Modal
-    :forms="forms"
-    :selected_id="selected_id"
-    :selected_type="selected_type"
-    @toggleFormModal="toggleFormModal"
-  />
+  <div v-if="selected_type == 'Leave Form'">
+    <LeaveFormModal
+      :selected_id="selected_id"
+      :selected_type="selected_type"
+      :leaveForms="filteredForms"
+      @toggleFormModal="toggleFormModal"
+    ></LeaveFormModal>
+  </div>
+
+  <div v-if="selected_type == 'Travel Form'">
+    <TravelFormModal
+      :selected_id="selected_id"
+      :selected_type="selected_type"
+      :travelForms="filteredForms"
+      @toggleFormModal="toggleFormModal"
+    ></TravelFormModal>
+  </div>
 
   <div class="container">
+    <div class="forms-selection">
+      <select name="" id="" v-model="form_selection">
+        <option value="all">All Forms</option>
+        <option value="travel">Travel Forms</option>
+        <option value="leave">Leave Forms</option>
+      </select>
+    </div>
     <div class="content">
       <table>
         <thead>
@@ -83,7 +117,7 @@ export default {
 
         <tbody>
           <tr
-            v-for="form in forms"
+            v-for="form in filteredForms"
             :key="form.id"
             @click="toggleFormModal(form.id, form.form_type)"
           >
@@ -100,14 +134,16 @@ export default {
                 alt=""
               />
               <i v-if="form.status == 'approved'" class="green fas fa-circle-check"></i>
-              <i v-if="form.status == 'declined'" class="fas fa-circle-xmark red"></i>
-              <i v-if="form.status == 'endorsed'" class="green fas fa-book-reader"></i>
+              <i v-if="form.status == 'endorsed'" class="green fa-solid fa-truck"></i>
+              <i v-if="form.status == 'declined'" class="red fas fa-circle-xmark"></i>
+              <i v-if="form.status == 'recommended'" class="green fas fa-handshake"></i>
               <span>{{ form.status }}</span>
             </td>
-            <td>
+            <td v-if="form.endorser">
               {{ form.endorser.last_name }}, {{ form.endorser.first_name }}
               {{ form.endorser.middle_name[0] }}.
             </td>
+            <td v-else></td>
             <td>{{ formatDate(form.created_at) }}</td>
             <td class="td-action">
               <button @click="toggleFormModal(form.id, form.form_type)" class="edit-btn">

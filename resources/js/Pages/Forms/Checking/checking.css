@@ -23,6 +23,7 @@
       background-color: #fff;
       display: flex;
       flex-direction: column;
+     
     }
     .container .title span {
       font-size: 20px;
@@ -37,6 +38,7 @@
       margin: 10px;
       background-color: #fff;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+     
     }
     
     table {
@@ -44,8 +46,7 @@
       width: 100%;
       border-collapse: collapse;
     }
-  
-    
+
     thead {
       background-color: #e0e0e0;
       color: #676767;
@@ -64,10 +65,9 @@
       
     tbody tr:hover {
       background-color: #f1f1f1;
-    }
-  
-  
+    }  
     td {
+     
       padding: 12px 15px;
       text-align: left;
     }
@@ -133,4 +133,15 @@
     }
     .loading{
       width: 17px;
+    }
+    .forms-selection{
+      display: flex;
+      justify-content: end;
+      margin-top: 10px;
+    
+    }
+    .forms-selection select{
+      padding: 5px;
+      margin-right: 10px;
+      border-radius: 5px;
     }

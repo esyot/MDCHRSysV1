@@ -71,8 +71,6 @@ class User extends Authenticatable
         return $this->hasMany(Substitute::class);
     }
 
-  
-
     public function travelForm(){
         return $this->hasOne(TravelForm::class);
     }

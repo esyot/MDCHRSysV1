@@ -226,7 +226,7 @@ export default {
           <text class="third">HUMAN RESOURCE OFFICE</text>
         </div>
       </div>
-      <h3 class="title">Travel Application Form</h3>
+      <h3 class="title">Leave Application Form</h3>
       <span class="sub-title">Leave type</span>
       <div class="content-details">
         <div class="row">
@@ -234,10 +234,10 @@ export default {
             <label
               ><input
                 type="radio"
-                :checked="formData.leave_type === 'Vacation'"
+                :checked="formData.leave_type === 'Personal'"
                 name="leave_type"
               />
-              Vacation
+              Personal
             </label>
             <label
               ><input
@@ -300,7 +300,7 @@ export default {
         </div>
         <span class="sub-title">Details of Leave</span>
         <div class="container-details">
-          <div class="radio-group" v-if="formData.leave_type == 'Vacation'">
+          <div class="radio-group" v-if="formData.leave_type_option == 'Vacation'">
             <span class="sub-title">Vacation:</span>
             <label
               ><input
@@ -312,7 +312,7 @@ export default {
             </label>
             <input type="text" v-model="formData.address" />
 
-            <label v-if="formData.leave_type == 'Abroad'"
+            <label v-if="formData.vacation_option == 'Abroad'"
               ><input
                 type="checkbox"
                 class="sub-checkbox"

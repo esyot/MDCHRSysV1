@@ -1,0 +1,206 @@
+@font-face {
+    font-family: "RM New Albion";
+    src: url("/public/assets/fonts/rm_new_albion.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+.modal{
+    display: flex;
+    position: fixed;
+    justify-content: center;
+    align-items: center;
+    inset: 0;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.2);
+    user-select: none;
+}
+
+.modal-content{
+    background-color: #fff;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+    border: 1px solid #d8d8d8;
+    border-radius: 5px;
+  
+}
+.modal-header{
+    display: flex;
+    justify-content: space-between;
+    padding-inline: 5px;
+    padding-top: 3px;
+    border-bottom: 1px solid #b3b3b3;
+    margin-bottom: 10px;
+}
+
+.modal-header .title{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.modal-header .x-btn{
+    font-size: 20px;
+    font-weight: bold;
+    opacity: 50%;
+}
+
+.modal-header .x-btn:hover{
+    opacity: 100%;
+    cursor: pointer;
+}
+
+.heading-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid #c1c1c1;
+    padding-bottom: 10px;
+    padding-inline: 50px;
+}
+
+.heading-container .heading-img img{
+    width: 60px;
+    filter: drop-shadow(5px 5px 5px rgba(0,0,0,0.2))
+}
+
+.heading-text{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  
+}
+
+.heading-text .first{
+    font-family: RM New Albion;
+    font-size: 35pt !important;
+}
+
+.heading-text .second{
+   
+    font-size: 10pt !important;
+}
+
+.heading-text .third{
+  
+    font-size: 10pt !important;
+}
+
+.modal-title {
+    padding-top: 5px;
+    padding-left: 10px;
+    text-align: center;
+}
+
+.modal-title text{
+    font-size: 14pt !important;
+    font-weight: bold;
+}
+
+.modal-details{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    gap: .5rem;
+}
+.modal-subtitle text{
+    font-weight: bold;
+}
+
+.radio-group{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    pointer-events: none;
+    
+}
+
+.input-date{
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+}
+
+.input-date label{
+    font-weight: bold;
+}
+
+.section-dates{
+    margin-bottom: 10px;
+}
+
+.textarea-container textarea{
+    width: 100%;
+    border-radius: 5px;
+    padding: 5px
+}
+
+.btn-container{
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    gap: .3rem;
+}
+
+.btn-container button{
+    opacity: 75%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    color: #fff;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+}
+.btn-container button:hover{
+    opacity: 100%;
+    cursor: pointer;
+}
+
+.btn-container .close-btn{
+    background-color: #b3b3b3;
+}
+
+.btn-container .submit-btn{
+    background-color: rgb(41, 108, 242);
+}
+
+ .certitification-credits table{
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+ .certitification-credits table th, td{
+   border: 1px solid #9e9e9e;
+}
+
+ .certitification-credits table .end{
+    text-align: right;
+}
+
+.certitification-credits table tbody tr:hover{
+   background-color: #e8e8e8;
+   cursor: pointer;
+}
+.certification-title{
+    display: flex;
+    justify-content: center;
+    gap: .4rem;
+    margin-bottom: 10px;
+}
+
+.certification-title text{
+   font-weight: bold;
+}
+
+
+.certification-item text{
+   font-weight: bold;
+}
+
+.certification-item{
+    display: flex;
+    gap: .4rem;
+}
+
+.underline{
+    text-decoration: underline;
+}
