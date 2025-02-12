@@ -1,5 +1,6 @@
 <script>
 import { Inertia } from "@inertiajs/inertia";
+import ImageViewer from "@/Components/ImageViewer.vue";
 export default {
   emits: ["toggleFormModal"],
   props: {
@@ -7,6 +8,9 @@ export default {
     selected_id: String,
     selected_type: String,
     roles: Array,
+  },
+  components: {
+    ImageViewer,
   },
   data() {
     return {
@@ -18,6 +22,7 @@ export default {
       totalCurrentSickLeave: 0,
       totalCurrentPersonalLeave: 0,
       availableLeaveCount: 0,
+      src: "",
     };
   },
   watch: {
@@ -45,6 +50,9 @@ export default {
     },
   },
   methods: {
+    toggleLargeImgViewer(src) {
+      this.src == src ? (this.src = null) : (this.src = src);
+    },
     submitForm(id, action) {
       const formData = {
         id: id,
@@ -158,6 +166,11 @@ export default {
     :key="formData.id"
     @click.self="closeFormModal"
   >
+    <ImageViewer
+      v-if="src"
+      :src="src"
+      @toggleLargeImgViewer="toggleLargeImgViewer"
+    ></ImageViewer>
     <div class="modal-content">
       <div class="modal-header">
         <span class="title">Preview</span>
@@ -226,28 +239,14 @@ export default {
             <div class="section-dates">
               <div class="input-date">
                 <label for="date_start">Start date: </label>
-                <input
-                  type="text"
-                  id="date_start"
-                  v-model="formData.date_start"
-                  name="date_start"
-                />
+                <span class="underline">{{ formData.date_start }}</span>
               </div>
 
               <div class="input-date">
                 <label for="date_end">End date:</label>
-                <input
-                  type="text"
-                  id="date_end"
-                  v-model="formData.date_end"
-                  name="date_end"
-                />
+                <span class="underline">{{ formData.date_end }}</span>
               </div>
             </div>
-          </div>
-
-          <div class="modal-subtitle">
-            <text>Details of Leave</text>
           </div>
 
           <div class="modal-items read-only">
@@ -288,7 +287,9 @@ export default {
             </div>
 
             <div class="checkbox-group" v-if="formData.leave_type == 'Sick'">
-              <span class="sub-title">Sick Leave: </span>
+              <div class="input-group">
+                <label class="sub-title">Sick Leave Type: </label>
+              </div>
               <label
                 ><input
                   type="checkbox"
@@ -316,23 +317,32 @@ export default {
                 Home Medication
               </label>
 
-              <div v-if="formData.convalescence_place == 'In Hospital'">
-                <label for="">Place: </label>
-                <span>{{ formData.address }}</span>
+              <div
+                class="input-group"
+                v-if="formData.convalescence_place == 'In Hospital'"
+              >
+                <label for="" class="sub-title">Place: </label>
+                <span class="underline">{{ formData.address }}</span>
               </div>
 
               <div class="input-group">
-                <span class="sub-title"> Illness: </span>
-                <input
-                  type="input"
-                  v-model="formData.illness"
-                  class="sub-checkbox"
-                  name="sick_home"
+                <label class="sub-title"> Illness: </label>
+                <span class="underline">{{ formData.illness }}</span>
+              </div>
+
+              <div class="input-group">
+                <label class="sub-title"> Medical Certificate: </label>
+                <img
+                  title="Click to view image"
+                  @click="
+                    toggleLargeImgViewer(
+                      `/storage/users/medical_certificates/${formData.medical_certificate}`
+                    )
+                  "
+                  class="medical-certificate"
+                  :src="`/storage/users/medical_certificates/${formData.medical_certificate}`"
+                  alt=""
                 />
-              </div>
-
-              <div class="input-group">
-                <button>Click to download medical certificate</button>
               </div>
             </div>
 
@@ -388,7 +398,7 @@ export default {
         </div>
         <div v-if="roles.includes('dean') || roles.includes('admin')">
           <div class="modal-subtitle">
-            <text>Substitute(s):</text>
+            <text>Substitute(s): </text>
             <span>{{ formData.substitutes.length == 0 ? "None" : "" }}</span>
           </div>
 
