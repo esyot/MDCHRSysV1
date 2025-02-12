@@ -134,3 +134,9 @@
   .loading{
     width: 17px;
   }
+  .empty-msg {
+    color: red;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }

@@ -60,7 +60,7 @@ export default {
         form.append("medical_certificate", this.formData.medical_certificate);
       }
 
-      form.append("substitutes", this.teachingSubstitutes ?? null);
+      form.append("substitutes", JSON.stringify(this.teachingSubstitutes));
 
       for (const key in this.formData) {
         if (this.formData.hasOwnProperty(key)) {

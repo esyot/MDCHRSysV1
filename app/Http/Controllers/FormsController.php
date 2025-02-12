@@ -115,6 +115,9 @@ class FormsController extends Controller
     }
 
     public function forward(Request $request){
+
+
+        dd($request->toArray());
         
        if($request->action == 'endorse'){
 

@@ -103,6 +103,9 @@ export default {
           </tr>
         </tbody>
       </table>
+      <div class="empty-msg" v-if="forms.length == 0">
+        <span>You haven't submitted a form yet.</span>
+      </div>
     </div>
   </div>
 </template>

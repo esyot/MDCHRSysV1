@@ -16,6 +16,9 @@ export default {
     return {
       submission_type: "approval",
       disapproval_description: "",
+      days_with_pay: "",
+      days_without_pay: "",
+      others: "",
       currentYear: new Date().getFullYear(),
       personalLeaveCount: 0,
       sickLeaveCount: 0,
@@ -59,6 +62,10 @@ export default {
         form_type: this.selected_type,
         submission_type: this.submission_type,
         submission_description: this.submission_description,
+        days_with_pay: this.days_with_pay,
+        days_without_pay: this.days_without_pay,
+        others: this.others,
+
         action: action,
       };
 
@@ -386,7 +393,10 @@ export default {
               For Disapproval
             </label>
           </div>
-          <div class="textarea-container" v-if="submission_type === 'disapproval'">
+          <div
+            class="textarea-container"
+            v-if="submission_type === 'disapproval' && formData.status == 'endorsed'"
+          >
             <textarea
               placeholder="Input a description for disapproval."
               name=""
@@ -419,14 +429,11 @@ export default {
             </text>
           </div>
         </div>
-
-        <div
-          class="certitification-credits"
-          v-if="
+        <!-- v-if="
             formData.status == 'pending' &&
             (roles.includes('hr') || roles.includes('admin'))
-          "
-        >
+          " -->
+        <div class="certitification-credits">
           <div class="certification-title">
             <text>Certification of Leave Credits as of </text>
             <select v-model="currentYear">
@@ -549,6 +556,77 @@ export default {
               </tr>
             </tbody>
           </table>
+
+          <div class="modal-item">
+            <div>
+              <label for="">Submit as:</label>
+              <div class="submission-selection">
+                <label for="approval">
+                  <input
+                    type="radio"
+                    v-model="submission_type"
+                    id="approval"
+                    name="submission"
+                    value="approval"
+                  />
+                  Approval</label
+                >
+
+                <label for="disapproval">
+                  <input
+                    type="radio"
+                    v-model="submission_type"
+                    id="disapproval"
+                    name="submission"
+                    value="disapproval"
+                  />
+                  Disapproval</label
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-item">
+            <div v-if="submission_type == 'approval'">
+              <label for="">Approved for:</label>
+              <div class="input-container">
+                <input
+                  type="text"
+                  v-model="days_with_pay"
+                  placeholder="Input no. of days"
+                />
+                <span>days with pay.</span>
+              </div>
+
+              <div class="input-container">
+                <input
+                  type="text"
+                  v-model="days_without_pay"
+                  placeholder="Input no. of days"
+                />
+                <span>days without pay.</span>
+              </div>
+
+              <div class="input-container">
+                <input type="text" v-model="others" placeholder="Input no. of days" />
+                <span>others please spicify.</span>
+              </div>
+            </div>
+
+            <div
+              v-if="submission_type == 'disapproval' && formData.status == 'recommended'"
+            >
+              <label for="">Disapproved Due To:</label>
+              <div class="input-container">
+                <textarea
+                  name=""
+                  v-model="disapproval_description"
+                  id=""
+                  placeholder="input disapproval description."
+                ></textarea>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="btn-container" v-if="formData.status == 'pending'">
@@ -585,6 +663,25 @@ export default {
           title="Proceed to Approval"
         >
           Recommend
+        </button>
+      </div>
+
+      <div class="btn-container" v-if="formData.status == 'recommended'">
+        <button
+          type="button"
+          class="close-btn"
+          title="Close the form"
+          @click="closeFormModal"
+        >
+          Close
+        </button>
+        <button
+          type="submit"
+          @click="submitForm(formData.id, 'finance_approval')"
+          class="submit-btn"
+          title="Proceed to Approval"
+        >
+          Submit
         </button>
       </div>
     </div>

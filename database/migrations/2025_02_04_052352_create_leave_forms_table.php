@@ -30,6 +30,9 @@ return new class extends Migration
             $table->date('date_start');
             $table->date('date_end');
             $table->string('medical_certificate')->nullable();
+            $table->integer('days_with_pay')->nullable();
+            $table->integer('days_without_pay')->nullable();
+            $table->integer('others')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

@@ -157,6 +157,9 @@ export default {
           </tr>
         </tbody>
       </table>
+      <div class="empty-msg" v-if="forms.length == 0">
+        <span>There have been no submissions yet.</span>
+      </div>
     </div>
   </div>
 </template>
