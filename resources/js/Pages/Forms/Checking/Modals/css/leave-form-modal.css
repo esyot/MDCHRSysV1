@@ -67,10 +67,9 @@
 .heading-container{
     background-color: #eeee;
     justify-content: center;
-    align-items: center;
+    align-items: end;
     gap: 1rem;
     border-bottom: 1px solid #c1c1c1;
-    padding-top: 10px;
     padding-bottom: 10px;
     padding-inline: 50px;
 }
@@ -194,8 +193,6 @@
     border-collapse: collapse;
     margin-top: 10px;
 }
-
-
 
  .certitification-credits table th, td{
    border: 1px solid #9e9e9e;
