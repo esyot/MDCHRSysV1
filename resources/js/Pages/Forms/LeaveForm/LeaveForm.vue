@@ -22,6 +22,7 @@ export default {
         date_start: "",
         date_end: "",
         description: "",
+        medical_certificate: null,
       },
       teachingSubstitutes: [],
       days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -32,6 +33,12 @@ export default {
   },
 
   methods: {
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.formData.medical_certificate = file;
+      }
+    },
     addTeachingSubstitute() {
       const newSubstitute = {
         subject: "",
@@ -47,11 +54,21 @@ export default {
     removeTeachingSubstitute(index) {
       this.teachingSubstitutes.splice(index, 1);
     },
-    leaveFormPreview(event) {
-      Inertia.get("/leave-form-preview", {
-        substitutes: this.teachingSubstitutes ?? null,
-        formData: this.formData,
-      });
+    leaveFormSubmit(event) {
+      const form = new FormData();
+      if (this.formData.medical_certificate) {
+        form.append("medical_certificate", this.formData.medical_certificate);
+      }
+
+      form.append("substitutes", this.teachingSubstitutes ?? null);
+
+      for (const key in this.formData) {
+        if (this.formData.hasOwnProperty(key)) {
+          form.append(key, this.formData[key]);
+        }
+      }
+
+      Inertia.post("/leave-form-submit", form);
     },
     toggleSearchTeacher(value) {
       if (value) {
@@ -96,7 +113,7 @@ export default {
 </script>
 
 <template>
-  <form @submit.prevent="leaveFormPreview">
+  <form @submit.prevent="leaveFormSubmit">
     <div class="forms-container">
       <div class="forms">
         <div class="forms-title">
@@ -126,7 +143,6 @@ export default {
             <option value="Vacation">Vacation Leave</option>
             <option value="Fiesta">Fiesta Leave</option>
             <option value="Birthday">Birthday Leave</option>
-            <option value="Birthday">Wake Leave</option>
           </select>
         </div>
 
@@ -306,6 +322,12 @@ export default {
             class="forms-controller"
             v-model="formData.date_end"
           />
+        </div>
+
+        <div class="form-section" v-if="formData.leave_type === 'Sick'">
+          <label for="">Upload Photo of Medical Certificate:</label>
+          <input type="file" @change="handleFileChange" required />
+          <small>Note: <i>selected file must be in .jpg format</i></small>
         </div>
 
         <div class="form-section">

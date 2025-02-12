@@ -6,6 +6,7 @@ export default {
     leaveForms: Object,
     selected_id: String,
     selected_type: String,
+    roles: Array,
   },
   data() {
     return {
@@ -182,7 +183,7 @@ export default {
           </div>
 
           <div class="row">
-            <div class="radio-group">
+            <div class="radio-group read-only">
               <label
                 ><input type="radio" :checked="formData.leave_type === 'Personal'" />
                 Personal</label
@@ -249,7 +250,7 @@ export default {
             <text>Details of Leave</text>
           </div>
 
-          <div class="modal-details">
+          <div class="modal-items read-only">
             <div
               v-if="
                 formData.leave_type == 'Personal' &&
@@ -260,23 +261,25 @@ export default {
             </div>
             <div class="radio-group" v-if="formData.leave_type_option == 'Vacation'">
               <span class="sub-title">Vacation:</span>
-              <label
-                ><input
-                  type="checkbox"
-                  class="sub-checkbox"
-                  :checked="formData.vacation_option === 'Within the Philippines'"
-                />
-                Within Philippines (Specify)
-              </label>
-              <input type="text" v-model="formData.address" />
+              <div v-if="vacation_option === 'Within the Philippines'">
+                <label
+                  ><input
+                    type="checkbox"
+                    class="sub-checkbox"
+                    :checked="formData.vacation_option === 'Within the Philippines'"
+                  />
+                  Within Philippines
+                </label>
+                <input type="text" v-model="formData.address" />
+              </div>
 
-              <label v-if="formData.leave_type == 'Abroad'"
+              <label v-if="formData.vacation_option == 'Abroad'"
                 ><input
                   type="checkbox"
                   class="sub-checkbox"
                   name="vacation_abroad"
                   :checked="formData.vacation_option === 'Abroad'" />
-                Abroad (Specify):
+                Abroad :
 
                 <input
                   type="text"
@@ -289,7 +292,7 @@ export default {
               <label
                 ><input
                   type="checkbox"
-                  :checked="formData.convalescence_place == 'Hospital'"
+                  :checked="formData.convalescence_place == 'In Hospital'"
                   class="sub-checkbox"
                   name="sick_hospital"
                 />
@@ -313,6 +316,11 @@ export default {
                 Home Medication
               </label>
 
+              <div v-if="formData.convalescence_place == 'In Hospital'">
+                <label for="">Place: </label>
+                <span>{{ formData.address }}</span>
+              </div>
+
               <div class="input-group">
                 <span class="sub-title"> Illness: </span>
                 <input
@@ -321,6 +329,10 @@ export default {
                   class="sub-checkbox"
                   name="sick_home"
                 />
+              </div>
+
+              <div class="input-group">
+                <button>Click to download medical certificate</button>
               </div>
             </div>
 
@@ -340,6 +352,7 @@ export default {
               >
             </div>
           </div>
+
           <div class="radio-group" v-if="formData.status === 'endorsed'">
             <div class="modal-subtitle">
               <text>Recommendation: </text>
@@ -373,11 +386,39 @@ export default {
             ></textarea>
           </div>
         </div>
+        <div v-if="roles.includes('dean') || roles.includes('admin')">
+          <div class="modal-subtitle">
+            <text>Substitute(s):</text>
+            <span>{{ formData.substitutes.length == 0 ? "None" : "" }}</span>
+          </div>
 
-        <div class="certitification-credits" v-if="formData.status == 'pending'">
+          <div>
+            <ul v-for="substitute in formData.substitutes">
+              <li>
+                {{ substitute.subject }} | {{ substitute.days }} -
+                {{ substitute.user.last_name }},
+                {{ substitute.user.first_name }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="description" v-if="formData.substitutes.length === 0">
+            <label for="">Class Alternatives:</label>
+            <text>
+              {{ formData.description }}
+            </text>
+          </div>
+        </div>
+
+        <div
+          class="certitification-credits"
+          v-if="
+            formData.status == 'pending' &&
+            (roles.includes('hr') || roles.includes('admin'))
+          "
+        >
           <div class="certification-title">
-            <text>Certification of Leave Credits as of</text>
-
+            <text>Certification of Leave Credits as of </text>
             <select v-model="currentYear">
               <option v-for="year in 2030 - 2021 + 1" :key="year" :value="2021 + year">
                 {{ 2021 + year }}
@@ -498,25 +539,25 @@ export default {
               </tr>
             </tbody>
           </table>
-          <div class="btn-container" v-if="formData.status == 'pending'">
-            <button
-              type="button"
-              title="Close the form"
-              class="close-btn"
-              @click="closeFormModal"
-            >
-              Close
-            </button>
-            <button
-              type="submit"
-              @click="submitForm(formData.id, 'endorse')"
-              class="submit-btn"
-              title="Forward to VP Acads and VP Finance"
-            >
-              Endorse
-            </button>
-          </div>
         </div>
+      </div>
+      <div class="btn-container" v-if="formData.status == 'pending'">
+        <button
+          type="button"
+          title="Close the form"
+          class="close-btn"
+          @click="closeFormModal"
+        >
+          Close
+        </button>
+        <button
+          type="submit"
+          @click="submitForm(formData.id, 'endorse')"
+          class="submit-btn"
+          title="Forward to VP Acads and VP Finance"
+        >
+          Endorse
+        </button>
       </div>
       <div class="btn-container" v-if="formData.status == 'endorsed'">
         <button

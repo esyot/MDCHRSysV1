@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('recommended_by')->nullable();
             $table->date('date_start');
             $table->date('date_end');
+            $table->string('medical_certificate')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

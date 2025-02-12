@@ -10,6 +10,7 @@ export default {
       type: Array,
     },
     selected: String,
+    roles: Array,
   },
   data() {
     return {
@@ -63,6 +64,7 @@ export default {
       :selected_id="selected_id"
       :selected_type="selected_type"
       :leaveForms="filteredForms"
+      :roles="roles"
       @toggleFormModal="toggleFormModal"
     ></LeaveFormModal>
   </div>
@@ -72,10 +74,10 @@ export default {
       :selected_id="selected_id"
       :selected_type="selected_type"
       :travelForms="filteredForms"
+      :roles="roles"
       @toggleFormModal="toggleFormModal"
     ></TravelFormModal>
   </div>
-
   <div class="container">
     <div class="forms-selection">
       <select name="" id="" v-model="form_selection">
@@ -143,7 +145,9 @@ export default {
               {{ form.endorser.last_name }}, {{ form.endorser.first_name }}
               {{ form.endorser.middle_name[0] }}.
             </td>
+
             <td v-else></td>
+
             <td>{{ formatDate(form.created_at) }}</td>
             <td class="td-action">
               <button @click="toggleFormModal(form.id, form.form_type)" class="edit-btn">

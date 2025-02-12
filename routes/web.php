@@ -46,16 +46,16 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::post('/user-account-feature-update', [AccountController::class,'accountFeatureUpdate']);
 
         Route::post('/forms/travel-form-submit', [TravelFormController::class, 'submit']);
-
-        Route::get('/forms/leave-form-preview', [LeaveFormController::class, 'preview']);
-
         Route::get('/forms/travel-form-preview', [TravelFormController::class, 'preview']);
+
+        // Leave Forms
+        Route::post('/leave-form-submit', [LeaveFormController::class, 'submit'])->name('forms.leave-form-submit');
+   
+      
 
         Route::get('/forms/tracking', [FormsController::class, 'index'])->name('forms.tracking');
 
-        Route::get('/leave-form-preview', [LeaveFormController::class, 'preview'])->name('forms.leave-form-preview');
-   
-        
+      
         Route::get('/forms/checking', [FormsController::class, 'checking']);
         Route::get('/forms/checking/{action}', [FormsController::class, 'checking']);
 

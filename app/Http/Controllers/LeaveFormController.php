@@ -7,7 +7,9 @@ use App\Models\Substitute;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 
 class LeaveFormController extends Controller
@@ -43,18 +45,58 @@ class LeaveFormController extends Controller
         ]);
     }
 
-    public function preview(Request $request)
-    {
-       
-        $formData = $request->formData;
+    public function submit(Request $request)
+    {       
+        $formData = $request->toArray();
+        unset($formData['medical_certificate']);        
+        unset($formData['substitutes']);        
 
         $formData['user_id'] = Auth::user()->id;
 
         $leave_form = LeaveForm::create($formData);
 
-        if($request->has('substitutes')){
+       
 
-     
+        if ($request->medical_certificate) {
+
+            $file = $request->file('medical_certificate');
+
+            $path = 'public/users/medical_certificates';
+
+            $imageData = $request->input('medical_certificate');
+             
+            if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $matches)) {
+                $extension = $matches[1];
+                $imageData = substr($imageData, strpos($imageData, ',') + 1);
+                $imageData = base64_decode($imageData);
+    
+                if (!$imageData) {
+                    return redirect()->back()->with('error', 'Invalid image data.');
+                }
+    
+                $dateTimeNow = Carbon::now()->format('Y-m-d-H-i-s');
+                $fileName = $leave_form->user_id . '-' . $dateTimeNow . '.' . $extension;
+    
+                Storage::put($path . '/' . $fileName, $imageData);
+    
+                $leave_form->update([
+                    'medical_certificate' => $fileName, 
+                ]);
+
+            } else {
+                
+                $fileName = $file->getClientOriginalName();
+                $file->storeAs($path, $fileName);
+               
+                $leave_form->update([
+                    'medical_certificate' => $fileName,
+                ]);
+            }
+        }
+
+       
+    
+        if($request->substitutes){
 
         $substitutes = $request->input('substitutes');
         $groupedSubstitutes = [];

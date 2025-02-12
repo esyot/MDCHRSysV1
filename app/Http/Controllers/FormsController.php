@@ -109,6 +109,7 @@ class FormsController extends Controller
                 'pageTitle' => 'Checking',
                 'selected' => $action ?? 'all',
                 'forms' => $flattenedForms, 
+                'roles' => $roles
             ]);
         
     }
