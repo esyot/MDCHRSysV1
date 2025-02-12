@@ -1,4 +1,14 @@
+@media(orientation: landscape){
+  .content-container .cards{
+    height: 80vh;
+  }
+}
 
+@media(orientation: portrait){
+  .content-container .cards{
+    height: 80vh;
+  }
+}
   .container-body {
     display: block;
     position: relative;
@@ -6,19 +16,17 @@
     z-index: 1;
   }
   .content-container {
-    margin: 0.5rem;
+    margin: .5rem;
    
   }
-  
   .content-container .cards {
     display: flex;
     flex: 1;
     flex-wrap: wrap;
     justify-content: space-between;
+   
     overflow-y: auto;
-    height: 60vh;
     overflow-x: hidden;
-
   }
   
   .content-container .card {
@@ -30,6 +38,7 @@
     justify-content: center;
     align-items: center;
     margin: 0.5rem;
+    padding-block: 10px;
     border-radius: 0.5rem;
     background-color: #59abe3;
     color: #fff;

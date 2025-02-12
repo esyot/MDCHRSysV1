@@ -12,6 +12,10 @@ class LoginController extends Controller
     public function index()
     {
 
+        if(auth()->check()){
+            return redirect()->route('dashboard');
+        }
+
         $responseData = session('responseData');
         return inertia('Pages/Login/Login', [
             'responseData' => $responseData
