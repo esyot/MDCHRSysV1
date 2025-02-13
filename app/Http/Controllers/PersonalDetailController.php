@@ -476,33 +476,33 @@ class PersonalDetailController extends Controller
             }
         }
 
-        
+
 
         if ($request->has('user_other_details')) {
 
-           
+
             $userOtherDetails = $request->input('user_other_details');
-        
+
             $detailExist = isset($userOtherDetails['id']) ? UserOtherDetail::find($userOtherDetails['id']) : null;
-        
+
             if ($detailExist) {
-        
+
                 unset($userOtherDetails['created_at']);
                 unset($userOtherDetails['updated_at']);
-        
-              
+
+
                 UserOtherDetail::where('id', $userOtherDetails['id'])->update($userOtherDetails);
             } else {
-        
-              
+
+
                 $userOtherDetails['user_id'] = Auth::user()->id;
-                
-                
+
+
                 UserOtherDetail::create($userOtherDetails);
             }
-        
+
         }
-        
+
 
         session()->flash('success', 'Personal details updated successfully!');
 

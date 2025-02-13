@@ -26,21 +26,21 @@ Route::middleware([Check2WayVerification::class])->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/account', [AccountController::class, 'index'])->name('account');
-    
+
         Route::post('/personal-details-update-submit', [PersonalDetailController::class, 'updatePersonalDetails']);
-    
+
         Route::get('/forms/travel-form-request', [TravelFormController::class, 'index'])->name('forms.travel-form');
         Route::get('/forms/leave-form-request', [LeaveFormController::class, 'index']);
-    
+
         Route::post('/upload-cropped-profile-pic', [UserController::class, 'updateProfilePicture']);
-    
-    
+
+
         Route::get('/success-session-remove', function(){
             session()->forget('success');
             return redirect()->back();
         });
         Route::post('/authentication-check', [AuthController::class, 'auth']);
-    
+
         Route::post('/user-account-setting-update', [UserController::class, 'update']);
 
         Route::post('/user-account-feature-update', [AccountController::class,'accountFeatureUpdate']);
@@ -48,20 +48,23 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::post('/forms/travel-form-submit', [TravelFormController::class, 'submit']);
         Route::get('/forms/travel-form-preview', [TravelFormController::class, 'preview']);
 
+        //userlist
+        Route::get('/user-list', [UserController::class, 'userList'])->name('user.list');
+
         // Leave Forms
         Route::post('/leave-form-submit', [LeaveFormController::class, 'submit'])->name('forms.leave-form-submit');
-   
-      
+
+
 
         Route::get('/forms/tracking', [FormsController::class, 'index'])->name('forms.tracking');
 
-      
+
         Route::get('/forms/checking', [FormsController::class, 'checking']);
         Route::get('/forms/checking/{action}', [FormsController::class, 'checking']);
 
         Route::post('/forms/checking/forward', [FormsController::class, 'forward']);
     });
-    }); 
+    });
 
     Route::get('/personal-data-sheet', function(){
         return view('forms.personalDataSheet');
