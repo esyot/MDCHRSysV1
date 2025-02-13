@@ -76,15 +76,58 @@ class FormsController extends Controller
                 $form->middle_name = $user->middle_name;
                 return $form;
             });
+
+            $leaveForms = [];
+            if($roles->has('admin')){
+
+                $leaveForms = LeaveForm::where('status', 'recommended')
+                ->with([
+                    'substitutes',
+                    'substitutes.user',
+                    'user',
+                    'endorser',
+                    'userJobDetail',
+                   
+                ])->orderBy('created_at', 'ASC')->get();
+            }else if($roles->has('hr')){
+                
+                $leaveForms = LeaveForm::where('status', 'pending')
+                ->with([
+                    'substitutes',
+                    'substitutes.user',
+                    'user',
+                    'endorser',
+                    'userJobDetail',
+                   
+                ])->orderBy('created_at', 'ASC')->get();
+            }
+            else if($roles->has(key: 'dean')){
+                
+                $leaveForms = LeaveForm::where('status', 'endorsed')
+                ->with([
+                    'substitutes',
+                    'substitutes.user',
+                    'user',
+                    'endorser',
+                    'userJobDetail',
+                   
+                ])->orderBy('created_at', 'ASC')->get();
+            }
+
+            else if($roles->has('vp-acads')){
+                
+                $leaveForms = LeaveForm::where('status', 'finance_approved')
+                ->with([
+                    'substitutes',
+                    'substitutes.user',
+                    'user',
+                    'endorser',
+                    'userJobDetail',
+                   
+                ])->orderBy('created_at', 'ASC')->get();
+            }
            
-            $leaveForms = LeaveForm::with([
-                'substitutes',
-                'substitutes.user',
-                'user',
-                'endorser',
-                'userJobDetail',
-               
-            ])->orderBy('created_at', 'ASC')->get();
+          
            
            
             $forms = [];
@@ -116,9 +159,6 @@ class FormsController extends Controller
 
     public function forward(Request $request){
 
-
-        dd($request->toArray());
-        
        if($request->action == 'endorse'){
 
        if($request->form_type == 'Leave Form'){
@@ -141,6 +181,42 @@ class FormsController extends Controller
                 'recommended_by' => Auth::user()->id,
             ]);
            }
+       }
+
+       
+       if($request->action == 'finance_approval'){
+        if($request->form_type == 'Leave Form'){
+
+            LeaveForm::find($request->id)
+            ->update([
+                'days_with_pay'=> $request->days_with_pay ?? 0,
+                'days_without_pay'=> $request->days_with_pay ?? 0,
+                'status' => 'finance_approved',
+               
+            ]);
+           }
+       }
+
+       if($request->action == 'approval'){
+        if($request->form_type == 'Leave Form'){
+
+            LeaveForm::find($request->id)
+            ->update([
+                'status' => 'approved',
+               
+            ]);
+           }
+       }elseif($request->action == 'disapproval'){
+        if($request->form_type == 'Leave Form'){
+
+            LeaveForm::find($request->id)
+            ->update([
+                'status' => 'declined',
+                'disapproval_description' => $request->disapproval_description
+               
+            ]);
+           }
+
        }
 
     }

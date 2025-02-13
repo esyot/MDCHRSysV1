@@ -42,9 +42,29 @@ class UserSeeder extends Seeder
             'password' => Hash::make('12345678'),
         ]);
 
+        $user4 = User::create([
+            'first_name' => 'John Meward',
+            'last_name' => 'Lanoy',
+            'middle_name' => 'Largo',
+            'user' => 'jlanoy',
+            'email' => 'jlanoy@gmail.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
+        $user5 = User::create([
+            'first_name' => 'Joselle',
+            'last_name' => 'Caingles',
+            'middle_name' => 'Badilla',
+            'user' => 'jcaingles',
+            'email' => 'jcaingles@gmail.com',
+            'password' => Hash::make('12345678'),
+        ]);
+
 
         $user1->assignRole('admin');
-        $user2->assignRole('admin');
-        $user3->assignRole('admin');
+        $user2->assignRole('hr');
+        $user3->assignRole('staff');
+        $user4->assignRole('vp-acad');
+        $user5->assignRole('dean');
     }
 }

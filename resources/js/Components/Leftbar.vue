@@ -74,7 +74,10 @@ export default {
               </InertiaLink>
             </ul>
           </li>
-          <InertiaLink :href="'/forms/checking'" class="link"
+          <InertiaLink
+            v-if="!roles.includes('staff')"
+            :href="'/forms/checking'"
+            class="link"
             ><li class="menu-li" title="Check Forms">
               <i class="fas fa-desktop"></i>
               <span>Check Forms</span>

@@ -11,18 +11,16 @@ class RolesAndPermissionsSeeder extends Seeder
 {
     public function run()
     {
-        // Create permissions
-        Permission::create(['name' => 'edit articles']);
-        Permission::create(['name' => 'delete articles']);
-
+    
         // Create roles
         $admin = Role::create(['name' => 'admin']);
-        $editor = Role::create(['name' => 'editor']);
+        $dean = Role::create(['name' => 'dean']);
+        $vp_acad = Role::create(['name' => 'vp-acad']);
+        $staff = Role::create(['name' => 'staff']);
+        $hr = Role::create(['name' => 'hr']);
 
-        // Assign permissions to roles
-        $admin->givePermissionTo('edit articles');
-        $admin->givePermissionTo('delete articles');
+       
 
-        $editor->givePermissionTo('edit articles');
+       
     }
 }

@@ -62,6 +62,7 @@ export default {
         form_type: this.selected_type,
         submission_type: this.submission_type,
         submission_description: this.submission_description,
+        disapproval_description: this.disapproval_description ?? null,
         days_with_pay: this.days_with_pay,
         days_without_pay: this.days_without_pay,
         others: this.others,
@@ -159,6 +160,12 @@ export default {
       const yearDiff = year_today - year_provided;
 
       return yearDiff >= 1 ? 15 : yearDiff;
+    },
+  },
+
+  watch: {
+    submission_type(newVal) {
+      this.disapproval_description = null;
     },
   },
 };
@@ -429,10 +436,7 @@ export default {
             </text>
           </div>
         </div>
-        <!-- v-if="
-            formData.status == 'pending' &&
-            (roles.includes('hr') || roles.includes('admin'))
-          " -->
+
         <div class="certitification-credits">
           <div class="certification-title">
             <text>Certification of Leave Credits as of </text>
@@ -557,7 +561,12 @@ export default {
             </tbody>
           </table>
 
-          <div class="modal-item">
+          <div
+            class="modal-item"
+            v-if="
+              formData.status === 'recommended' || formData.status === 'finance_approved'
+            "
+          >
             <div>
               <label for="">Submit as:</label>
               <div class="submission-selection">
@@ -586,7 +595,7 @@ export default {
             </div>
           </div>
 
-          <div class="modal-item">
+          <div class="modal-item" v-if="formData.status === 'recommended'">
             <div v-if="submission_type == 'approval'">
               <label for="">Approved for:</label>
               <div class="input-container">
@@ -594,6 +603,7 @@ export default {
                   type="text"
                   v-model="days_with_pay"
                   placeholder="Input no. of days"
+                  required
                 />
                 <span>days with pay.</span>
               </div>
@@ -603,12 +613,13 @@ export default {
                   type="text"
                   v-model="days_without_pay"
                   placeholder="Input no. of days"
+                  required
                 />
                 <span>days without pay.</span>
               </div>
 
               <div class="input-container">
-                <input type="text" v-model="others" placeholder="Input no. of days" />
+                <input type="text" v-model="others" placeholder="Specify" />
                 <span>others please spicify.</span>
               </div>
             </div>
@@ -625,6 +636,23 @@ export default {
                   placeholder="input disapproval description."
                 ></textarea>
               </div>
+            </div>
+          </div>
+
+          <div
+            v-if="
+              submission_type == 'disapproval' && formData.status == 'finance_approved'
+            "
+          >
+            <label for="">Disapproved Due To:</label>
+            <div class="input-container">
+              <textarea
+                name=""
+                v-model="disapproval_description"
+                id=""
+                placeholder="input disapproval description."
+                required
+              ></textarea>
             </div>
           </div>
         </div>
@@ -647,7 +675,18 @@ export default {
           Endorse
         </button>
       </div>
-      <div class="btn-container" v-if="formData.status == 'endorsed'">
+      <div
+        class="btn-container"
+        v-if="
+          (formData.status == 'endorsed' &&
+            (submission_type === 'approval'
+              ? disapproval_description == null
+              : disapproval_description)) ||
+          (submission_type === 'disapproval'
+            ? disapproval_description
+            : disapproval_description)
+        "
+      >
         <button
           type="button"
           class="close-btn"
@@ -662,7 +701,7 @@ export default {
           class="submit-btn"
           title="Proceed to Approval"
         >
-          Recommend
+          Submit
         </button>
       </div>
 
@@ -682,6 +721,36 @@ export default {
           title="Proceed to Approval"
         >
           Submit
+        </button>
+      </div>
+
+      <div
+        class="btn-container"
+        v-if="
+          (formData.status == 'finance_approved' &&
+            (submission_type === 'approval'
+              ? disapproval_description == null
+              : disapproval_description)) ||
+          (submission_type === 'disapproval'
+            ? disapproval_description
+            : disapproval_description)
+        "
+      >
+        <button
+          type="button"
+          class="close-btn"
+          title="Close the form"
+          @click="closeFormModal"
+        >
+          Close
+        </button>
+        <button
+          type="submit"
+          @click="submitForm(formData.id, submission_type)"
+          class="submit-btn"
+          title="Proceed to Approval"
+        >
+          Approve
         </button>
       </div>
     </div>
