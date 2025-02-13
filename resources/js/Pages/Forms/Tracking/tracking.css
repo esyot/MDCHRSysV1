@@ -120,13 +120,10 @@
     gap: .5rem;
    
   }
-
-
   .td-status .green{
     color: rgb(19, 212, 19)
    
   }
-
   .td-status .red{
     color: rgb(206, 27, 27)
    
@@ -139,4 +136,10 @@
     display: flex;
     justify-content: center;
     padding: 20px;
+  }
+
+  .status-item{
+    display: flex;
+    gap: .3rem;
+    align-items: center;
   }

@@ -331,7 +331,7 @@ export default {
             <label
               ><input
                 type="checkbox"
-                :checked="formData.convalescence_place == 'Hospital'"
+                :checked="formData.convalescence_place == 'In Hospital'"
                 class="sub-checkbox"
                 name="sick_hospital"
               />

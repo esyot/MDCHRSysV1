@@ -61,10 +61,11 @@ class UserSeeder extends Seeder
         ]);
 
 
-        $user1->assignRole('admin');
-        $user2->assignRole('hr');
-        $user3->assignRole('staff');
+        $user1->assignRole('vp-admin');
         $user4->assignRole('vp-acad');
         $user5->assignRole('dean');
+        $user2->assignRole('hr');        
+        $user3->assignRole('staff');
+      
     }
 }

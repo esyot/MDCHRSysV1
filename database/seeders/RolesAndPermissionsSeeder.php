@@ -14,13 +14,11 @@ class RolesAndPermissionsSeeder extends Seeder
     
         // Create roles
         $admin = Role::create(['name' => 'admin']);
-        $dean = Role::create(['name' => 'dean']);
+        $vp_admin = Role::create(['name' => 'vp-admin']);
         $vp_acad = Role::create(['name' => 'vp-acad']);
-        $staff = Role::create(['name' => 'staff']);
         $hr = Role::create(['name' => 'hr']);
-
-       
-
-       
+        $dean = Role::create(['name' => 'dean']);       
+        $staff = Role::create(['name' => 'staff']);
+        
     }
 }

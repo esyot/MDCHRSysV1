@@ -7,6 +7,7 @@ use App\Models\TravelForm;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class FormsController extends Controller
 {
@@ -66,6 +67,8 @@ class FormsController extends Controller
         $roles = $this->roles;
         $user = $this->user;
 
+       
+
             $travelForms = TravelForm::orderBy('created_at', 'ASC')
             ->with('user')
             ->get();
@@ -78,7 +81,7 @@ class FormsController extends Controller
             });
 
             $leaveForms = [];
-            if($roles->has('admin')){
+            if($roles->contains('vp-admin')){
 
                 $leaveForms = LeaveForm::where('status', 'recommended')
                 ->with([
@@ -89,7 +92,9 @@ class FormsController extends Controller
                     'userJobDetail',
                    
                 ])->orderBy('created_at', 'ASC')->get();
-            }else if($roles->has('hr')){
+
+
+            }else if($roles->contains('hr')){
                 
                 $leaveForms = LeaveForm::where('status', 'pending')
                 ->with([
@@ -100,8 +105,9 @@ class FormsController extends Controller
                     'userJobDetail',
                    
                 ])->orderBy('created_at', 'ASC')->get();
+
             }
-            else if($roles->has(key: 'dean')){
+            else if($roles->contains(key: 'dean')){
                 
                 $leaveForms = LeaveForm::where('status', 'endorsed')
                 ->with([
@@ -114,7 +120,9 @@ class FormsController extends Controller
                 ])->orderBy('created_at', 'ASC')->get();
             }
 
-            else if($roles->has('vp-acads')){
+            else if($roles->contains('vp-acad')){
+
+               
                 
                 $leaveForms = LeaveForm::where('status', 'finance_approved')
                 ->with([
@@ -125,10 +133,12 @@ class FormsController extends Controller
                     'userJobDetail',
                    
                 ])->orderBy('created_at', 'ASC')->get();
+                
+
+               
             }
            
-          
-           
+        
            
             $forms = [];
             $forms['Travel Form'] = $travelForms;
@@ -220,4 +230,24 @@ class FormsController extends Controller
        }
 
     }
+    public function find($user_id)
+    {
+        $forms = LeaveForm::where('user_id', $user_id)->select([
+            'id',
+            'user_id',
+            'leave_type',
+            'date_start',
+            'date_end',
+            'created_at',
+            'status',
+        ])->get();
+
+        if ($forms->isEmpty()) {
+            return response()->json(['message' => 'No forms found for this user'], 404);
+        }
+
+        return response()->json($forms);
+    }
+
+    
 }

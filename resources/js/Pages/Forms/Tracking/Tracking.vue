@@ -81,15 +81,24 @@ export default {
           >
             <td>{{ form.form_type }}</td>
             <td class="td-status">
-              <img
-                v-if="form.status == 'pending'"
-                class="loading"
-                src="/public/assets/loader/loading.gif"
-                alt=""
-              />
-              <i v-if="form.status == 'approved'" class="green fas fa-circle-check"></i>
-              <i v-if="form.status == 'declined'" class="fas fa-circle-xmark red"></i>
-              <span>{{ form.status }}</span>
+              <div class="status-item" v-if="form.status == 'pending'">
+                <span>Pending </span>
+                <img class="loading" src="/public/assets/loader/loading.gif" alt="" />
+              </div>
+              <div class="status-item" v-if="form.status == 'approved'">
+                <span>Approved </span>
+                <i class="green fas fa-circle-check"></i>
+              </div>
+
+              <div class="status-item" v-if="form.status == 'declined'">
+                <span>Declined </span>
+                <i class="fas fa-circle-xmark red"></i>
+              </div>
+
+              <div class="status-item" v-if="form.status == 'finance_approved'">
+                <span>Approved by Finance </span>
+                <i class="green fas fa-circle-check"></i>
+              </div>
             </td>
             <td>{{ formatDate(form.created_at) }}</td>
             <td class="td-action">

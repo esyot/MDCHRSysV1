@@ -12,10 +12,11 @@ export default {
   components: {
     ImageViewer,
   },
+
   data() {
     return {
       submission_type: "approval",
-      disapproval_description: "",
+      disapproval_description: null,
       days_with_pay: "",
       days_without_pay: "",
       others: "",
@@ -26,6 +27,11 @@ export default {
       totalCurrentPersonalLeave: 0,
       availableLeaveCount: 0,
       src: "",
+      forms: [],
+      fetchedDataCache: [],
+      confirmation_submission: false,
+      confirmation_submission_selected: false,
+      action: "",
     };
   },
   watch: {
@@ -52,13 +58,19 @@ export default {
       }
     },
   },
+
   methods: {
     toggleLargeImgViewer(src) {
       this.src == src ? (this.src = null) : (this.src = src);
     },
-    submitForm(id, action) {
+
+    toggleConfirmForm(action) {
+      this.action === action ? (this.action = null) : (this.action = action);
+      this.confirmation_submission = !this.confirmation_submission;
+    },
+    submitForm() {
       const formData = {
-        id: id,
+        id: this.selected_id,
         form_type: this.selected_type,
         submission_type: this.submission_type,
         submission_description: this.submission_description,
@@ -66,25 +78,51 @@ export default {
         days_with_pay: this.days_with_pay,
         days_without_pay: this.days_without_pay,
         others: this.others,
-
-        action: action,
+        action: this.action,
       };
 
-      Inertia.post("/forms/checking/forward", formData);
-
-      this.closeFormModal;
+      Inertia.post("/forms/checking/forward", formData, {
+        onSuccess: () => {
+          this.action = "";
+          this.confirmation_submission = !this.confirmation_submission;
+          this.closeFormModal;
+        },
+      });
     },
 
     closeFormModal() {
       this.$emit("toggleFormModal");
     },
 
+    fetchLeaveForms(user_id) {
+      if (this.fetchedDataCache[user_id]) {
+        this.forms = this.fetchedDataCache[user_id];
+        return;
+      }
+
+      fetch(`/forms/find/${user_id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          this.forms = data;
+          this.fetchedDataCache[user_id] = data;
+        })
+        .catch((error) => {
+          console.error("Error fetching leave forms:", error);
+        });
+    },
+
     calculateLeave(user_id, type, current_leave_type) {
+      this.fetchLeaveForms(user_id);
       let leaveCount = 0;
       let totalDays = 0;
 
       if (type === "sick") {
-        const filteredArray = this.leaveForms.filter((item) => {
+        const filteredArray = this.forms.filter((item) => {
           const itemYear = new Date(item.created_at).getFullYear();
           return (
             item.user_id === user_id &&
@@ -101,13 +139,13 @@ export default {
           totalDays += daysDifference;
         });
 
-        if (current_leave_type == "Sick") {
+        if (type == "sick") {
           this.totalCurrentSickLeave = totalDays;
         }
 
         return totalDays;
       } else {
-        const filteredArray = this.leaveForms.filter((item) => {
+        const filteredArray = this.forms.filter((item) => {
           const itemYear = new Date(item.created_at).getFullYear();
           return (
             item.user_id === user_id &&
@@ -131,6 +169,7 @@ export default {
         return totalDays;
       }
     },
+
     calculateDays(type, date_start, date_end) {
       const dateStart = new Date(date_start);
       const dateEnd = new Date(date_end);
@@ -172,6 +211,20 @@ export default {
 </script>
 
 <template>
+  <div
+    class="confirmation-modal"
+    v-if="confirmation_submission"
+    @click.self="toggleConfirmForm(action)"
+  >
+    <div class="confirmation-modal-content">
+      <text>Are you sure to submit?</text>
+      <div class="confirmation-modal-btn">
+        <button @click="toggleConfirmForm(action)" class="no-btn">No</button>
+        <button @click="submitForm" class="yes-btn">Yes</button>
+      </div>
+    </div>
+  </div>
+
   <div
     :id="`modal-leave-form-${formData.id}`"
     class="modal"
@@ -274,7 +327,7 @@ export default {
             </div>
             <div class="radio-group" v-if="formData.leave_type_option == 'Vacation'">
               <span class="sub-title">Vacation:</span>
-              <div v-if="vacation_option === 'Within the Philippines'">
+              <div v-if="formData.vacation_option === 'Within the Philippines'">
                 <label
                   ><input
                     type="checkbox"
@@ -487,11 +540,15 @@ export default {
               <tr>
                 <td>Availed leave credits</td>
                 <td class="end">
-                  {{ calculateLeave(formData.user_id, "personal", formData.leave_type) }}
+                  <span>{{
+                    calculateLeave(formData.user_id, "personal", formData.leave_type)
+                  }}</span>
                   <small> day(s)</small>
                 </td>
                 <td class="end">
-                  {{ calculateLeave(formData.user_id, "sick", formData.leave_type) }}
+                  <span>{{
+                    calculateLeave(formData.user_id, "sick", formData.leave_type)
+                  }}</span>
 
                   <small> day(s)</small>
                 </td>
@@ -521,8 +578,8 @@ export default {
                 <td class="end">
                   {{
                     formData.leave_type != "Sick"
-                      ? personalLeaveCount + totalCurrentPersonalLeave
-                      : totalCurrentPersonalLeave
+                      ? sickLeaveCount + totalCurrentSickLeave
+                      : totalCurrentSickLeave
                   }}
                   <small> day(s)</small>
                 </td>
@@ -541,19 +598,17 @@ export default {
                   {{
                     calculateAvailablePersonalLeave(formData.user_job_detail.date_hired) -
                     (formData.leave_type != "Sick"
-                      ? personalLeaveCount + totalCurrentPersonalLeave
-                      : totalCurrentPersonalLeave)
+                      ? sickLeaveCount + totalCurrentSickLeave
+                      : totalCurrentSickLeave)
                   }}
                   <small> day(s) left</small>
                 </td>
                 <td class="end">
                   {{
-                    formData.leave_type == "Sick"
-                      ? calculateAvailableSickLeave(formData.user_job_detail.date_hired) -
-                        (formData.leave_type != "Sick"
-                          ? personalLeaveCount + totalCurrentPersonalLeave
-                          : totalCurrentPersonalLeave)
-                      : calculateAvailableSickLeave(formData.user_job_detail.date_hired)
+                    calculateAvailableSickLeave(formData.user_job_detail.date_hired) -
+                    (formData.leave_type == "Sick"
+                      ? sickLeaveCount + totalCurrentSickLeave
+                      : totalCurrentSickLeave)
                   }}
                   <small> day(s) left</small>
                 </td>
@@ -668,7 +723,7 @@ export default {
         </button>
         <button
           type="submit"
-          @click="submitForm(formData.id, 'endorse')"
+          @click="toggleConfirmForm('endorse')"
           class="submit-btn"
           title="Forward to VP Acads and VP Finance"
         >
@@ -697,7 +752,7 @@ export default {
         </button>
         <button
           type="submit"
-          @click="submitForm(formData.id, 'recommend')"
+          @click="toggleConfirmForm('recommend')"
           class="submit-btn"
           title="Proceed to Approval"
         >
@@ -716,7 +771,7 @@ export default {
         </button>
         <button
           type="submit"
-          @click="submitForm(formData.id, 'finance_approval')"
+          @click="toggleConfirmForm('finance_approval')"
           class="submit-btn"
           title="Proceed to Approval"
         >
@@ -727,13 +782,13 @@ export default {
       <div
         class="btn-container"
         v-if="
-          (formData.status == 'finance_approved' &&
-            (submission_type === 'approval'
-              ? disapproval_description == null
-              : disapproval_description)) ||
-          (submission_type === 'disapproval'
-            ? disapproval_description
-            : disapproval_description)
+          ((submission_type === 'approval'
+            ? disapproval_description == null
+            : disapproval_description) &&
+            formData.status === 'finance_approved') ||
+          (submission_type === 'disapproval' &&
+            disapproval_description &&
+            formData.status === 'finance_approved')
         "
       >
         <button
@@ -746,11 +801,11 @@ export default {
         </button>
         <button
           type="submit"
-          @click="submitForm(formData.id, submission_type)"
+          @click="toggleConfirmForm(submission_type)"
           class="submit-btn"
           title="Proceed to Approval"
         >
-          Approve
+          Submit
         </button>
       </div>
     </div>
