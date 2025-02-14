@@ -200,3 +200,34 @@
     cursor: pointer;
     opacity: 100%;
   }
+
+  
+.radio-container {
+  display: flex;
+}
+.radio {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.radio input {
+  margin-bottom: 4px;
+}
+
+.radio label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.form-section textarea {
+  border-radius: 5px;
+  margin-top: 10px;
+  padding: 5px;
+}
+
+ 
+
+
+  

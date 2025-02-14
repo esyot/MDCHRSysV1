@@ -217,7 +217,7 @@ export default {
     @click.self="toggleConfirmForm(action)"
   >
     <div class="confirmation-modal-content">
-      <text>Are you sure to submit?</text>
+      <text>Are you sure you want to submit?</text>
       <div class="confirmation-modal-btn">
         <button @click="toggleConfirmForm(action)" class="no-btn">No</button>
         <button @click="submitForm" class="yes-btn">Yes</button>

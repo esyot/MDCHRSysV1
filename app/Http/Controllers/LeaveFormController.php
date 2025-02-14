@@ -46,22 +46,17 @@ class LeaveFormController extends Controller
     }
 
     public function submit(Request $request)
-    {      
-        
+    {        
 
         $formData = $request->toArray();
-
-      
-        unset($formData['medical_certificate']);        
-        unset($formData['substitutes']);    
         
-       
-
+        unset($formData['substitute']);        
+        unset($formData['medical_certificate']);        
+        unset($formData['substitutes']); 
+        
         $formData['user_id'] = Auth::user()->id;
 
         $leave_form = LeaveForm::create($formData);
-
-        
 
         if ($request->hasFile('medical_certificate')) {
            
