@@ -47,12 +47,15 @@ class LeaveFormController extends Controller
 
     public function submit(Request $request)
     {        
-
         $formData = $request->toArray();
-        
-        unset($formData['substitute']);        
-        unset($formData['medical_certificate']);        
-        unset($formData['substitutes']); 
+
+        unset($formData['medical_certificate']); 
+
+        if ($formData['substitute'] !== 'true') {
+            unset($formData['substitutes']);
+        }
+
+        unset($formData['substitute']);
         
         $formData['user_id'] = Auth::user()->id;
 

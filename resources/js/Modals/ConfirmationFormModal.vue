@@ -33,16 +33,7 @@ export default {
   </div>
 </template>
 
-<style>
-@keyframes increaseOpacity {
-  0% {
-    background-color: rgba(0, 0, 0, 0);
-  }
-  100% {
-    background-color: rgba(0, 0, 0, 0.7);
-  }
-}
-
+<style scoped>
 .confirmation-modal {
   display: flex;
   position: fixed;
@@ -51,7 +42,7 @@ export default {
   justify-content: center;
   align-items: center;
   background-color: rgba(255, 0, 0, 0);
-  animation: increaseOpacity 2s forwards;
+  animation: popUp 0.3s ease-in-out forwards, increaseOpacity 2s 0.3s forwards;
 }
 
 .confirmation-modal-content {
@@ -60,12 +51,13 @@ export default {
   flex-direction: column;
   background-color: #fff;
   border: 1px solid #7a7a7a;
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.3);
 }
 
 .confirmation-modal-content text {
   margin: 12px;
   padding: 5px;
-  font-size: 18pt !important;
+  font-size: 16pt !important;
 }
 
 .confirmation-modal-btn {

@@ -227,7 +227,7 @@ export default {
         </div>
       </div>
       <h3 class="title">Leave Application Form</h3>
-      <span class="sub-title">Leave type</span>
+      <span class="sub-title">Leave type: </span>
       <div class="content-details">
         <div class="row">
           <div class="radio-group">
@@ -239,6 +239,7 @@ export default {
               />
               Personal
             </label>
+
             <label
               ><input
                 type="radio"
@@ -257,12 +258,8 @@ export default {
             >
 
             <label
-              ><input
-                type="radio"
-                :checked="formData.leave_type == 'Sick'"
-                name="leave_type"
-              />
-              Sick Leave</label
+              ><input type="radio" :checked="formData.leave_type === 'Sick'" /> Sick
+              Leave</label
             >
             <label
               ><input
@@ -382,119 +379,4 @@ export default {
 
 <style scoped>
 @import "./tracking-modal.css";
-
-.section-user-info {
-  margin-bottom: 20px;
-}
-
-.section-user-info .user-info {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.user-info label {
-  font-size: 16px;
-}
-
-.content-details {
-  margin-top: 10px;
-  padding: 5px;
-}
-
-.content-details .row {
-  display: flex;
-  justify-content: space-between;
-}
-
-.radio-group {
-  pointer-events: none;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px;
-}
-
-.radio-group label {
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-}
-
-.radio-group input[type="checkbox"] {
-  margin-right: 10px;
-}
-
-.input-group {
-  margin-bottom: 10px;
-}
-
-.input-group label {
-  font-size: 16px;
-  margin-bottom: 5px;
-  display: block;
-}
-
-.input-group input {
-  padding: 5px;
-  font-size: 16px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.section-dates {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  padding-right: 10px;
-}
-
-.container-details {
-  display: flex;
-  padding: 10px;
-}
-
-.sub-checkbox {
-  margin-left: 15px;
-}
-
-.sub-checkbox + input[type="text"] {
-  margin-top: 5px;
-  padding: 5px;
-  font-size: 16px;
-}
-
-span.sub-title {
-  display: flex;
-  margin-top: 8px;
-  margin-left: 5px;
-  font-size: 16px;
-  font-weight: bold;
-  padding-inline: 5px;
-}
-
-.close-btn-container {
-  display: flex;
-  justify-content: center;
-  padding: 10px;
-}
-
-.close-btn-container button {
-  padding: 10px;
-  border: none;
-  background-color: rgb(173, 160, 160);
-  border-radius: 5px;
-  opacity: 75%;
-}
-
-.close-btn-container button:hover {
-  opacity: 100%;
-  cursor: pointer;
-}
-.checkbox-group {
-  pointer-events: none;
-}
-.section-dates {
-  pointer-events: none;
-}
 </style>

@@ -94,6 +94,8 @@ class TravelFormController extends Controller
 
     public function submit(Request $request){
 
+        dd($request->toArray());
+
             $travelForm = TravelForm::create($request->only([
                 'user_id',
                 'date_start',

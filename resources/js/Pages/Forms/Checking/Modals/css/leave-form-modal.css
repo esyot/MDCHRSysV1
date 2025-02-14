@@ -23,10 +23,11 @@
     justify-content: center;
     align-items: center;
     inset: 0;
-    z-index: 80;
-    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 99;
     user-select: none;
+    animation: popUp 0.5s ease-in-out forwards, increaseOpacity 2s 0.3s forwards;
 }
+
 
 .modal-content{
     background-color: #fff;
@@ -76,7 +77,9 @@
 
 .heading-container .heading-img img{
     width: 60px;
-    filter: drop-shadow(5px 5px 5px rgba(0,0,0,0.2))
+    filter: drop-shadow(5px 5px 5px rgba(0,0,0,0.2));
+   
+    
 }
 
 .heading-text{
@@ -272,6 +275,9 @@
     cursor: pointer;
 }
 
+.input-group img{
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
+}
 .input-container{
     display: flex;
     align-items: center;
@@ -302,8 +308,6 @@
     box-sizing: border-box; 
 }
 
-
-
 .submission-selection{
     display: flex;
     flex-direction: column;
@@ -316,25 +320,15 @@
     z-index: 100;
     justify-content: center;
     align-items: center;
-    background-color: rgba(255, 0, 0, 0);
-    animation: increaseOpacity 2s forwards;
-  }
-  
-  @keyframes increaseOpacity {
-    0% {
-      background-color: rgba(0, 0, 0, 0);
-    }
-    100% {
-      background-color: rgba(0, 0, 0, 0.7);
-    }
-  }
-  
+    animation: popUp 0.3s ease-in-out forwards, increaseOpacity 2s .3s forwards;
+}
   .confirmation-modal-content {
     display: flex;
     border-radius: 5px;
     flex-direction: column;
     background-color: #fff;
-    border: 1px solid #7a7a7a;
+    border: 1px solid #7a7a7a;    
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.3);
   }
 
   .confirmation-modal-content text{

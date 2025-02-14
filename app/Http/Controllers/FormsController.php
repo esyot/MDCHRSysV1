@@ -162,7 +162,8 @@ class FormsController extends Controller
                 'pageTitle' => 'Checking',
                 'selected' => $action ?? 'all',
                 'forms' => $flattenedForms, 
-                'roles' => $roles
+                'roles' => $roles,
+                'messageSuccess' => session('success') ?? null,
             ]);
         
     }
@@ -228,6 +229,10 @@ class FormsController extends Controller
            }
 
        }
+
+       return redirect()->back()->with([
+        'success'=>'Form submitted successfully!'
+       ]);
 
     }
     public function find($user_id)

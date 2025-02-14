@@ -240,10 +240,10 @@ export default {
     ></ImageViewer>
     <div class="modal-content">
       <div class="modal-header">
-        <span class="title">Preview</span>
+        <span class="title">Leave Application</span>
         <span @click="closeFormModal" class="x-btn">&times;</span>
       </div>
-      <div class="heading-container">
+      <!-- <div class="heading-container">
         <div class="heading-img">
           <img src="/public/assets/images/mdc-logo.png" alt="MDC LOGO" />
         </div>
@@ -255,64 +255,16 @@ export default {
       </div>
       <div class="modal-title">
         <text>Leave Application Form</text>
-      </div>
+      </div> -->
       <div class="modal-details">
         <div>
           <div class="modal-subtitle">
-            <text>Leave type</text>
+            <text>Leave type:</text>
           </div>
 
           <div class="row">
             <div class="radio-group read-only">
-              <label
-                ><input type="radio" :checked="formData.leave_type === 'Personal'" />
-                Personal</label
-              >
-              <label
-                ><input
-                  type="radio"
-                  :checked="formData.leave_type == 'Maternity'"
-                  name="leave_type"
-                />
-                Maternity</label
-              >
-
-              <label
-                ><input
-                  type="radio"
-                  :checked="formData.leave_type == 'Paternity'"
-                  name="leave_type"
-                />
-                Paternity</label
-              >
-
-              <label>
-                <input type="radio" :checked="formData.leave_type == 'Sick'" />
-                Sick</label
-              >
-              <label
-                ><input
-                  type="radio"
-                  :checked="formData.leave_type == 'Educational'"
-                  name="leave_type"
-                />
-                Educational
-              </label>
-              <label>
-                <input type="radio" name="leave_type" /> Others: <input type="text" />
-              </label>
-            </div>
-
-            <div class="section-dates">
-              <div class="input-date">
-                <label for="date_start">Start date: </label>
-                <span class="underline">{{ formData.date_start }}</span>
-              </div>
-
-              <div class="input-date">
-                <label for="date_end">End date:</label>
-                <span class="underline">{{ formData.date_end }}</span>
-              </div>
+              <text class="underline">{{ formData.leave_type }}</text>
             </div>
           </div>
 
@@ -427,6 +379,17 @@ export default {
                 ><input type="checkbox" class="sub-checkbox" name="sick_home" /> Board
                 Examination Review</label
               >
+            </div>
+          </div>
+          <div class="section-dates">
+            <div class="input-date">
+              <label for="date_start">Start date: </label>
+              <span class="underline">{{ formData.date_start }}</span>
+            </div>
+
+            <div class="input-date">
+              <label for="date_end">End date:</label>
+              <span class="underline">{{ formData.date_end }}</span>
             </div>
           </div>
 

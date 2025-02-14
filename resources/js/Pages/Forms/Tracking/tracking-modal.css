@@ -1,19 +1,15 @@
-
-.hidden {
-    display: none;
+  @font-face {
+    font-family: "RM New Albion";
+    src: url("/public/assets/fonts/rm_new_albion.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
   }
-  
+
   .flex {
     display: flex;
   }
-  .modal {
-    position: fixed;
-    z-index: 100;
-    justify-content: center;
-    align-items: center;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.2);
-  }
+
   
   .modal-content {
     user-select: none;
@@ -23,17 +19,9 @@
     position: relative;
     margin: 10px;
     border-radius: 5px;
-    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
   }
-  
-  @font-face {
-    font-family: "RM New Albion";
-    src: url("/public/assets/fonts/rm_new_albion.woff") format("woff");
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-  }
-  
+
   .modal-header {
     display: flex;
     align-items: center;
@@ -150,6 +138,121 @@
     opacity: 100%;
     cursor: pointer;
   }
+  
+.section-user-info {
+  margin-bottom: 20px;
+}
+
+.section-user-info .user-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.user-info label {
+  font-size: 16px;
+}
+
+.content-details {
+  margin-top: 10px;
+  padding: 5px;
+}
+
+.content-details .row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.radio-group {
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+}
+
+.radio-group label {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.radio-group input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.input-group {
+  margin-bottom: 10px;
+}
+
+.input-group label {
+  font-size: 16px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.input-group input {
+  padding: 5px;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.section-dates {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-right: 10px;
+}
+
+.container-details {
+  display: flex;
+  padding: 10px;
+}
+
+.sub-checkbox {
+  margin-left: 15px;
+}
+
+.sub-checkbox + input[type="text"] {
+  margin-top: 5px;
+  padding: 5px;
+  font-size: 16px;
+}
+
+span.sub-title {
+  display: flex;
+  margin-top: 8px;
+  margin-left: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  padding-inline: 5px;
+}
+
+.close-btn-container {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+.close-btn-container button {
+  padding: 10px;
+  border: none;
+  background-color: rgb(173, 160, 160);
+  border-radius: 5px;
+  opacity: 75%;
+}
+
+.close-btn-container button:hover {
+  opacity: 100%;
+  cursor: pointer;
+}
+.checkbox-group {
+  pointer-events: none;
+}
+.section-dates {
+  pointer-events: none;
+}
 
 
   

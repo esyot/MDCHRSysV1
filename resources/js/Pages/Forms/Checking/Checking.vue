@@ -165,5 +165,5 @@ export default {
 </template>
 
 <style scoped>
-@import "./checking.css";
+@import "./Modals/css/checking.css";
 </style>

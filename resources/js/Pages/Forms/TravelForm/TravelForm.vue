@@ -1,5 +1,71 @@
+<script>
+import Layout from "@/Layouts/Layout.vue";
+import { Inertia } from "@inertiajs/inertia";
+import ConfirmationFormModal from "@/Modals/ConfirmationFormModal.vue";
+
+export default {
+  components: {
+    ConfirmationFormModal,
+  },
+  props: {
+    budgetTypes: Object,
+    budgetCharges: Object,
+    formData: Object,
+  },
+  data() {
+    return {
+      travelForm: {
+        date_start: this.formData.date_start ?? "",
+        date_end: this.formData.date_end ?? "",
+        place: this.formData.place ?? "",
+        purpose: this.formData.purpose ?? "",
+        contact_person: this.formData.contact_person ?? "",
+        contact_person_no: this.formData.contact_person_no ?? "",
+        description: this.formData.description ?? "",
+      },
+      budget: {
+        amount: this.formData.amount ?? "",
+        selectedChargedTo: this.formData.budget_charged_to ?? "",
+        selectedBudgetType: this.formData.budget_type ?? "",
+        othersReason: "",
+      },
+      confirmation_submission: false,
+    };
+  },
+  methods: {
+    toggleConfirmForm() {
+      this.confirmation_submission = !this.confirmation_submission;
+    },
+    submitForm() {
+      const formData = {
+        date_start: this.travelForm.date_start,
+        date_end: this.travelForm.date_end,
+        description: this.travelForm.description,
+        place: this.travelForm.place,
+        purpose: this.travelForm.purpose,
+        contact_person: this.travelForm.contact_person,
+        contact_person_no: this.travelForm.contact_person_no,
+        amount: this.budget.amount,
+        budget_type: this.budget.selectedBudgetType,
+        budget_charged_to: this.budget.selectedChargedTo,
+        filing_date: this.formData.filing_date ?? new Date().toISOString().split("T")[0],
+      };
+
+      Inertia.get("/forms/travel-form-submit", formData);
+    },
+  },
+  layout: Layout,
+};
+</script>
+
 <template>
-  <form @submit.prevent="travelFormSubmit">
+  <ConfirmationFormModal
+    :confirmation_submission="confirmation_submission"
+    @submitForm="submitForm"
+    @toggleConfirmForm="toggleConfirmForm"
+  ></ConfirmationFormModal>
+
+  <form @submit.prevent="toggleConfirmForm">
     <div class="forms-container">
       <div class="forms">
         <div class="forms-title">
@@ -147,60 +213,6 @@
     </div>
   </form>
 </template>
-
-<script>
-import Layout from "@/Layouts/Layout.vue";
-import { Inertia } from "@inertiajs/inertia";
-
-export default {
-  props: {
-    budgetTypes: Object,
-    budgetCharges: Object,
-    formData: Object,
-  },
-  data() {
-    return {
-      travelForm: {
-        date_start: this.formData.date_start ?? "",
-        date_end: this.formData.date_end ?? "",
-        place: this.formData.place ?? "",
-        purpose: this.formData.purpose ?? "",
-        contact_person: this.formData.contact_person ?? "",
-        contact_person_no: this.formData.contact_person_no ?? "",
-        description: this.formData.description ?? "",
-      },
-      budget: {
-        amount: this.formData.amount ?? "",
-        selectedChargedTo: this.formData.budget_charged_to ?? "",
-        selectedBudgetType: this.formData.budget_type ?? "",
-        othersReason: "",
-      },
-    };
-  },
-  methods: {
-    travelFormSubmit(event) {
-      event.preventDefault();
-
-      const formData = {
-        date_start: this.travelForm.date_start,
-        date_end: this.travelForm.date_end,
-        description: this.travelForm.description,
-        place: this.travelForm.place,
-        purpose: this.travelForm.purpose,
-        contact_person: this.travelForm.contact_person,
-        contact_person_no: this.travelForm.contact_person_no,
-        amount: this.budget.amount,
-        budget_type: this.budget.selectedBudgetType,
-        budget_charged_to: this.budget.selectedChargedTo,
-        filing_date: this.formData.filing_date ?? new Date().toISOString().split("T")[0],
-      };
-
-      Inertia.get("/forms/travel-form-preview", formData);
-    },
-  },
-  layout: Layout,
-};
-</script>
 
 <style scoped>
 @import "./travel-form.css";
