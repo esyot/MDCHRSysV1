@@ -4,7 +4,7 @@ import ImageViewer from "@/Components/ImageViewer.vue";
 export default {
   emits: ["toggleFormModal"],
   props: {
-    leaveForms: Object,
+    formData: Object,
     selected_id: String,
     selected_type: String,
     roles: Array,
@@ -29,12 +29,22 @@ export default {
       src: "",
       forms: [],
       fetchedDataCache: [],
+      fetchInProgress: [],
       confirmation_submission: false,
       confirmation_submission_selected: false,
       action: "",
+      fetchedYear: "",
     };
   },
   watch: {
+    submission_type(newVal) {
+      this.disapproval_description = null;
+    },
+    currentYear(newVal) {
+      if (newVal) {
+        this.fetchLeaveForm(this.formData.user_id, newVal);
+      }
+    },
     selected_id(newVal, oldVal) {
       if (oldVal) {
         const oldModalId = `modal-${this.modal_type
@@ -59,7 +69,23 @@ export default {
     },
   },
 
+  mounted() {
+    this.fetchLeaveForm(this.formData.user_id, this.currentYear);
+  },
+
   methods: {
+    formatDate(date) {
+      const convertedDate = new Date(date);
+      const options = {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      };
+      return convertedDate.toLocaleString("en-US", options);
+    },
     toggleLargeImgViewer(src) {
       this.src == src ? (this.src = null) : (this.src = src);
     },
@@ -94,13 +120,8 @@ export default {
       this.$emit("toggleFormModal");
     },
 
-    fetchLeaveForms(user_id) {
-      if (this.fetchedDataCache[user_id]) {
-        this.forms = this.fetchedDataCache[user_id];
-        return;
-      }
-
-      fetch(`/forms/find/${user_id}`, {
+    fetchLeaveForm(user_id, year) {
+      fetch(`/forms/find/${user_id}/${year}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -108,16 +129,18 @@ export default {
       })
         .then((response) => response.json())
         .then((data) => {
-          this.forms = data;
+          this.forms = data ?? null;
           this.fetchedDataCache[user_id] = data;
+          this.fetchInProgress[user_id] = false;
+          this.fetchedYear = year;
         })
         .catch((error) => {
           console.error("Error fetching leave forms:", error);
+          this.fetchInProgress[user_id] = false;
         });
     },
 
-    calculateLeave(user_id, type, current_leave_type) {
-      this.fetchLeaveForms(user_id);
+    calculateLeave(id, user_id, type, current_leave_type) {
       let leaveCount = 0;
       let totalDays = 0;
 
@@ -201,12 +224,6 @@ export default {
       return yearDiff >= 1 ? 15 : yearDiff;
     },
   },
-
-  watch: {
-    submission_type(newVal) {
-      this.disapproval_description = null;
-    },
-  },
 };
 </script>
 
@@ -225,14 +242,7 @@ export default {
     </div>
   </div>
 
-  <div
-    :id="`modal-leave-form-${formData.id}`"
-    class="modal"
-    v-show="formData.id == selected_id"
-    v-for="formData in leaveForms"
-    :key="formData.id"
-    @click.self="closeFormModal"
-  >
+  <div class="modal" :key="formData.id" @click.self="closeFormModal">
     <ImageViewer
       v-if="src"
       :src="src"
@@ -243,7 +253,7 @@ export default {
         <span class="title">Leave Application</span>
         <span @click="closeFormModal" class="x-btn">&times;</span>
       </div>
-      <!-- <div class="heading-container">
+      <div class="heading-container">
         <div class="heading-img">
           <img src="/public/assets/images/mdc-logo.png" alt="MDC LOGO" />
         </div>
@@ -255,7 +265,7 @@ export default {
       </div>
       <div class="modal-title">
         <text>Leave Application Form</text>
-      </div> -->
+      </div>
       <div class="modal-details">
         <div>
           <div class="modal-subtitle">
@@ -465,7 +475,7 @@ export default {
           <div class="certification-item">
             <text>Name of Applicant:</text>
             <span class="underline">
-              {{ formData.user.last_name }},
+              {{ formData.user.last_name }}
               {{ formData.user.first_name }}
               {{ formData.user.middle_name[0] }}.
             </span>
@@ -504,13 +514,23 @@ export default {
                 <td>Availed leave credits</td>
                 <td class="end">
                   <span>{{
-                    calculateLeave(formData.user_id, "personal", formData.leave_type)
+                    calculateLeave(
+                      formData.id,
+                      formData.user_id,
+                      "personal",
+                      formData.leave_type
+                    )
                   }}</span>
                   <small> day(s)</small>
                 </td>
                 <td class="end">
                   <span>{{
-                    calculateLeave(formData.user_id, "sick", formData.leave_type)
+                    calculateLeave(
+                      formData.id,
+                      formData.user_id,
+                      "sick",
+                      formData.leave_type
+                    )
                   }}</span>
 
                   <small> day(s)</small>
@@ -541,8 +561,8 @@ export default {
                 <td class="end">
                   {{
                     formData.leave_type != "Sick"
-                      ? sickLeaveCount + totalCurrentSickLeave
-                      : totalCurrentSickLeave
+                      ? totalCurrentPersonalLeave + personalLeaveCount
+                      : totalCurrentPersonalLeave
                   }}
                   <small> day(s)</small>
                 </td>
@@ -561,8 +581,8 @@ export default {
                   {{
                     calculateAvailablePersonalLeave(formData.user_job_detail.date_hired) -
                     (formData.leave_type != "Sick"
-                      ? sickLeaveCount + totalCurrentSickLeave
-                      : totalCurrentSickLeave)
+                      ? personalLeaveCount + totalCurrentPersonalLeave
+                      : totalCurrentPersonalLeave)
                   }}
                   <small> day(s) left</small>
                 </td>
@@ -578,6 +598,30 @@ export default {
               </tr>
             </tbody>
           </table>
+          <div v-if="roles.includes('hr')">
+            <div class="certification-item">
+              <text>Records:</text>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Date(s)</th>
+
+                  <th>Leave Type</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="form in forms" :key="form.id">
+                  <td>
+                    {{ formatDate(form.date_start) }} - {{ formatDate(form.date_end) }}
+                  </td>
+
+                  <td class="end">{{ form.leave_type }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
           <div
             class="modal-item"
@@ -589,24 +633,12 @@ export default {
               <label for="">Submit as:</label>
               <div class="submission-selection">
                 <label for="approval">
-                  <input
-                    type="radio"
-                    v-model="submission_type"
-                    id="approval"
-                    name="submission"
-                    value="approval"
-                  />
+                  <input type="radio" v-model="submission_type" value="approval" />
                   Approval</label
                 >
 
                 <label for="disapproval">
-                  <input
-                    type="radio"
-                    v-model="submission_type"
-                    id="disapproval"
-                    name="submission"
-                    value="disapproval"
-                  />
+                  <input type="radio" value="disapproval" v-model="submission_type" />
                   Disapproval</label
                 >
               </div>

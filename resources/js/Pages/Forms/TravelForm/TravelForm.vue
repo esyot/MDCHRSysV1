@@ -4,6 +4,7 @@ import { Inertia } from "@inertiajs/inertia";
 import ConfirmationFormModal from "@/Modals/ConfirmationFormModal.vue";
 
 export default {
+  layout: Layout,
   components: {
     ConfirmationFormModal,
   },
@@ -11,6 +12,7 @@ export default {
     budgetTypes: Object,
     budgetCharges: Object,
     formData: Object,
+    roles: Array,
   },
   data() {
     return {
@@ -29,12 +31,25 @@ export default {
         selectedBudgetType: this.formData.budget_type ?? "",
         othersReason: "",
       },
+
+      teachingSubstitutes: [],
+      days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      searchTeacher: false,
+      filteredUsers: this.users,
       confirmation_submission: false,
+      isSubstitute: false,
     };
   },
   methods: {
     toggleConfirmForm() {
       this.confirmation_submission = !this.confirmation_submission;
+    },
+    storeToLocalStorage() {
+      const dataToStore = {
+        travelForm: this.travelForm,
+        budget: this.budget,
+      };
+      localStorage.setItem("watch", JSON.stringify(dataToStore));
     },
     submitForm() {
       const formData = {
@@ -51,10 +66,35 @@ export default {
         filing_date: this.formData.filing_date ?? new Date().toISOString().split("T")[0],
       };
 
-      Inertia.get("/forms/travel-form-submit", formData);
+      Inertia.post("/forms/travel-form-submit", formData, {
+        onSuccess() {
+          this.confirmation_submission = !this.confirmation_submission;
+        },
+      });
     },
   },
-  layout: Layout,
+  watch: {
+    travelForm: {
+      handler() {
+        this.storeToLocalStorage();
+      },
+      deep: true,
+    },
+    budget: {
+      handler() {
+        this.storeToLocalStorage();
+      },
+      deep: true,
+    },
+  },
+  created() {
+    const storedData = localStorage.getItem("watch");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      this.travelForm = parsedData.travelForm;
+      this.budget = parsedData.budget;
+    }
+  },
 };
 </script>
 
@@ -204,10 +244,136 @@ export default {
             required
           />
         </div>
-        <div class="form-submit">
-          <button class="submit" title="Submit for approval">
-            <span> Submit</span>
+        <div class="form-section">
+          <label for="date_end">Do you have a substitute teacher?</label>
+
+          <div class="radio-container">
+            <div class="radio" for="yes-substitute">
+              <input
+                type="radio"
+                id="yes-substitute"
+                class="forms-controller"
+                v-model="isSubstitute"
+                :value="true"
+              />
+              <span> Yes</span>
+            </div>
+
+            <div class="radio" for="no-substitute">
+              <input
+                type="radio"
+                id="no-substitute"
+                class="forms-controller"
+                v-model="isSubstitute"
+                :value="false"
+              />
+              <span> No</span>
+            </div>
+          </div>
+        </div>
+        <div v-if="!formData.substitute" class="form-section">
+          <label for="date_end">Please specify the alternatives used to the class.</label>
+          <textarea
+            type="text"
+            v-model="formData.description"
+            placeholder="Input text here."
+            required
+          />
+        </div>
+      </div>
+      <div class="forms" v-if="isSubstitute">
+        <div class="forms-title">
+          <span class="title">SUBSTITUTE</span>
+          <button type="button" @click="addTeachingSubstitute">
+            <i class="fas fa-plus"></i> Add
           </button>
+          <small><i>(For MDC Teaching Employee only)</i></small>
+        </div>
+
+        <div
+          v-for="(substitute, index) in teachingSubstitutes"
+          :key="index"
+          class="substitute-form"
+        >
+          <div class="form-section">
+            <label for="'subject' + index">Subject</label>
+            <input
+              type="text"
+              :id="'subject' + index"
+              class="forms-controller"
+              v-model="substitute.subject"
+              placeholder="eg., Math 101"
+              required
+            />
+          </div>
+
+          <div class="form-section">
+            <label for="'teacher' + index">Substitute Teacher</label>
+            <div class="search-bar">
+              <input
+                title="Add teacher"
+                type="text"
+                :id="'teacher' + index"
+                v-model="teachingSubstitutes[index].teacher"
+                placeholder="Click to search teacher"
+                @input="toggleSearchTeacher(teachingSubstitutes[index].teacher, index)"
+                required
+              />
+            </div>
+            <div class="dropdown-teachers">
+              <ul v-if="searchTeacher">
+                <li
+                  @click="selectTeacher(user.id, index)"
+                  v-for="user in filteredUsers"
+                  :key="user.id"
+                >
+                  {{ user.last_name }}, {{ user.first_name }}
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="days">
+              <div class="days-item" v-for="(day, dayIndex) in days" :key="dayIndex">
+                <input
+                  type="checkbox"
+                  :id="'day' + index + '-' + dayIndex"
+                  :value="day"
+                  v-model="substitute.days"
+                />
+                <span>{{ day }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <label for="'start_time' + index">Start Time</label>
+            <input
+              type="time"
+              :id="'start_time' + index"
+              required
+              class="forms-controller"
+              v-model="substitute.start_time"
+            />
+          </div>
+
+          <div class="form-section">
+            <label for="'end_time' + index">End Time</label>
+            <input
+              type="time"
+              :id="'end_time' + index"
+              class="forms-controller"
+              v-model="substitute.end_time"
+              required
+            />
+          </div>
+
+          <div class="button-container">
+            <button @click="removeTeachingSubstitute(index)" class="remove-btn">
+              <i class="fa fa-trash"></i> Remove
+            </button>
+          </div>
         </div>
       </div>
     </div>

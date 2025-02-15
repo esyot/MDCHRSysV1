@@ -18,6 +18,7 @@ export default {
       selected_type: "",
       form_selection: this.selected ?? "all",
       isNavigating: false,
+      formData: [],
     };
   },
   components: {
@@ -38,10 +39,11 @@ export default {
       return convertedDate.toLocaleString("en-US", options);
     },
 
-    toggleFormModal(id, type) {
+    toggleFormModal(id, type, form) {
       const isSelected = this.selected_id === id && this.selected_type === type;
       this.selected_id = isSelected ? null : id + "";
       this.selected_type = isSelected ? null : type + "";
+      this.formData = form;
     },
   },
   computed: {
@@ -54,6 +56,13 @@ export default {
         return this.forms;
       }
     },
+
+    travelForms() {
+      return this.forms.filter((item) => item.form_type === "Travel Form");
+    },
+    leaveForms() {
+      return this.forms.filter((item) => item.form_type === "Leave Form");
+    },
   },
 };
 </script>
@@ -63,7 +72,7 @@ export default {
     <LeaveFormModal
       :selected_id="selected_id"
       :selected_type="selected_type"
-      :leaveForms="filteredForms"
+      :formData="formData"
       :roles="roles"
       @toggleFormModal="toggleFormModal"
     ></LeaveFormModal>
@@ -73,7 +82,7 @@ export default {
     <TravelFormModal
       :selected_id="selected_id"
       :selected_type="selected_type"
-      :travelForms="filteredForms"
+      :travelForms="travelForms"
       :roles="roles"
       @toggleFormModal="toggleFormModal"
     ></TravelFormModal>
@@ -121,7 +130,7 @@ export default {
           <tr
             v-for="form in filteredForms"
             :key="form.id"
-            @click="toggleFormModal(form.id, form.form_type)"
+            @click="toggleFormModal(form.id, form.form_type, form)"
           >
             <td>
               {{ form.user.last_name }}, {{ form.user.first_name }}

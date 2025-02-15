@@ -50,10 +50,8 @@ class LeaveFormController extends Controller
         $formData = $request->toArray();
 
         unset($formData['medical_certificate']); 
-
-        if ($formData['substitute'] !== 'true') {
-            unset($formData['substitutes']);
-        }
+        
+        unset($formData['substitutes']);
 
         unset($formData['substitute']);
         
@@ -86,6 +84,10 @@ class LeaveFormController extends Controller
             $leave_form->update([
                 'medical_certificate' => $fileName,
             ]);
+        }
+
+        if ($request['substitute'] !== 'true') {
+            unset($request['substitutes']);
         }
     
         if ($request->substitutes) {

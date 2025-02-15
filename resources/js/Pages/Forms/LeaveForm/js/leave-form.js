@@ -9,6 +9,7 @@ export default {
   },
   props: {
     users: Object,
+    roles: Array,
   },
   data() {
     return {

@@ -29,7 +29,7 @@ return new class extends Migration
             
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('travel_forms');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

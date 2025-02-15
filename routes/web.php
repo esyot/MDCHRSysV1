@@ -64,7 +64,7 @@ Route::middleware([Check2WayVerification::class])->group(function () {
 
         Route::post('/forms/checking/forward', [FormsController::class, 'forward']);
 
-        Route::get('/forms/find/{user_id}', [FormsController::class, 'find']);
+        Route::get('/forms/find/{user_id}/{year}', [FormsController::class, 'find']);
     });
     });
 

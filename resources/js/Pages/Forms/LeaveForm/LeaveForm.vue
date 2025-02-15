@@ -104,7 +104,7 @@
           "
         >
           <label for="leave_sick_hospital"
-            >If in Hospital, please specify your illness: (optional)</label
+            >If in Hospital, please specify your illness:</label
           >
           <input
             type="text"
@@ -212,9 +212,30 @@
             required
           />
         </div>
+        <div class="form-section" v-if="formData.leave_type === 'Sick'">
+          <label for="date_start">Date of confinement:</label>
+          <input
+            type="date"
+            id="date_start"
+            class="forms-controller"
+            v-model="formData.date_start"
+            required
+          />
+        </div>
+
+        <div class="form-section" v-if="formData.leave_type === 'Sick'">
+          <label for="date_end">Date of discharge:</label>
+          <input
+            type="date"
+            id="date_end"
+            class="forms-controller"
+            v-model="formData.date_end"
+            required
+          />
+        </div>
 
         <div class="form-section">
-          <label for="date_start">Date Start:</label>
+          <label for="date_start">Date start of leave:</label>
           <input
             type="date"
             id="date_start"
@@ -225,7 +246,7 @@
         </div>
 
         <div class="form-section">
-          <label for="date_end">Date End:</label>
+          <label for="date_end">Date end of leave:</label>
           <input
             type="date"
             id="date_end"
@@ -236,13 +257,16 @@
         </div>
 
         <div class="form-section" v-if="formData.leave_type === 'Sick'">
-          <label for="">Upload Photo of Medical Certificate:</label>
+          <label for=""
+            >Upload a photo of supporting document (Medical certificate, Medical Check-up,
+            etc.)</label
+          >
           <input type="file" @change="handleFileChange" required />
           <small>Note: <i>selected file must be in .jpg format</i></small>
         </div>
 
-        <div class="form-section">
-          <label for="date_end">Need a substitute?</label>
+        <div class="form-section" v-if="roles.includes('teacher')">
+          <label for="date_end">Do you have a substitute teacher?</label>
 
           <div class="radio-container">
             <div class="radio" for="yes-substitute">

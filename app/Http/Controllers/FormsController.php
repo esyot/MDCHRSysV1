@@ -6,6 +6,7 @@ use App\Models\LeaveForm;
 use App\Models\TravelForm;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -96,7 +97,7 @@ class FormsController extends Controller
 
             }else if($roles->contains('hr')){
                 
-                $leaveForms = LeaveForm::where('status', 'pending')
+                $leaveForms = LeaveForm::where('status', 'endorsed')
                 ->with([
                     'substitutes',
                     'substitutes.user',
@@ -109,7 +110,7 @@ class FormsController extends Controller
             }
             else if($roles->contains(key: 'dean')){
                 
-                $leaveForms = LeaveForm::where('status', 'endorsed')
+                $leaveForms = LeaveForm::where('status', 'pending')
                 ->with([
                     'substitutes',
                     'substitutes.user',
@@ -136,23 +137,26 @@ class FormsController extends Controller
                 
 
                
-            }
-           
+            }           
         
            
             $forms = [];
             $forms['Travel Form'] = $travelForms;
             $forms['Leave Form'] = $leaveForms;
-        
+
+            
             $flattenedForms = [];
             foreach ($forms as $formType => $formArray) {
                 foreach ($formArray as $form) {
                     $form['form_type'] = $formType;
+            
+                    $form['endorser'] = $form['endorser'] ? $form['endorser']->toArray() : null;
+                    $form['user_job_detail'] = $form['user_job_detail'] ? $form['user_job_detail']->toArray() : null;
+                    
                     $flattenedForms[] = $form;
                 }
             }
-    
-            
+  
             usort($flattenedForms, function($a, $b) {
                return strtotime($b['created_at']) - strtotime($a['created_at']);
             });
@@ -235,23 +239,23 @@ class FormsController extends Controller
        ]);
 
     }
-    public function find($user_id)
+    public function find($user_id, $year)
     {
-        $forms = LeaveForm::where('user_id', $user_id)->select([
-            'id',
-            'user_id',
-            'leave_type',
-            'date_start',
-            'date_end',
-            'created_at',
-            'status',
-        ])->get();
+        $forms = LeaveForm::whereYear('date_start', $year)    
+            ->where('user_id', $user_id)
+            ->where('status', 'approved')
+            ->select([
+                'id',
+                'user_id',
+                'leave_type',
+                'date_start',
+                'date_end',
+                'created_at',
+                'status',
+            ])->get() ?? null;
 
-        if ($forms->isEmpty()) {
-            return response()->json(['message' => 'No forms found for this user'], 404);
-        }
 
-        return response()->json($forms);
+            return response()->json($forms);
     }
 
     

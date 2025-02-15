@@ -91,32 +91,17 @@ class TravelFormController extends Controller
     }
 
    
-
     public function submit(Request $request){
 
-        dd($request->toArray());
+        $request['user_id'] = Auth::user()->id;
 
-            $travelForm = TravelForm::create($request->only([
-                'user_id',
-                'date_start',
-                'date_end',
-                'description',
-                'place',
-                'purpose',
-                'budget_type',
-                'budget_charged_to',
-                'contact_person',
-                'contact_person_no',
-                'amount',
-                'filing_date',
-            ]));
+        $travelForm = TravelForm::create($request->all());
 
-            if($travelForm){
-                return redirect()->route('forms.tracking')->with('success', 'Travel request submitted successfully!.');
-            }else{
-                return redirect()->back()->with('error', 'Travel request submission failed!.');
-            }
+        if($travelForm){
+            return redirect()->route('forms.tracking')->with('success', 'Travel request submitted successfully!.');
+        }else{
+            return redirect()->back()->with('error', 'Travel request submission failed!.');
         }
-        
-    
+    }
+           
 }

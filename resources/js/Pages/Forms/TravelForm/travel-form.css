@@ -132,3 +132,21 @@
     width: 100%;
     max-width: 99%;
   }
+  .radio-container {
+    display: flex;
+  }
+  .radio {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .radio input {
+    margin-bottom: 4px;
+  }
+  
+  .radio label {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }

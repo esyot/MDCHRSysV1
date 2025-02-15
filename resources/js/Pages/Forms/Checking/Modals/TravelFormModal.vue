@@ -5,6 +5,7 @@ export default {
     travelForms: Object,
     selected_id: String,
     selected_type: String,
+    roles: Array,
   },
   methods: {
     toggleFormModal() {
@@ -157,8 +158,9 @@ export default {
         <span class="underline"> ₱ {{ formData.amount }}.00 only </span>
       </div>
 
-      <div class="modal-footer">
-        <button @click="toggleFormModal">Close</button>
+      <div class="btn-container">
+        <button class="close-btn" @click="toggleFormModal">Close</button>
+        <button class="submit-btn" @click="toggleFormModal">Submit</button>
       </div>
     </div>
   </div>

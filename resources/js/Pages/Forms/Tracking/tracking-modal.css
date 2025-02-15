@@ -1,15 +1,23 @@
-  @font-face {
-    font-family: "RM New Albion";
-    src: url("/public/assets/fonts/rm_new_albion.woff") format("woff");
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-  }
-
-  .flex {
+@font-face {
+  font-family: "RM New Albion";
+  src: url("/public/assets/fonts/rm_new_albion.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+ 
+ .flex {
     display: flex;
   }
+  .modal {
+    position: fixed;
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    inset: 0;
+    animation: popUp 0.3s ease-in-out forwards, increaseOpacity 2s .3s forwards;
 
+  }
   
   .modal-content {
     user-select: none;
@@ -22,6 +30,7 @@
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
   }
 
+  
   .modal-header {
     display: flex;
     align-items: center;
