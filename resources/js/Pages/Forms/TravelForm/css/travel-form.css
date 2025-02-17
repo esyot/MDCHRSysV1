@@ -1,5 +1,4 @@
-
-.preview {
+  .preview {
     background-color: rgb(33, 208, 33);
   }
   .submit {
@@ -79,6 +78,23 @@
     padding: 10px;
     z-index: 10;
   }
+
+  .forms-title small {
+    margin-left: 10px;
+  }
+  .forms-title button {
+    background-color: #3b82f6;
+    color: #fff;
+    border: none;
+    padding: 5px 10px 5px 10px;
+    border-radius: 5px;
+    opacity: 75%;
+  }
+  
+  .forms-title button:hover {
+    opacity: 100%;
+    cursor: pointer;
+  }
   
   .title {
     font-size: 16px;
@@ -150,3 +166,77 @@
     align-items: center;
     width: 100%;
   }
+
+  .dropdown-teachers {
+    background-color: #fff;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    margin-top: 8px;
+  }
+  
+  .dropdown-teachers ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .dropdown-teachers li {
+    padding: 10px;
+  }
+  
+  .dropdown-teachers li:hover {
+    background-color: #e6e6e6;
+    cursor: pointer;
+  }
+  
+  .search-bar {
+    display: flex;
+    gap: 0.2rem;
+  }
+  
+  .search-bar input {
+    width: 100%;
+  }
+  
+  .search-bar button {
+    border: none;
+    padding-inline: 14px;
+    border-radius: 5px;
+    background-color: #3b82f6;
+    color: #fff;
+  }
+  
+  .days {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .days-item {
+    display: flex;
+  
+    align-items: center;
+  }
+  
+  .checkbox {
+    padding: 20px;
+  }
+  
+.button-container {
+  display: flex;
+  justify-content: end;
+  margin: 10px;
+}
+
+.button-container button{
+padding: 10px;
+background-color:rgb(227, 78, 78);
+color: #fff;
+border-radius: 5px;
+border: none;
+opacity: 50%;
+}
+
+.button-container button:hover{
+  cursor: pointer;
+  opacity: 100%;
+}

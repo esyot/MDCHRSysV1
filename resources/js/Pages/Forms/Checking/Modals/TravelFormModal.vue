@@ -2,7 +2,7 @@
 export default {
   emits: ["toggleFormModal"],
   props: {
-    travelForms: Object,
+    formData: Object,
     selected_id: String,
     selected_type: String,
     roles: Array,
@@ -16,17 +16,10 @@ export default {
 </script>
 
 <template>
-  <div
-    :id="'modal-travel-form-' + formData.id"
-    class="hidden modal"
-    v-for="formData in travelForms"
-    v-show="formData.id == selected_id"
-    :key="formData.id"
-    @click.self="toggleFormModal"
-  >
+  <div class="modal" @click.self="toggleFormModal">
     <div class="modal-content">
       <div class="modal-header">
-        <span class="title">Preview</span>
+        <span class="title">Travel Form</span>
         <span @click="toggleFormModal" class="x-btn">&times;</span>
       </div>
       <div class="heading-container">
@@ -40,7 +33,7 @@ export default {
         </div>
       </div>
 
-      <h3 class="title">Details of Official Travel</h3>
+      <text class="title">Details of Official Travel</text>
 
       <div class="section-details">
         <div class="item">
@@ -68,9 +61,21 @@ export default {
         </div>
       </div>
 
-      <h3 class="title">Budgetary Requirements</h3>
+      <text class="title">Substitutes:</text>
+
+      <div class="substitute-details">
+        <div class="substitute-item" v-if="formData.substitutes.length != 0">
+          <span v-for="substitute in formData.substitutes">
+            {{ substitute.user.last_name }}, {{ substitute.user.first_name }} -
+            {{ substitute.subject }}
+          </span>
+        </div>
+      </div>
+
+      <text class="title">Budgetary Requirements</text>
       <div class="section-budget">
         <div class="left-side">
+          <span class="title">Budget type:</span>
           <div class="mb-2">
             <input
               type="checkbox"
@@ -116,10 +121,9 @@ export default {
             <label for="miscellaneous">Miscellaneous</label>
           </div>
         </div>
-
+        <span class="title">Budget charged to:</span>
         <div class="right-side">
           <div>
-            <label class="block font-bold mb-2">Budget charged to:</label>
             <div class="mb-2">
               <input
                 type="checkbox"

@@ -1,7 +1,12 @@
 <template>
   <div class="container-body">
     <div class="content-container">
-      <section class="cards">
+      <section
+        class="cards"
+        v-if="
+          roles.includes('hr') || roles.includes('admin') || roles.includes('p-admin')
+        "
+      >
         <div class="card">
           <i class="fas fa-users fa-2x"></i>
           <span>Users</span>
@@ -53,6 +58,7 @@ export default defineComponent({
     travelRequestCount: Number,
     userOnLeave: Number,
     userOnTravel: Number,
+    roles: Array,
   },
 
   methods: {
@@ -64,5 +70,5 @@ export default defineComponent({
 </script>
 
 <style scoped>
-@import "./dashboard.css";
+@import "./css/dashboard.css";
 </style>

@@ -55,7 +55,7 @@ export default {
       @close-success-modal="closeSuccessModal"
       v-if="successMessage"
     />
-    <Leftbar :roles="roles" />
+    <Leftbar :roles="roles" :user="user" />
     <div class="main-content">
       <Topbar :pageTitle="pageTitle" :user="user" />
       <slot> </slot>

@@ -120,5 +120,5 @@ export default {
 </template>
 
 <style scoped>
-@import "./tracking.css";
+@import "./css/tracking.css";
 </style>

@@ -34,7 +34,7 @@ export default {
       searchTeacher: false,
       filteredUsers: this.users,
      
-      confirmation_submission: false,
+      isConfirmation: false,
     };
   },
 
@@ -111,8 +111,6 @@ export default {
       Inertia.post("/leave-form-submit", form, {
         onSuccess: () => {
           this.toggleConfirmForm();
-
-          console.log("Form submitted successfully, clearing localStorage..."); // Debugging
           localStorage.removeItem("leaveFormData");
         },
       });
@@ -142,7 +140,7 @@ export default {
       this.searchTeacher = false;
     },
     toggleConfirmForm() {
-      this.confirmation_submission = !this.confirmation_submission;
+      this.isConfirmation = !this.isConfirmation;
     },
   },
 };

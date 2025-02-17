@@ -11,7 +11,6 @@ class RolesAndPermissionsSeeder extends Seeder
 {
     public function run()
     {
-    
         // Create roles
         $admin = Role::create(['name' => 'admin']);
         $p_admin = Role::create(['name' => 'p-admin']);
@@ -20,6 +19,6 @@ class RolesAndPermissionsSeeder extends Seeder
         $hr = Role::create(['name' => 'hr']);
         $dean = Role::create(['name' => 'dean']);       
         $staff = Role::create(['name' => 'staff']);
-        
+        $teacher = Role::create(['name' => 'teacher']);     
     }
 }

@@ -3,7 +3,7 @@ export default {
   name: "ConfirmationFormModal",
   emits: ["submitForm", "toggleConfirmForm"],
   props: {
-    confirmation_submission: Boolean,
+    isConfirmation: Boolean,
   },
   methods: {
     submitForm() {
@@ -18,11 +18,7 @@ export default {
 </script>
 
 <template>
-  <div
-    class="confirmation-modal"
-    v-if="confirmation_submission"
-    @click.self="toggleConfirmForm"
-  >
+  <div class="confirmation-modal" v-if="isConfirmation" @click.self="toggleConfirmForm">
     <div class="confirmation-modal-content">
       <text>Are you sure you want to submit?</text>
       <div class="confirmation-modal-btn">

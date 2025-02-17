@@ -29,8 +29,7 @@
     border-radius: 5px;
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
   }
-
-  
+ 
   .modal-header {
     display: flex;
     align-items: center;
@@ -118,6 +117,7 @@
   .section-budget {
     pointer-events: none;
     display: flex;
+    
     justify-content: space-between;
     padding: 10px;
   }
@@ -262,6 +262,17 @@ span.sub-title {
 .section-dates {
   pointer-events: none;
 }
+.substitute-details{
+  display: flex;
+  margin-left: 10px;
+}
 
+.substitute-item label{
+font-weight: bold;
+}
+.substitute-item{
+  display: flex;
+  flex-direction: column;
+}
 
   

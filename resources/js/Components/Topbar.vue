@@ -106,5 +106,5 @@ export default {
 </template>
 
 <style scoped>
-@import "./topbar.css";
+@import "./css/topbar.css";
 </style>

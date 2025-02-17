@@ -24,9 +24,8 @@ return new class extends Migration
             $table->decimal('amount', 10,2);
             $table->string('budget_type');
             $table->string('budget_charged_to');
-            $table->enum('status', ['pending', 'approved', 'declined']) ->default('pending');
+            $table->enum('status', ['pending', 'dean_approved', 'hr_approved', 'vp_acad_approved','vp_admin_approved', 'declined', 'approved'])->default('pending');
             $table->date('filing_date');
-            
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

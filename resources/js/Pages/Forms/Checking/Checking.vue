@@ -82,7 +82,7 @@ export default {
     <TravelFormModal
       :selected_id="selected_id"
       :selected_type="selected_type"
-      :travelForms="travelForms"
+      :formData="formData"
       :roles="roles"
       @toggleFormModal="toggleFormModal"
     ></TravelFormModal>
@@ -111,7 +111,7 @@ export default {
               <i class="fa-solid fa-temperature-empty"></i>
               <span>Status</span>
             </td>
-            <td class="td-title">
+            <td class="td-title" v-if="roles.includes('hr')">
               <i class="fa-solid fa-user-cog"></i>
               <span>Endorsed by</span>
             </td>
@@ -154,12 +154,12 @@ export default {
               {{ form.endorser.last_name }}, {{ form.endorser.first_name }}
               {{ form.endorser.middle_name[0] }}.
             </td>
-
-            <td v-else></td>
-
             <td>{{ formatDate(form.created_at) }}</td>
             <td class="td-action">
-              <button @click="toggleFormModal(form.id, form.form_type)" class="edit-btn">
+              <button
+                @click="toggleFormModal(form.id, form.form_type, form)"
+                class="edit-btn"
+              >
                 <i class="fas fa-eye"></i>
               </button>
             </td>

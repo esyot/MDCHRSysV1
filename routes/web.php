@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FormsController;
 use App\Http\Controllers\LeaveFormController;
 use App\Http\Controllers\LoginController;
@@ -54,10 +55,7 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         // Leave Forms
         Route::post('/leave-form-submit', [LeaveFormController::class, 'submit'])->name('forms.leave-form-submit');
 
-
-
         Route::get('/forms/tracking', [FormsController::class, 'index'])->name('forms.tracking');
-
 
         Route::get('/forms/checking', [FormsController::class, 'checking']);
         Route::get('/forms/checking/{action}', [FormsController::class, 'checking']);
@@ -65,6 +63,8 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::post('/forms/checking/forward', [FormsController::class, 'forward']);
 
         Route::get('/forms/find/{user_id}/{year}', [FormsController::class, 'find']);
+
+        Route::get('/departments', [DepartmentController::class, 'index']);
     });
     });
 

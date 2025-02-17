@@ -107,13 +107,10 @@ export default {
         action: this.action,
       };
 
-      Inertia.post("/forms/checking/forward", formData, {
-        onSuccess: () => {
-          this.action = "";
-          this.confirmation_submission = !this.confirmation_submission;
-          this.closeFormModal;
-        },
-      });
+      Inertia.post("/forms/checking/forward", formData);
+
+      this.toggleConfirmForm(this.action);
+      this.closeFormModal;
     },
 
     closeFormModal() {
@@ -269,7 +266,7 @@ export default {
       <div class="modal-details">
         <div>
           <div class="modal-subtitle">
-            <text>Leave type:</text>
+            <text>Leave Type:</text>
           </div>
 
           <div class="row">
@@ -391,19 +388,31 @@ export default {
               >
             </div>
           </div>
+
+          <div class="section-dates" v-if="formData.leave_type === 'Sick'">
+            <div class="input-date">
+              <label for="date_of_confinement">Date of Confinement: </label>
+              <span class="underline">{{ formData.date_of_confinement }}</span>
+            </div>
+
+            <div class="input-date">
+              <label for="date_of_discharge">Date of Discharge:</label>
+              <span class="underline">{{ formData.date_of_discharge }}</span>
+            </div>
+          </div>
           <div class="section-dates">
             <div class="input-date">
-              <label for="date_start">Start date: </label>
+              <label for="date_start">Leave Date Start: </label>
               <span class="underline">{{ formData.date_start }}</span>
             </div>
 
             <div class="input-date">
-              <label for="date_end">End date:</label>
+              <label for="date_end">Leave Date End:</label>
               <span class="underline">{{ formData.date_end }}</span>
             </div>
           </div>
 
-          <div class="radio-group" v-if="formData.status === 'endorsed'">
+          <div class="radio-group" v-if="formData.status === 'dean_approved'">
             <div class="modal-subtitle">
               <text>Recommendation: </text>
             </div>
@@ -428,7 +437,7 @@ export default {
           </div>
           <div
             class="textarea-container"
-            v-if="submission_type === 'disapproval' && formData.status == 'endorsed'"
+            v-if="submission_type === 'disapproval' && formData.status == 'dean_approved'"
           >
             <textarea
               placeholder="Input a description for disapproval."
@@ -439,7 +448,11 @@ export default {
             ></textarea>
           </div>
         </div>
-        <div v-if="roles.includes('dean') || roles.includes('admin')">
+        <div
+          v-if="
+            roles.includes('dean') || roles.includes('admin') || roles.includes('vp-acad')
+          "
+        >
           <div class="modal-subtitle">
             <text>Substitute(s): </text>
             <span>{{ formData.substitutes.length == 0 ? "None" : "" }}</span>
@@ -626,7 +639,9 @@ export default {
           <div
             class="modal-item"
             v-if="
-              formData.status === 'recommended' || formData.status === 'finance_approved'
+              formData.status === 'hr_approved' ||
+              formData.status === 'vp_admin_approved' ||
+              formData.status === 'vp_acad_approved'
             "
           >
             <div>
@@ -645,7 +660,7 @@ export default {
             </div>
           </div>
 
-          <div class="modal-item" v-if="formData.status === 'recommended'">
+          <div class="modal-item" v-if="formData.status === 'hr_approved'">
             <div v-if="submission_type == 'approval'">
               <label for="">Approved for:</label>
               <div class="input-container">
@@ -675,7 +690,7 @@ export default {
             </div>
 
             <div
-              v-if="submission_type == 'disapproval' && formData.status == 'recommended'"
+              v-if="submission_type == 'disapproval' && formData.status == 'hr_approved'"
             >
               <label for="">Disapproved Due To:</label>
               <div class="input-container">
@@ -691,7 +706,7 @@ export default {
 
           <div
             v-if="
-              submission_type == 'disapproval' && formData.status == 'finance_approved'
+              submission_type == 'disapproval' && formData.status == 'vp_admin_approved'
             "
           >
             <label for="">Disapproved Due To:</label>
@@ -702,6 +717,21 @@ export default {
                 id=""
                 placeholder="input disapproval description."
                 required
+              ></textarea>
+            </div>
+          </div>
+          <div
+            v-if="
+              submission_type == 'disapproval' && formData.status == 'vp_acad_approved'
+            "
+          >
+            <label for="">Disapproved Due To:</label>
+            <div class="input-container">
+              <textarea
+                name=""
+                v-model="disapproval_description"
+                id=""
+                placeholder="input disapproval description."
               ></textarea>
             </div>
           </div>
@@ -718,22 +748,22 @@ export default {
         </button>
         <button
           type="submit"
-          @click="toggleConfirmForm('endorse')"
+          @click="toggleConfirmForm('dean_approved')"
           class="submit-btn"
           title="Forward to VP Acads and VP Finance"
         >
-          Endorse
+          Submit
         </button>
       </div>
       <div
         class="btn-container"
         v-if="
-          (formData.status == 'endorsed' &&
+          (formData.status == 'dean_approved' &&
             (submission_type === 'approval'
               ? disapproval_description == null
               : disapproval_description)) ||
           (submission_type === 'disapproval'
-            ? disapproval_description
+            ? disapproval_description && formData.status === 'dean_approved'
             : disapproval_description)
         "
       >
@@ -747,7 +777,7 @@ export default {
         </button>
         <button
           type="submit"
-          @click="toggleConfirmForm('recommend')"
+          @click="toggleConfirmForm('hr_approved')"
           class="submit-btn"
           title="Proceed to Approval"
         >
@@ -755,7 +785,7 @@ export default {
         </button>
       </div>
 
-      <div class="btn-container" v-if="formData.status == 'recommended'">
+      <div class="btn-container" v-if="formData.status == 'hr_approved'">
         <button
           type="button"
           class="close-btn"
@@ -766,7 +796,7 @@ export default {
         </button>
         <button
           type="submit"
-          @click="toggleConfirmForm('finance_approval')"
+          @click="toggleConfirmForm('vp_admin_approved')"
           class="submit-btn"
           title="Proceed to Approval"
         >
@@ -780,10 +810,10 @@ export default {
           ((submission_type === 'approval'
             ? disapproval_description == null
             : disapproval_description) &&
-            formData.status === 'finance_approved') ||
+            formData.status === 'vp_admin_approved') ||
           (submission_type === 'disapproval' &&
             disapproval_description &&
-            formData.status === 'finance_approved')
+            formData.status === 'vp_admin_approved')
         "
       >
         <button
@@ -796,7 +826,45 @@ export default {
         </button>
         <button
           type="submit"
-          @click="toggleConfirmForm(submission_type)"
+          @click="
+            submission_type == 'approval'
+              ? toggleConfirmForm('vp_acad_approved')
+              : toggleConfirmForm('vp_acad_disapproved')
+          "
+          class="submit-btn"
+          title="Proceed to Approval"
+        >
+          Submit
+        </button>
+      </div>
+
+      <div
+        class="btn-container"
+        v-if="
+          ((submission_type === 'approval'
+            ? disapproval_description == null
+            : disapproval_description) &&
+            formData.status === 'vp_acad_approved') ||
+          (submission_type === 'disapproval' &&
+            disapproval_description &&
+            formData.status === 'vp_acad_approved')
+        "
+      >
+        <button
+          type="button"
+          class="close-btn"
+          title="Close the form"
+          @click="closeFormModal"
+        >
+          Close
+        </button>
+        <button
+          type="submit"
+          @click="
+            submission_type == 'approval'
+              ? toggleConfirmForm('p_admin_approved')
+              : toggleConfirmForm('p_admin_disapproved')
+          "
           class="submit-btn"
           title="Proceed to Approval"
         >

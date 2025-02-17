@@ -1,61 +1,4 @@
-<script>
-export default {
-  emits: ["toggleFormModal"],
-  props: {
-    forms: Object,
-    selected_id: String,
-    selected_type: String,
-  },
-  data() {
-    return {
-      modal_id: this.selected_id ?? null,
-      modal_type: this.selected_type ?? null,
-    };
-  },
-  watch: {
-    selected_id(newVal) {
-      this.modal_id = newVal;
-    },
-
-    selected_type(newVal, oldVal) {
-      this.modal_type = newVal ?? oldVal;
-    },
-    modal_id(newVal, oldVal) {
-      if (oldVal) {
-        const modalId = `modal-${this.modal_type
-          .toLowerCase()
-          .replace(" ", "-")}-${oldVal}`;
-
-        document.getElementById(modalId).classList.add("hidden");
-        document.getElementById(modalId).classList.remove("flex");
-      }
-
-      if (newVal) {
-        const modalId = `modal-${this.modal_type
-          .toLowerCase()
-          .replace(" ", "-")}-${newVal}`;
-
-        document.getElementById(modalId).classList.remove("hidden");
-        document.getElementById(modalId).classList.add("flex");
-      }
-    },
-  },
-  methods: {
-    closeFormModal() {
-      this.$emit("toggleFormModal", this.selected_id, this.selected_type);
-    },
-  },
-  computed: {
-    travelForms() {
-      return this.forms.filter((item) => item.form_type === "Travel Form");
-    },
-    leaveForms() {
-      return this.forms.filter((item) => item.form_type === "Leave Form");
-    },
-  },
-};
-</script>
-
+<script src="./js/tracking-modal.js"></script>
 <template>
   <div
     :id="'modal-travel-form-' + formData.id"
@@ -104,6 +47,16 @@ export default {
           <label>Short Description: </label>
           <span class="item">
             {{ formData.description }}
+          </span>
+        </div>
+      </div>
+      <div class="substitute-details">
+        <div class="substitute-item" v-if="formData.substitutes.length != 0">
+          <label for="">Substitutes:</label>
+          <span v-for="substitute in formData.substitutes">
+            {{ substitute.user.last_name }}, {{ substitute.user.first_name }} -
+            {{ substitute.subject }}
+            s
           </span>
         </div>
       </div>
@@ -272,30 +225,61 @@ export default {
             <label>
               <input type="radio" name="leave_type" /> Others: <input type="text" />
             </label>
+            <div class="section-dates">
+              <div class="input-group">
+                <label for="date_start">Start date: </label>
+
+                <input
+                  type="text"
+                  id="date_start"
+                  v-model="formData.date_start"
+                  name="date_start"
+                />
+
+                <label for="date_end">End date:</label>
+                <input
+                  type="text"
+                  id="date_end"
+                  v-model="formData.date_end"
+                  name="date_end"
+                />
+              </div>
+            </div>
           </div>
 
-          <div class="section-dates">
-            <div class="input-group">
-              <label for="date_start">Start date: </label>
+          <div class="sick-details">
+            <div class="input-group" v-if="formData.leave_type === 'Sick'">
+              <label for="">Place:</label>
+              <input type="text" v-model="formData.address" />
 
-              <input
-                type="text"
-                id="date_start"
-                v-model="formData.date_start"
-                name="date_start"
-              />
+              <label for="">Illness:</label>
+              <input type="text" v-model="formData.illness" />
+            </div>
 
-              <label for="date_end">End date:</label>
-              <input
-                type="text"
-                id="date_end"
-                v-model="formData.date_end"
-                name="date_end"
-              />
+            <div class="section-dates" v-if="formData.leave_type === 'Sick'">
+              <div class="input-group">
+                <label for="date_of_confinement">Date of Confinement: </label>
+
+                <input
+                  type="text"
+                  id="date_of_confinement"
+                  v-model="formData.date_of_confinement"
+                  name="date_start"
+                />
+
+                <label for="date_of_discharge">Date of Discharge:</label>
+                <input
+                  type="text"
+                  id="date_of_discharge"
+                  v-model="formData.date_of_discharge"
+                  name="date_end"
+                />
+              </div>
             </div>
           </div>
         </div>
         <span class="sub-title">Details of Leave</span>
+
         <div class="container-details">
           <div class="radio-group" v-if="formData.leave_type_option == 'Vacation'">
             <span class="sub-title">Vacation:</span>
@@ -352,6 +336,7 @@ export default {
               Home Medication:
             </label>
           </div>
+
           <div class="checkbox-group" v-if="formData.leave_type == 'Educational'">
             <span class="sub-title">Incase of Educational Leave: </span>
             <label
@@ -378,5 +363,5 @@ export default {
 </template>
 
 <style scoped>
-@import "./tracking-modal.css";
+@import "./css/tracking-modal.css";
 </style>

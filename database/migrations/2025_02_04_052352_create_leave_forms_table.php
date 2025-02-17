@@ -24,11 +24,13 @@ return new class extends Migration
             $table->string('reason')->nullable();
             $table->string('other_reason')->nullable();
             $table->string('description')->nullable();
-            $table->enum('status', ['pending', 'endorsed', 'recommended','processing','finance_approved', 'declined', 'approved'])->default('pending');
+            $table->enum('status', ['pending', 'dean_approved', 'hr_approved', 'vp_acad_approved','vp_admin_approved', 'declined', 'approved'])->default('pending');
             $table->string('endorsed_by')->nullable();
             $table->string('recommended_by')->nullable();
             $table->date('date_start');
             $table->date('date_end');
+            $table->date('date_of_confinement')->nullable();
+            $table->date('date_of_discharge')->nullable();
             $table->string('medical_certificate')->nullable();
             $table->integer('days_with_pay')->nullable();
             $table->integer('days_without_pay')->nullable();

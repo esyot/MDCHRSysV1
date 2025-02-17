@@ -18,10 +18,12 @@ class LeaveForm extends Model
             'middle_name'
         ]);
     }
-
-    public function substitutes(){
-        return $this->hasMany(Substitute::class);
+    
+    public function substitutes()
+    {
+        return $this->hasMany(Substitute::class, 'leave_form_id');
     }
+
 
     public function user(){
         return $this->belongsTo(User::class)->select([

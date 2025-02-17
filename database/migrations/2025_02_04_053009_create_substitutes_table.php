@@ -13,17 +13,20 @@ return new class extends Migration
     {
         Schema::create('substitutes', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('leave_form_id')->unsigned();
+            $table->bigInteger('leave_form_id')->unsigned()->nullable();
+            $table->bigInteger('travel_form_id')->unsigned()->nullable();
             $table->string('subject');
             $table->bigInteger('user_id')->unsigned();
             $table->string('days');
             $table->time('start_time');
             $table->time('end_time');
             $table->timestamps();
-
-            $table->foreign('leave_form_id')->references('id')->on('leave_forms');
+            
             $table->foreign('user_id')->references('id')->on('users');
+           
         });
+        
+        
     }
 
     /**

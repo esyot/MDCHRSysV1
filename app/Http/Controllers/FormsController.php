@@ -20,9 +20,23 @@ class FormsController extends Controller
         $user = Auth::user();
            
         $travelForms = TravelForm::where('user_id', $user->id)
+        ->with([
+            'substitutes',
+              'substitutes.user'
+        ])
         ->orderBy('created_at', 'ASC')
         ->get();
             
+
+        $leaveForms = LeaveForm::where('user_id', Auth::user()->id)
+        ->with([
+            'substitutes.user'
+        ])
+        ->orderBy('created_at', 'ASC')
+        ->get();
+
+
+
         $travelForms->transform(function ($form) use ($user) {
             $form->first_name = $user->first_name;
             $form->last_name = $user->last_name;
@@ -30,15 +44,12 @@ class FormsController extends Controller
             return $form;
         });
             
-        $leaveForms = LeaveForm::where('user_id', Auth::user()->id)
-        ->with([
-            'substitutes',
-            'substitutes.user'
-        ])->orderBy('created_at', 'ASC')->get();
+       
        
         $forms = [];
         $forms['Travel Form'] = $travelForms;
         $forms['Leave Form'] = $leaveForms;
+        
           
         $flattenedForms = [];
         foreach ($forms as $formType => $formArray) {
@@ -51,6 +62,8 @@ class FormsController extends Controller
         usort($flattenedForms, function($a, $b) {
            return strtotime($b['created_at']) - strtotime($a['created_at']);
         });
+
+       
         
         return inertia('Pages/Forms/Tracking/Tracking', [
             'roles' => $roles,
@@ -64,29 +77,27 @@ class FormsController extends Controller
 
     public function checking($action=null){
 
-        $this->globalVariables();
-        $roles = $this->roles;
-        $user = $this->user;
+            $this->globalVariables();
+            $roles = $this->roles;
+            $user = $this->user;
 
-       
-
-            $travelForms = TravelForm::orderBy('created_at', 'ASC')
-            ->with('user')
-            ->get();
-            
-            $travelForms->transform(function ($form) use ($user) {
-                $form->first_name = $user->first_name;
-                $form->last_name = $user->last_name;
-                $form->middle_name = $user->middle_name;
-                return $form;
-            });
-
+            $travelForms = [];
             $leaveForms = [];
+            
             if($roles->contains('vp-admin')){
 
-                $leaveForms = LeaveForm::where('status', 'recommended')
+                $leaveForms = LeaveForm::where('status', 'hr_approved')
                 ->with([
-                    'substitutes',
+                    'substitutes.user',
+                    'user',
+                    'endorser',
+                    'userJobDetail',
+                   
+                ])->orderBy('created_at', 'ASC')->get();
+
+                $travelForms = TravelForm::where('status', 'hr_approved' )
+                ->orderBy('created_at', 'ASC')
+                ->with([
                     'substitutes.user',
                     'user',
                     'endorser',
@@ -97,9 +108,18 @@ class FormsController extends Controller
 
             }else if($roles->contains('hr')){
                 
-                $leaveForms = LeaveForm::where('status', 'endorsed')
+                $leaveForms = LeaveForm::where('status', 'dean_approved')
                 ->with([
-                    'substitutes',
+                    'substitutes.user',
+                    'user',
+                    'endorser',
+                    'userJobDetail',
+                   
+                ])->orderBy('created_at', 'ASC')->get();
+
+                $travelForms = TravelForm::where('status', 'dean_approved' )
+                ->orderBy('created_at', 'ASC')
+                ->with([
                     'substitutes.user',
                     'user',
                     'endorser',
@@ -112,7 +132,16 @@ class FormsController extends Controller
                 
                 $leaveForms = LeaveForm::where('status', 'pending')
                 ->with([
-                    'substitutes',
+                    'substitutes.user',
+                    'user',
+                    'endorser',
+                    'userJobDetail',
+                   
+                ])->orderBy('created_at', 'ASC')->get();
+
+                $travelForms = TravelForm::where('status', 'pending' )
+                ->orderBy('created_at', 'ASC')
+                ->with([
                     'substitutes.user',
                     'user',
                     'endorser',
@@ -123,21 +152,49 @@ class FormsController extends Controller
 
             else if($roles->contains('vp-acad')){
 
-               
-                
-                $leaveForms = LeaveForm::where('status', 'finance_approved')
+    
+                $leaveForms = LeaveForm::where('status', 'vp_admin_approved')
                 ->with([
-                    'substitutes',
                     'substitutes.user',
                     'user',
                     'endorser',
                     'userJobDetail',
                    
                 ])->orderBy('created_at', 'ASC')->get();
-                
 
+                $travelForms = TravelForm::where('status', 'vp_admin_approved' )
+                ->orderBy('created_at', 'ASC')
+                ->with([
+                    'substitutes.user',
+                    'user',
+                    'endorser',
+                    'userJobDetail',
+                   
+                ])->orderBy('created_at', 'ASC')->get();
+                               
+            }    
+            else if($roles->contains('p-admin')){
+                $leaveForms = LeaveForm::where('status', 'vp_acad_approved')
+                ->with([
+                    'substitutes.user',
+                    'user',
+                    'endorser',
+                    'userJobDetail',
+                   
+                ])->orderBy('created_at', 'ASC')->get();
+
+
+                $travelForms = TravelForm::where('status', 'vp_acad_approved' )
+                ->orderBy('created_at', 'ASC')
+                ->with([
+                    'substitutes.user',
+                    'user',
+                    'endorser',
+                    'userJobDetail',
+                   
+                ])->orderBy('created_at', 'ASC')->get();
                
-            }           
+            }             
         
            
             $forms = [];
@@ -174,59 +231,72 @@ class FormsController extends Controller
 
     public function forward(Request $request){
 
-       if($request->action == 'endorse'){
-
-       if($request->form_type == 'Leave Form'){
-
-        LeaveForm::find($request->id)
-        ->update([
-            'status' => 'endorsed',
-            'endorsed_by' => Auth::user()->id,
-        ]);
-       }
-       
-       }
-
-       if($request->action == 'recommend'){
+       if($request->action == 'dean_approved'){
         if($request->form_type == 'Leave Form'){
 
             LeaveForm::find($request->id)
             ->update([
-                'status' => 'recommended',
+                'status' => $request->action,
                 'recommended_by' => Auth::user()->id,
             ]);
            }
        }
 
-       
-       if($request->action == 'finance_approval'){
+       if($request->action == 'hr_approved'){
+
+        if($request->form_type == 'Leave Form'){
+ 
+         LeaveForm::find($request->id)
+         ->update([
+             'status' => $request->action,
+             'endorsed_by' => Auth::user()->id,
+         ]);
+        }
+        
+        }
+
+       if($request->action == 'vp_admin_approved'){
         if($request->form_type == 'Leave Form'){
 
             LeaveForm::find($request->id)
             ->update([
                 'days_with_pay'=> $request->days_with_pay ?? 0,
                 'days_without_pay'=> $request->days_with_pay ?? 0,
-                'status' => 'finance_approved',
+                'status' => $request->action,
                
             ]);
            }
        }
 
-       if($request->action == 'approval'){
+       if($request->action == 'vp_acad_approved'){
+        if($request->form_type == 'Leave Form'){
+
+            LeaveForm::find($request->id)
+            ->update([
+                'status' => $request->action,
+            ]);
+           }
+
+       }
+
+       if($request->action == 'p_admin_approved'){
         if($request->form_type == 'Leave Form'){
 
             LeaveForm::find($request->id)
             ->update([
                 'status' => 'approved',
-               
             ]);
            }
-       }elseif($request->action == 'disapproval'){
+
+       }
+
+       if($request->action == 'disapproval'){
         if($request->form_type == 'Leave Form'){
 
             LeaveForm::find($request->id)
             ->update([
                 'status' => 'declined',
+                'disapproved_by' => Auth::user()->id,
                 'disapproval_description' => $request->disapproval_description
                
             ]);

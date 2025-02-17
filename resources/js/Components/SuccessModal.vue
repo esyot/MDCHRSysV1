@@ -36,7 +36,7 @@ export default {
   justify-content: center;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.2);
-  z-index: 50;
+  z-index: 100;
 }
 
 .success-modal-content {

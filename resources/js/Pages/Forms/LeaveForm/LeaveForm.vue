@@ -5,7 +5,7 @@
 
 <template>
   <ConfirmationFormModal
-    :confirmation_submission="confirmation_submission"
+    :isConfirmation="isConfirmation"
     @submitForm="submitForm"
     @toggleConfirmForm="toggleConfirmForm"
   ></ConfirmationFormModal>
@@ -90,7 +90,9 @@
         </div>
         <div class="form-section" v-if="formData.leave_type === 'Sick'">
           <label for="leave_type_sick">In case of Sick Leave:</label>
+
           <select id="leave_type_sick" v-model="formData.convalescence_place" required>
+            <option value="" selected disabled>Select Recovery Place</option>
             <option value="In Hospital">In Hospital</option>
             <option value="Out Patient">Out Patient</option>
             <option value="Home Medication">Home Medication</option>
@@ -213,23 +215,23 @@
           />
         </div>
         <div class="form-section" v-if="formData.leave_type === 'Sick'">
-          <label for="date_start">Date of confinement:</label>
+          <label for="date_of_confinement">Date of confinement:</label>
           <input
             type="date"
-            id="date_start"
+            id="date_of_confinement"
             class="forms-controller"
-            v-model="formData.date_start"
+            v-model="formData.date_of_confinement"
             required
           />
         </div>
 
         <div class="form-section" v-if="formData.leave_type === 'Sick'">
-          <label for="date_end">Date of discharge:</label>
+          <label for="date_of_discharge">Date of discharge:</label>
           <input
             type="date"
-            id="date_end"
+            id="date_of_discharge"
             class="forms-controller"
-            v-model="formData.date_end"
+            v-model="formData.date_of_discharge"
             required
           />
         </div>
@@ -292,7 +294,10 @@
             </div>
           </div>
         </div>
-        <div v-if="!formData.substitute" class="form-section">
+        <div
+          v-if="!formData.substitute && roles.includes('teacher')"
+          class="form-section"
+        >
           <label for="date_end">Please specify the alternatives used to the class.</label>
           <textarea
             type="text"

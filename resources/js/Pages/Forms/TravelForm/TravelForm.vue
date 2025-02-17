@@ -1,106 +1,10 @@
-<script>
-import Layout from "@/Layouts/Layout.vue";
-import { Inertia } from "@inertiajs/inertia";
-import ConfirmationFormModal from "@/Modals/ConfirmationFormModal.vue";
-
-export default {
-  layout: Layout,
-  components: {
-    ConfirmationFormModal,
-  },
-  props: {
-    budgetTypes: Object,
-    budgetCharges: Object,
-    formData: Object,
-    roles: Array,
-  },
-  data() {
-    return {
-      travelForm: {
-        date_start: this.formData.date_start ?? "",
-        date_end: this.formData.date_end ?? "",
-        place: this.formData.place ?? "",
-        purpose: this.formData.purpose ?? "",
-        contact_person: this.formData.contact_person ?? "",
-        contact_person_no: this.formData.contact_person_no ?? "",
-        description: this.formData.description ?? "",
-      },
-      budget: {
-        amount: this.formData.amount ?? "",
-        selectedChargedTo: this.formData.budget_charged_to ?? "",
-        selectedBudgetType: this.formData.budget_type ?? "",
-        othersReason: "",
-      },
-
-      teachingSubstitutes: [],
-      days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-      searchTeacher: false,
-      filteredUsers: this.users,
-      confirmation_submission: false,
-      isSubstitute: false,
-    };
-  },
-  methods: {
-    toggleConfirmForm() {
-      this.confirmation_submission = !this.confirmation_submission;
-    },
-    storeToLocalStorage() {
-      const dataToStore = {
-        travelForm: this.travelForm,
-        budget: this.budget,
-      };
-      localStorage.setItem("watch", JSON.stringify(dataToStore));
-    },
-    submitForm() {
-      const formData = {
-        date_start: this.travelForm.date_start,
-        date_end: this.travelForm.date_end,
-        description: this.travelForm.description,
-        place: this.travelForm.place,
-        purpose: this.travelForm.purpose,
-        contact_person: this.travelForm.contact_person,
-        contact_person_no: this.travelForm.contact_person_no,
-        amount: this.budget.amount,
-        budget_type: this.budget.selectedBudgetType,
-        budget_charged_to: this.budget.selectedChargedTo,
-        filing_date: this.formData.filing_date ?? new Date().toISOString().split("T")[0],
-      };
-
-      Inertia.post("/forms/travel-form-submit", formData, {
-        onSuccess() {
-          this.confirmation_submission = !this.confirmation_submission;
-        },
-      });
-    },
-  },
-  watch: {
-    travelForm: {
-      handler() {
-        this.storeToLocalStorage();
-      },
-      deep: true,
-    },
-    budget: {
-      handler() {
-        this.storeToLocalStorage();
-      },
-      deep: true,
-    },
-  },
-  created() {
-    const storedData = localStorage.getItem("watch");
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      this.travelForm = parsedData.travelForm;
-      this.budget = parsedData.budget;
-    }
-  },
-};
-</script>
-
+<script src="./js/travel-form.js"></script>
+<style scoped>
+@import "./css/travel-form.css";
+</style>
 <template>
   <ConfirmationFormModal
-    :confirmation_submission="confirmation_submission"
+    :isConfirmation="isConfirmation"
     @submitForm="submitForm"
     @toggleConfirmForm="toggleConfirmForm"
   ></ConfirmationFormModal>
@@ -244,7 +148,7 @@ export default {
             required
           />
         </div>
-        <div class="form-section">
+        <div class="form-section" v-if="roles.includes('teacher')">
           <label for="date_end">Do you have a substitute teacher?</label>
 
           <div class="radio-container">
@@ -271,7 +175,7 @@ export default {
             </div>
           </div>
         </div>
-        <div v-if="!formData.substitute" class="form-section">
+        <div v-if="!isSubstitute" class="form-section">
           <label for="date_end">Please specify the alternatives used to the class.</label>
           <textarea
             type="text"
@@ -284,7 +188,7 @@ export default {
       <div class="forms" v-if="isSubstitute">
         <div class="forms-title">
           <span class="title">SUBSTITUTE</span>
-          <button type="button" @click="addTeachingSubstitute">
+          <button type="button" class="btn btn-primary" @click="addTeachingSubstitute">
             <i class="fas fa-plus"></i> Add
           </button>
           <small><i>(For MDC Teaching Employee only)</i></small>
@@ -377,9 +281,9 @@ export default {
         </div>
       </div>
     </div>
+
+    <div class="form-submit">
+      <button type="submit" class="submit" title="Submit for approval">Submit</button>
+    </div>
   </form>
 </template>
-
-<style scoped>
-@import "./travel-form.css";
-</style>
