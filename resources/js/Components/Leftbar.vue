@@ -38,7 +38,9 @@ export default {
         <div class="logo-img-container">
           <img src="/public/assets/images/mdc-logo.png" class="logo-img" alt="Logo" />
         </div>
+
         <text>Welcome!</text>
+
         <span id="app-name">{{ user.last_name }}, {{ user.first_name }}</span>
       </div>
       <div class="role-container">
@@ -103,12 +105,6 @@ export default {
             <ul id="submenu-users" class="submenu">
               <InertiaLink :href="'/user-list'" class="link">
                 <li><span>Search</span></li>
-              </InertiaLink>
-
-              <li><span>Tracking</span></li>
-
-              <InertiaLink :href="'/forms/evaluation-form'" class="link">
-                <li><span>Evaluation</span></li>
               </InertiaLink>
             </ul>
           </li>

@@ -9,8 +9,6 @@
     @toggleConfirmForm="toggleConfirmForm"
   ></ConfirmationFormModal>
 
-  <ConfirmationDelete :isDelete="isDelete"></ConfirmationDelete>
-
   <form @submit.prevent="toggleConfirmForm">
     <div class="forms-container">
       <div class="forms">
