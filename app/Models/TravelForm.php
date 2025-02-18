@@ -18,6 +18,18 @@ class TravelForm extends Model
             'last_name',
             'middle_name'
         ]);
+    
+    }
+
+    public function recommender(){
+
+        return $this->belongsTo(User::class, 'recommended_by')
+        ->select([
+            'id',
+            'first_name',
+            'last_name',
+            'middle_name'
+        ]);
     }
     
     public function user(){

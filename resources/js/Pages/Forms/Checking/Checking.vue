@@ -111,9 +111,21 @@ export default {
               <i class="fa-solid fa-temperature-empty"></i>
               <span>Status</span>
             </td>
-            <td class="td-title" v-if="roles.includes('hr')">
+            <td
+              class="td-title"
+              v-if="
+                roles.includes('vp-admin') ||
+                roles.includes('vp-acad') ||
+                roles.includes('p-admin')
+              "
+            >
               <i class="fa-solid fa-user-cog"></i>
               <span>Endorsed by</span>
+            </td>
+
+            <td class="td-title" v-if="roles.includes('hr')">
+              <i class="fa-solid fa-user-cog"></i>
+              <span>Recommended by</span>
             </td>
             <td class="td-title">
               <i class="fa-solid fa-share-from-square"></i>
@@ -150,9 +162,15 @@ export default {
               <i v-if="form.status == 'recommended'" class="green fas fa-handshake"></i>
               <span>{{ form.status }}</span>
             </td>
+
             <td v-if="form.endorser">
               {{ form.endorser.last_name }}, {{ form.endorser.first_name }}
               {{ form.endorser.middle_name[0] }}.
+            </td>
+
+            <td v-if="form.recommender">
+              {{ form.recommender.last_name }}, {{ form.recommender.first_name }}
+              {{ form.recommender.middle_name[0] }}.
             </td>
             <td>{{ formatDate(form.created_at) }}</td>
             <td class="td-action">

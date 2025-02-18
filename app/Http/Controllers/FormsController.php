@@ -112,17 +112,18 @@ class FormsController extends Controller
                 ->with([
                     'substitutes.user',
                     'user',
-                    'endorser',
+                    'recommender',
                     'userJobDetail',
                    
                 ])->orderBy('created_at', 'ASC')->get();
 
                 $travelForms = TravelForm::where('status', 'dean_approved' )
+                
                 ->orderBy('created_at', 'ASC')
                 ->with([
                     'substitutes.user',
                     'user',
-                    'endorser',
+                    'recommender',
                     'userJobDetail',
                    
                 ])->orderBy('created_at', 'ASC')->get();
@@ -231,6 +232,7 @@ class FormsController extends Controller
 
     public function forward(Request $request){
 
+    
        if($request->action == 'dean_approved'){
         if($request->form_type == 'Leave Form'){
 
@@ -240,7 +242,19 @@ class FormsController extends Controller
                 'recommended_by' => Auth::user()->id,
             ]);
            }
+
+        if($request->form_type == 'Travel Form'){
+
+            TravelForm::where('id', $request->id)
+            ->where('user_id', $request->user_id)
+            ->update([
+                'status' => $request->action,
+                'recommended_by' => Auth::user()->id,
+            ]);
+           }
        }
+
+
 
        if($request->action == 'hr_approved'){
 
@@ -252,6 +266,15 @@ class FormsController extends Controller
              'endorsed_by' => Auth::user()->id,
          ]);
         }
+        else if($request->form_type == 'Travel Form'){
+
+            TravelForm::where('id', $request->id)
+            ->where('user_id', $request->user_id)
+            ->update([
+                'status' => $request->action,
+                'endorsed_by' => Auth::user()->id,
+            ]);
+           }
         
         }
 
@@ -265,6 +288,13 @@ class FormsController extends Controller
                 'status' => $request->action,
                
             ]);
+           }else if($request->form_type == 'Travel Form'){
+
+            TravelForm::where('id', $request->id)
+            ->where('user_id', $request->user_id)
+            ->update([
+                'status' => $request->action,
+            ]);
            }
        }
 
@@ -272,6 +302,13 @@ class FormsController extends Controller
         if($request->form_type == 'Leave Form'){
 
             LeaveForm::find($request->id)
+            ->update([
+                'status' => $request->action,
+            ]);
+           }else if($request->form_type == 'Travel Form'){
+
+            TravelForm::where('id', $request->id)
+            ->where('user_id', $request->user_id)
             ->update([
                 'status' => $request->action,
             ]);
@@ -283,6 +320,13 @@ class FormsController extends Controller
         if($request->form_type == 'Leave Form'){
 
             LeaveForm::find($request->id)
+            ->update([
+                'status' => 'approved',
+            ]);
+           }else if($request->form_type == 'Travel Form'){
+
+            TravelForm::where('id', $request->id)
+            ->where('user_id', $request->user_id)
             ->update([
                 'status' => 'approved',
             ]);
@@ -309,23 +353,41 @@ class FormsController extends Controller
        ]);
 
     }
-    public function find($user_id, $year)
+    public function find($form_type, $user_id, $year)
     {
-        $forms = LeaveForm::whereYear('date_start', $year)    
-            ->where('user_id', $user_id)
-            ->where('status', 'approved')
-            ->select([
-                'id',
-                'user_id',
-                'leave_type',
-                'date_start',
-                'date_end',
-                'created_at',
-                'status',
-            ])->get() ?? null;
+        $forms = [];
 
+        if ($form_type === 'Leave Form') {
+            $forms = LeaveForm::whereYear('date_start', $year)
+                ->where('user_id', $user_id)
+                ->where('status', 'approved')
+                ->select([
+                    'id',
+                    'user_id',
+                    'leave_type',
+                    'date_start',
+                    'date_end',
+                    'created_at',
+                    'status',
+                ])->get() ?? null;
+        } else if ($form_type === 'Travel Form') {
+            $forms = TravelForm::whereYear('date_start', $year)
+                ->where('user_id', $user_id)
+                ->where('status', 'approved')
+                ->select([
+                    'id',
+                    'user_id',
+                    'date_start',
+                    'date_end',
+                    'semister',
+                    'created_at',
+                    'status',
+                ])->get() ?? null;
+        } else {
+            return response()->json(['message' => 'Invalid form type'], 400);
+        }
 
-            return response()->json($forms);
+        return response()->json($forms);
     }
 
     

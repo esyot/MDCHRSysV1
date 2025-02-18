@@ -28,7 +28,6 @@
     animation: popUp 0.5s ease-in-out forwards, increaseOpacity 2s 0.5s forwards;
 }
 
-
 .modal-content{
     background-color: #fff;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
@@ -156,6 +155,7 @@
 .section-dates{
     margin-bottom: 10px;
 }
+
 
 .textarea-container textarea{
     width: 100%;
