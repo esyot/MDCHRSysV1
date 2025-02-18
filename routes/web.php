@@ -50,7 +50,10 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::get('/forms/travel-form-preview', [TravelFormController::class, 'preview']);
 
         //userlist
+        Route::get('/user-list/{id}/evaluation-form', [UserController::class, 'userEvaluation'])->name('user.evaluation');
+        Route::get('/user-list/{id}', [UserController::class, 'userView'])->name('user.view');
         Route::get('/user-list', [UserController::class, 'userList'])->name('user.list');
+
 
         // Leave Forms
         Route::post('/leave-form-submit', [LeaveFormController::class, 'submit'])->name('forms.leave-form-submit');

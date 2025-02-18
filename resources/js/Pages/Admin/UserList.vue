@@ -1,5 +1,6 @@
 <script>
 import Layout from "@/Layouts/Layout.vue";
+import { Inertia } from "@inertiajs/inertia";
 
 export default {
     layout: Layout,
@@ -33,6 +34,11 @@ export default {
             );
         },
     },
+    methods: {
+        handleClick(user) {
+            Inertia.visit(`/user-list/${user.id}`);
+        },
+    },
 };
 </script>
 
@@ -60,7 +66,11 @@ export default {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="user in filteredUsers" :key="user.id">
+                    <tr
+                        v-for="user in filteredUsers"
+                        :key="user.id"
+                        @click="handleClick(user)"
+                    >
                         <td>
                             {{ user.last_name }}, {{ user.first_name }}
                             <span v-if="user.middle_name"
@@ -80,5 +90,5 @@ export default {
 </template>
 
 <style scoped>
-@import "./userList.css";
+@import "./Styling/userList.css";
 </style>

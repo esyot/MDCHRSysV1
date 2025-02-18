@@ -110,4 +110,26 @@ class UserController extends Controller
         ]);
     }
 
+    public function userView($id){
+        $users = User::findOrFail($id);
+
+        $this->globalVariables();
+        $roles = $this->roles;
+
+         return Inertia::render('Pages/Admin/UserView', [
+            'user' => Auth::user(),
+            'users' => $users,
+            'roles' => $roles,
+            'pageTitle' => 'User Details',
+        ]);
+
+    }
+
+    public function userEvaluation($id){
+        $users = User::findOrFail($id);
+        return Inertia::render('Pages/Forms/Evaluation/Evaluation',[
+        'users' => $users,
+        ]);
+    }
+
 }
