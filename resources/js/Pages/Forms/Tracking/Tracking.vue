@@ -1,6 +1,8 @@
 <script>
 import Layout from "@/Layouts/Layout.vue";
+import { Inertia } from "@inertiajs/inertia";
 import Modal from "@/Pages/Forms/Tracking/TrackingModal.vue";
+import DeleteModal from "@/Modals/DeleteModal.vue";
 export default {
   layout: Layout,
   props: {
@@ -12,10 +14,13 @@ export default {
     return {
       selected_id: null,
       selected_type: null,
+      isConfirmation: false,
+      isDelete: false,
     };
   },
   components: {
     Modal,
+    DeleteModal,
   },
   methods: {
     formatDate(date) {
@@ -37,17 +42,36 @@ export default {
       this.selected_id = this.selected_id === id ? null : id + "";
       this.selected_type = this.selected_type === type ? null : type + "";
     },
+
+    toggleDeleteForm(id, type) {
+      this.isDelete = !this.isDelete;
+      this.selected_id = this.selected_id === id ? null : id + "";
+      this.selected_type = this.selected_type === type ? null : type + "";
+    },
+
+    deleteForm() {
+      Inertia.delete(`/form/delete/${this.selected_type}/${this.selected_id}`);
+      this.isDelete = false;
+    },
   },
 };
 </script>
 
 <template>
   <Modal
+    v-if="!isDelete"
     :forms="forms"
     :selected_id="selected_id"
     :selected_type="selected_type"
     @toggleFormModal="toggleFormModal"
   />
+
+  <DeleteModal
+    v-if="isDelete"
+    :isDelete="isDelete"
+    @deleteForm="deleteForm"
+    @toggleDeleteForm="toggleDeleteForm"
+  ></DeleteModal>
 
   <div class="container">
     <div class="content">
@@ -74,11 +98,7 @@ export default {
         </thead>
 
         <tbody>
-          <tr
-            v-for="form in forms"
-            :key="form.id"
-            @click="toggleFormModal(form.id, form.form_type)"
-          >
+          <tr v-for="form in forms" :key="form.id">
             <td>{{ form.form_type }}</td>
             <td class="td-status">
               <div class="status-item" v-if="form.status == 'pending'">
@@ -105,7 +125,11 @@ export default {
               <button @click="toggleFormModal(form.id, form.form_type)" class="edit-btn">
                 <i class="fas fa-eye"></i>
               </button>
-              <button v-show="form.status == 'pending'" class="delete-btn">
+              <button
+                @click="toggleDeleteForm(form.id, form.form_type)"
+                v-show="form.status == 'pending'"
+                class="delete-btn"
+              >
                 <i class="fas fa-trash"></i>
               </button>
             </td>

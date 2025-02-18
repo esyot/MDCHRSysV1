@@ -24,6 +24,7 @@ export default {
         contact_person: this.formData.contact_person ?? "",
         contact_person_no: this.formData.contact_person_no ?? "",
         description: this.formData.description ?? "",
+        semister: this.formData.semister ?? "",
       },
       budget: {
         amount: this.formData.amount ?? "",
@@ -38,6 +39,7 @@ export default {
       filteredUsers: this.users,
       isConfirmation: false,
       isSubstitute: false,
+     
     };
   },
   methods: {

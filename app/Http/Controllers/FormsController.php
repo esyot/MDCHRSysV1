@@ -390,5 +390,16 @@ class FormsController extends Controller
         return response()->json($forms);
     }
 
-    
+    public function delete($type, $id){
+
+        if($type == 'Leave Form'){
+            LeaveForm::find($id)->delete();
+        }else if($type == 'Travel Form'){
+            TravelForm::find($id)->delete();
+        }
+
+        return redirect()->back()->with([
+            'success'=>'Form deleted successfully!'
+        ]);
+    }    
 }

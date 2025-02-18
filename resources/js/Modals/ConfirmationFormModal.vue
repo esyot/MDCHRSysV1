@@ -37,7 +37,6 @@ export default {
   z-index: 100;
   justify-content: center;
   align-items: center;
-  background-color: rgba(255, 0, 0, 0);
   animation: popUp 0.3s ease-in-out forwards, increaseOpacity 2s 0.3s forwards;
 }
 

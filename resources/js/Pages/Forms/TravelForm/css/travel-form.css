@@ -69,13 +69,14 @@
     opacity: 100%;
   }
   .forms-title {
-    display: block;
+    display: flex;
+    align-items: center;
     border-bottom: #dedede 1px solid;
     background-color: #fff;
     box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
-    padding: 10px;
+    gap: .2rem;
     z-index: 10;
   }
 
@@ -117,6 +118,14 @@
   }
   
   .form-section input {
+    display: flex;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .form-section select {
     display: flex;
     padding: 10px;
     border: 1px solid #ccc;

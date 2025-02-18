@@ -9,6 +9,8 @@
     @toggleConfirmForm="toggleConfirmForm"
   ></ConfirmationFormModal>
 
+  <ConfirmationDelete :isDelete="isDelete"></ConfirmationDelete>
+
   <form @submit.prevent="toggleConfirmForm">
     <div class="forms-container">
       <div class="forms">
@@ -148,6 +150,15 @@
             required
           />
         </div>
+        <div class="form-section">
+          <label for="amount">Select Term:</label>
+          <select class="form-control" v-model="travelForm.semister" required>
+            <option value="" disabled selected>Select Term</option>
+            <option value="1st">1st Semister</option>
+            <option value="2nd">2nd Semister</option>
+            <option value="Summer">Summer</option>
+          </select>
+        </div>
         <div class="form-section" v-if="roles.includes('teacher')">
           <label for="date_end">Do you have a substitute teacher?</label>
 
@@ -187,11 +198,13 @@
       </div>
       <div class="forms" v-if="isSubstitute">
         <div class="forms-title">
-          <span class="title">SUBSTITUTE</span>
-          <button type="button" class="btn btn-primary" @click="addTeachingSubstitute">
-            <i class="fas fa-plus"></i> Add
-          </button>
-          <small><i>(For MDC Teaching Employee only)</i></small>
+          <span class="title">Substitute</span>
+          <div>
+            <button type="button" @click="addTeachingSubstitute">
+              <i class="fas fa-plus"></i> Add
+            </button>
+            <small><i>(For MDC Teaching Employee only)</i></small>
+          </div>
         </div>
 
         <div
