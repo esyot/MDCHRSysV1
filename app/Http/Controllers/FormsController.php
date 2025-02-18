@@ -30,6 +30,7 @@ class FormsController extends Controller
 
         $leaveForms = LeaveForm::where('user_id', Auth::user()->id)
         ->with([
+            'substitutes',
             'substitutes.user'
         ])
         ->orderBy('created_at', 'ASC')

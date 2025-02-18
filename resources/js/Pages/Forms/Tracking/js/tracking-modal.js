@@ -19,6 +19,7 @@ export default {
       selected_type(newVal, oldVal) {
         this.modal_type = newVal ?? oldVal;
       },
+      
       modal_id(newVal, oldVal) {
         if (oldVal) {
           const modalId = `modal-${this.modal_type

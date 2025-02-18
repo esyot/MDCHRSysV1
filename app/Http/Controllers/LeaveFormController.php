@@ -98,9 +98,8 @@ class LeaveFormController extends Controller
         
                foreach($substitutes as $sub){
 
-                $sub['formable_id'] = $leave_form->id;
-                $sub['formable_type'] = "Leave Form";
-
+                $sub['leave_form_id'] = $leave_form->id;
+                
                 unset($sub['days']);
                 unset($sub['teacher']);
     

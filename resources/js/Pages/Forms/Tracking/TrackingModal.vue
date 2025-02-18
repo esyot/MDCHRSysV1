@@ -180,71 +180,32 @@
         </div>
       </div>
       <h3 class="title">Leave Application Form</h3>
-      <span class="sub-title">Leave type: </span>
+
       <div class="content-details">
+        <div class="input-group">
+          <label>Leave Type: </label>
+          <span>
+            {{ formData.leave_type }}
+          </span>
+        </div>
         <div class="row">
-          <div class="radio-group">
-            <label
-              ><input
-                type="radio"
-                :checked="formData.leave_type === 'Personal'"
-                name="leave_type"
-              />
-              Personal
-            </label>
+          <div class="input-group">
+            <label for="date_start">Start date: </label>
 
-            <label
-              ><input
-                type="radio"
-                :checked="formData.leave_type == 'Maternity'"
-                name="leave_type"
-              />
-              Maternity</label
-            >
-            <label
-              ><input
-                type="radio"
-                :checked="formData.leave_type == 'Paternity'"
-                name="leave_type"
-              />
-              Paternity Leave</label
-            >
+            <input
+              type="text"
+              id="date_start"
+              v-model="formData.date_start"
+              name="date_start"
+            />
 
-            <label
-              ><input type="radio" :checked="formData.leave_type === 'Sick'" /> Sick
-              Leave</label
-            >
-            <label
-              ><input
-                type="radio"
-                :checked="formData.leave_type == 'Educational'"
-                name="leave_type"
-              />
-              Educational Leave</label
-            >
-            <label>
-              <input type="radio" name="leave_type" /> Others: <input type="text" />
-            </label>
-            <div class="section-dates">
-              <div class="input-group">
-                <label for="date_start">Start date: </label>
-
-                <input
-                  type="text"
-                  id="date_start"
-                  v-model="formData.date_start"
-                  name="date_start"
-                />
-
-                <label for="date_end">End date:</label>
-                <input
-                  type="text"
-                  id="date_end"
-                  v-model="formData.date_end"
-                  name="date_end"
-                />
-              </div>
-            </div>
+            <label for="date_end">End date:</label>
+            <input
+              type="text"
+              id="date_end"
+              v-model="formData.date_end"
+              name="date_end"
+            />
           </div>
 
           <div class="sick-details">
@@ -278,8 +239,7 @@
             </div>
           </div>
         </div>
-        <span class="sub-title">Details of Leave</span>
-
+        <span class="sub-title" v-if="formData.leave_type_option">Details of Leave</span>
         <div class="container-details">
           <div class="radio-group" v-if="formData.leave_type_option == 'Vacation'">
             <span class="sub-title">Vacation:</span>

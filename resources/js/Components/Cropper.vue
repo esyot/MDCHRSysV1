@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="showModal" class="modal">
+    <div v-if="showModal" class="modal" @click.self="closeModal">
       <div class="modal-content">
         <div class="modal-header">
           <label for="">{{ !imageUrl ? "Upload Image" : "Crop image" }}</label>

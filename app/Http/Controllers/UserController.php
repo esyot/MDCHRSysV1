@@ -95,7 +95,7 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Account updated successfully!');
     }
 
-    public function userList(Request $request) {
+    public function users(Request $request) {
 
         $users = User::orderBy('last_name')->get();
 

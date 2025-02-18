@@ -5,161 +5,149 @@
   font-style: normal;
   font-display: swap;
 }
- 
- .flex {
-    display: flex;
-  }
-  .modal {
-    position: fixed;
-    z-index: 100;
-    justify-content: center;
-    align-items: center;
-    inset: 0;
-    animation: popUp 0.3s ease-in-out forwards, increaseOpacity 2s .3s forwards;
 
-  }
-  
-  .modal-content {
-    user-select: none;
-    background-color: #fff;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    margin: 10px;
-    border-radius: 5px;
-    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
-  }
- 
-  .modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-left: 2px;
-    padding-right: 10px;
-  }
-  .modal-header {
-    padding: 5px;
-    border-bottom: 1px solid #b5b5b5;
-  }
-  .modal-header .title {
-    font-size: 16pt !important;
-    margin-left: 10px;
-  }
-  
-  .x-btn {
-    font-size: 18pt !important;
-    opacity: 50%;
-    font-weight: bold;
-    margin-right: 8px;
-  }
-  
-  .x-btn:hover {
-    opacity: 100%;
-    cursor: pointer;
-  }
-  
-  .heading-container {
-    display: flex;
-    justify-content: center;
-    align-items: end;
-    gap: 1rem;
-    padding: 10px;
-    border-bottom: 1px solid #adadad;
-  }
-  
-  .heading-container img {
-    width: 60px;
-  }
-  
-  .heading-text {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-  }
-  
-  .heading-text .first {
-    font-family: RM New Albion;
-    font-size: 40pt !important;
-  }
-  
-  .heading-text .second {
-    font-size: 8pt !important;
-    font-weight: bold;
-  }
-  
-  .heading-text .third {
-    font-size: 9pt !important;
-    font-weight: bold;
-  }
-  .title {
-    text-align: center;
-  }
-  
-  .section-user-info {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.2rem;
-    padding: 10px;
-  }
-  
-  .section-user-info label {
-    font-weight: bold;
-  }
-  
-  .section-details {
-    padding: 10px;
-  }
-  
-  .section-details label {
-    font-weight: bold;
-  }
-  
-  .section-budget {
-    pointer-events: none;
-    display: flex;
-    
-    justify-content: space-between;
-    padding: 10px;
-  }
-  
-  .amount {
-    padding: 10px;
-  }
-  .amount label {
-    font-weight: bold;
-  }
-  .modal-footer {
-    display: flex;
-    justify-content: center;
-    padding: 10px;
-  }
-  
-  .modal-footer button {
-    padding: 10px;
-    background-color: rgb(106, 106, 106);
-    border: none;
-    color: #fff;
-    border-radius: 5px;
-    opacity: 75%;
-  }
-  
-  .modal-footer button:hover {
-    opacity: 100%;
-    cursor: pointer;
-  }
-  
+.flex {
+  display: flex;
+}
+
+.modal {
+  position: fixed;
+  z-index: 100;
+  justify-content: center;
+  align-items: center;
+  inset: 0;
+  animation: popUp 0.3s ease-in-out forwards, increaseOpacity 2s 0.3s forwards;
+}
+
+.modal-content {
+  user-select: none;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin: 10px;
+  border-radius: 5px;
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 2px;
+  padding-right: 10px;
+  padding: 5px;
+  border-bottom: 1px solid #b5b5b5;
+}
+
+.modal-header .title {
+  font-size: 16pt !important;
+  margin-left: 10px;
+}
+
+.x-btn {
+  font-size: 18pt !important;
+  opacity: 50%;
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.x-btn:hover {
+  opacity: 100%;
+  cursor: pointer;
+}
+
+.heading-container {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  gap: 1rem;
+  padding: 10px;
+  border-bottom: 1px solid #adadad;
+}
+
+.heading-container img {
+  width: 60px;
+}
+
+.heading-text {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.heading-text .first {
+  font-family: "RM New Albion";
+  font-size: 40pt !important;
+}
+
+.heading-text .second {
+  font-size: 8pt !important;
+  font-weight: bold;
+}
+
+.heading-text .third {
+  font-size: 9pt !important;
+  font-weight: bold;
+}
+
+.title {
+  text-align: center;
+}
+
 .section-user-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  padding: 10px;
   margin-bottom: 20px;
 }
 
-.section-user-info .user-info {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
+.section-user-info label {
+  font-weight: bold;
 }
 
-.user-info label {
-  font-size: 16px;
+.section-details {
+  padding: 10px;
+}
+
+.section-details label {
+  font-weight: bold;
+}
+
+.section-budget {
+  pointer-events: none;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.amount {
+  padding: 10px;
+}
+
+.amount label {
+  font-weight: bold;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+.modal-footer button {
+  padding: 10px;
+  background-color: rgb(106, 106, 106);
+  border: none;
+  color: #fff;
+  border-radius: 5px;
+  opacity: 75%;
+}
+
+.modal-footer button:hover {
+  opacity: 100%;
+  cursor: pointer;
 }
 
 .content-details {
@@ -192,12 +180,14 @@
 
 .input-group {
   margin-bottom: 10px;
+  margin-left: 10px;
 }
 
 .input-group label {
   font-size: 16px;
   margin-bottom: 5px;
   display: block;
+  font-weight: bold;
 }
 
 .input-group input {
@@ -212,6 +202,7 @@
   justify-content: space-between;
   gap: 20px;
   padding-right: 10px;
+  pointer-events: none;
 }
 
 .container-details {
@@ -256,23 +247,23 @@ span.sub-title {
   opacity: 100%;
   cursor: pointer;
 }
+
 .checkbox-group {
   pointer-events: none;
 }
-.section-dates {
-  pointer-events: none;
-}
-.substitute-details{
+
+.substitute-details {
   display: flex;
   margin-left: 10px;
 }
 
-.substitute-item label{
-font-weight: bold;
-}
-.substitute-item{
+.substitute-item {
   display: flex;
   flex-direction: column;
 }
 
-  
+.substitute-item label {
+  font-weight: bold;
+}
+
+

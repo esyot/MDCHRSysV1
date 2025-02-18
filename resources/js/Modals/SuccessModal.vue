@@ -1,5 +1,5 @@
 <template>
-  <div class="success-modal">
+  <div class="success-modal" @click.self="closeSuccessModal">
     <div class="success-modal-content">
       <div class="success-modal-icon">
         <i class="fas fa-circle-check fa-3x"></i>

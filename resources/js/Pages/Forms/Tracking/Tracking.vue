@@ -50,8 +50,11 @@ export default {
     },
 
     deleteForm() {
-      Inertia.delete(`/form/delete/${this.selected_type}/${this.selected_id}`);
-      this.isDelete = false;
+      Inertia.delete(`/form/delete/${this.selected_type}/${this.selected_id}`, {
+        onSuccess: () => {
+          this.toggleDeleteForm(this.selected_id, this.selected_type);
+        },
+      });
     },
   },
 };
@@ -68,7 +71,8 @@ export default {
 
   <DeleteModal
     v-if="isDelete"
-    :isDelete="isDelete"
+    :selected_id="selected_id"
+    :selected_type="selected_type"
     @deleteForm="deleteForm"
     @toggleDeleteForm="toggleDeleteForm"
   ></DeleteModal>
@@ -127,7 +131,7 @@ export default {
               </button>
               <button
                 @click="toggleDeleteForm(form.id, form.form_type)"
-                v-show="form.status == 'pending'"
+                v-if="form.status == 'pending'"
                 class="delete-btn"
               >
                 <i class="fas fa-trash"></i>

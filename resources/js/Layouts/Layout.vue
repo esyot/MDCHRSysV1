@@ -2,7 +2,7 @@
 import Leftbar from "@/Components/Leftbar.vue";
 import Topbar from "@/Components/Topbar.vue";
 import Footer from "@/Components/Footer.vue";
-import SuccessModal from "@/Components/SuccessModal.vue";
+import SuccessModal from "@/Modals/SuccessModal.vue";
 
 export default {
   components: {

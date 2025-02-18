@@ -4,7 +4,9 @@
       <text>Are you sure you want to delete this form?</text>
 
       <div class="modal-buttons">
-        <button @click="toggleDeleteForm" class="no-btn">No</button>
+        <button @click="toggleDeleteForm(selected_id, selected_type)" class="no-btn">
+          No
+        </button>
         <button @click="deleteForm" class="yes-btn">Yes</button>
       </div>
     </div>
@@ -16,14 +18,16 @@ export default {
   emits: ["deleteForm", "toggleDeleteForm"],
   props: {
     isDelete: Boolean,
+    selected_id: String,
+    selected_type: String,
   },
 
   methods: {
     deleteForm() {
       this.$emit("deleteForm");
     },
-    toggleDeleteForm() {
-      this.$emit("toggleDeleteForm");
+    toggleDeleteForm(selected_id, selected_type) {
+      this.$emit("toggleDeleteForm", selected_id, selected_type);
     },
   },
 };
