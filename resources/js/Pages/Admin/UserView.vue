@@ -1,7 +1,6 @@
 <script>
 import Layout from "@/Layouts/Layout.vue";
-import Overview from "@/Pages/Account/Components/Overview.vue";
-import { InertiaLink } from "@inertiajs/inertia-vue3";
+import { Inertia } from "@inertiajs/inertia";
 
 export default {
     layout: Layout,
@@ -12,9 +11,10 @@ export default {
             default: () => [],
         },
     },
-    components: {
-        Overview,
-        InertiaLink,
+    methods: {
+        openEval() {
+            Inertia.visit(`/user-list/${this.users.id}/evaluation-form`);
+        },
     },
 };
 </script>
@@ -70,14 +70,7 @@ export default {
                 <div class="btn-right">
                     <button>Edit Role</button>
                     <button>History</button>
-                    <button>
-                        <InertiaLink
-                            :href="'/forms/evaluation-form'"
-                            class="link"
-                        >
-                            <li><span>Evaluation</span></li>
-                        </InertiaLink>
-                    </button>
+                    <button @click="openEval()">Evaluate</button>
                 </div>
             </div>
             <div class="forms">
