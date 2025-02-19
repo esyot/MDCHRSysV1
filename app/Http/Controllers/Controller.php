@@ -15,17 +15,22 @@ abstract class Controller
 
     protected $departments;
 
+    protected $parentDepartments;
+
 
     protected function globalVariables()
     {
 
         $this->roles = Auth::user()->getRoleNames();
 
-        $this->user = User::find(Auth::user()->id)->makeHidden([
-            'user',
-            'password',
-        ]);
+        $this->user = User::with(['departments:id,name,acronym'])
+            ->where('id', Auth::user()->id)
+            ->select(['id', 'img','first_name', 'last_name', 'middle_name', 'email'])
+            ->first();
 
+       
+
+       
         $departmentsWithParent = DB::table('departments as t1')
             ->leftJoin('departments as t2', 't1.parent_id', '=', 't2.id')
             ->leftJoin('departments as t3', 't2.parent_id', '=', 't3.id')
@@ -51,6 +56,8 @@ abstract class Controller
             ->whereNull('t1.parent_id')
             ->whereNull('t2.id')
             ->get();
+
+        $this->parentDepartments = $departmentsWithParent;
 
         $this->departments = $departmentsWithNoParent->concat($departmentsWithParent);
     }

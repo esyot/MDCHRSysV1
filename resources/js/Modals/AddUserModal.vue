@@ -15,12 +15,18 @@ export default {
         middle_name: "",
         date_hired: "",
         departments: [],
+        roles: [],
       },
       isConfirmation: false,
+      errors: {
+        departments: false,
+        roles: false,
+      },
     };
   },
   props: {
     departments: Array,
+    roleList: Array,
   },
   methods: {
     closeModal() {
@@ -30,16 +36,29 @@ export default {
       if (this.formData.departments.includes(id)) {
         const index = this.formData.departments.indexOf(id);
         this.formData.departments.splice(index, 1);
-        return;
       } else {
         this.formData.departments.push(id);
       }
     },
-
+    selectedRole(id) {
+      if (this.formData.roles.includes(id)) {
+        const index = this.formData.roles.indexOf(id);
+        this.formData.roles.splice(index, 1);
+      } else {
+        this.formData.roles.push(id);
+      }
+    },
+    validateForm() {
+      this.errors.departments = this.formData.departments.length === 0;
+      this.errors.roles = this.formData.roles.length === 0;
+      return !this.errors.departments && !this.errors.roles;
+    },
     submitForm() {
-      this.toggleConfirmForm();
-      this.closeModal();
-      Inertia.post("/users/user-add", this.formData);
+      if (this.validateForm()) {
+        this.toggleConfirmForm();
+        this.closeModal();
+        Inertia.post("/users/user-add", this.formData);
+      }
     },
     toggleConfirmForm() {
       this.isConfirmation = !this.isConfirmation;
@@ -57,7 +76,7 @@ export default {
 
   <div class="modal" @click.self="closeModal">
     <div class="modal-content">
-      <form @submit.prevent="toggleConfirmForm" class="form">
+      <form @submit.prevent="submitForm" class="form">
         <div class="form-title">
           <span>Add a user</span>
           <i @click="closeModal">&times;</i>
@@ -91,22 +110,46 @@ export default {
             type="text"
             placeholder="Input middle name"
             v-model="formData.middle_name"
+            required
           />
         </div>
 
-        <div class="form-checkbox">
-          <label>Departments:</label>
-          <div v-for="dept in departments" :key="dept.department_id">
-            <div class="checkbox-group">
-              <input
-                type="checkbox"
-                :value="dept.department_id"
-                v-model="formData.departments"
-                @click="selectedDepartment(dept.department_id)"
-              />
-              <span>{{ dept.department_name }}</span>
+        <div class="grouped-checkboxes">
+          <div class="form-checkbox">
+            <label>Departments:</label>
+            <div v-for="dept in departments" :key="dept.department_id">
+              <div class="checkbox-group">
+                <input
+                  type="checkbox"
+                  :value="dept.department_id"
+                  v-model="formData.departments"
+                  @click="selectedDepartment(dept.department_id)"
+                />
+                <span>{{ dept.department_name }}</span>
+              </div>
             </div>
           </div>
+
+          <div class="form-checkbox">
+            <label>Roles:</label>
+            <div v-for="role in roleList" :key="role.id">
+              <div class="checkbox-group">
+                <input
+                  type="checkbox"
+                  :value="role.id"
+                  v-model="formData.roles"
+                  @click="selectedRole(role.id)"
+                />
+                <span>{{ role.name }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <span v-if="errors.departments" class="error"
+            >Please select atleast one department.</span
+          >
+          <span v-if="errors.roles" class="error">Please select atleast one role.</span>
         </div>
 
         <div class="form-group">
@@ -142,7 +185,7 @@ export default {
   border-radius: 5px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   max-width: 400px;
-  width: 100%;
+  margin: 10px;
 }
 
 .form {
@@ -173,7 +216,8 @@ export default {
 .form-group {
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  padding-inline: 10px;
+  margin-bottom: 5px;
 }
 
 .form-group label {
@@ -197,12 +241,14 @@ export default {
   border-radius: 5px;
   width: 100%;
   box-sizing: border-box;
+  box-shadow: inset 3px 3px 3px rgba(0, 0, 0, 0.1);
 }
 .checkbox-group {
   display: flex;
+  width: 200px;
+  margin-bottom: 5px;
 }
 .checkbox-group input {
-  padding: 3px;
   margin-right: 5px;
 }
 
@@ -241,5 +287,21 @@ export default {
 .cancel-btn:hover,
 .submit-btn:hover {
   opacity: 0.8;
+}
+
+.grouped-checkboxes {
+  display: flex;
+  border: 1px solid #787878;
+  margin-inline: 10px;
+  border-radius: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  box-shadow: inset 3px 3px 3px rgba(0, 0, 0, 0.1);
+}
+
+.error {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 5px;
 }
 </style>

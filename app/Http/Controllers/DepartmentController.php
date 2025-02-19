@@ -2,19 +2,51 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
 use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
 {
-    public function index(){
-
+    public function index()
+    {
         $this->globalVariables();
         $roles = $this->roles;
         $user = $this->user;
+        $parentDepartments = $this->parentDepartments;
 
-        return inertia('Pages/Departments', [
+        $departments = Department::with(['parent', 'userHeads'])->get();
+
+        return inertia('Pages/Department/Department', [
             'roles' => $roles,
-            'user' => $user
+            'user' => $user,
+            'departments' => $departments,
+            'parentDepartments' => $parentDepartments,
+            'messageSuccess' => session('success') ?? null,
         ]);
+    }
+
+    public function create(Request $request){
+
+        $department = Department::create($request->all());
+
+
+        if($department){
+            return redirect()->back()->with('success', "Department added successfully!");
+        }else{
+            return redirect()->back()->with('error', "Department error!");
+        }
+
+    }
+
+    public function delete($id){
+
+        $department = Department::find($id);
+
+        if($department){
+            $department->delete();
+            return redirect()->back()->with('success', 'Department deleted successfully!');
+        }else{
+            return redirect()->back()->with('error', 'Department not found!');
+        }
     }
 }

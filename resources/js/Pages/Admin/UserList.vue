@@ -12,6 +12,7 @@ export default {
     users: Object,
     roles: Array,
     departments: Array,
+    roleList: Array,
   },
   data() {
     return {
@@ -49,6 +50,7 @@ export default {
   <AddUserModal
     v-if="isAddUser"
     :departments="departments"
+    :roleList="roleList"
     @toggleAddUserModal="toggleAddUserModal"
   ></AddUserModal>
 

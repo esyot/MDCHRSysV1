@@ -41,10 +41,12 @@ class AccountController extends Controller
             ->where('users.id', Auth::user()->id)
             ->first();
 
+           
+
 
            
 
-        $user = User::find(Auth::user()->id);
+        $user = User::find(Auth::user()->id)->with('departments:id,name,acronym')->first();
 
         $auth = Session::get('authenticate');
 
@@ -56,9 +58,6 @@ class AccountController extends Controller
 
             $auth = false;
         }
-
-        
-
 
         return Inertia::render('Pages/Account/Account', [
             'user' =>  $user,
