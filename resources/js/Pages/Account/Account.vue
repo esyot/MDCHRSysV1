@@ -135,6 +135,7 @@ export default {
             </div>
         </section>
     </div>
+    </div>
 </template>
 
 <style scoped>
