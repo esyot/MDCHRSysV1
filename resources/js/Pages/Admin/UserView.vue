@@ -6,6 +6,7 @@ import { Inertia } from "@inertiajs/inertia";
 export default {
     layout: Layout,
     props: {
+        userRoles: Array,
         personalDetails: Object,
         roles: {
             type: Array,
@@ -75,7 +76,7 @@ export default {
                             <i class="fas fa-user-cog"></i>
                             <div>
                                 <span
-                                    v-for="role in roles"
+                                    v-for="role in userRoles"
                                     :key="role"
                                     class="role-desc"
                                     >{{ role }},</span

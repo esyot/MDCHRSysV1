@@ -138,7 +138,10 @@ class UserController extends Controller
             'userValidIds',
 
 
+
         ])->findOrFail($id);
+
+        $userRoles = User::find($id)->getRoleNames();
 
         $this->globalVariables();
         $roles = $this->roles;
@@ -147,6 +150,7 @@ class UserController extends Controller
             'user' => Auth::user(),
             'personalDetails' => $personalDetails,
             'roles' => $roles,
+            'userRoles' => $userRoles,
             'pageTitle' => 'User Details',
         ]);
 
