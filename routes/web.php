@@ -54,6 +54,8 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::get('/user-list/{id}', [UserController::class, 'userView'])->name('user.view');
         Route::get('/user-list', [UserController::class, 'users'])->name('user.list');
 
+        Route::post('/users/user-add', [UserController::class, 'userAdd'])->name('user.add');
+
 
         // Leave Forms
         Route::post('/leave-form-submit', [LeaveFormController::class, 'submit'])->name('forms.leave-form-submit');

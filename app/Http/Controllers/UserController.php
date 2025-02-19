@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
 use App\Models\User;
+use App\Models\UserDepartment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -101,12 +103,15 @@ class UserController extends Controller
 
         $this->globalVariables();
         $roles = $this->roles;
+        $departments = $this->departments;
 
         return Inertia::render('Pages/Admin/UserList', [
             'user' => Auth::user(),
             'users' => $users,
             'roles' => $roles,
             'pageTitle' => 'User List',
+            'messageSuccess' => session('success') ?? null,
+            'departments' => $departments,
         ]);
     }
 
@@ -130,6 +135,40 @@ class UserController extends Controller
         return Inertia::render('Pages/Forms/Evaluation/Evaluation',[
         'users' => $users,
         ]);
+    }
+
+
+    public function userAdd(Request $request){
+
+        $user = User::create([
+            'user' => $request->first_name[0] . $request->last_name,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
+            'last_name' => $request->last_name,
+            'email' => 'example@email.com',
+            
+        ]);
+
+        $user->password = Hash::make('12345678');
+        $user->save();
+
+
+        foreach($request->departments as $dept){
+
+            UserDepartment::create([
+                'user_id' => $user->id,
+                'department_id' => $dept,
+            ]);
+        }
+
+        if($user){
+            $user->assignRole('staff');
+
+            return redirect()->back()->with('success', 'User added successfully!');
+
+        }else{
+            return redirect()->back()->with('error', 'Error adding user.');
+        }
     }
 
 }

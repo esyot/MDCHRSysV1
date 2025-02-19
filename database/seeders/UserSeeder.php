@@ -71,6 +71,7 @@ class UserSeeder extends Seeder
 
 
         $user1->assignRole('vp-admin');
+        $user1->assignRole('admin');
         $user4->assignRole('vp-acad');
         $user5->assignRole('dean');
         $user2->assignRole('hr');        

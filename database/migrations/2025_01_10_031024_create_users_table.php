@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('last_name');
             $table->string('middle_name');
             $table->string('user');
-            $table->string('password');
+            $table->string('password')->default(Hash::make('ILoveMDC2025'));
             $table->string('email');
             $table->string('img')->nullable()->default('user.png');
             $table->tinyInteger('is_two_step_verification')->default(false);
