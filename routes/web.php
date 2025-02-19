@@ -72,6 +72,10 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::get('/departments', [DepartmentController::class, 'index']);
     
         Route::delete('/form/delete/{type}/{id}', [FormsController::class, 'delete']);
+
+        Route::post('/departments/department-add', [DepartmentController::class,'create']);
+
+        Route::get('departments/department-delete/{id}', [DepartmentController::class, 'delete']);
     });
     });
 

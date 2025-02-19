@@ -94,7 +94,7 @@ export default {
     </div>
   </div>
 
-  <div id="logoutConfirmModal" class="modal hidden">
+  <div @click.self="logoutConfirm" id="logoutConfirmModal" class="modal hidden">
     <section class="modal-content">
       <h2>Are you sure to logout?</h2>
       <footer>

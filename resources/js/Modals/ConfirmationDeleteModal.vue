@@ -1,3 +1,22 @@
+<script>
+export default {
+  emits: ["deleteForm", "toggleDeleteForm"],
+  props: {
+    isDelete: Boolean,
+    selected_id: String,
+    selected_type: String,
+  },
+
+  methods: {
+    deleteForm() {
+      this.$emit("deleteForm");
+    },
+    toggleDeleteForm() {
+      this.$emit("toggleDeleteForm");
+    },
+  },
+};
+</script>
 <template>
   <div class="modal" @click.self="toggleDeleteForm">
     <div class="modal-content">
@@ -13,26 +32,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  emits: ["deleteForm", "toggleDeleteForm"],
-  props: {
-    isDelete: Boolean,
-    selected_id: String,
-    selected_type: String,
-  },
-
-  methods: {
-    deleteForm() {
-      this.$emit("deleteForm");
-    },
-    toggleDeleteForm(selected_id, selected_type) {
-      this.$emit("toggleDeleteForm", selected_id, selected_type);
-    },
-  },
-};
-</script>
-
 <style scoped>
 .modal {
   display: flex;
@@ -40,6 +39,7 @@ export default {
   align-items: center;
   position: fixed;
   inset: 0;
+  z-index: 90;
   animation: popUp 0.3s ease-in-out forwards, increaseOpacity 2s 0.3s forwards;
 }
 

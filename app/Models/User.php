@@ -11,8 +11,13 @@ class User extends Authenticatable
 {
     use HasFactory, HasRoles, Notifiable;
 
-    protected $guarded = ['password'];
+   protected $guarded = [];
 
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class, 'user_departments');
+    }
+   
     public function personalDetails()
     {
         return $this->hasOne(PersonalDetail::class);

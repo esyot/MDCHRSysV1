@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
 use Storage;
 use Illuminate\Support\Str;
 
@@ -105,6 +106,8 @@ class UserController extends Controller
         $roles = $this->roles;
         $departments = $this->departments;
 
+        $roleList = Role::all();
+
         return Inertia::render('Pages/Admin/UserList', [
             'user' => Auth::user(),
             'users' => $users,
@@ -112,6 +115,7 @@ class UserController extends Controller
             'pageTitle' => 'User List',
             'messageSuccess' => session('success') ?? null,
             'departments' => $departments,
+            'roleList' =>  $roleList
         ]);
     }
 
@@ -140,33 +144,46 @@ class UserController extends Controller
 
     public function userAdd(Request $request){
 
+        $username = $request->first_name[0] . $request->last_name;
+        $originalUsername = $username;
+        $counter = 1;
+
+        while (User::where('user', $username)->exists()) {
+            $username = $originalUsername . '_' . $counter;
+            $counter++;
+        }
+
+       
+
         $user = User::create([
-            'user' => $request->first_name[0] . $request->last_name,
+            'user' => $username,
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
             'email' => 'example@email.com',
-            
+            'password' => Hash::make('12345678'),
         ]);
 
-        $user->password = Hash::make('12345678');
-        $user->save();
+        $roles = Role::whereIn('id', $request->roles)->get();
 
-
-        foreach($request->departments as $dept){
-
+        foreach ($request->departments as $dept) {
+            
             UserDepartment::create([
                 'user_id' => $user->id,
                 'department_id' => $dept,
+                'type' => $roles->contains(function ($role) {
+                    return $role->name === 'dean';
+                }) ? 'head' : 'member',
             ]);
         }
 
-        if($user){
-            $user->assignRole('staff');
+        foreach ($request->roles as $role) {
+            $user->assignRole($role);
+        }
 
+        if ($user) {
             return redirect()->back()->with('success', 'User added successfully!');
-
-        }else{
+        } else {
             return redirect()->back()->with('error', 'Error adding user.');
         }
     }

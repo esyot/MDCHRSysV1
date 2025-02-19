@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LeaveForm;
 use App\Models\TravelForm;
 use App\Models\User;
+use App\Models\UserDepartment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -130,26 +131,30 @@ class FormsController extends Controller
                 ])->orderBy('created_at', 'ASC')->get();
 
             }
-            else if($roles->contains(key: 'dean')){
-                
-                $leaveForms = LeaveForm::where('status', 'pending')
-                ->with([
-                    'substitutes.user',
-                    'user',
-                    'endorser',
-                    'userJobDetail',
-                   
-                ])->orderBy('created_at', 'ASC')->get();
+            else if($roles->contains('dean')) {
 
-                $travelForms = TravelForm::where('status', 'pending' )
-                ->orderBy('created_at', 'ASC')
-                ->with([
-                    'substitutes.user',
-                    'user',
-                    'endorser',
-                    'userJobDetail',
-                   
-                ])->orderBy('created_at', 'ASC')->get();
+                $departmentIds = UserDepartment::where('user_id', $user->id)->pluck('department_id')->toArray();
+                
+                $userIds = UserDepartment::whereIn('department_id', $departmentIds)->pluck('user_id')->toArray();
+    
+                $leaveForms = LeaveForm::whereIn('user_id', $userIds)
+                    ->where('status', 'pending')
+                    ->with([
+                        'substitutes.user',
+                        'user',
+                        'endorser',
+                        'userJobDetail',
+                    ])->orderBy('created_at', 'ASC')->get();
+    
+                $travelForms = TravelForm::whereIn('user_id', $userIds)
+                    ->where('status', 'pending')
+                    ->orderBy('created_at', 'ASC')
+                    ->with([
+                        'substitutes.user',
+                        'user',
+                        'endorser',
+                        'userJobDetail',
+                    ])->orderBy('created_at', 'ASC')->get();
             }
 
             else if($roles->contains('vp-acad')){
