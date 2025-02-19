@@ -146,6 +146,11 @@ class UserController extends Controller
         ])->findOrFail($id);
 
         $userRoles = User::find($id)->getRoleNames();
+        $userDepartments = User::where('id', $id)->with('departments:id,name,acronym')->first();
+
+        $userDepartments =  $userDepartments->departments;
+
+      
 
         $this->globalVariables();
         $roles = $this->roles;
@@ -156,6 +161,7 @@ class UserController extends Controller
             'roles' => $roles,
             'userRoles' => $userRoles,
             'pageTitle' => 'User Details',
+            'userDepartments' => $userDepartments
         ]);
 
     }
