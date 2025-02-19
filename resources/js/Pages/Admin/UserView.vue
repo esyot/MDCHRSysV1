@@ -73,17 +73,17 @@ export default {
             <div class="user-role">
               <i class="fas fa-globe"></i>
               <div>
-                <span v-for="dept in userDepartments" :key="role" class="role-desc"
-                  >{{ dept.name }},</span
-                >
+                <span v-for="dept in userDepartments" :key="dept.id" class="role-desc">{{
+                  dept.name
+                }}</span>
               </div>
             </div>
             <div class="user-role">
               <i class="fas fa-user-cog"></i>
               <div>
-                <span v-for="role in userRoles" :key="role" class="role-desc"
-                  >{{ role }},</span
-                >
+                <span v-for="role in userRoles" :key="role.id" class="role-desc">{{
+                  role
+                }}</span>
               </div>
             </div>
           </div>
