@@ -116,14 +116,36 @@ class UserController extends Controller
     }
 
     public function userView($id){
-        $users = User::findOrFail($id);
+        $personalDetails = User::with([
+            'personalDetails',
+            'personalDetails.permanentAddress',
+            'personalDetails.residentialAddress',
+            'userJobDetails',
+            'userFamilies',
+            'userEducationalBackgrounds',
+            'userProfessionalExaminations',
+            'userAwardReceives',
+            'userAdminPosHelds',
+            'userWorkExperiences',
+            'userStudies',
+            'userParticipations',
+            'userSpecialTrainings',
+            'userOtherInfos',
+            'userSchoolCurriculars',
+            'userOtherDetails',
+            'userReferences',
+            'userReferences.address',
+            'userValidIds',
+
+
+        ])->findOrFail($id);
 
         $this->globalVariables();
         $roles = $this->roles;
 
          return Inertia::render('Pages/Admin/UserView', [
             'user' => Auth::user(),
-            'users' => $users,
+            'personalDetails' => $personalDetails,
             'roles' => $roles,
             'pageTitle' => 'User Details',
         ]);
@@ -146,7 +168,7 @@ class UserController extends Controller
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
             'email' => 'example@email.com',
-            
+
         ]);
 
         $user->password = Hash::make('12345678');
