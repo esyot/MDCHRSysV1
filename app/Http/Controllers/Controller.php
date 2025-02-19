@@ -26,10 +26,8 @@ abstract class Controller
         $this->user = User::with(['departments:id,name,acronym'])
             ->where('id', Auth::user()->id)
             ->select(['id', 'img','first_name', 'last_name', 'middle_name', 'email'])
+            ->with('departments:id,name,acronym')
             ->first();
-
-       
-
        
         $departmentsWithParent = DB::table('departments as t1')
             ->leftJoin('departments as t2', 't1.parent_id', '=', 't2.id')
