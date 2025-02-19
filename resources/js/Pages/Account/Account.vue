@@ -50,68 +50,80 @@ export default {
 </script>
 
 <template>
+    <Cropper :showModal="showModal" @close="closeModal" />
+    <nav>
+        <span
+            :class="{ active: activeTab === 'overview' }"
+            @click="setActiveTab('overview')"
+            title="User Overview"
+        >
+            <i class="fa-solid fa-circle-info fa-lg"></i>
+        </span>
+        <span
+            :class="{ active: activeTab === 'personalDetails' }"
+            @click="setActiveTab('personalDetails')"
+            title="Personal Details"
+        >
+            <i class="fa-solid fa-list fa-lg"></i>
+        </span>
+        <span
+            :class="{ active: activeTab === 'security' }"
+            @click="setActiveTab('security')"
+            title="Security & Password"
+        >
+            <i class="fa-solid fa-lock fa-lg"></i>
+        </span>
+    </nav>
+    <div class="content">
+        <div class="user" v-if="activeTab === 'overview'">
+            <div class="user-content">
+                <div>
+                    <img
+                        @click="openImageLarge"
+                        class="user-img"
+                        :src="
+                            personalDetails.img
+                                ? 'storage/users/images/' + personalDetails.img
+                                : './assets/images/user.png'
+                        "
+                        alt="User Image"
+                    />
+                    <i
+                        @click="openImageCropper"
+                        class="edit-btn fas fa-camera"
+                    ></i>
+                </div>
 
-  <Cropper :showModal="showModal" @close="closeModal" />
-  <nav>
-    <span
-      :class="{ active: activeTab === 'overview' }"
-      @click="setActiveTab('overview')"
-      title="User Overview"
-    >
-      <i class="fa-solid fa-circle-info fa-lg"></i>
-    </span>
-    <span
-      :class="{ active: activeTab === 'personalDetails' }"
-      @click="setActiveTab('personalDetails')"
-      title="Personal Details"
-    >
-      <i class="fa-solid fa-list fa-lg"></i>
-    </span>
-    <span
-      :class="{ active: activeTab === 'security' }"
-      @click="setActiveTab('security')"
-      title="Security & Password"
-    >
-      <i class="fa-solid fa-lock fa-lg"></i>
-    </span>
-  </nav>
-  <div class="content">
-    <div class="user" v-if="activeTab === 'overview'">
-      <div class="user-content">
-        <div>
-          <img
-            @click="openImageLarge"
-            class="user-img"
-            :src="
-              personalDetails.img
-                ? 'storage/users/images/' + personalDetails.img
-                : './assets/images/user.png'
-            "
-            alt="User Image"
-          />
-          <i @click="openImageCropper" class="edit-btn fas fa-camera"></i>
-        </div>
-        <div class="user-details">
-          <span class="name">{{ user.first_name }} {{ user.last_name }}</span>
-          <div class="user-role">
-            <i class="fas fa-globe"></i>
-            <div>
-              <span
-                class="role-desc"
-                v-for="(department, index) in user.departments"
-                :key="department.id"
-                >{{ department.name }}
-                {{ user.departments.length >= index ? "" : ", " }}</span
-              >
+                <div class="user-details">
+                    <span class="name"
+                        >{{ user.first_name }} {{ user.last_name }}</span
+                    >
+                    <div class="user-role">
+                        <i class="fas fa-globe"></i>
+                        <div>
+                            <span
+                                class="role-desc"
+                                v-for="(department, index) in user.departments"
+                                :key="department.id"
+                                >{{ department.name }}
+                                {{
+                                    user.departments.length >= index ? "" : ", "
+                                }}</span
+                            >
+                        </div>
+                    </div>
+                    <div class="user-role">
+                        <i class="fas fa-user-cog"></i>
+                        <div>
+                            <span class="role-desc"
+                                >{{ roles.join(", ") }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="user-role">
-            <i class="fas fa-user-cog"></i>
-            <div>
-              <span class="role-desc">{{ roles.join(", ") }} </span>
+        </div>
 
-            </div>
-        </div>
         <Authentication
             :authDetails="authDetails"
             :authError="authError"
@@ -134,7 +146,6 @@ export default {
                 <Security :user="user" :userCredentials="userCredentials" />
             </div>
         </section>
-    </div>
     </div>
 </template>
 
