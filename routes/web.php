@@ -70,7 +70,7 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::get('/forms/find/{form_type}/{user_id}/{year}', [FormsController::class, 'find']);
 
         Route::get('/departments', [DepartmentController::class, 'index']);
-    
+
         Route::delete('/form/delete/{type}/{id}', [FormsController::class, 'delete']);
 
         Route::post('/departments/department-add', [DepartmentController::class,'create']);
