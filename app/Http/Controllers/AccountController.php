@@ -14,7 +14,8 @@ class AccountController extends Controller
 
         $this->globalVariables();
         $roles = $this->roles;
-
+        $user = $this->user;
+        
         $personalDetails = User::with([
             'personalDetails',
             'personalDetails.permanentAddress',
@@ -41,12 +42,6 @@ class AccountController extends Controller
             ->where('users.id', Auth::user()->id)
             ->first();
 
-           
-
-
-           
-
-        $user = User::find(Auth::user()->id)->with('departments:id,name,acronym')->first();
 
         $auth = Session::get('authenticate');
 
