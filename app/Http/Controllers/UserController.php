@@ -148,12 +148,12 @@ class UserController extends Controller
         $userRoles = User::find($id)->getRoleNames();
         $userDepartments = User::where('id', $id)->with('departments:id,name,acronym')->first();
 
-        $userDepartments =  $userDepartments->departments;
-
-      
+        $userDepartments =  $userDepartments->departments->pluck('name');
 
         $this->globalVariables();
         $roles = $this->roles;
+
+        $roleList = Role::all();
 
          return Inertia::render('Pages/Admin/UserView', [
             'user' => Auth::user(),
@@ -161,7 +161,10 @@ class UserController extends Controller
             'roles' => $roles,
             'userRoles' => $userRoles,
             'pageTitle' => 'User Details',
-            'userDepartments' => $userDepartments
+            'userDepartments' => $userDepartments,
+            'roleList'=>  $roleList,
+            'user_id' => $id,
+            'messageSuccess' => session('success') ?? null,
         ]);
 
     }
@@ -229,5 +232,21 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Error adding user.');
         }
     }
+    
+    public function userUpdateRole($user_id, Request $request)
+    {
+        $user = User::find($user_id);
+    
+        // Remove all roles
+        $user->syncRoles([]);
+
+        // Assign new roles only if the roles are provided in the request
+        if ($request->roles && !empty($request->roles)) {
+            $user->assignRole($request->roles);
+        }
+    
+        return redirect()->back()->with('success', 'Roles updated successfully!');
+    }
+    
 
 }

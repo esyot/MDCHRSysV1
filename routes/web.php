@@ -75,7 +75,9 @@ Route::middleware([Check2WayVerification::class])->group(function () {
 
         Route::post('/departments/department-add', [DepartmentController::class,'create']);
 
-        Route::get('departments/department-delete/{id}', [DepartmentController::class, 'delete']);
+        Route::get('/departments/department-delete/{id}', [DepartmentController::class, 'delete']);
+
+        Route::post('/users/{useer_id}/role-edit', [UserController::class, 'userUpdateRole']);
     });
     });
 

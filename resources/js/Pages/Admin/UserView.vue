@@ -2,10 +2,12 @@
 import Layout from "@/Layouts/Layout.vue";
 import PersonalDetails from "@/Pages/Admin/PersonalDetails.vue";
 import { Inertia } from "@inertiajs/inertia";
+import EditRoleModal from "@/Modals/EditRoleModal.vue";
 
 export default {
   layout: Layout,
   props: {
+    user_id: String,
     userRoles: Array,
     personalDetails: Object,
     userDepartments: Array,
@@ -13,10 +15,12 @@ export default {
       type: Array,
       default: () => [],
     },
+    roleList: Array,
   },
   data() {
     return {
       activeTab: localStorage.getItem("activeTab") || "overview",
+      isEditRole: false,
     };
   },
   methods: {
@@ -27,14 +31,25 @@ export default {
       this.activeTab = tab;
       localStorage.setItem("activeTab", tab);
     },
+    toggleEditRole() {
+      this.isEditRole = !this.isEditRole;
+    },
   },
   components: {
     PersonalDetails,
+    EditRoleModal,
   },
 };
 </script>
 
 <template>
+  <EditRoleModal
+    v-if="isEditRole"
+    :roleList="roleList"
+    :userRoles="userRoles"
+    :user_id="user_id"
+    @toggleEditRole="toggleEditRole"
+  ></EditRoleModal>
   <nav>
     <span
       :class="{ active: activeTab === 'overview' }"
@@ -73,17 +88,13 @@ export default {
             <div class="user-role">
               <i class="fas fa-globe"></i>
               <div>
-                <span v-for="dept in userDepartments" :key="dept.id" class="role-desc">{{
-                  dept.name
-                }}</span>
+                <span class="role-desc">{{ userDepartments.join(", ") }}</span>
               </div>
             </div>
             <div class="user-role">
               <i class="fas fa-user-cog"></i>
               <div>
-                <span v-for="role in userRoles" :key="role.id" class="role-desc">{{
-                  role
-                }}</span>
+                <span class="role-desc">{{ userRoles.join(", ") }}</span>
               </div>
             </div>
           </div>
@@ -104,7 +115,7 @@ export default {
           </select>
         </div>
         <div class="btn-right">
-          <button>Edit Role</button>
+          <button @click="toggleEditRole">Edit Role</button>
           <button>History</button>
           <button @click="openEval()">Evaluate</button>
         </div>
