@@ -16,6 +16,8 @@ class DepartmentController extends Controller
 
         $departments = Department::with(['parent', 'userHeads'])->get();
 
+       
+
         return inertia('Pages/Department/Department', [
             'roles' => $roles,
             'user' => $user,

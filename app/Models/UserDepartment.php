@@ -7,8 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserDepartment extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserDepartmentFactory> */
     use HasFactory;
 
     protected $guarded = [];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

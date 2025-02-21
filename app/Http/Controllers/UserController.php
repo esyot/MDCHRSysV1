@@ -185,8 +185,6 @@ class UserController extends Controller
             $counter++;
         }
 
-       
-
         $user = User::create([
             'user' => $username,
             'first_name' => $request->first_name,
@@ -194,13 +192,24 @@ class UserController extends Controller
             'last_name' => $request->last_name,
             'email' => 'example@email.com',
             'password' => Hash::make('12345678'),
-
         ]);
 
         $roles = Role::whereIn('id', $request->roles)->get();
 
         foreach ($request->departments as $dept) {
-            
+            $department = Department::where('parent_id',$dept)->get();
+        
+            foreach($department as $subDept){
+          
+                UserDepartment::create([
+                    'user_id' => $user->id,
+                    'department_id' => $subDept->id,
+                    'type' => $roles->contains(function ($role) {
+                        return $role->name === 'dean';
+                    }) ? 'head' : 'member',
+                ]);
+            }
+
             UserDepartment::create([
                 'user_id' => $user->id,
                 'department_id' => $dept,

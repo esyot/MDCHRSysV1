@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Department;
 use App\Models\User;
 use App\Models\UserDepartment;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -42,19 +41,23 @@ class UserDepartmentSeeder extends Seeder
             ->whereNull('t2.id')
             ->get();
     
-       
+        // Merge both sets of departments
         $departments = $departmentsWithNoParent->concat($departmentsWithParent);
-       
+    
         $department_ids = $departments->pluck('department_id');
     
         $users = User::all();
         
         foreach ($users as $user) {
+           
+            $randomDepartment = $department_ids->random();
+           
+            
             UserDepartment::create([
                 'user_id' => $user->id,
-                'department_id' => $department_ids->random(),
+                'department_id' => $randomDepartment,
+               
             ]);
         }
-    
     }
 }
