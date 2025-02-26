@@ -222,10 +222,18 @@ td {
     margin: 5px;
     padding: 10px 20px;
     border-radius: 7px;
+    opacity: 50%;
+}
+
+.btn-right button:hover{
+    opacity: 100%;
+   justify-content: end;
+    cursor: pointer;
 }
 
 .btn-left select {
     padding: 10px;
     margin: 5px;
     border-radius: 7px;
+    cursor: pointer;
 }

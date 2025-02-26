@@ -1,18 +1,35 @@
-<?php 
+<?php
 
 return [
-    'budget_types' => [
-        ['value' => 'Registration', 'label' => 'Registration'],
-        ['value' => 'Transportation', 'label' => 'Transportation'],
-        ['value' => 'Representation Allowance', 'label' => 'Representation Allowance'],
-        ['value' => 'Miscellaneous', 'label' => 'Miscellaneous'],
-      
-    ],
+    'developers' => [
+        [
+            'first_name' => 'Reinhard',
+            'last_name' => 'Esteban',
+            'middle_name' => 'Ugay',
+            'course' => 'BSIT-IV',
+            'fb_link' => 'm.me/reinhard.esteban'
+        ],
+        [
+            'first_name' => 'Mathew',
+            'last_name' => 'Carillo',
+            'middle_name' => 'Bulilan',
+            'course' => 'BSIT-IV',
+            'fb_link' => 'm.me/yeahw0ah'
+        ],
+        [
+            'first_name' => 'Christoper',
+            'last_name' => 'Sab',
+            'midde_name' => 'Seguirel',
+            'course' => 'BSIT-IV',
+            'fb_link' => 'm.me/christ.erst227635'
+        ],
 
-    'budget_charges' => [
-        ['value' => 'Department Fund', 'label' => 'Department Fund'],
-        ['value' => 'Departmental/Office Fund', 'label' => 'Departmental/Office Fund'],
-        ['value' => 'School Fund', 'label' => 'School Fund'],
-       
-    ],
+        [
+            'first_name' => 'John Meward',
+            'last_name' => 'Lanoy',
+            'middle_name' => 'Largo',
+            'course' => 'BSIT-IV',
+            'fb_link' => 'm.me/john.meward.lanoy.2024'
+        ],
+    ]
 ];

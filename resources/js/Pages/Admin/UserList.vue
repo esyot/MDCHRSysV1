@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     handleClick(user) {
-      Inertia.visit(`/user-list/${user.id}`);
+      Inertia.visit(`/users/user-list/${user.id}`);
     },
 
     toggleAddUserModal() {

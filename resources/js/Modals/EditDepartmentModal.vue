@@ -2,10 +2,10 @@
 import ConfirmationFormModal from "./ConfirmationFormModal.vue";
 import { Inertia } from "@inertiajs/inertia";
 export default {
-  emits: ["toggleEditRole"],
+  emits: ["toggleEditDepartment"],
   props: {
-    roleList: Array,
-    userRoles: Array,
+    departmentList: Array,
+    userDepartments: Array,
     user_id: String,
   },
   components: {
@@ -15,30 +15,32 @@ export default {
   data() {
     return {
       formData: {
-        roles: [],
+        departments: [],
       },
       isConfirmation: false,
     };
   },
   methods: {
-    selectedRole(id, input) {
-      if (this.formData.roles.includes(id)) {
-        const index = this.formData.roles.indexOf(id);
+    selectedDepartment(id, input) {
+      if (this.formData.departments.includes(id)) {
+        const index = this.formData.departments.indexOf(id);
         if (index !== -1) {
-          this.formData.roles.splice(index, 1);
+          this.formData.departments.splice(index, 1);
         }
-      } else if (!this.userRoles.includes(id) && input.checked) {
-        this.formData.roles.push(id);
+      } else if (!this.userDepartments.includes(id) && input.checked) {
+        this.formData.departments.push(id);
       }
+
+      console.log(this.formData.departments);
     },
 
     closeModal() {
-      this.$emit("toggleEditRole");
+      this.$emit("toggleEditDepartment");
     },
     submitForm() {
       this.toggleConfirmForm();
       this.closeModal();
-      Inertia.post(`/users/${this.user_id}/role-edit`, this.formData);
+      Inertia.post(`/users/${this.user_id}/department-edit`, this.formData);
     },
 
     toggleConfirmForm() {
@@ -47,10 +49,12 @@ export default {
   },
 
   mounted() {
-    const currentRoles = this.roleList.filter((role) =>
-      this.userRoles.includes(role.name)
+    const currentDepartments = this.departmentList.filter((department) =>
+      this.userDepartments.includes(department.acronym)
     );
-    this.formData.roles = currentRoles.map((role) => role.id);
+    this.formData.departments = currentDepartments.map(
+      (department) => department.department_id
+    );
   },
 };
 </script>
@@ -64,25 +68,26 @@ export default {
   <div class="modal" @click.self="closeModal">
     <div class="modal-content">
       <div class="modal-header">
-        <span>Edit Roles</span>
+        <span>Edit Departments</span>
         <i @click="closeModal">&times;</i>
       </div>
       <div class="input-group">
-        <label for="">Current Roles: </label>
-        <span class="role-desc">{{ userRoles.join(", ") }}</span>
+        <label for="">Current Departments: </label>
+        <span>{{ userDepartments.join(", ") }}</span>
       </div>
-
-      <div class="form-checkbox">
-        <label>Roles: </label>
-        <div v-for="role in roleList" :key="role.id">
+      <div class="form-subtitle">
+        <label>Departments: </label>
+      </div>
+      <div class="form-checkbox-items form-checkbox">
+        <div class="" v-for="department in departmentList" :key="department.id">
           <div class="checkbox-group">
             <input
               type="checkbox"
-              :value="role.id"
-              :checked="userRoles.includes(role.name)"
-              @change="selectedRole(role.id, $event.target)"
+              :value="department.id"
+              :checked="userDepartments.includes(department.acronym)"
+              @change="selectedDepartment(department.department_id, $event.target)"
             />
-            <span>{{ role.name }}</span>
+            <span>{{ department.department_name }} ({{ department.acronym }})</span>
           </div>
         </div>
       </div>
@@ -90,7 +95,7 @@ export default {
       <div class="buttons">
         <button @click="closeModal" class="close-btn">Close</button>
         <button
-          v-if="formData.roles.length != 0"
+          v-if="formData.departments.length != 0"
           @click="toggleConfirmForm()"
           class="update-btn"
         >
@@ -113,7 +118,7 @@ export default {
 
 .modal-content {
   background-color: #fff;
-  min-width: 300px;
+  margin: 5px;
 }
 .modal-header {
   display: flex;
@@ -169,8 +174,8 @@ export default {
   border: 1px solid #a0a0a0;
   box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
   width: auto;
-  gap: 0.3rem;
   padding: 10px;
+  gap: 0.3rem;
 }
 
 .checkbox-group:hover {
@@ -181,6 +186,7 @@ export default {
   cursor: pointer;
   scale: 1.5;
 }
+
 .checkbox-group label {
   font-weight: bold;
   margin-bottom: 5px;

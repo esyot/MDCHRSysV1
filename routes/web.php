@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
@@ -10,6 +11,8 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PersonalDetailController;
 use App\Http\Controllers\TravelFormController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserDepartmentController;
+use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Middleware\Check2WayVerification;
 use Illuminate\Support\Facades\Route;
@@ -50,9 +53,9 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::get('/forms/travel-form-preview', [TravelFormController::class, 'preview']);
 
         //userlist
-        Route::get('/user-list/{id}/evaluation-form', [UserController::class, 'userEvaluation'])->name('user.evaluation');
-        Route::get('/user-list/{id}', [UserController::class, 'userView'])->name('user.view');
-        Route::get('/user-list', [UserController::class, 'users'])->name('user.list');
+        Route::get('/users/user-list/{id}/evaluation-form', [UserController::class, 'userEvaluation'])->name('user.evaluation');
+        Route::get('/users/user-list/{id}', [UserController::class, 'userView'])->name('user.view');
+        Route::get('/users/user-list', [UserController::class, 'users'])->name('user.list');
 
         Route::post('/users/user-add', [UserController::class, 'userAdd'])->name('user.add');
 
@@ -77,13 +80,21 @@ Route::middleware([Check2WayVerification::class])->group(function () {
 
         Route::get('/departments/department-delete/{id}', [DepartmentController::class, 'delete']);
 
-        Route::post('/users/{useer_id}/role-edit', [UserController::class, 'userUpdateRole']);
+        Route::post('/users/{id}/role-edit', [UserRoleController::class, 'userUpdateRole']);
+        Route::post('/users/{id}/department-edit', [UserDepartmentController::class, 'userUpdateDepartment']);
+   
+   
+        Route::get('/users/analytics/', [UserController::class, 'analytics']);
+
+        Route::get('/about', [AboutController::class, 'index']);
     });
     });
 
     Route::get('/personal-data-sheet', function(){
         return view('forms.personalDataSheet');
     });
+
+   
 
 Route::post('/authentication-check', [AuthController::class, 'auth']);
 

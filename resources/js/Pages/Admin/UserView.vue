@@ -3,6 +3,7 @@ import Layout from "@/Layouts/Layout.vue";
 import PersonalDetails from "@/Pages/Admin/PersonalDetails.vue";
 import { Inertia } from "@inertiajs/inertia";
 import EditRoleModal from "@/Modals/EditRoleModal.vue";
+import EditDepartmentModal from "@/Modals/EditDepartmentModal.vue";
 
 export default {
   layout: Layout,
@@ -11,21 +12,77 @@ export default {
     userRoles: Array,
     personalDetails: Object,
     userDepartments: Array,
+    forms: Object,
     roles: {
       type: Array,
       default: () => [],
     },
     roleList: Array,
+    departmentList: Array,
   },
   data() {
     return {
       activeTab: localStorage.getItem("activeTab") || "overview",
       isEditRole: false,
+      isEditDepartment: false,
+      selectedFormType: "All",
+      selectedYear: "",
+      selectedFilter: "",
     };
+  },
+
+  components: {
+    PersonalDetails,
+    EditRoleModal,
+    EditDepartmentModal,
+  },
+  computed: {
+    filteredForms() {
+      let forms = this.forms;
+
+      if (this.selectedFormType !== "All") {
+        forms = forms.filter((form) => form.form_type === this.selectedFormType);
+      }
+
+      if (this.selectedYear) {
+        forms = forms.filter(
+          (form) =>
+            new Date(form.date_start).getFullYear() === parseInt(this.selectedYear)
+        );
+      }
+
+      if (this.selectedFilter) {
+        const now = new Date();
+        forms = forms.filter((form) => {
+          const formDate = new Date(form.date_start);
+          if (this.selectedFilter === "Annually") {
+            return formDate.getFullYear() === now.getFullYear();
+          } else if (this.selectedFilter === "Monthly") {
+            return (
+              formDate.getFullYear() === now.getFullYear() &&
+              formDate.getMonth() === now.getMonth()
+            );
+          } else if (this.selectedFilter === "Weekly") {
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(now.getDate() - 7);
+            return formDate >= oneWeekAgo && formDate <= now;
+          }
+          return true;
+        });
+      }
+
+      return forms;
+    },
+    availableYears() {
+      const years = new Set(
+        this.forms.map((form) => new Date(form.date_start).getFullYear())
+      );
+      return Array.from(years).sort((a, b) => b - a);
+    },
   },
   methods: {
     openEval() {
-      Inertia.visit(`/user-list/${this.personalDetails.id}/evaluation-form`);
+      Inertia.visit(`/users/user-list/${this.personalDetails.id}/evaluation-form`);
     },
     setActiveTab(tab) {
       this.activeTab = tab;
@@ -34,10 +91,9 @@ export default {
     toggleEditRole() {
       this.isEditRole = !this.isEditRole;
     },
-  },
-  components: {
-    PersonalDetails,
-    EditRoleModal,
+    toggleEditDepartment() {
+      this.isEditDepartment = !this.isEditDepartment;
+    },
   },
 };
 </script>
@@ -50,6 +106,14 @@ export default {
     :user_id="user_id"
     @toggleEditRole="toggleEditRole"
   ></EditRoleModal>
+
+  <EditDepartmentModal
+    v-if="isEditDepartment"
+    :userDepartments="userDepartments"
+    :departmentList="departmentList"
+    :user_id="user_id"
+    @toggleEditDepartment="toggleEditDepartment"
+  ></EditDepartmentModal>
   <nav>
     <span
       :class="{ active: activeTab === 'overview' }"
@@ -102,22 +166,50 @@ export default {
       </div>
       <div class="buttons">
         <div class="btn-left">
-          <select name="" id="">
-            <option value="" selected disabled>All Forms</option>
-            <option value="Travel Forms">Travel Forms</option>
-            <option value="Leave Forms">Leave Forms</option>
+          <select
+            v-model="selectedFormType"
+            title="Select type of forms to be displayed in the table below."
+          >
+            <option value="All">All Forms</option>
+            <option value="Travel Form">Travel Forms</option>
+            <option value="Leave Form">Leave Forms</option>
           </select>
-          <select name="" id="">
-            <option value="" selected disabled>Filter By:</option>
+          <select
+            v-model="selectedYear"
+            title="Select a year to be filtered in the table below."
+          >
+            <option value="" disabled>Select Year</option>
+            <option v-for="year in availableYears" :key="year" :value="year">
+              {{ year }}
+            </option>
+          </select>
+          <select v-model="selectedFilter" title="Filter the table">
+            <option value="" disabled>Filter By:</option>
             <option value="Annually">Annually</option>
             <option value="Monthly">Monthly</option>
             <option value="Weekly">Weekly</option>
           </select>
         </div>
         <div class="btn-right">
-          <button @click="toggleEditRole">Edit Role</button>
-          <button>History</button>
-          <button @click="openEval()">Evaluate</button>
+          <button
+            :title="`Edit role of  ${personalDetails.last_name}, ${personalDetails.first_name}`"
+            @click="toggleEditRole"
+          >
+            Edit Role
+          </button>
+          <button
+            :title="`Edit department of  ${personalDetails.last_name}, ${personalDetails.first_name}`"
+            @click="toggleEditDepartment"
+          >
+            Edit Department
+          </button>
+
+          <button
+            :title="`Add evaluation for  ${personalDetails.last_name}, ${personalDetails.first_name}`"
+            @click="openEval()"
+          >
+            Evaluate
+          </button>
         </div>
       </div>
       <div class="forms">
@@ -136,10 +228,16 @@ export default {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><span>Personal</span></td>
-              <td><span>12/12/2004</span></td>
-              <td><span>12/12/2004</span></td>
+            <tr v-for="form in filteredForms" :key="form.id">
+              <td>
+                <span>{{ form.form_type }}</span>
+              </td>
+              <td>
+                <span>{{ form.date_start }}</span>
+              </td>
+              <td>
+                <span>{{ form.date_end }}</span>
+              </td>
             </tr>
           </tbody>
         </table>
