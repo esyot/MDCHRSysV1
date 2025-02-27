@@ -26,8 +26,27 @@ export default {
       isEditRole: false,
       isEditDepartment: false,
       selectedFormType: "All",
-      selectedYear: "",
       selectedFilter: "",
+      form_selection: "",
+      currentYear: new Date().getFullYear(),
+      selectedYear: new Date().getFullYear(),
+      months: [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ],
+      month: "",
+      date_report: "",
+      week: "",
     };
   },
 
@@ -38,46 +57,65 @@ export default {
   },
   computed: {
     filteredForms() {
-      let forms = this.forms;
+      let filtered = this.forms;
 
-      if (this.selectedFormType !== "All") {
-        forms = forms.filter((form) => form.form_type === this.selectedFormType);
-      }
-
-      if (this.selectedYear) {
-        forms = forms.filter(
-          (form) =>
-            new Date(form.date_start).getFullYear() === parseInt(this.selectedYear)
-        );
-      }
-
-      if (this.selectedFilter) {
-        const now = new Date();
-        forms = forms.filter((form) => {
-          const formDate = new Date(form.date_start);
-          if (this.selectedFilter === "Annually") {
-            return formDate.getFullYear() === now.getFullYear();
-          } else if (this.selectedFilter === "Monthly") {
-            return (
-              formDate.getFullYear() === now.getFullYear() &&
-              formDate.getMonth() === now.getMonth()
-            );
-          } else if (this.selectedFilter === "Weekly") {
-            const oneWeekAgo = new Date();
-            oneWeekAgo.setDate(now.getDate() - 7);
-            return formDate >= oneWeekAgo && formDate <= now;
+      if (this.form_selection) {
+        filtered = filtered.filter((item) => {
+          if (this.form_selection === "travel") {
+            return item.form_type === "Travel Form";
+          } else if (this.form_selection === "leave") {
+            return item.form_type === "Leave Form";
+          } else {
+            return true;
           }
-          return true;
         });
       }
 
-      return forms;
+      if (this.selectedYear) {
+        filtered = filtered.filter((item) => {
+          const startYear = new Date(item.date_start).getFullYear();
+          const endYear = new Date(item.date_end).getFullYear();
+          return (
+            startYear === parseInt(this.selectedYear) ||
+            endYear === parseInt(this.selectedYear)
+          );
+        });
+      }
+
+      if (this.date_report && this.month) {
+        const monthIndex = this.months.indexOf(this.month);
+        filtered = filtered.filter((item) => {
+          const startMonth = new Date(item.date_start).getMonth();
+          const endMonth = new Date(item.date_end).getMonth();
+          return startMonth === monthIndex || endMonth === monthIndex;
+        });
+
+        if (this.date_report === "Weekly" && this.week) {
+          filtered = filtered.filter((item) => {
+            const startDate = new Date(item.date_start);
+            const endDate = new Date(item.date_end);
+            const startWeek = this.getWeekOfMonth(startDate);
+            const endWeek = this.getWeekOfMonth(endDate);
+            const startMonth = startDate.getMonth();
+            const endMonth = endDate.getMonth();
+            return (
+              (startWeek === parseInt(this.week) && startMonth === monthIndex) ||
+              (endWeek === parseInt(this.week) && endMonth === monthIndex)
+            );
+          });
+        }
+      }
+
+      return filtered;
     },
-    availableYears() {
-      const years = new Set(
-        this.forms.map((form) => new Date(form.date_start).getFullYear())
-      );
-      return Array.from(years).sort((a, b) => b - a);
+    years() {
+      const startYear = 2025;
+      const endYear = this.currentYear + 30;
+      const years = [];
+      for (let year = startYear; year <= endYear; year++) {
+        years.push(year);
+      }
+      return years;
     },
   },
   methods: {
@@ -93,6 +131,35 @@ export default {
     },
     toggleEditDepartment() {
       this.isEditDepartment = !this.isEditDepartment;
+    },
+    getWeekNumber(date) {
+      const tempDate = new Date(date.getTime());
+      tempDate.setMonth(0, 1);
+      tempDate.setHours(0, 0, 0, 0);
+
+      const startOfYear = tempDate;
+      const diff = date - startOfYear;
+
+      const millisecondsInWeek = 1000 * 60 * 60 * 24 * 7;
+
+      return Math.floor(diff / millisecondsInWeek) + 1;
+    },
+    formatDate(date) {
+      const convertedDate = new Date(date);
+      const options = {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      };
+      return convertedDate.toLocaleString("en-US", options);
+    },
+    getWeekOfMonth(date) {
+      const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+      const day = date.getDate();
+      return Math.ceil((day + firstDayOfMonth) / 7);
     },
   },
 };
@@ -179,15 +246,38 @@ export default {
             title="Select a year to be filtered in the table below."
           >
             <option value="" disabled>Select Year</option>
-            <option v-for="year in availableYears" :key="year" :value="year">
+            <option v-for="year in years" :key="year" :value="year">
               {{ year }}
             </option>
           </select>
-          <select v-model="selectedFilter" title="Filter the table">
-            <option value="" disabled>Filter By:</option>
-            <option value="Annually">Annually</option>
+          <select name="" id="" v-model="date_report">
+            <option value="" disabled selected>Select Filter</option>
+
+            <option value="">Annually</option>
             <option value="Monthly">Monthly</option>
             <option value="Weekly">Weekly</option>
+          </select>
+
+          <select
+            name=""
+            id=""
+            v-model="month"
+            v-if="date_report == 'Monthly' || date_report == 'Weekly'"
+          >
+            <option disabled selected value="">Select Month</option>
+            <option v-for="month in months" :key="month" :value="month">
+              {{ month }}
+            </option>
+          </select>
+
+          <select name="" id="" v-model="week" v-if="date_report == 'Weekly'">
+            <option value="" disabled selected>Select Week</option>
+            <option value="">All Weeks</option>
+            <option value="1">1st Week</option>
+            <option value="2">2nd Week</option>
+            <option value="3">3rd Week</option>
+            <option value="4">4th Week</option>
+            <option value="5">5th Week</option>
           </select>
         </div>
         <div class="btn-right">
@@ -228,15 +318,15 @@ export default {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="form in filteredForms" :key="form.id">
+            <tr v-for="form in filteredForms" :key="form.form_type">
               <td>
                 <span>{{ form.form_type }}</span>
               </td>
               <td>
-                <span>{{ form.date_start }}</span>
+                <span>{{ formatDate(form.date_start) }}</span>
               </td>
               <td>
-                <span>{{ form.date_end }}</span>
+                <span>{{ formatDate(form.date_end) }}</span>
               </td>
             </tr>
           </tbody>

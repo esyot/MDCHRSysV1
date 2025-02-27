@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
@@ -84,7 +85,7 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::post('/users/{id}/department-edit', [UserDepartmentController::class, 'userUpdateDepartment']);
    
    
-        Route::get('/users/analytics/', [UserController::class, 'analytics']);
+        Route::get('/users/analytics/', [AnalyticsController::class, 'index']);
 
         Route::get('/about', [AboutController::class, 'index']);
     });

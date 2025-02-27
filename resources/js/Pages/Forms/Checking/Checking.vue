@@ -19,6 +19,13 @@ export default {
       form_selection: this.selected ?? "all",
       isNavigating: false,
       formData: [],
+      statusMap: {
+        pending: { text: "Pending", icon: "loading", color: "" },
+        approved: { text: "Approved", icon: "fa-circle-check", color: "green" },
+        endorsed: { text: "Endorsed", icon: "fa-truck", color: "green" },
+        declined: { text: "Declined", icon: "fa-circle-xmark", color: "red" },
+        recommended: { text: "Recommended", icon: "fa-handshake", color: "green" },
+      },
     };
   },
   components: {
@@ -150,17 +157,21 @@ export default {
             </td>
             <td>{{ form.form_type }}</td>
             <td class="td-status">
-              <img
-                v-if="form.status == 'pending'"
-                class="loading"
-                src="/public/assets/loader/loading.gif"
-                alt=""
-              />
-              <i v-if="form.status == 'approved'" class="green fas fa-circle-check"></i>
-              <i v-if="form.status == 'endorsed'" class="green fa-solid fa-truck"></i>
-              <i v-if="form.status == 'declined'" class="red fas fa-circle-xmark"></i>
-              <i v-if="form.status == 'recommended'" class="green fas fa-handshake"></i>
-              <span>{{ form.status }}</span>
+              <div class="status-item" v-if="statusMap[form.status]">
+                <span>{{ statusMap[form.status].text }} </span>
+                <i
+                  v-if="statusMap[form.status].icon !== 'loading'"
+                  :class="`fas ${statusMap[form.status].icon} ${
+                    statusMap[form.status].color
+                  }`"
+                ></i>
+                <img
+                  v-else
+                  class="loading"
+                  src="/public/assets/loader/loading.gif"
+                  alt=""
+                />
+              </div>
             </td>
 
             <td v-if="form.endorser">

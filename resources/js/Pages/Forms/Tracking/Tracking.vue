@@ -2,7 +2,7 @@
 import Layout from "@/Layouts/Layout.vue";
 import { Inertia } from "@inertiajs/inertia";
 import Modal from "@/Pages/Forms/Tracking/TrackingModal.vue";
-import DeleteModal from "@/Modals/DeleteModal.vue";
+import DeleteModal from "@/Modals/ConfirmationDeleteModal.vue";
 export default {
   layout: Layout,
   props: {
@@ -16,6 +16,27 @@ export default {
       selected_type: null,
       isConfirmation: false,
       isDelete: false,
+      statusMap: {
+        pending: { text: "Pending", icon: "loading", color: "" },
+        approved: { text: "Approved", icon: "fa-circle-check", color: "green" },
+        dean_approved: {
+          text: "Approved by Dean",
+          icon: "fa-circle-check",
+          color: "green",
+        },
+        hr_approved: { text: "Approved by HR", icon: "fa-circle-check", color: "green" },
+        vp_admin_approved: {
+          text: "Approved by VP_Admin",
+          icon: "fa-circle-check",
+          color: "green",
+        },
+        vp_acad_approved: {
+          text: "Approved by VP_Acad",
+          icon: "fa-circle-check",
+          color: "green",
+        },
+        declined: { text: "Declined", icon: "fa-circle-xmark", color: "red" },
+      },
     };
   },
   components: {
@@ -102,26 +123,27 @@ export default {
         </thead>
 
         <tbody>
-          <tr v-for="form in forms" :key="form.id">
+          <tr
+            v-for="form in forms"
+            :key="form.id"
+            @click="toggleFormModal(form.id, form.form_type)"
+          >
             <td>{{ form.form_type }}</td>
             <td class="td-status">
-              <div class="status-item" v-if="form.status == 'pending'">
-                <span>Pending </span>
-                <img class="loading" src="/public/assets/loader/loading.gif" alt="" />
-              </div>
-              <div class="status-item" v-if="form.status == 'approved'">
-                <span>Approved </span>
-                <i class="green fas fa-circle-check"></i>
-              </div>
-
-              <div class="status-item" v-if="form.status == 'declined'">
-                <span>Declined </span>
-                <i class="fas fa-circle-xmark red"></i>
-              </div>
-
-              <div class="status-item" v-if="form.status == 'finance_approved'">
-                <span>Approved by Finance </span>
-                <i class="green fas fa-circle-check"></i>
+              <div class="status-item" v-if="statusMap[form.status]">
+                <span>{{ statusMap[form.status].text }} </span>
+                <i
+                  v-if="statusMap[form.status].icon !== 'loading'"
+                  :class="`fas ${statusMap[form.status].icon} ${
+                    statusMap[form.status].color
+                  }`"
+                ></i>
+                <img
+                  v-else
+                  class="loading"
+                  src="/public/assets/loader/loading.gif"
+                  alt=""
+                />
               </div>
             </td>
             <td>{{ formatDate(form.created_at) }}</td>

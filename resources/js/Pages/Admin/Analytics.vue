@@ -2,6 +2,148 @@
 import Layout from "@/Layouts/Layout.vue";
 export default {
   layout: Layout,
+  props: {
+    forms: Object,
+    user: Object,
+  },
+  data() {
+    return {
+      form_selection: "",
+      currentYear: new Date().getFullYear(),
+      selectedYear: new Date().getFullYear(),
+      months: [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ],
+      month: "",
+      date_report: "",
+      week: "",
+      search_value: "",
+    };
+  },
+  computed: {
+    filteredForms() {
+      let filtered = this.forms;
+
+      if (this.form_selection) {
+        filtered = filtered.filter((item) => {
+          if (this.form_selection === "travel") {
+            return item.form_type === "Travel Form";
+          } else if (this.form_selection === "leave") {
+            return item.form_type === "Leave Form";
+          } else {
+            return true;
+          }
+        });
+      }
+
+      if (this.selectedYear) {
+        filtered = filtered.filter((item) => {
+          const startYear = new Date(item.date_start).getFullYear();
+          const endYear = new Date(item.date_end).getFullYear();
+          return (
+            startYear === parseInt(this.selectedYear) ||
+            endYear === parseInt(this.selectedYear)
+          );
+        });
+      }
+
+      if (this.date_report && this.month) {
+        const monthIndex = this.months.indexOf(this.month);
+        filtered = filtered.filter((item) => {
+          const startMonth = new Date(item.date_start).getMonth();
+          const endMonth = new Date(item.date_end).getMonth();
+          return startMonth === monthIndex || endMonth === monthIndex;
+        });
+
+        if (this.date_report === "Weekly" && this.week) {
+          filtered = filtered.filter((item) => {
+            const startDate = new Date(item.date_start);
+            const endDate = new Date(item.date_end);
+            const startWeek = this.getWeekOfMonth(startDate);
+            const endWeek = this.getWeekOfMonth(endDate);
+
+            const startMonth = startDate.getMonth();
+            const endMonth = endDate.getMonth();
+
+            return (
+              (startWeek === parseInt(this.week) && startMonth === monthIndex) ||
+              (endWeek === parseInt(this.week) && endMonth === monthIndex)
+            );
+          });
+        }
+      }
+
+      if (this.search_value) {
+        filtered = filtered.filter(
+          (item) =>
+            item.user.first_name
+              .toLowerCase()
+              .includes(this.search_value.toLowerCase()) ||
+            item.user.last_name.toLowerCase().includes(this.search_value.toLowerCase()) ||
+            item.user.middle_name.toLowerCase().includes(this.search_value.toLowerCase())
+        );
+      }
+
+      return filtered;
+    },
+
+    years() {
+      const startYear = 2025;
+      const endYear = this.currentYear + 30;
+      const years = [];
+      for (let year = startYear; year <= endYear; year++) {
+        years.push(year);
+      }
+      return years;
+    },
+  },
+  methods: {
+    getWeekNumber(date) {
+      const tempDate = new Date(date.getTime());
+      tempDate.setMonth(0, 1);
+      tempDate.setHours(0, 0, 0, 0);
+
+      const startOfYear = tempDate;
+      const diff = date - startOfYear;
+
+      const millisecondsInWeek = 1000 * 60 * 60 * 24 * 7;
+
+      return Math.floor(diff / millisecondsInWeek) + 1;
+    },
+    formatDate(date) {
+      const convertedDate = new Date(date);
+      const options = {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      };
+      return convertedDate.toLocaleString("en-US", options);
+    },
+    getWeekOfMonth(date) {
+      const tempDate = new Date(date.getTime());
+      tempDate.setDate(1);
+      const startOfMonth = tempDate.getDay();
+      const diff = date.getDate() + startOfMonth - 1;
+      return Math.ceil(diff / 7);
+    },
+    clearSearchBar() {
+      this.search_value = null;
+    },
+  },
 };
 </script>
 
@@ -10,44 +152,51 @@ export default {
     <div class="header-item">
       <div class="search-bar">
         <i class="fas fa-magnifying-glass"></i>
-        <input type="text" placeholder="Search a user" />
+        <input type="text" placeholder="Search a user" v-model="search_value" />
+        <span
+          v-if="search_value"
+          @click="clearSearchBar"
+          class="fa-solid fa-circle-xmark clear-icon"
+        ></span>
       </div>
-      <select name="" id="">
-        <option
-          disabled
-          selected
-          value="
-    "
-        >
-          Select Year
-        </option>
+      <select name="" id="" v-model="selectedYear">
+        <option disabled selected value="">Select Year</option>
+        <option value="">All</option>
+        <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
       </select>
-      <select name="" id="">
-        <option
-          disabled
-          selected
-          value="
-    "
-        >
-          Select Type of form
-        </option>
-        <option value="">Leave Forms</option>
-        <option value="">Travel Forms</option>
+      <select name="" id="" v-model="form_selection">
+        <option value="" disabled selected>Select Type of form</option>
+        <option value="all">All Forms</option>
+        <option value="leave">Leave Forms</option>
+        <option value="travel">Travel Forms</option>
       </select>
 
-      <select name="" id="">
-        <option
-          disabled
-          selected
-          value="
-    "
-        >
-          Select Filter
-        </option>
+      <select name="" id="" v-model="date_report">
+        <option value="" disabled selected>Select Filter</option>
 
         <option value="">Annually</option>
-        <option value="">Monthly</option>
-        <option value="">Weekly</option>
+        <option value="Monthly">Monthly</option>
+        <option value="Weekly">Weekly</option>
+      </select>
+
+      <select
+        name=""
+        id=""
+        v-model="month"
+        v-if="date_report == 'Monthly' || date_report == 'Weekly'"
+      >
+        <option disabled selected value="">Select Month</option>
+        <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
+      </select>
+
+      <select name="" id="" v-model="week" v-if="date_report == 'Weekly'">
+        <option value="" disabled selected>Select Week</option>
+        <option value="">All Weeks</option>
+        <option value="1">1st Week</option>
+        <option value="2">2nd Week</option>
+        <option value="3">3rd Week</option>
+        <option value="4">4th Week</option>
+        <option value="5">5th Week</option>
       </select>
     </div>
 
@@ -58,10 +207,11 @@ export default {
     </div>
   </header>
 
-  <section>
+  <section class="table-container">
     <table>
       <thead>
         <tr>
+          <th>Name</th>
           <th>Form type</th>
           <th>Date Start</th>
           <th>Date End</th>
@@ -69,11 +219,27 @@ export default {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Travel Form</td>
-          <td>12/12/12</td>
-          <td>12/12/12</td>
-          <td><i class="fas fa-eye"></i></td>
+        <tr
+          v-for="form in filteredForms"
+          :key="form.form_type"
+          @click="toggleFormModal(form.id, form.form_type, form)"
+        >
+          <td>
+            {{ form.user.last_name }}, {{ form.user.first_name }}
+            {{ form.user.middle_name[0] }}.
+          </td>
+          <td>{{ form.form_type }}</td>
+
+          <td>{{ formatDate(form.date_start) }}</td>
+          <td>{{ formatDate(form.date_end) }}</td>
+          <td class="td-action">
+            <button
+              @click="toggleFormModal(form.id, form.form_type, form)"
+              class="edit-btn"
+            >
+              <i class="fas fa-eye"></i>
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -135,6 +301,16 @@ export default {
   font-size: 20px;
 }
 
+.table-container {
+  height: 80vh;
+  overflow-y: auto;
+}
+
+.table-container table thead {
+  position: sticky;
+  top: 0;
+}
+
 table {
   width: 100%;
   background-color: #fff;
@@ -153,5 +329,15 @@ table thead th {
 table tbody tr td {
   padding: 10px;
   text-align: center;
+}
+
+.clear-icon {
+  color: red;
+  opacity: 50%;
+}
+
+.clear-icon:hover {
+  opacity: 100%;
+  cursor: pointer;
 }
 </style>

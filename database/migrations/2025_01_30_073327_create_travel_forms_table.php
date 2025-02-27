@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('date_end');
             $table->text('description');
             $table->string('place');
-            $table->string('purpose');
+            $table->text('purpose');
             $table->string('contact_person');
             $table->string('contact_person_no');
             $table->decimal('amount', 10,2);
