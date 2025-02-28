@@ -241,6 +241,40 @@ export default {
 </script>
 
 <style scoped>
+.title-container {
+  border-bottom: #cecece 1px solid;
+  background-color: #ebebeb;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.title {
+  font-size: 14px;
+  padding: 10px;
+  font-weight: bold;
+}
+.form-group {
+  margin-bottom: 15px;
+  padding: 10px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 12px;
+}
+
+.form-group input {
+  width: 96%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
 .form button {
   border: none;
   float: right;
