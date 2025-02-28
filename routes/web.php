@@ -26,21 +26,21 @@ Route::middleware([Check2WayVerification::class])->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/account', [AccountController::class, 'index'])->name('account');
-    
+
         Route::post('/personal-details-update-submit', [PersonalDetailController::class, 'updatePersonalDetails']);
-    
+
         Route::get('/forms/travel-form-request', [TravelFormController::class, 'index'])->name('forms.travel-form');
         Route::get('/forms/leave-form-request', [LeaveFormController::class, 'index']);
-    
+
         Route::post('/upload-cropped-profile-pic', [UserController::class, 'updateProfilePicture']);
-    
-    
+
+
         Route::get('/success-session-remove', function(){
             session()->forget('success');
             return redirect()->back();
         });
         Route::post('/authentication-check', [AuthController::class, 'auth']);
-    
+
         Route::post('/user-account-setting-update', [UserController::class, 'update']);
 
         Route::post('/user-account-feature-update', [AccountController::class,'accountFeatureUpdate']);
@@ -54,12 +54,24 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::get('/forms/tracking', [FormsController::class, 'index'])->name('forms.tracking');
 
         Route::get('/leave-form-preview', [LeaveFormController::class, 'preview'])->name('forms.leave-form-preview');
-        
+
     });
-    }); 
+    });
 
     Route::get('/personal-data-sheet', function(){
         return view('forms.personalDataSheet');
+    });
+
+    Route::get('/personal-data-sheet2', function(){
+        return view('forms.page2');
+    });
+
+    Route::get('/personal-data-sheet3', function(){
+        return view('forms.page3');
+    });
+
+    Route::get('/personal-data-sheet4', function(){
+        return view('forms.page4');
     });
 
 Route::post('/authentication-check', [AuthController::class, 'auth']);
