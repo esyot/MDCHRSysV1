@@ -180,10 +180,10 @@
         <a
           href="/account/personal-data-sheet/preview"
           target="_blank"
-          title="Click to download personal data"
+          title="Click to preview personal data"
           class="download-btn"
         >
-          <i class="fas fa-download"></i
+          <i class="fas fa-eye"></i
         ></a>
       </div>
     </div>
