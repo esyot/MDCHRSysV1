@@ -509,4 +509,16 @@ class PersonalDetailController extends Controller
         return redirect()->back();
 
     }
+
+    public function preview(){
+
+        $this->globalVariables();
+        $user = $this->user;
+        $roles = $this->roles;
+
+        return inertia('Pages/Account/Components/Printable/Printable', [
+            'user' => $user,
+            'roles' => $roles,
+        ]);
+    }
 }
