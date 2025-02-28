@@ -7,7 +7,9 @@ use App\Models\Substitute;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 
 class LeaveFormController extends Controller
@@ -43,66 +45,76 @@ class LeaveFormController extends Controller
         ]);
     }
 
-    public function preview(Request $request)
-    {
-       
-        $formData = $request->formData;
+    public function submit(Request $request)
+    {        
+        $formData = $request->toArray();
 
+        unset($formData['medical_certificate']); 
+        
+        unset($formData['substitutes']);
+
+        unset($formData['substitute']);
+        
         $formData['user_id'] = Auth::user()->id;
 
         $leave_form = LeaveForm::create($formData);
 
-        $substitutes = $request->input('substitutes');
-        $groupedSubstitutes = [];
-        $currentGroup = [];
+        if ($request->hasFile('medical_certificate')) {
+           
+            $file = $request->file('medical_certificate');
+            
+           
+            $path = 'public/users/medical_certificates';
+
+            if (!Storage::exists($path)) {
+                Storage::makeDirectory($path, 0775, true);
+            }
+            
+            if (!$file->isValid()) {
+                return redirect()->back()->with('error', 'Invalid file uploaded.');
+            }
+        
+            $extension = $file->getClientOriginalExtension();
     
-        foreach ($substitutes as $item) {
-            if (isset($item['subject'])) {
+            $dateTimeNow = Carbon::now()->format('Y-m-d-H-i-s');
+            $fileName = $leave_form->user_id . '-' . $dateTimeNow . '.' . $extension;
+    
+            Storage::putFileAs($path, $file, $fileName);
+    
+            $leave_form->update([
+                'medical_certificate' => $fileName,
+            ]);
+        }
+
+        if ($request['substitute'] !== 'true') {
+            unset($request['substitutes']);
+        }
+    
+        if ($request->substitutes) {
+          
+            $array = $request->substitutes;
+
+            $substitutes = json_decode($array, true);
+        
+               foreach($substitutes as $sub){
+
+                $sub['leave_form_id'] = $leave_form->id;
                 
-                if (!empty($currentGroup)) {
-                    $groupedSubstitutes[] = $currentGroup;
-                    $currentGroup = [];
-                }
-                $currentGroup['subject'] = $item['subject'];
-            } elseif (isset($item['user_id'])) {
-                $currentGroup['user_id'] = $item['user_id'];
-            } elseif (isset($item['teacher'])) {
-                $currentGroup['teacher'] = $item['teacher'];
-            } elseif (isset($item['days'])) {
-               
-                if (!isset($currentGroup['days'])) {
-                    $currentGroup['days'] = [];
-                }
-                $currentGroup['days'] = array_merge($currentGroup['days'], $item['days']);
-            } elseif (isset($item['start_time'])) {
-                $currentGroup['start_time'] = $item['start_time'];
-            } elseif (isset($item['end_time'])) {
-                $currentGroup['end_time'] = $item['end_time'];
-            }
-
-            if (isset($currentGroup['subject'], $currentGroup['user_id'], $currentGroup['teacher'], $currentGroup['days'], $currentGroup['start_time'], $currentGroup['end_time'])) {
-                $groupedSubstitutes[] = $currentGroup;
-                $currentGroup = []; 
-            }
-        }
+                unset($sub['days']);
+                unset($sub['teacher']);
     
-       
-        if (!empty($currentGroup)) {
-            $groupedSubstitutes[] = $currentGroup;
-        }
+               
+                $days = isset($sub['days']) && is_array($sub['days']) ? implode(', ', $sub['days']) : '';
 
-        
-        foreach ($groupedSubstitutes as $substitute) {
-            $sub = Arr::except($substitute, ['teacher']);
-        
-            if (is_array($sub['days'])) {
-                $sub['days'] = implode(',', $sub['days']);
+                $sub['days'] = $days;
+              
+                Substitute::create($sub);
+
+
+               }
+              
             }
-            
-            $sub['leave_form_id'] = $leave_form->id;
-            
-            Substitute::create($sub);
-        }
+        
     
         return redirect()->route('forms.tracking')->with('success', 'Leave request submitted successfully!.');
             

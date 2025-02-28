@@ -11,8 +11,13 @@ class User extends Authenticatable
 {
     use HasFactory, HasRoles, Notifiable;
 
-    protected $guarded = ['password'];
+   protected $guarded = [];
 
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class, 'user_departments');
+    }
+   
     public function personalDetails()
     {
         return $this->hasOne(PersonalDetail::class);
@@ -58,7 +63,7 @@ class User extends Authenticatable
         return $this->hasMany(UserSchoolCurricular::class);
     }
     public function userOtherDetails(){
-        return $this->hasMany(UserOtherDetail::class);
+        return $this->hasOne(UserOtherDetail::class);
     }
     public function userReferences(){
         return $this->hasMany(UserReference::class);
@@ -69,5 +74,13 @@ class User extends Authenticatable
 
     public function substitute(){
         return $this->hasMany(Substitute::class);
+    }
+
+    public function travelForm(){
+        return $this->hasOne(TravelForm::class);
+    }
+
+    public function leaveForm(){
+        return $this->hasOne(LeaveForm::class);
     }
 }

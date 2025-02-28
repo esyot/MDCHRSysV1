@@ -49,5 +49,5 @@ export default {
 </script>
 
 <style scoped>
-@import "./footer.css";
+@import "./css/footer.css";
 </style>

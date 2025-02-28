@@ -1,15 +1,18 @@
+<style scoped>
+@import "./css/form.css";
+</style>
+
 <template>
   <div class="personal-details-items" v-if="editMode">
     <div class="title-container">
-      <span class="title">REFERENCES FORM</span>
-    </div>
-    <div class="form-control">
-      <span class="italic"
+      <span class="title">REFERENCES FORM </span>
+      <small
         >(Note: Person not related by consanguinity or affinity to
-        applicant/appointee.)</span
+        applicant/appointee.)</small
       >
     </div>
-    <div>
+
+    <div class="add-field-btn">
       <button @click="addField">Add Field</button>
     </div>
 
@@ -39,6 +42,7 @@
           id="house_no"
           v-model="userRef.address.house_no"
           class="form-control"
+          placeholder="eg., 123"
           @input="handleFieldFocus(`user_references`)"
         />
       </div>
@@ -51,6 +55,7 @@
           id="street"
           v-model="userRef.address.street"
           class="form-control"
+          placeholder="eg., Joselle Street"
           @input="handleFieldFocus(`user_references`)"
         />
       </div>
@@ -63,6 +68,7 @@
           id="subdv"
           v-model="userRef.address.subdv"
           class="form-control"
+          placeholder="eg., Reinhard Exclusive Subdivision"
           @input="handleFieldFocus(`user_references`)"
         />
       </div>
@@ -75,6 +81,7 @@
           id="brgy"
           v-model="userRef.address.brgy"
           class="form-control"
+          placeholder="eg., Ilijan Sur"
           @input="handleFieldFocus(`user_references`)"
         />
       </div>
@@ -87,6 +94,7 @@
           id="municipality"
           v-model="userRef.address.municipality"
           class="form-control"
+          placeholder="eg., Tubigon"
           @input="handleFieldFocus(`user_references`)"
         />
       </div>
@@ -99,6 +107,7 @@
           id="province"
           v-model="userRef.address.province"
           class="form-control"
+          placeholder="eg., Bohol"
           @input="handleFieldFocus(`user_references`)"
         />
       </div>
@@ -111,6 +120,7 @@
           id="zip_code"
           v-model="userRef.address.zip_code"
           class="form-control"
+          placeholder="eg., 6329"
           @input="handleFieldFocus(`user_references`)"
         />
       </div>
@@ -127,6 +137,23 @@
           @input="handleFieldFocus(`user_references`)"
         />
       </div>
+      <button
+        v-if="
+          userRef.name == '' &&
+          userRef.contact_no == '' &&
+          userRef.address.house_no == '' &&
+          userRef.address.street == '' &&
+          userRef.address.subdv == '' &&
+          userRef.address.brgy == '' &&
+          userRef.address.municipality == '' &&
+          userRef.address.province == '' &&
+          userRef.address.zip_code == ''
+        "
+        @click="removeField(index)"
+        class="remove-btn"
+      >
+        Remove
+      </button>
       <hr />
     </div>
   </div>
@@ -155,7 +182,7 @@
 
 <script>
 export default {
-  emits: ["update-user-details"],
+  emits: ["track-touched-field", "update-user-details"],
   props: {
     userDetails: Object,
     editMode: Boolean,
@@ -186,6 +213,10 @@ export default {
         },
       });
     },
+
+    removeField(index) {
+      this.userDetails.user_references.splice(index, 1);
+    },
   },
   watch: {
     personalDetails: {
@@ -197,10 +228,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-.italic {
-  font-style: italic;
-  font-size: 12px;
-  margin-left: 20px;
-}
-</style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="showModal" class="modal">
+    <div v-if="showModal" class="modal" @click.self="closeModal">
       <div class="modal-content">
         <div class="modal-header">
           <label for="">{{ !imageUrl ? "Upload Image" : "Crop image" }}</label>
@@ -127,97 +127,5 @@ export default {
 </script>
 
 <style scoped>
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 10px;
-  padding: 3px;
-}
-
-.modal-header label {
-  padding: 5px;
-  font-size: 22px;
-  font-weight: bold;
-}
-.modal-header span {
-  font-size: 24px;
-  font-weight: bold;
-  padding-right: 5px;
-  cursor: pointer;
-  opacity: 50%;
-}
-
-.modal-header span:hover {
-  opacity: 100;
-}
-.buttons {
-  display: flex;
-  justify-content: end;
-  padding: 10px;
-  gap: 0.3rem;
-}
-.modal {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  z-index: 10;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.modal-content {
-  background-color: #fff;
-  border-radius: 8px;
-  width: 80%;
-  max-width: 600px;
-}
-
-.modal-content-items {
-  padding: 10px;
-}
-
-.close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 28px;
-  cursor: pointer;
-}
-
-.buttons .cancel-btn {
-  background-color: rgb(223, 50, 50);
-}
-button {
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.preview-container {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.cropped-preview {
-  max-width: 100%;
-  max-height: 300px;
-  margin-top: 10px;
-}
+@import "./css/cropper.css";
 </style>

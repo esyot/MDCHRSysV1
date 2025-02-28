@@ -502,7 +502,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .modal {
   display: none;
   position: fixed;
@@ -510,7 +510,7 @@ export default {
   z-index: 9;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.3);
+  animation: popUp 0.3s ease-in-out forwards, increaseOpacity 2s 0.3s forwards;
 }
 .modal-content {
   background-color: #fff;
@@ -734,5 +734,29 @@ input:checked + .slider:before {
 .submit-btn {
   display: flex;
   justify-content: end;
+}
+
+.add-field-btn {
+  margin: 10px;
+}
+
+.add-field-btn button {
+  padding: 10px 14px 10px 14px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  opacity: 75%;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+}
+
+.add-field-btn button:hover {
+  opacity: 100%;
+  cursor: pointer;
+}
+
+.select-field {
+  padding: 10px;
+  border-radius: 5px;
 }
 </style>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
+use App\Models\Substitute;
 use App\Models\TravelForm;
 use App\Models\User;
 use App\Models\UserDepartment;
@@ -18,6 +19,8 @@ class TravelFormController extends Controller
         $this->globalVariables();
         $roles = $this->roles;
 
+        $user = $this->user;
+
         $personalDetails = User::with([
             'personalDetails',
             'personalDetails.permanentAddress',
@@ -27,13 +30,20 @@ class TravelFormController extends Controller
             ->where('users.id', Auth::user()->id)
             ->first();
 
+            $users = User::whereNot('id', $user->id)->select([
+                'id',
+                'first_name',
+                'middle_name',
+                'last_name'
+            ])->get();
 
+           
         $budgetTypes = config('local_variables.budget_types');
         $budgetCharges = config('local_variables.budget_charges');
 
         return inertia('Pages/Forms/TravelForm/TravelForm', [
-
-            'user' => Auth::user(),
+            'user' => $user,
+            'users' => $users,
             'roles' => $roles,
             'personalDetails' => $personalDetails->toArray(),
             'budgetTypes' =>  $budgetTypes,
@@ -45,76 +55,47 @@ class TravelFormController extends Controller
         ]);
     }
 
-    public function preview(Request $request ){
-     
-        $request->validate([
-            'date_start' => 'required|date',
-            'date_end' => 'required|date|after_or_equal:date_start',
-            'place' => 'required|string|max:255',
-            'purpose' => 'required|string|max:255',
-            'contact_person' => 'required|string|max:255',
-            'contact_no' => 'nullable|string|max:255',
-            'description' => 'required|string',
-            'budget_type' => 'required|string|max:255',
-            'budget_charged_to' => 'required|string|max:255',
-            'amount' => 'required|numeric|min:0', 
-        ]);
-
-        $user = Auth::user()->only(['first_name', 'last_name', 'middle_name']);
-
-        $request->merge($user);
-        $request->merge([
-            'user_id'=>Auth::user()->id
-        ]);
-
-       $departments = Department::whereIn('id', UserDepartment::where('user_id', auth()
-            ->id())
-            ->pluck('id'))
-            ->get();
-
-        
-        $request->merge([
-            'departments' => $departments->toArray()
-        ]);
-
-        $request->merge(['status'=>null]);
-
-        $this->globalVariables();
-        $roles = $this->roles;
-        
       
-        return inertia('Pages/Forms/TravelForm/TravelFormPreview', [
-            'formData' => $request,
-            'roles' =>  $roles
-        ]);
-        
-    }
-
-   
-
     public function submit(Request $request){
 
-            $travelForm = TravelForm::create($request->only([
-                'user_id',
-                'date_start',
-                'date_end',
-                'description',
-                'place',
-                'purpose',
-                'budget_type',
-                'budget_charged_to',
-                'contact_person',
-                'contact_person_no',
-                'amount',
-                'filing_date',
-            ]));
+        $formData = $request->formData;
 
-            if($travelForm){
-                return redirect()->route('forms.tracking')->with('success', 'Travel request submitted successfully!.');
-            }else{
-                return redirect()->back()->with('error', 'Travel request submission failed!.');
-            }
-        }
+        $formData['user_id'] = Auth::user()->id;
+
+        $travelForm = TravelForm::create($formData);
+
+      
+        if ($request->substitutes) {
+          
+            $array = $request->substitutes;
+
+           
+
+            $substitutes = json_decode($array, true);
         
+               foreach($substitutes as $sub){
+
+                $sub['travel_form_id'] = $travelForm->id;
+               
+
+                unset($sub['days']);
+                unset($sub['teacher']);
     
+               
+                $days = isset($sub['days']) && is_array($sub['days']) ? implode(', ', $sub['days']) : '';
+
+                $sub['days'] = $days;
+              
+                Substitute::create($sub);
+               }
+
+        }
+              
+        if($travelForm){
+            return redirect()->route('forms.tracking')->with('success', 'Travel request submitted successfully!.');
+        }else{
+            return redirect()->back()->with('error', 'Travel request submission failed!.');
+        }
+    }
+           
 }

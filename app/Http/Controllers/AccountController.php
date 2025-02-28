@@ -14,7 +14,8 @@ class AccountController extends Controller
 
         $this->globalVariables();
         $roles = $this->roles;
-
+        $user = $this->user;
+        
         $personalDetails = User::with([
             'personalDetails',
             'personalDetails.permanentAddress',
@@ -35,15 +36,12 @@ class AccountController extends Controller
             'userReferences',
             'userReferences.address',
             'userValidIds',
+            
 
         ])
             ->where('users.id', Auth::user()->id)
             ->first();
 
-
-           
-
-        $user = User::find(Auth::user()->id);
 
         $auth = Session::get('authenticate');
 
@@ -55,9 +53,6 @@ class AccountController extends Controller
 
             $auth = false;
         }
-
-        
-
 
         return Inertia::render('Pages/Account/Account', [
             'user' =>  $user,

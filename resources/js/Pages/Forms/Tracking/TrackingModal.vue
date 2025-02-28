@@ -1,59 +1,11 @@
-<script>
-export default {
-  emits: ["toggleFormModal"],
-  props: {
-    forms: Object,
-    selected_id: String,
-    selected_type: String,
-  },
-  data() {
-    return {
-      modal_id: this.selected_id ?? null,
-      modal_type: this.selected_type ?? null,
-    };
-  },
-  watch: {
-    selected_id(newVal) {
-      this.modal_id = newVal;
-    },
-
-    selected_type(newVal, oldVal) {
-      this.modal_type = newVal ?? oldVal;
-    },
-    modal_id(newVal, oldVal) {
-      if (oldVal) {
-        const modalId = `modal-${this.modal_type
-          .toLowerCase()
-          .replace(" ", "-")}-${oldVal}`;
-
-        document.getElementById(modalId).classList.add("hidden");
-        document.getElementById(modalId).classList.remove("flex");
-      }
-
-      if (newVal) {
-        const modalId = `modal-${this.modal_type
-          .toLowerCase()
-          .replace(" ", "-")}-${newVal}`;
-
-        document.getElementById(modalId).classList.remove("hidden");
-        document.getElementById(modalId).classList.add("flex");
-      }
-    },
-  },
-  methods: {
-    closeFormModal() {
-      this.$emit("toggleFormModal", this.selected_id, this.selected_type);
-    },
-  },
-};
-</script>
-
+<script src="./js/tracking-modal.js"></script>
 <template>
   <div
     :id="'modal-travel-form-' + formData.id"
     class="hidden modal"
-    v-for="formData in forms"
+    v-for="formData in travelForms"
     :key="formData.id"
+    @click.self="closeFormModal"
   >
     <div class="modal-content">
       <div class="modal-header">
@@ -95,6 +47,16 @@ export default {
           <label>Short Description: </label>
           <span class="item">
             {{ formData.description }}
+          </span>
+        </div>
+      </div>
+      <div class="substitute-details">
+        <div class="substitute-item" v-if="formData.substitutes.length != 0">
+          <label for="">Substitutes:</label>
+          <span v-for="substitute in formData.substitutes">
+            {{ substitute.user.last_name }}, {{ substitute.user.first_name }} -
+            {{ substitute.subject }}
+            s
           </span>
         </div>
       </div>
@@ -198,8 +160,9 @@ export default {
   <div
     :id="'modal-leave-form-' + formData.id"
     class="hidden modal"
-    v-for="formData in forms"
-    :key="formData.id"
+    v-for="formData in leaveForms"
+    :key="formData"
+    @click.self="closeFormModal"
   >
     <div class="modal-content">
       <div class="modal-header">
@@ -216,80 +179,69 @@ export default {
           <text class="third">HUMAN RESOURCE OFFICE</text>
         </div>
       </div>
-      <h3 class="title">Travel Application Form</h3>
-      <span class="sub-title">Leave type</span>
+      <h3 class="title">Leave Application Form</h3>
+
       <div class="content-details">
+        <div class="input-group">
+          <label>Leave Type: </label>
+          <span>
+            {{ formData.leave_type }}
+          </span>
+        </div>
         <div class="row">
-          <div class="radio-group">
-            <label
-              ><input
-                type="radio"
-                :checked="formData.leave_type === 'Vacation'"
-                name="leave_type"
-              />
-              Vacation
-            </label>
-            <label
-              ><input
-                type="radio"
-                :checked="formData.leave_type == 'Maternity'"
-                name="leave_type"
-              />
-              Maternity</label
-            >
-            <label
-              ><input
-                type="radio"
-                :checked="formData.leave_type == 'Paternity'"
-                name="leave_type"
-              />
-              Paternity Leave</label
-            >
-            <label
-              ><input
-                type="radio"
-                :checked="formData.leave_type == 'Sick'"
-                name="leave_type"
-              />
-              Sick Leave</label
-            >
-            <label
-              ><input
-                type="radio"
-                :checked="formData.leave_type == 'Educational'"
-                name="leave_type"
-              />
-              Educational Leave</label
-            >
-            <label>
-              <input type="radio" name="leave_type" /> Others: <input type="text" />
-            </label>
+          <div class="input-group">
+            <label for="date_start">Start date: </label>
+
+            <input
+              type="text"
+              id="date_start"
+              v-model="formData.date_start"
+              name="date_start"
+            />
+
+            <label for="date_end">End date:</label>
+            <input
+              type="text"
+              id="date_end"
+              v-model="formData.date_end"
+              name="date_end"
+            />
           </div>
 
-          <div class="section-dates">
-            <div class="input-group">
-              <label for="date_start">Start date: </label>
+          <div class="sick-details">
+            <div class="input-group" v-if="formData.leave_type === 'Sick'">
+              <label for="">Place:</label>
+              <input type="text" v-model="formData.address" />
 
-              <input
-                type="text"
-                id="date_start"
-                v-model="formData.date_start"
-                name="date_start"
-              />
+              <label for="">Illness:</label>
+              <input type="text" v-model="formData.illness" />
+            </div>
 
-              <label for="date_end">End date:</label>
-              <input
-                type="text"
-                id="date_end"
-                v-model="formData.date_end"
-                name="date_end"
-              />
+            <div class="section-dates" v-if="formData.leave_type === 'Sick'">
+              <div class="input-group">
+                <label for="date_of_confinement">Date of Confinement: </label>
+
+                <input
+                  type="text"
+                  id="date_of_confinement"
+                  v-model="formData.date_of_confinement"
+                  name="date_start"
+                />
+
+                <label for="date_of_discharge">Date of Discharge:</label>
+                <input
+                  type="text"
+                  id="date_of_discharge"
+                  v-model="formData.date_of_discharge"
+                  name="date_end"
+                />
+              </div>
             </div>
           </div>
         </div>
-        <span class="sub-title">Details of Leave</span>
+        <span class="sub-title" v-if="formData.leave_type_option">Details of Leave</span>
         <div class="container-details">
-          <div class="radio-group" v-if="formData.leave_type == 'Vacation'">
+          <div class="radio-group" v-if="formData.leave_type_option == 'Vacation'">
             <span class="sub-title">Vacation:</span>
             <label
               ><input
@@ -301,7 +253,7 @@ export default {
             </label>
             <input type="text" v-model="formData.address" />
 
-            <label v-if="formData.leave_type == 'Abroad'"
+            <label v-if="formData.vacation_option == 'Abroad'"
               ><input
                 type="checkbox"
                 class="sub-checkbox"
@@ -318,18 +270,33 @@ export default {
           <div class="checkbox-group" v-if="formData.leave_type == 'Sick'">
             <span class="sub-title"> Incase of Sick Leave: </span>
             <label
-              ><input type="checkbox" class="sub-checkbox" name="sick_hospital" />
+              ><input
+                type="checkbox"
+                :checked="formData.convalescence_place == 'In Hospital'"
+                class="sub-checkbox"
+                name="sick_hospital"
+              />
               Hospital:
             </label>
             <label
-              ><input type="checkbox" class="sub-checkbox" name="sick_outpatient" />
-              Outpatient:
+              ><input
+                type="checkbox"
+                :checked="formData.convalescence_place == 'Out Patient'"
+                class="sub-checkbox"
+              />
+              Out Patient:
             </label>
             <label
-              ><input type="checkbox" class="sub-checkbox" name="sick_home" /> Home
-              Medication:
+              ><input
+                type="checkbox"
+                :checked="formData.convalescence_place == 'Home Medication'"
+                class="sub-checkbox"
+                name="sick_home"
+              />
+              Home Medication:
             </label>
           </div>
+
           <div class="checkbox-group" v-if="formData.leave_type == 'Educational'">
             <span class="sub-title">Incase of Educational Leave: </span>
             <label
@@ -356,114 +323,5 @@ export default {
 </template>
 
 <style scoped>
-@import "./tracking-modal.css";
-
-.section-user-info {
-  margin-bottom: 20px;
-}
-
-.section-user-info .user-info {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.user-info label {
-  font-size: 16px;
-}
-
-.content-details {
-  margin-top: 10px;
-  padding: 5px;
-}
-
-.content-details .row {
-  display: flex;
-  justify-content: space-between;
-}
-
-.radio-group {
-  pointer-events: none;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px;
-}
-
-.radio-group label {
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-}
-
-.radio-group input[type="checkbox"] {
-  margin-right: 10px;
-}
-
-.input-group {
-  margin-bottom: 10px;
-}
-
-.input-group label {
-  font-size: 16px;
-  margin-bottom: 5px;
-  display: block;
-}
-
-.input-group input {
-  padding: 5px;
-  font-size: 16px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.section-dates {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  padding-right: 10px;
-}
-
-.container-details {
-  display: flex;
-  padding: 10px;
-}
-
-.sub-checkbox {
-  margin-left: 15px;
-}
-
-.sub-checkbox + input[type="text"] {
-  margin-top: 5px;
-  padding: 5px;
-  font-size: 16px;
-}
-
-span.sub-title {
-  display: flex;
-  margin-top: 8px;
-  margin-left: 5px;
-  font-size: 16px;
-  font-weight: bold;
-  padding-inline: 5px;
-}
-
-.close-btn-container {
-  display: flex;
-  justify-content: center;
-  padding: 10px;
-}
-
-.close-btn-container button {
-  padding: 10px;
-  border: none;
-  background-color: rgb(173, 160, 160);
-  border-radius: 5px;
-  opacity: 75%;
-}
-
-.close-btn-container button:hover {
-  opacity: 100%;
-  cursor: pointer;
-}
+@import "./css/tracking-modal.css";
 </style>

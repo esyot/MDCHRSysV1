@@ -1,9 +1,13 @@
+<style scoped>
+@import "./css/form.css";
+</style>
+
 <template>
   <div class="personal-details-items" v-if="editMode">
     <div class="title-container">
       <span class="title">ADMINISTRATIVE POSITIONS HELD FORM</span>
     </div>
-    <div>
+    <div class="add-field-btn">
       <button @click="addField">Add Field</button>
     </div>
     <div
@@ -59,6 +63,18 @@
           @input="handleFieldFocus(`user_admin_pos_helds`)"
         />
       </div>
+      <button
+        v-if="
+          userAdminHeld.date == '' &&
+          userAdminHeld.title == '' &&
+          userAdminHeld.recognition_place == '' &&
+          userAdminHeld.awarded_by == ''
+        "
+        @click="removeField(index)"
+        class="remove-btn"
+      >
+        Remove
+      </button>
       <hr />
     </div>
   </div>
@@ -82,7 +98,7 @@
 
 <script>
 export default {
-  emits: ["update-user-details"],
+  emits: ["track-touched-field", "update-user-details"],
   props: {
     userDetails: Object,
     editMode: Boolean,
@@ -105,6 +121,9 @@ export default {
         recognition_place: "",
         awarded_by: "",
       });
+    },
+    removeField(index) {
+      this.userDetails.user_admin_pos_helds.splice(index, 1);
     },
   },
   watch: {

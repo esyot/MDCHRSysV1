@@ -1,7 +1,12 @@
 <template>
   <div class="container-body">
     <div class="content-container">
-      <section class="cards">
+      <section
+        class="cards"
+        v-if="
+          roles.includes('hr') || roles.includes('admin') || roles.includes('p-admin')
+        "
+      >
         <div class="card">
           <i class="fas fa-users fa-2x"></i>
           <span>Users</span>
@@ -20,13 +25,13 @@
           <span>{{ userOnTravel }}</span>
         </div>
 
-        <div class="card">
+        <div @click="toFormsChecking('leave')" class="card">
           <i class="fas fa-hourglass-half fa-2x"></i>
           <span>Leave Requests</span>
           <span>{{ leaveRequestCount }}</span>
         </div>
 
-        <div class="card">
+        <div @click="toFormsChecking('travel')" class="card">
           <i class="fas fa-hourglass-half fa-2x"></i>
           <span>Travel Requests</span>
           <span>{{ travelRequestCount }}</span>
@@ -40,6 +45,7 @@
 </template>
 
 <script>
+import { Inertia } from "@inertiajs/inertia";
 import Layout from "@/Layouts/Layout.vue";
 import { defineComponent } from "vue";
 
@@ -52,10 +58,17 @@ export default defineComponent({
     travelRequestCount: Number,
     userOnLeave: Number,
     userOnTravel: Number,
+    roles: Array,
+  },
+
+  methods: {
+    toFormsChecking(action) {
+      Inertia.get(`/forms/checking/${action}`);
+    },
   },
 });
 </script>
 
 <style scoped>
-@import "./dashboard.css";
+@import "./css/dashboard.css";
 </style>

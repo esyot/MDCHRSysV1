@@ -18,18 +18,20 @@ return new class extends Migration
             $table->date('date_end');
             $table->text('description');
             $table->string('place');
-            $table->string('purpose');
+            $table->text('purpose');
             $table->string('contact_person');
             $table->string('contact_person_no');
             $table->decimal('amount', 10,2);
             $table->string('budget_type');
             $table->string('budget_charged_to');
-            $table->enum('status', ['pending', 'approved', 'declined']) ->default('pending');
+            $table->enum('semister', ['1st', '2nd', 'summer']);
+            $table->enum('status', ['pending', 'dean_approved', 'hr_approved', 'vp_acad_approved','vp_admin_approved', 'declined', 'approved'])->default('pending');
             $table->date('filing_date');
-            
+            $table->bigInteger('recommended_by')->unsigned()->nullable();
+            $table->bigInteger('endorsed_by')->unsigned()->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('travel_forms');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

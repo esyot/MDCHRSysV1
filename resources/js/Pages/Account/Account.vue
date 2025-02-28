@@ -90,17 +90,31 @@ export default {
           />
           <i @click="openImageCropper" class="edit-btn fas fa-camera"></i>
         </div>
+
         <div class="user-details">
           <span class="name">{{ user.first_name }} {{ user.last_name }}</span>
           <div class="user-role">
+            <i class="fas fa-globe"></i>
+            <div>
+              <span
+                class="role-desc"
+                v-for="(department, index) in user.departments"
+                :key="department.id"
+                >{{ department.name }}
+                {{ user.departments.length >= index ? "" : ", " }}</span
+              >
+            </div>
+          </div>
+          <div class="user-role">
             <i class="fas fa-user-cog"></i>
             <div>
-              <span v-for="role in roles" :key="role" class="role-desc">{{ role }}</span>
+              <span class="role-desc">{{ roles.join(", ") }} </span>
             </div>
           </div>
         </div>
       </div>
     </div>
+
     <Authentication :authDetails="authDetails" :authError="authError" v-if="!auth" />
 
     <section id="section" :class="!auth ? 'blur' : 'none-blur'">

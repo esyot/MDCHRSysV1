@@ -490,7 +490,7 @@
         {{ personalDetails.middle_name }}
         {{ personalDetails.last_name }}
         <span v-if="personalDetails.personal_details.name_ext != 'none'">
-          {{ personalDetails.personal_details.name_ext }}.
+          {{ personalDetails.personal_details.name_ext }}
         </span>
       </span>
 
@@ -675,3 +675,7 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+@import "./css/form.css";
+</style>

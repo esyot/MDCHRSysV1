@@ -4,6 +4,7 @@ import { InertiaLink } from "@inertiajs/inertia-vue3";
 export default {
   props: {
     roles: Object,
+    user: Object,
   },
   components: {
     InertiaLink,
@@ -37,10 +38,13 @@ export default {
         <div class="logo-img-container">
           <img src="/public/assets/images/mdc-logo.png" class="logo-img" alt="Logo" />
         </div>
-        <span id="app-name">MDC - HR Sys v1.0</span>
+
+        <text>Welcome!</text>
+
+        <span id="app-name">{{ user.last_name }}, {{ user.first_name }}</span>
       </div>
-      <div>
-        <span v-for="role in roles" :key="role" class="role-desc">{{ role }}</span>
+      <div class="role-container">
+        <small>roles: {{ roles.join(", ") }}</small>
       </div>
       <hr />
       <div id="menu" class="menu">
@@ -70,11 +74,28 @@ export default {
               </InertiaLink>
 
               <InertiaLink :href="'/forms/tracking'" class="link">
-                <li><span>Track Forms</span></li>
+                <li><span>Track Submitted Forms</span></li>
               </InertiaLink>
             </ul>
           </li>
-          <li title="Users">
+          <InertiaLink
+            v-if="!roles.includes('staff')"
+            :href="'/forms/checking'"
+            class="link"
+            ><li class="menu-li" title="Check Forms">
+              <i class="fas fa-desktop"></i>
+              <span>Check Forms</span>
+            </li>
+          </InertiaLink>
+
+          <InertiaLink v-if="roles.includes('admin')" :href="'/departments'" class="link"
+            ><li class="menu-li" title="Add/Edit Departments">
+              <i class="fa-solid fa-list"></i>
+              <span>Departments</span>
+            </li>
+          </InertiaLink>
+
+          <li title="Users" v-if="roles.includes('admin') || roles.includes('hr')">
             <div class="menu-li" @click="openSubMenu('Users')">
               <i class="fa-solid fa-users"></i>
               <span>Users</span>
@@ -82,16 +103,21 @@ export default {
             </div>
 
             <ul id="submenu-users" class="submenu">
-              <li><span>Tracking</span></li>
+              <InertiaLink :href="'/users/user-list'" class="link">
+                <li><span>Users</span></li>
+              </InertiaLink>
 
-              <InertiaLink :href="'/forms/evaluation-form'" class="link">
-                <li><span>Evaluation</span></li>
+              <InertiaLink :href="'/users/analytics'" class="link">
+                <li><span>Analytics</span></li>
               </InertiaLink>
             </ul>
           </li>
-          <li class="menu-li" title="About">
-            <i class="fas fa-info-circle"></i><span>About</span>
-          </li>
+          <InertiaLink :href="'/about'" class="link"
+            ><li class="menu-li" title="View About">
+              <i class="fa-solid fa-info-circle"></i>
+              <span>About</span>
+            </li>
+          </InertiaLink>
         </ul>
       </div>
       <div class="footer">
@@ -102,5 +128,5 @@ export default {
 </template>
 
 <style scoped>
-@import "./leftbar.css";
+@import "./css/leftbar.css";
 </style>

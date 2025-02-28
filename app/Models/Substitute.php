@@ -8,11 +8,6 @@ class Substitute extends Model
 {
     protected $guarded = [];
 
-
-    public function leaveForm(){
-        return $this->belongsTo(LeaveForm::class);
-    }
-
     public function user(){
         return $this->belongsTo(User::class)->select([
             'id',
@@ -21,4 +16,5 @@ class Substitute extends Model
             'middle_name'
         ]);
     }
+
 }

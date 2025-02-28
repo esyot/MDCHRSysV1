@@ -2,7 +2,7 @@
 import Leftbar from "@/Components/Leftbar.vue";
 import Topbar from "@/Components/Topbar.vue";
 import Footer from "@/Components/Footer.vue";
-import SuccessModal from "@/Components/SuccessModal.vue";
+import SuccessModal from "@/Modals/SuccessModal.vue";
 
 export default {
   components: {
@@ -55,7 +55,7 @@ export default {
       @close-success-modal="closeSuccessModal"
       v-if="successMessage"
     />
-    <Leftbar :roles="roles" />
+    <Leftbar :roles="roles" :user="user" />
     <div class="main-content">
       <Topbar :pageTitle="pageTitle" :user="user" />
       <slot> </slot>
@@ -68,6 +68,25 @@ export default {
 @media (orientation: landscape) {
   Footer {
     display: none;
+  }
+}
+@keyframes increaseOpacity {
+  0% {
+    background-color: rgba(0, 0, 0, 0);
+  }
+  100% {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+}
+
+@keyframes popUp {
+  0% {
+    transform: scale(0.1);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 .hidden {
