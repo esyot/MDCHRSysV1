@@ -1,3 +1,7 @@
+<style scoped>
+@import "./css/form.css";
+</style>
+
 <template>
   <div class="personal-details-items" v-if="editMode">
     <div class="title-container">

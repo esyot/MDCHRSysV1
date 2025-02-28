@@ -16,14 +16,18 @@ class DepartmentController extends Controller
 
         $departments = Department::with(['parent', 'userHeads'])->get();
 
+        $departmentList = Department::all();
+
        
 
         return inertia('Pages/Department/Department', [
             'roles' => $roles,
             'user' => $user,
             'departments' => $departments,
+            'departmentList' =>  $departmentList,
             'parentDepartments' => $parentDepartments,
             'messageSuccess' => session('success') ?? null,
+            'pageTitle' => 'Departments'
         ]);
     }
 

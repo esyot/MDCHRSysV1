@@ -66,6 +66,9 @@ Route::middleware([Check2WayVerification::class])->group(function () {
 
         Route::get('/forms/tracking', [FormsController::class, 'index'])->name('forms.tracking');
 
+        Route::get('/leave-form-preview', [LeaveFormController::class, 'preview'])->name('forms.leave-form-preview');
+
+
         Route::get('/forms/checking', [FormsController::class, 'checking']);
         Route::get('/forms/checking/{action}', [FormsController::class, 'checking']);
 
@@ -88,6 +91,7 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::get('/users/analytics/', [AnalyticsController::class, 'index']);
 
         Route::get('/about', [AboutController::class, 'index']);
+
     });
     });
 
@@ -95,7 +99,20 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         return view('forms.personalDataSheet');
     });
 
+    Route::get('/personal-data-sheet2', function(){
+        return view('forms.page2');
+    });
+
+    Route::get('/personal-data-sheet3', function(){
+        return view('forms.page3');
+    });
+
+    Route::get('/personal-data-sheet4', function(){
+        return view('forms.page4');
+    });
+
    
+
 
 Route::post('/authentication-check', [AuthController::class, 'auth']);
 

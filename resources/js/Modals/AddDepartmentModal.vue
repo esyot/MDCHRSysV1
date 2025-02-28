@@ -9,6 +9,7 @@ export default {
   props: {
     parentDepartments: Array,
     isAddDepartment: Boolean,
+    departmentList: Object,
   },
   methods: {
     closeModal() {
@@ -77,12 +78,8 @@ export default {
           <label>Parent Department:</label>
           <select v-model="formData.parent_id">
             <option selected disabled value="">Select a Parent Department</option>
-            <option
-              :value="dept.id"
-              v-for="dept in parentDepartments"
-              :key="dept.department_id"
-            >
-              {{ dept.department_name }}
+            <option :value="dept.id" v-for="dept in departmentList" :key="dept.id">
+              {{ dept.name }}
             </option>
           </select>
         </div>
