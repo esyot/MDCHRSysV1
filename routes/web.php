@@ -92,6 +92,8 @@ Route::middleware([Check2WayVerification::class])->group(function () {
 
         Route::get('/about', [AboutController::class, 'index']);
 
+        Route::get('/account/personal-data-sheet/preview', [PersonalDetailController::class, 'preview']);
+
     });
     });
 

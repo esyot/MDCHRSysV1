@@ -169,12 +169,22 @@
         <button type="button" @click="goToPage('prev')">
           <i class="fas fa-chevron-circle-left"></i>
         </button>
+
         <span class="pageNum">
           {{ currentPage }}
         </span>
         <button type="button" @click="goToPage('next')">
           <i class="fas fa-chevron-circle-right"></i>
         </button>
+
+        <a
+          href="/account/personal-data-sheet/preview"
+          target="_blank"
+          title="Click to preview personal data"
+          class="download-btn"
+        >
+          <i class="fas fa-eye"></i
+        ></a>
       </div>
     </div>
   </form>
@@ -198,6 +208,7 @@ import Form14 from "@/Pages/Account/Components/Forms/Form14.vue";
 import Form15 from "@/Pages/Account/Components/Forms/Form15.vue";
 
 import { Inertia } from "@inertiajs/inertia";
+import InertiaLink from "@inertiajs/inertia";
 
 export default {
   name: "PersonalDetails",
@@ -490,6 +501,9 @@ export default {
       } else {
         document.getElementById("confirmationSubmitModal").style.display = "flex";
       }
+    },
+    previewDataSheet() {
+      Inertia.visit("/account/personal-data-sheet/preview");
     },
   },
 
