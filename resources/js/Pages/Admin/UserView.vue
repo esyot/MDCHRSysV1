@@ -198,6 +198,13 @@ export default {
     >
       <i class="fa-solid fa-list fa-lg"></i>
     </span>
+    <span
+      :class="{ active: activeTab === 'personalDetails' }"
+      @click="setActiveTab('personalDetails')"
+      title="Evaluations"
+    >
+      <i class="fas fa-file"></i>
+    </span>
   </nav>
   <div class="container">
     <div class="content" v-if="activeTab === 'overview'">

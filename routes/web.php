@@ -6,6 +6,7 @@ use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\FormsController;
 use App\Http\Controllers\LeaveFormController;
 use App\Http\Controllers\LoginController;
@@ -93,6 +94,8 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::get('/about', [AboutController::class, 'index']);
 
         Route::get('/account/personal-data-sheet/{action}', [PersonalDetailController::class, 'preview']);
+
+        Route::post('/users/{id}/evaluation-submit/', [EvaluationController::class, 'create']);
 
     });
     });

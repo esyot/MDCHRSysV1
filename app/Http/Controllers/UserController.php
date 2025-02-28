@@ -221,9 +221,9 @@ class UserController extends Controller
     }
 
     public function userEvaluation($id){
-        $users = User::findOrFail($id);
-        return Inertia::render('Pages/Forms/Evaluation/Evaluation',[
-        'users' => $users,
+        $user = User::findOrFail($id);
+        return inertia('Pages/Forms/Evaluation/Evaluation',[
+        'user' => $user,
         ]);
     }
 
