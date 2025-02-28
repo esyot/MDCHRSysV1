@@ -44,14 +44,11 @@
       </div>
       <div class="modal-details">
         <div>
-          <div class="modal-subtitle">
-            <text>Leave Type:</text>
-          </div>
-
           <div class="row">
-            <div class="radio-group read-only">
-              <text class="underline">{{ formData.leave_type }}</text>
+            <div class="modal-subtitle">
+              <text>Leave Type:</text>
             </div>
+            <text class="underline">{{ formData.leave_type }}</text>
           </div>
 
           <div class="modal-items read-only">

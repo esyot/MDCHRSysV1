@@ -28,6 +28,7 @@ export default {
   justify-content: center;
   align-items: center;
   z-index: 100;
+  animation: popUp 0.3s ease-in-out forwards, increaseOpacity 2s 0.3s forwards;
 }
 
 .modal-content {

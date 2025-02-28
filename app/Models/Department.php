@@ -26,6 +26,6 @@ class Department extends Model
                         'users.first_name',
                         'users.last_name',
                         'users.middle_name'
-        ]);
+                    ]);
     }
 }

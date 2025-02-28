@@ -83,13 +83,10 @@ export default {
             >
               {{ head.last_name }},
               {{ head.first_name }}
-              {{ head.middle_name[0] }}
+              {{ head.middle_name[0] }}.
             </span>
           </td>
           <td class="buttons">
-            <button class="edit-btn">
-              <i class="fas fa-pencil"></i>
-            </button>
             <button @click="selectId(department.id)" class="delete-btn">
               <i class="fas fa-trash"></i>
             </button>

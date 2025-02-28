@@ -2,39 +2,185 @@
 import Layout from "@/Layouts/Layout.vue";
 import PersonalDetails from "@/Pages/Admin/PersonalDetails.vue";
 import { Inertia } from "@inertiajs/inertia";
+import EditRoleModal from "@/Modals/EditRoleModal.vue";
+import EditDepartmentModal from "@/Modals/EditDepartmentModal.vue";
 
 export default {
   layout: Layout,
   props: {
+    user_id: String,
     userRoles: Array,
     personalDetails: Object,
     userDepartments: Array,
+    forms: Object,
     roles: {
       type: Array,
       default: () => [],
     },
+    roleList: Array,
+    departmentList: Array,
   },
   data() {
     return {
       activeTab: localStorage.getItem("activeTab") || "overview",
+      isEditRole: false,
+      isEditDepartment: false,
+      selectedFormType: "All",
+      selectedFilter: "",
+      form_selection: "",
+      currentYear: new Date().getFullYear(),
+      selectedYear: new Date().getFullYear(),
+      months: [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ],
+      month: "",
+      date_report: "",
+      week: "",
     };
+  },
+
+  components: {
+    PersonalDetails,
+    EditRoleModal,
+    EditDepartmentModal,
+  },
+  computed: {
+    filteredForms() {
+      let filtered = this.forms;
+
+      if (this.form_selection) {
+        filtered = filtered.filter((item) => {
+          if (this.form_selection === "travel") {
+            return item.form_type === "Travel Form";
+          } else if (this.form_selection === "leave") {
+            return item.form_type === "Leave Form";
+          } else {
+            return true;
+          }
+        });
+      }
+
+      if (this.selectedYear) {
+        filtered = filtered.filter((item) => {
+          const startYear = new Date(item.date_start).getFullYear();
+          const endYear = new Date(item.date_end).getFullYear();
+          return (
+            startYear === parseInt(this.selectedYear) ||
+            endYear === parseInt(this.selectedYear)
+          );
+        });
+      }
+
+      if (this.date_report && this.month) {
+        const monthIndex = this.months.indexOf(this.month);
+        filtered = filtered.filter((item) => {
+          const startMonth = new Date(item.date_start).getMonth();
+          const endMonth = new Date(item.date_end).getMonth();
+          return startMonth === monthIndex || endMonth === monthIndex;
+        });
+
+        if (this.date_report === "Weekly" && this.week) {
+          filtered = filtered.filter((item) => {
+            const startDate = new Date(item.date_start);
+            const endDate = new Date(item.date_end);
+            const startWeek = this.getWeekOfMonth(startDate);
+            const endWeek = this.getWeekOfMonth(endDate);
+            const startMonth = startDate.getMonth();
+            const endMonth = endDate.getMonth();
+            return (
+              (startWeek === parseInt(this.week) && startMonth === monthIndex) ||
+              (endWeek === parseInt(this.week) && endMonth === monthIndex)
+            );
+          });
+        }
+      }
+
+      return filtered;
+    },
+    years() {
+      const startYear = 2025;
+      const endYear = this.currentYear + 30;
+      const years = [];
+      for (let year = startYear; year <= endYear; year++) {
+        years.push(year);
+      }
+      return years;
+    },
   },
   methods: {
     openEval() {
-      Inertia.visit(`/user-list/${this.personalDetails.id}/evaluation-form`);
+      Inertia.visit(`/users/user-list/${this.personalDetails.id}/evaluation-form`);
     },
     setActiveTab(tab) {
       this.activeTab = tab;
       localStorage.setItem("activeTab", tab);
     },
-  },
-  components: {
-    PersonalDetails,
+    toggleEditRole() {
+      this.isEditRole = !this.isEditRole;
+    },
+    toggleEditDepartment() {
+      this.isEditDepartment = !this.isEditDepartment;
+    },
+    getWeekNumber(date) {
+      const tempDate = new Date(date.getTime());
+      tempDate.setMonth(0, 1);
+      tempDate.setHours(0, 0, 0, 0);
+
+      const startOfYear = tempDate;
+      const diff = date - startOfYear;
+
+      const millisecondsInWeek = 1000 * 60 * 60 * 24 * 7;
+
+      return Math.floor(diff / millisecondsInWeek) + 1;
+    },
+    formatDate(date) {
+      const convertedDate = new Date(date);
+      const options = {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      };
+      return convertedDate.toLocaleString("en-US", options);
+    },
+    getWeekOfMonth(date) {
+      const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+      const day = date.getDate();
+      return Math.ceil((day + firstDayOfMonth) / 7);
+    },
   },
 };
 </script>
 
 <template>
+  <EditRoleModal
+    v-if="isEditRole"
+    :roleList="roleList"
+    :userRoles="userRoles"
+    :user_id="user_id"
+    @toggleEditRole="toggleEditRole"
+  ></EditRoleModal>
+
+  <EditDepartmentModal
+    v-if="isEditDepartment"
+    :userDepartments="userDepartments"
+    :departmentList="departmentList"
+    :user_id="user_id"
+    @toggleEditDepartment="toggleEditDepartment"
+  ></EditDepartmentModal>
   <nav>
     <span
       :class="{ active: activeTab === 'overview' }"
@@ -73,17 +219,13 @@ export default {
             <div class="user-role">
               <i class="fas fa-globe"></i>
               <div>
-                <span v-for="dept in userDepartments" :key="role" class="role-desc"
-                  >{{ dept.name }},</span
-                >
+                <span class="role-desc">{{ userDepartments.join(", ") }}</span>
               </div>
             </div>
             <div class="user-role">
               <i class="fas fa-user-cog"></i>
               <div>
-                <span v-for="role in userRoles" :key="role" class="role-desc"
-                  >{{ role }},</span
-                >
+                <span class="role-desc">{{ userRoles.join(", ") }}</span>
               </div>
             </div>
           </div>
@@ -91,22 +233,73 @@ export default {
       </div>
       <div class="buttons">
         <div class="btn-left">
-          <select name="" id="">
-            <option value="" selected disabled>All Forms</option>
-            <option value="Travel Forms">Travel Forms</option>
-            <option value="Leave Forms">Leave Forms</option>
+          <select
+            v-model="selectedFormType"
+            title="Select type of forms to be displayed in the table below."
+          >
+            <option value="All">All Forms</option>
+            <option value="Travel Form">Travel Forms</option>
+            <option value="Leave Form">Leave Forms</option>
           </select>
-          <select name="" id="">
-            <option value="" selected disabled>Filter By:</option>
-            <option value="Annually">Annually</option>
+          <select
+            v-model="selectedYear"
+            title="Select a year to be filtered in the table below."
+          >
+            <option value="" disabled>Select Year</option>
+            <option v-for="year in years" :key="year" :value="year">
+              {{ year }}
+            </option>
+          </select>
+          <select name="" id="" v-model="date_report">
+            <option value="" disabled selected>Select Filter</option>
+
+            <option value="">Annually</option>
             <option value="Monthly">Monthly</option>
             <option value="Weekly">Weekly</option>
           </select>
+
+          <select
+            name=""
+            id=""
+            v-model="month"
+            v-if="date_report == 'Monthly' || date_report == 'Weekly'"
+          >
+            <option disabled selected value="">Select Month</option>
+            <option v-for="month in months" :key="month" :value="month">
+              {{ month }}
+            </option>
+          </select>
+
+          <select name="" id="" v-model="week" v-if="date_report == 'Weekly'">
+            <option value="" disabled selected>Select Week</option>
+            <option value="">All Weeks</option>
+            <option value="1">1st Week</option>
+            <option value="2">2nd Week</option>
+            <option value="3">3rd Week</option>
+            <option value="4">4th Week</option>
+            <option value="5">5th Week</option>
+          </select>
         </div>
         <div class="btn-right">
-          <button>Edit Role</button>
-          <button>History</button>
-          <button @click="openEval()">Evaluate</button>
+          <button
+            :title="`Edit role of  ${personalDetails.last_name}, ${personalDetails.first_name}`"
+            @click="toggleEditRole"
+          >
+            Edit Role
+          </button>
+          <button
+            :title="`Edit department of  ${personalDetails.last_name}, ${personalDetails.first_name}`"
+            @click="toggleEditDepartment"
+          >
+            Edit Department
+          </button>
+
+          <button
+            :title="`Add evaluation for  ${personalDetails.last_name}, ${personalDetails.first_name}`"
+            @click="openEval()"
+          >
+            Evaluate
+          </button>
         </div>
       </div>
       <div class="forms">
@@ -125,10 +318,16 @@ export default {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><span>Personal</span></td>
-              <td><span>12/12/2004</span></td>
-              <td><span>12/12/2004</span></td>
+            <tr v-for="form in filteredForms" :key="form.form_type">
+              <td>
+                <span>{{ form.form_type }}</span>
+              </td>
+              <td>
+                <span>{{ formatDate(form.date_start) }}</span>
+              </td>
+              <td>
+                <span>{{ formatDate(form.date_end) }}</span>
+              </td>
             </tr>
           </tbody>
         </table>

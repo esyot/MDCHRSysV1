@@ -94,7 +94,7 @@ export default {
     },
 
     fetchLeaveForm(user_id, year) {
-      fetch(`/forms/find/${user_id}/${year}`, {
+      fetch(`/forms/find/${this.formData.form_type}/${user_id}/${year}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

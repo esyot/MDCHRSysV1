@@ -103,14 +103,21 @@ export default {
             </div>
 
             <ul id="submenu-users" class="submenu">
-              <InertiaLink :href="'/user-list'" class="link">
-                <li><span>Search</span></li>
+              <InertiaLink :href="'/users/user-list'" class="link">
+                <li><span>Users</span></li>
+              </InertiaLink>
+
+              <InertiaLink :href="'/users/analytics'" class="link">
+                <li><span>Analytics</span></li>
               </InertiaLink>
             </ul>
           </li>
-          <li class="menu-li" title="About">
-            <i class="fas fa-info-circle"></i><span>About</span>
-          </li>
+          <InertiaLink :href="'/about'" class="link"
+            ><li class="menu-li" title="View About">
+              <i class="fa-solid fa-info-circle"></i>
+              <span>About</span>
+            </li>
+          </InertiaLink>
         </ul>
       </div>
       <div class="footer">

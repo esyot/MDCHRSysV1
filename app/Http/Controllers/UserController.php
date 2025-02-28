@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
+use App\Models\LeaveForm;
+use App\Models\TravelForm;
 use App\Models\User;
 use App\Models\UserDepartment;
 use Illuminate\Http\Request;
@@ -148,12 +150,59 @@ class UserController extends Controller
         $userRoles = User::find($id)->getRoleNames();
         $userDepartments = User::where('id', $id)->with('departments:id,name,acronym')->first();
 
-        $userDepartments =  $userDepartments->departments;
-
-      
+        $userDepartments =  $userDepartments->departments->pluck('name');
 
         $this->globalVariables();
         $roles = $this->roles;
+        $departmentList = $this->parentDepartments;
+
+        $roleList = Role::all();
+
+
+            $leaveForms = LeaveForm::where('user_id', $id)
+            ->where('status', 'approved')
+            ->with([
+                'substitutes.user',
+                'user',
+                'endorser',
+                'userJobDetail',
+                
+            ])->orderBy('created_at', 'ASC')->get();
+
+
+            $travelForms = TravelForm::where('user_id', $id)
+            ->where('status', 'approved' )
+            ->orderBy('created_at', 'ASC')
+            ->with([
+                'substitutes.user',
+                'user',
+                'endorser',
+                'userJobDetail',
+                
+            ])->orderBy('created_at', 'ASC')->get();
+            
+            
+           
+            $forms = [];
+            $forms['Travel Form'] = $travelForms;
+            $forms['Leave Form'] = $leaveForms;
+
+            
+            $flattenedForms = [];
+            foreach ($forms as $formType => $formArray) {
+                foreach ($formArray as $form) {
+                    $form['form_type'] = $formType;
+            
+                    $form['endorser'] = $form['endorser'] ? $form['endorser']->toArray() : null;
+                    $form['user_job_detail'] = $form['user_job_detail'] ? $form['user_job_detail']->toArray() : null;
+                    
+                    $flattenedForms[] = $form;
+                }
+            }
+  
+            usort($flattenedForms, function($a, $b) {
+               return strtotime($b['created_at']) - strtotime($a['created_at']);
+            });
 
          return Inertia::render('Pages/Admin/UserView', [
             'user' => Auth::user(),
@@ -161,7 +210,12 @@ class UserController extends Controller
             'roles' => $roles,
             'userRoles' => $userRoles,
             'pageTitle' => 'User Details',
-            'userDepartments' => $userDepartments
+            'userDepartments' => $userDepartments,
+            'roleList'=>  $roleList,
+            'user_id' => $id,
+            'messageSuccess' => session('success') ?? null,
+            'departmentList' => $departmentList,
+            'forms'=>  $flattenedForms
         ]);
 
     }
@@ -185,8 +239,6 @@ class UserController extends Controller
             $counter++;
         }
 
-       
-
         $user = User::create([
             'user' => $username,
             'first_name' => $request->first_name,
@@ -194,13 +246,24 @@ class UserController extends Controller
             'last_name' => $request->last_name,
             'email' => 'example@email.com',
             'password' => Hash::make('12345678'),
-
         ]);
 
         $roles = Role::whereIn('id', $request->roles)->get();
 
         foreach ($request->departments as $dept) {
-            
+            $department = Department::where('parent_id',$dept)->get();
+        
+            foreach($department as $subDept){
+          
+                UserDepartment::create([
+                    'user_id' => $user->id,
+                    'department_id' => $subDept->id,
+                    'type' => $roles->contains(function ($role) {
+                        return $role->name === 'dean';
+                    }) ? 'head' : 'member',
+                ]);
+            }
+
             UserDepartment::create([
                 'user_id' => $user->id,
                 'department_id' => $dept,
@@ -220,5 +283,21 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Error adding user.');
         }
     }
+    
+    public function userUpdateRole($user_id, Request $request)
+    {
+        $user = User::find($user_id);
+    
+       
+        $user->syncRoles([]);
+
+        
+        if ($request->roles && !empty($request->roles)) {
+            $user->assignRole($request->roles);
+        }
+    
+        return redirect()->back()->with('success', 'Roles updated successfully!');
+    }
+    
 
 }

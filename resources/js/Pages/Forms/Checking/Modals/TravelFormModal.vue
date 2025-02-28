@@ -174,7 +174,7 @@
                 <div class="item-subtitle">
                   <text>Total amount requested: </text>
                 </div>
-                <span class="underline"> ₱ {{ formData.amount }}.00 only </span>
+                <span class="underline"> ₱ {{ formData.amount }} only </span>
               </div>
             </div>
           </div>
