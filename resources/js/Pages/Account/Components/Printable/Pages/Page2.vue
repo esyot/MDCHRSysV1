@@ -312,30 +312,33 @@ export default {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
 .page-content {
   background-color: #fff;
   padding: 20px;
-  scale: 0.6;
   width: 800px;
   text-align: center;
-  display: flex;
+  display: flex; /* Changed from block to flex for better alignment */
   flex-direction: column;
+  margin: auto; /* Center the content */
 }
-body {
-    display: flex;
-    justify-content: center;
 
-    min-height: auto;
-    margin: 0;
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
 }
+
 .main-container {
-    border: 2px solid black;
-    max-width: 80%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    background-color: white;
+  border: 2px solid black;
+  max-width: 80%;
+  width: 100%;
+  background-color: white;
 }
+
+
 .title {
             font-size: 15px;
             font-weight: bold;

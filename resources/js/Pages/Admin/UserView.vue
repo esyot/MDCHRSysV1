@@ -157,9 +157,11 @@ export default {
       return convertedDate.toLocaleString("en-US", options);
     },
     getWeekOfMonth(date) {
-      const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
-      const day = date.getDate();
-      return Math.ceil((day + firstDayOfMonth) / 7);
+      const tempDate = new Date(date.getTime());
+      tempDate.setDate(1);
+      const startOfMonth = tempDate.getDay();
+      const diff = date.getDate() + startOfMonth - 1;
+      return Math.ceil(diff / 7);
     },
   },
 };
@@ -277,7 +279,6 @@ export default {
             <option value="2">2nd Week</option>
             <option value="3">3rd Week</option>
             <option value="4">4th Week</option>
-            <option value="5">5th Week</option>
           </select>
         </div>
         <div class="btn-right">

@@ -176,15 +176,6 @@
         <button type="button" @click="goToPage('next')">
           <i class="fas fa-chevron-circle-right"></i>
         </button>
-
-        <a
-          href="/account/personal-data-sheet/preview"
-          target="_blank"
-          title="Click to preview personal data"
-          class="download-btn"
-        >
-          <i class="fas fa-eye"></i
-        ></a>
       </div>
     </div>
   </form>
@@ -298,6 +289,7 @@ export default {
           middle_name: "",
           ext: "",
           occupation: "",
+          DOB: "",
         },
 
         new_user_families: {
@@ -307,6 +299,7 @@ export default {
           middle_name: "",
           ext: "",
           occupation: "",
+          DOB: "",
         },
 
         user_professional_examinations: {

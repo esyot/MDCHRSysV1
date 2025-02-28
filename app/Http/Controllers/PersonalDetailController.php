@@ -510,15 +510,46 @@ class PersonalDetailController extends Controller
 
     }
 
-    public function preview(){
+    public function preview($action){
 
         $this->globalVariables();
         $user = $this->user;
         $roles = $this->roles;
 
+        $personalDetails = User::with([
+            'personalDetails',
+            'personalDetails.permanentAddress',
+            'personalDetails.residentialAddress',
+            'userJobDetails',
+            'userFamilies',
+            'userEducationalBackgrounds',
+            'userProfessionalExaminations',
+            'userAwardReceives',
+            'userAdminPosHelds',
+            'userWorkExperiences',
+            'userStudies',
+            'userParticipations',
+            'userSpecialTrainings',
+            'userOtherInfos',
+            'userSchoolCurriculars',
+            'userOtherDetails',
+            'userReferences',
+            'userReferences.address',
+            'userValidIds',
+            
+
+        ])
+            ->where('users.id', Auth::user()->id)
+            ->first();
+
+            if($action === 'preview'){
+
         return inertia('Pages/Account/Components/Printable/Printable', [
             'user' => $user,
             'roles' => $roles,
+            'personalDetails' => $personalDetails
         ]);
+    }
+    
     }
 }

@@ -1,3 +1,11 @@
+<script>
+export default {
+  name: "Page1",
+  props: {
+    personalDetails: Object,
+  },
+};
+</script>
 <template>
   <div class="page-content">
     <div class="header-container">
@@ -30,41 +38,56 @@
         <div class="form-group left">
           <div class="items">
             <label>Surname:</label>
-            <input type="text" />
+            <input type="text" :value="personalDetails.last_name" />
           </div>
 
           <div class="items">
-            <label for="">First Name:</label>
+            <label for="">First Name: </label>
             <div class="input-group">
-              <input type="text" />
+              <input type="text" :value="personalDetails.first_name" />
             </div>
-            <input type="text" placeholder="Ext:" class="small-input" />
+            <input
+              type="text"
+              :value="personalDetails.personal_details.name_ext"
+              class="small-input"
+            />
           </div>
 
           <div class="items">
             <label for="">Middle Name:</label>
-            <input type="text" />
+            <input type="text" :value="personalDetails.middle_name" />
             <label for="">Nickname:</label>
-            <input type="text" name="" id="" />
+            <input
+              type="text"
+              name=""
+              :value="personalDetails.personal_details.nickname"
+              id=""
+            />
           </div>
 
           <div class="items">
             <label for="">Date of Birth:</label>
-            <input type="text" />
+            <input type="text" :value="personalDetails.personal_details.DOB" />
           </div>
 
           <div class="items">
             <label for="">Place of Birth:</label>
-            <input type="text" />
+            <input type="text" :value="personalDetails.personal_details.birthplace" />
           </div>
 
           <div class="item">
             <label for="">Sex:</label>
             <div class="checkbox-group">
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                :checked="personalDetails.personal_details.sex === 'male'"
+              />
               <label for="">Male</label>
 
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                :checked="personalDetails.personal_details.sex === 'female'"
+              />
               <label for="">Female</label>
             </div>
           </div>
@@ -73,18 +96,34 @@
             <label for="">Civil Status:</label>
             <div class="civil-status">
               <div class="civil-group">
-                <input type="checkbox" id="single" />
+                <input
+                  type="checkbox"
+                  id="single"
+                  :checked="personalDetails.personal_details.civil_status === 'single'"
+                />
                 <label for="single">Single</label>
 
-                <input type="checkbox" id="married" />
+                <input
+                  type="checkbox"
+                  id="married"
+                  :checked="personalDetails.personal_details.civil_status === 'married'"
+                />
                 <label for="married">Married</label>
               </div>
               <div class="civil-group">
-                <input type="checkbox" id="widowed" />
+                <input
+                  type="checkbox"
+                  id="widowed"
+                  :checked="personalDetails.personal_details.civil_status === 'widowed'"
+                />
                 <label for="widowed">Widowed</label>
 
-                <input type="checkbox" id="separated" />
-                <label for="separated">Separated</label>
+                <input
+                  type="checkbox"
+                  id="divorced"
+                  :checked="personalDetails.personal_details.civil_status === 'divorced'"
+                />
+                <label for="separated">Divorced</label>
               </div>
               <div class="civil-group">
                 <label for="other">Other:</label>
@@ -95,47 +134,75 @@
 
           <div class="items">
             <label for="">Religion:</label>
-            <input type="text" />
+            <input type="text" :value="personalDetails.personal_details.religion" />
           </div>
 
           <div class="items">
-            <label for="">Height (m):</label>
-            <input type="text" />
+            <label for="">Height (cm):</label>
+            <input type="text" :value="personalDetails.personal_details.height" />
           </div>
 
           <div class="items">
             <label for="">Weight (kg):</label>
-            <input type="text" />
+            <input type="text" :value="personalDetails.personal_details.weight" />
           </div>
 
           <div class="items">
             <label for="">Blood:</label>
-            <input type="text" />
+            <input type="text" :value="personalDetails.personal_details.blood_type" />
           </div>
 
           <div class="items">
             <label for="">Tel No./Mobile No.:</label>
-            <input type="text" />
+            <input type="text" :value="personalDetails.personal_details.contact_no" />
           </div>
 
           <div class="items">
             <label for="">SSS ID No.:</label>
-            <input type="text" />
+            <input
+              type="text"
+              :value="
+                personalDetails.user_valid_ids.filter(
+                  (valid_id) => valid_id.type === 'SSS'
+                )[0]?.value
+              "
+            />
           </div>
 
           <div class="items">
             <label for="">PAG-IBIG No.:</label>
-            <input type="text" />
+            <input
+              type="text"
+              :value="
+                personalDetails.user_valid_ids.filter(
+                  (valid_id) => valid_id.type === 'PAG-IBIG'
+                )[0]?.value
+              "
+            />
           </div>
 
           <div class="items">
             <label for="">PHILHEALTH No.:</label>
-            <input type="text" />
+            <input
+              type="text"
+              :value="
+                personalDetails.user_valid_ids.filter(
+                  (valid_id) => valid_id.type === 'PHIL-HEALTH'
+                )[0]?.value
+              "
+            />
           </div>
 
           <div class="items">
             <label for="">TIN No.:</label>
-            <input type="text" />
+            <input
+              type="text"
+              :value="
+                personalDetails.user_valid_ids.filter(
+                  (valid_id) => valid_id.type === 'TIN'
+                )[0]?.value
+              "
+            />
           </div>
         </div>
 
@@ -160,7 +227,7 @@
 
           <div class="items">
             <label for="">Email Address:</label>
-            <input type="text" />
+            <input type="text" :value="personalDetails.email" />
           </div>
 
           <div class="items">
@@ -174,120 +241,154 @@
             </div>
             <div class="address">
               <div class="address-input">
-                <input type="text" placeholder="House/Block/Lot No." />
-                <input type="text" name="" id="" placeholder="Street" />
+                <input
+                  type="text"
+                  placeholder="House/Block/Lot No."
+                  :value="personalDetails.personal_details.residential_address.house_no"
+                />
+                <input
+                  type="text"
+                  name=""
+                  id=""
+                  :value="personalDetails.personal_details.residential_address.street"
+                  placeholder="Street"
+                />
               </div>
               <div class="address-input">
-                <input type="text" placeholder="Subdivision/Village" />
-                <input type="text" name="" id="" placeholder="Barangay" />
+                <input
+                  type="text"
+                  placeholder="Subdivision/Village"
+                  :value="personalDetails.personal_details.residential_address.subdv"
+                />
+                <input
+                  type="text"
+                  name=""
+                  id=""
+                  placeholder="Barangay"
+                  :value="personalDetails.personal_details.residential_address.brgy"
+                />
               </div>
               <div class="address-input">
-                <input type="text" placeholder="City/Municipality" />
-                <input type="text" name="" id="" placeholder="Province" />
+                <input
+                  type="text"
+                  placeholder="City/Municipality"
+                  :value="
+                    personalDetails.personal_details.residential_address.municipality
+                  "
+                />
+                <input
+                  type="text"
+                  name=""
+                  id=""
+                  placeholder="Province"
+                  :value="personalDetails.personal_details.residential_address.province"
+                />
               </div>
             </div>
           </div>
 
           <div class="items">
             <label for="">Zip Code:</label>
-            <input type="text" />
+            <input
+              type="text"
+              :value="personalDetails.personal_details.residential_address.zip_code"
+            />
           </div>
           <div class="address-container">
             <div class="address">
-              <label for="">Residential Address:</label>
+              <label for="">Permanent Address:</label>
             </div>
             <div class="address">
               <div class="address-input">
-                <input type="text" placeholder="House/Block/Lot No." />
-                <input type="text" name="" id="" placeholder="Street" />
+                <input
+                  type="text"
+                  placeholder="House/Block/Lot No."
+                  :value="personalDetails.personal_details.permanent_address.house_no"
+                />
+                <input
+                  type="text"
+                  name=""
+                  id=""
+                  placeholder="Street"
+                  :value="personalDetails.personal_details.permanent_address.street"
+                />
               </div>
               <div class="address-input">
-                <input type="text" placeholder="Subdivision/Village" />
-                <input type="text" name="" id="" placeholder="Barangay" />
+                <input
+                  type="text"
+                  placeholder="Subdivision/Village"
+                  :value="personalDetails.personal_details.permanent_address.subdv"
+                />
+                <input
+                  type="text"
+                  name=""
+                  id=""
+                  placeholder="Barangay"
+                  :value="personalDetails.personal_details.permanent_address.brgy"
+                />
               </div>
               <div class="address-input">
-                <input type="text" placeholder="City/Municipality" />
-                <input type="text" name="" id="" placeholder="Province" />
+                <input
+                  type="text"
+                  placeholder="City/Municipality"
+                  :value="personalDetails.personal_details.permanent_address.municipality"
+                />
+                <input
+                  type="text"
+                  name=""
+                  id=""
+                  placeholder="Province"
+                  :value="personalDetails.personal_details.permanent_address.province"
+                />
               </div>
             </div>
           </div>
           <div class="items">
             <label for="">Zip Code:</label>
-            <input type="text" />
+            <input
+              type="text"
+              :value="personalDetails.personal_details.permanent_address.zip_code"
+            />
           </div>
+          <div
+            v-for="job_detail in personalDetails.user_job_details"
+            :key="job_detail.id"
+          >
+            <div class="items">
+              <label for="">Date Hired:</label>
+              <input type="text" :value="job_detail.date_hired" />
+            </div>
 
-          <div class="items">
-            <label for="">Date Hired:</label>
-            <input type="text" />
-          </div>
+            <div class="items">
+              <label for="">Present Rank in MDC:</label>
+              <input type="text" :value="job_detail.rank" />
+            </div>
 
-          <div class="items">
-            <label for="">Present Rank in MDC:</label>
-            <input type="text" />
-          </div>
-
-          <div class="items">
-            <label for="">Department:</label>
-            <input type="text" />
+            <div class="items">
+              <label for="">Department:</label>
+              <input type="text" :value="job_detail.department" />
+            </div>
           </div>
         </div>
       </div>
+
       <div class="sub-container">
         <div class="title">II. FAMILY BACKGROUND</div>
         <div class="forms">
           <div class="form-group left">
-            <div class="family-items">
-              <label for="">Spouse's Surname:</label>
-              <input type="text" />
-            </div>
+            <div v-for="family in personalDetails.user_families">
+              <div class="family-items">
+                <label for=""
+                  >{{
+                    family.type.charAt(0).toUpperCase() + family.type.slice(1)
+                  }}:</label
+                >
 
-            <div class="family-items">
-              <label for="">First Name:</label>
-              <div class="input-group">
-                <input type="text" name="" id="" />
+                <label for="">{{ family.first_name }}</label>
+                <label for="">{{ family.middle_name }}</label>
+                <label for="">{{ family.last_name }}, </label>
+                <label for="">Occupation: {{ family.occupation }}</label>
               </div>
-              <input type="text" placeholder="Ext:" class="small-input" />
-            </div>
-
-            <div class="family-items">
-              <label for="">Occupation:</label>
-              <input type="text" name="" id="" />
-            </div>
-
-            <div class="family-items">
-              <label for="">Father's Surname:</label>
-              <input type="text" name="" id="" />
-            </div>
-
-            <div class="family-items">
-              <label for="">First Name:</label>
-              <div class="input-group">
-                <input type="text" />
-              </div>
-              <input type="text" placeholder="Ext:" class="small-input" />
-            </div>
-
-            <div class="family-items">
-              <label for="">Middle Name:</label>
-              <input type="text" name="" id="" />
-            </div>
-
-            <div class="family-items">
-              <label for="">Mother's Surname:</label>
-              <input type="text" name="" id="" />
-            </div>
-
-            <div class="family-items">
-              <label for="">First Name:</label>
-              <div class="input-group">
-                <input type="text" />
-              </div>
-              <input type="text" placeholder="Ext:" class="small-input" />
-            </div>
-
-            <div class="family-items">
-              <label for="">Middle Name:</label>
-              <input type="text" name="" id="" />
             </div>
           </div>
 
@@ -420,12 +521,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Page1",
-};
-</script>
-
 <style scoped>
 ::-webkit-scrollbar {
   width: 5px;
@@ -451,15 +546,7 @@ export default {
   flex-direction: column;
   text-align: left;
 }
-.page-content {
-  background-color: #fff;
-  padding: 20px;
-  scale: 0.6;
-  width: 800px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-}
+
 h3,
 p,
 h2 {
@@ -467,6 +554,16 @@ h2 {
   margin: 0;
   padding: 0;
 }
+.page-content {
+  background-color: #fff;
+  padding: 20px;
+  width: 800px;
+  text-align: center;
+  display: flex; /* Changed from block to flex for better alignment */
+  flex-direction: column;
+  margin: auto; /* Center the content */
+}
+
 body {
   display: flex;
   justify-content: center;
@@ -474,11 +571,11 @@ body {
   min-height: 100vh;
   margin: 0;
 }
+
 .main-container {
   border: 2px solid black;
   max-width: 80%;
   width: 100%;
-  /* padding: 20px; */
   background-color: white;
 }
 

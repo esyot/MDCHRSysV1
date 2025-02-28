@@ -1,13 +1,13 @@
 <template>
   <div class="scroll-container">
     <div class="scrollable-content" ref="scrollableContent">
-      <!-- Dynamically render page components -->
       <div class="page" v-for="(page, index) in pages" :key="index">
-        <component :is="page"></component>
+        <component :is="page" :personalDetails="personalDetails"></component>
       </div>
     </div>
     <div class="navigation-buttons">
       <button @click="prevPage" :disabled="currentPage === 0">Previous</button>
+      <button @click="printPage">Print Page</button>
       <button @click="nextPage" :disabled="currentPage === pages.length - 1">Next</button>
     </div>
   </div>
@@ -20,6 +20,9 @@ import Page3 from "./Pages/Page3.vue";
 import Page4 from "./Pages/Page4.vue";
 
 export default {
+  props: {
+    personalDetails: Object,
+  },
   data() {
     return {
       currentPage: 0, // Start on the first page
@@ -47,6 +50,30 @@ export default {
         behavior: "smooth",
       });
     },
+    printPage() {
+      const content = this.$refs.scrollableContent;
+      const printWindow = window.open("", "", "height=600,width=800");
+
+      // Inject the styles from the current document into the print window
+      const styles = document.querySelectorAll('style, link[rel="stylesheet"]');
+      let stylesString = "";
+      styles.forEach((style) => {
+        if (style.tagName.toLowerCase() === "style") {
+          stylesString += `<style>${style.innerHTML}</style>`;
+        } else if (style.tagName.toLowerCase() === "link") {
+          stylesString += `<link rel="stylesheet" type="text/css" href="${style.href}">`;
+        }
+      });
+
+      // Open the print window and write the content and styles
+      printWindow.document.write(
+        "<html><head><title>Print Page</title>" + stylesString + "</head><body>"
+      );
+      printWindow.document.write(content.innerHTML); // Copy content to the print window
+      printWindow.document.write("</body></html>");
+      printWindow.document.close();
+      printWindow.print();
+    },
   },
 };
 </script>
@@ -70,9 +97,10 @@ export default {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
 .scroll-container {
   display: flex;
-  overflow-y: hidden;
+
   background-color: #555;
   overflow-y: hidden;
 }
@@ -81,10 +109,11 @@ export default {
   display: flex;
   overflow-x: auto;
   scroll-behavior: smooth;
-  overflow-y: hidden;
 }
 
 .page {
+  margin-top: 20px;
+  margin-bottom: 20px;
   min-width: 100%;
   height: 100vh;
   display: flex;

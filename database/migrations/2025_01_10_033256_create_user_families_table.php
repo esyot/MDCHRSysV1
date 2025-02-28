@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string('middle_name')->nullable();
             $table->string('maiden_name')->nullable();
             $table->string('ext')->nullable();
+            $table->date('DOB')->nullable();
             $table->string('occupation')->nullable();
             $table->timestamps();
 

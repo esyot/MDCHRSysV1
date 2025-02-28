@@ -78,6 +78,19 @@
             @input="handleFieldFocus(`user_families`)"
           />
         </div>
+        <div class="form-group">
+          <label :for="`DOB_${family.id}`"
+            >{{ family.type.toUpperCase() }} Date of Birth:</label
+          >
+          <input
+            type="date"
+            v-model="family.DOB"
+            class="form-control"
+            :placeholder="`e.g. ${family.DOB}`"
+            :id="`DOB_${family.id}`"
+            @input="handleFieldFocus(`user_families`)"
+          />
+        </div>
 
         <div class="form-group" v-if="family.type === 'spouse'">
           <label for="occupation">SPOUSE OCCUPATION:</label>
@@ -199,6 +212,8 @@
 
       <label>Occupation: </label>
       <span>{{ userFamily.occupation }}</span>
+      <label>Date of Birth: </label>
+      <span>{{ userFamily.DOB }}</span>
     </div>
   </div>
 </template>
@@ -221,6 +236,7 @@ export default {
         ext: "",
         occupation: "",
         maidenName: "",
+        DOB: "",
       },
     };
   },
@@ -238,6 +254,7 @@ export default {
           middle_name: this.newFamily.middle_name,
           ext: this.newFamily.ext,
           occupation: this.newFamily.occupation,
+          DOB: this.newFamily.DOB,
         });
 
         return [this.newFamily];
@@ -263,6 +280,7 @@ export default {
         first_name: "",
         middle_name: "",
         ext: "",
+        DOB: "",
       });
     },
   },

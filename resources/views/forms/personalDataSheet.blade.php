@@ -6,7 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-
+        @font-face {
+    font-family: "RM New Albion";
+    src: url("/assets/fonts/rm_new_albion.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
         h3, p, h2 {
             text-align: center;
             margin: 0;
@@ -18,18 +24,19 @@
     align-items: center;
     min-height: 100vh;
     margin: 0;
+    width: 100%;
 }
        .main-container {
     border: 2px solid black;
-    max-width: 80%;
+    max-width: 100%;
     width: 100%;
-    /* padding: 20px; */
+   
     background-color: white;
 }
 
         .sub-container {
             font-size: 12px;
-            border: 1px solid black;
+          
             width: auto;
             max-width: auto;
 
@@ -38,7 +45,7 @@
 
         .sub-container input {
             border: none;
-            /* border-bottom: 1px solid black; */
+           
         }
 
         .title {
@@ -70,9 +77,6 @@
             flex-direction: column;
         }
 
-
-
-
         .checkbox-group {
             display: flex;
             flex-direction: row;
@@ -81,15 +85,14 @@
         }
 
         .items {
-            /* padding: 5px 5px 5px 5px; */
+           
             display: flex;
             align-items: center;
             gap: 5px;
             width: 100%;
             max-width: 100%;
             border-bottom: 1px solid black;
-            /* padding: 5px;
-            margin: 0; */
+           
         }
 
         .family-items {
@@ -100,17 +103,14 @@
             width: 100%;
             max-width: 100%;
             border-bottom: 1px solid black;
-            /* padding: 5px;
-            margin: 0; */
         }
 
         .item {
-            /* padding: 5px 5px 5px 5px; */
+            
             display: flex;
             gap: 30px;
             border-bottom: 1px solid black;
-            /* padding: 5px;
-            margin: 0; */
+           
         }
 
 
@@ -139,9 +139,9 @@
         .sex {
             display: flex;
             flex-direction: row;
-            /* justify-content: center; */
+           
             align-items: center;
-            /* margin: auto; */
+           
         }
 
         .civil-status{
@@ -149,7 +149,7 @@
             flex-direction: column ;
             justify-content: center;
             align-items: left;
-            /* border-bottom: 1px solid black; */
+            
         }
 
         .civil-group {
@@ -326,6 +326,9 @@
     justify-content: center;
     padding: 10px;
 }
+.header{
+   text-align: center
+}
 
 .logo img {
     margin-right: 10px;
@@ -342,6 +345,9 @@ span {
     padding: 0 10px 0 10px;
 }
 
+.school-name{
+    font-family: "RM New Albion";
+}
 
 
     </style>
@@ -349,16 +355,16 @@ span {
 <body>
     <div class="main-container">
         <div class="header-container">
-            <div class="logo">
-                <img src="{{ asset('assets/images/mdc-logo.png') }}" alt="logo">
-
-            </div>
+           
         <div class="header">
-            <h3>Mater Dei College</h3>
+            <div class="logo">
+                <img src="{{ public_path('assets/images/mdc-logo.png') }}" alt="logo">
+            </div>
+            <h1 class="school-name">Mater Dei College</h1>
             <p>Tubigon, Bohol</p>
         </div>
         </div>
-        <h2>PERSONAL DATA SHEET</h2>
+        <h3>PERSONAL DATA SHEET</h3>
         <span>In compliance with DATA Privacy Act of 2012(RA 1073), I hereby allow Mater Dei College, Tubigon, Bohol to collect and process my personal information in relation to my job.</span>
     </br>
     <span>Instruction: Please provide the correct information of the following:</span>

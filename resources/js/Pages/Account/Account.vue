@@ -25,6 +25,7 @@ export default {
         email: "",
         password: "",
       },
+      dropdownOpen: false,
     };
   },
   components: {
@@ -44,6 +45,9 @@ export default {
     },
     closeModal() {
       this.showModal = false;
+    },
+    toggleDropdown() {
+      this.dropdownOpen = !this.dropdownOpen;
     },
   },
 };
@@ -73,6 +77,24 @@ export default {
     >
       <i class="fa-solid fa-lock fa-lg"></i>
     </span>
+
+    <div
+      v-if="activeTab === 'personalDetails'"
+      title="Click to preview personal data"
+      class="toggle-btn"
+    >
+      <i class="fas fa-ellipsis-v" @click="toggleDropdown"></i>
+      <div class="dropdown-content" v-if="dropdownOpen" @click.self="toggleDropdown">
+        <ul>
+          <a
+            href="/account/personal-data-sheet/preview"
+            target="_blank"
+            title="Click to preview personal data"
+            ><li>View as .pdf</li></a
+          >
+        </ul>
+      </div>
+    </div>
   </nav>
   <div class="content">
     <div class="user" v-if="activeTab === 'overview'">
@@ -143,6 +165,7 @@ export default {
 @media (orientation: landscape) {
   nav {
     display: flex;
+    align-items: center;
     justify-content: start;
     margin: 5px;
     border-radius: 5px;
@@ -178,6 +201,7 @@ export default {
 @media (orientation: portrait) {
   nav {
     display: flex;
+    align-items: center;
     justify-content: space-around;
     margin: 5px;
     border-radius: 5px;
@@ -294,5 +318,43 @@ export default {
 
 .edit-btn:hover {
   background-color: rgb(29, 81, 236);
+}
+
+.dropdown-content {
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+}
+
+.dropdown-content ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown-content ul a {
+  text-decoration: none;
+  color: #000;
+}
+
+.dropdown-content li {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.dropdown-content li:hover {
+  background-color: #cccccc;
+}
+
+.toggle-btn {
+  display: block;
+  margin-left: 20px;
+  padding: 10px;
+}
+
+.toggle-btn i {
+  color: #fff;
 }
 </style>
