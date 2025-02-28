@@ -38,13 +38,22 @@ export default {
     <div class="cards-container">
       <div class="card" v-for="developer in developers" :key="developer.last_name">
         <div class="image-container">
+          <img :src="`/assets/others/developers/images/${developer.img}`" alt="" />
+        </div>
+        <div class="logos">
           <a
             :href="`https://www.linkedin.com/in/${developer.linkedin_link}`"
             target="_blank"
             title="click to redirect 'Linkedin' page"
           >
-            <img :src="`/assets/others/developers/images/${developer.img}`" alt="" />
-            <i class="fa-brands fa-linkedin"></i>
+            <i class="fa-brands fa-linkedin fa-lg"></i>
+          </a>
+          <a
+            title="Click to redirect facebook page profile"
+            :href="`https://wwww.facebook.com/${developer.fb_link}`"
+            target="_blank"
+          >
+            <i class="fa-brands fa-facebook"></i>
           </a>
         </div>
         <div class="item">
@@ -71,12 +80,7 @@ export default {
           <label>Email:</label>
           <span>{{ developer.email }}</span>
         </div>
-        <div class="link">
-          <i class="fa-brands fa-facebook"></i>
-          <a :href="`https://wwww.facebook.com/${developer.fb_link}`" target="_blank"
-            >/{{ developer.fb_link }}</a
-          >
-        </div>
+        <div class="link"></div>
       </div>
     </div>
   </div>
@@ -150,7 +154,7 @@ export default {
   overflow: hidden;
   border-radius: 50%;
   margin: 0 auto 10px;
-  border: 3px solid rgba(0, 174, 255, 1);
+  border: 3px solid #5e5e5e;
   box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1);
 }
 .image-container:hover {
@@ -161,6 +165,26 @@ export default {
   display: flex;
   position: relative;
 }
+
+.logos {
+  display: flex;
+  gap: 0.3rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.logos i {
+  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
+}
+
+.logos a {
+  color: #007bff;
+}
+
+.logos i:hover {
+  opacity: 50%;
+  cursor: pointer;
+}
 .image-container img {
   width: 100%;
   height: 100%;
@@ -169,7 +193,6 @@ export default {
 
 .image-container i {
   z-index: 2;
-  position: fixed;
   color: #007bff;
 }
 

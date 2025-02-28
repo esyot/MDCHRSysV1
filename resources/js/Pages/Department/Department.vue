@@ -13,6 +13,7 @@ export default {
   props: {
     departments: Array,
     parentDepartments: Array,
+    departmentList: Object,
   },
   data() {
     return {
@@ -53,6 +54,7 @@ export default {
     v-if="isAddDepartment"
     :isAddDepartment="isAddDepartment"
     :parentDepartments="parentDepartments"
+    :departmentList="departmentList"
     @toggleAddDepartmentModal="toggleAddDepartmentModal"
   ></AddDepartmentModal>
   <header>

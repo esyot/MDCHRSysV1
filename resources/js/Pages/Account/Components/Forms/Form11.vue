@@ -1,3 +1,7 @@
+<style scoped>
+@import "./css/form.css";
+</style>
+
 <template>
   <div class="personal-details-items" v-if="editMode">
     <div class="title-container">
@@ -124,38 +128,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.remove-btn {
-  margin-top: 10px;
-  color: red;
-  background: none;
-  border: 1px solid red;
-  cursor: pointer;
-  padding: 5px 10px;
-}
-
-.remove-btn:hover {
-  background-color: red;
-  color: white;
-}
-
-.form-group {
-  margin-bottom: 10px;
-}
-
-.add-field-btn {
-  margin-bottom: 20px;
-}
-
-.title-container .title {
-  font-weight: bold;
-  font-size: 18px;
-}
-
-input.form-control {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-}
-</style>

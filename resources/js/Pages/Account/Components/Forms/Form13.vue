@@ -1,3 +1,7 @@
+<style scoped>
+@import "./css/form.css";
+</style>
+
 <template>
   <div class="personal-details-items" v-if="editMode">
     <div class="title-container">
@@ -427,12 +431,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.details-group {
-  display: flex;
-  flex-direction: column;
-  margin: 10px;
-  gap: 1rem;
-}
-</style>
