@@ -6,7 +6,7 @@
         <div class="card-content">
           <label>Current Rank</label>
           <div class="items">
-            <span v-for="jobDetail in user_job_details" :key="jobDetail">
+            <span v-for="jobDetail in personalDetails.user_job_details" :key="jobDetail">
               {{ jobDetail.rank }}
             </span>
           </div>
@@ -19,7 +19,7 @@
         <div class="card-content">
           <label>Amount Requested</label>
           <div class="items">
-            <span> {{ overviewData.amount }} </span>
+            <span> 2638123.12 </span>
           </div>
         </div>
       </div>
@@ -30,7 +30,7 @@
         <div class="card-content">
           <label>Personal Leave</label>
           <div class="items">
-            <span> {{ overviewData.personalLeaves }} </span>
+            <span> 12 Days </span>
           </div>
         </div>
       </div>
@@ -42,7 +42,7 @@
         <div class="card-content">
           <label>Sick Leave</label>
           <div class="items">
-            <span> {{ overviewData.sickLeaves }}</span>
+            <span> 12 Days </span>
           </div>
         </div>
       </div>
@@ -53,7 +53,19 @@
         <div class="card-content">
           <label>Days Traveled </label>
           <div class="items">
-            <span> {{ overviewData.traveledDays }} </span>
+            <span> 16 Days </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="overview-item-container">
+      <div class="overview-item">
+        <i class="fas fa-calendar-check"></i>
+        <div class="card-content">
+          <label>Leave Days Left</label>
+          <div class="items">
+            <span> 2 days </span>
           </div>
         </div>
       </div>
@@ -65,8 +77,7 @@
 export default {
   name: "Overview",
   props: {
-    user_job_details: Object,
-    overviewData: Array,
+    personalDetails: Object,
   },
 };
 </script>
