@@ -21,7 +21,34 @@ export default {
       formData: [],
       statusMap: {
         pending: { text: "Pending", icon: "loading", color: "" },
-        approved: { text: "Approved", icon: "fa-circle-check", color: "green" },
+        dean_approved: {
+          text: "Recommended by the Dean",
+          icon: "fa-circle-check",
+          color: "green",
+        },
+        hr_approved: {
+          text: "Approved by HR",
+          icon: "fa-circle-check",
+          color: "green",
+        },
+
+        vp_admin_approved: {
+          text: "Approved by VP-Admin",
+          icon: "fa-circle-check",
+          color: "green",
+        },
+
+        vp_acad_approved: {
+          text: "Approved by VP-Acad",
+          icon: "fa-circle-check",
+          color: "green",
+        },
+
+        p_admin_approved: {
+          text: "Approved by President",
+          icon: "fa-circle-check",
+          color: "green",
+        },
         endorsed: { text: "Endorsed", icon: "fa-truck", color: "green" },
         declined: { text: "Declined", icon: "fa-circle-xmark", color: "red" },
         recommended: { text: "Recommended", icon: "fa-handshake", color: "green" },

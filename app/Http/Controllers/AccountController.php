@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\LeaveForm;
+use App\Models\TravelForm;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -42,9 +45,44 @@ class AccountController extends Controller
             ->where('users.id', Auth::user()->id)
             ->first();
 
+            $personalLeaves = LeaveForm::where('leave_type', 'Personal')
+            ->where('user_id', $user->id)
+            ->where('status', 'approved')
+            ->count();
+
+            $sickLeaves = LeaveForm::where('leave_type', 'Sick')
+            ->where('user_id', $user->id)
+            ->where('status', 'approved')
+            ->count();
+
+            $travelDays = TravelForm::where('user_id', $user->id)
+            ->where('status', 'approved')
+            ->get();
+
+            $travelForms = $travelDays->pluck('amount');
+
+            $amountRequested = $travelForms->sum(); 
+
+            $totalTravel = 0;
+
+            foreach ($travelDays as $day) {
+            $dateStart = Carbon::parse($day->date_start);
+            $dateEnd = Carbon::parse($day->date_end);
+
+            $calculatedDaysFromTo = $dateEnd->diffInDays($dateStart);
+
+            $totalTravel += $calculatedDaysFromTo;
+            }
+
            
+            $overview = [
+            'amount' => $amountRequested,
+            'personalLeaves' => $personalLeaves,
+            'sickLeaves' => $sickLeaves,
+            'traveledDays' => $totalTravel,
+            ];
 
-
+        
         $auth = Session::get('authenticate');
 
         if($auth == true){
@@ -64,6 +102,7 @@ class AccountController extends Controller
             'messageSuccess' => session('success') ?? null,
             'authError' => session('error') ?? null,
             'pageTitle' => 'Account',
+            'overviewData' =>  $overview,
         ]);
     }
 

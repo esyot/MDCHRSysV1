@@ -149,10 +149,22 @@ export default {
                   src="/public/assets/loader/loading.gif"
                   alt=""
                 />
+
+                <p v-if="form.status === 'declined'">
+                  Reason for disapproval: {{ form.disapproval_description }}
+                </p>
               </div>
             </td>
             <td>{{ formatDate(form.created_at) }}</td>
             <td class="td-action">
+              <button
+                v-if="form.status === 'declined'"
+                @click="toggleFormModal(form.id, form.form_type)"
+                class="edit-btn"
+                title="Click to update your application"
+              >
+                <i class="fas fa-pencil"></i>
+              </button>
               <button @click="toggleFormModal(form.id, form.form_type)" class="edit-btn">
                 <i class="fas fa-eye"></i>
               </button>

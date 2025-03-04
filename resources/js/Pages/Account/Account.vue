@@ -15,6 +15,7 @@ export default {
     auth: Boolean,
     roles: Object,
     authError: String,
+    overviewData: Array,
   },
   data() {
     return {
@@ -26,6 +27,7 @@ export default {
         password: "",
       },
       dropdownOpen: false,
+      user_job_details: this.personalDetails.user_job_details,
     };
   },
   components: {
@@ -142,7 +144,7 @@ export default {
 
     <section id="section" :class="!auth ? 'blur' : 'none-blur'">
       <div v-if="activeTab === 'overview'">
-        <Overview :personalDetails="personalDetails" />
+        <Overview :user_job_details="user_job_details" :overviewData="overviewData" />
       </div>
 
       <div v-if="activeTab === 'personalDetails'" class="personal-details-container">

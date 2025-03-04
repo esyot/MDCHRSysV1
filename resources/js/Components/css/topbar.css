@@ -235,6 +235,8 @@
     right: 4rem;
     top: 3rem;
     width: 400px;
+    max-height: 300px;
+    overflow-y: auto;
     border-radius: 10px;
     border: 1px solid #cacaca;
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
@@ -242,9 +244,12 @@
 
   .notification-container .title{
     display: flex;
+    position: sticky;
+    top: 0;
     justify-content: space-between;
     align-items: center;
     padding: 10px;
+    background-color: #fff;
     border-bottom: 1px solid #dcdcdc;
   }
 

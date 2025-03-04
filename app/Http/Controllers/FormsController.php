@@ -240,234 +240,197 @@ class FormsController extends Controller
         
     }
 
-    public function forward(Request $request){
-
+    public function forward(Request $request)
+    {
         $this->globalVariables();
         $user = $this->user;
-
     
-       if($request->action == 'dean_approved'){
-        if($request->form_type == 'Leave Form'){
-
-            LeaveForm::find($request->id)
-            ->update([
-                'status' => $request->action,
-                'recommended_by' => Auth::user()->id,
-            ]);
-
-            $notificationController = new NotificationController();
-            $notificationController->create(
-                'Leave Form',
-                $user->last_name .', '. $user->first_name . ' forwarded a leave application, check it now.',
-                'checking',
-                'hr',
-                '/forms/checking'
-            );
-           }
-
-        if($request->form_type == 'Travel Form'){
-
-            TravelForm::where('id', $request->id)
-            ->where('user_id', $request->user_id)
-            ->update([
-                'status' => $request->action,
-                'recommended_by' => Auth::user()->id,
-            ]);
-           }
-
-           $notificationController = new NotificationController();
-           $notificationController->create(
-               'Travel Form',
-               $user->last_name .', '. $user->first_name . ' forwarded a travel form, check it now for approval.',
-               'checking',
-               'hr',
-               '/forms/checking'
-           );
-       }
-
-
-
-       if($request->action == 'hr_approved'){
-
-        if($request->form_type == 'Leave Form'){
- 
-         LeaveForm::find($request->id)
-         ->update([
-             'status' => $request->action,
-             'endorsed_by' => Auth::user()->id,
-         ]);
-
-         $notificationController = new NotificationController();
-         $notificationController->create(
-             'Leave Form',
-             $user->last_name .', '. $user->first_name . ' forwarded a leave application, check it now for approval',
-             'checking',
-             'vp-admin',
-             '/forms/checking'
-         );
-        }
-        else if($request->form_type == 'Travel Form'){
-
-            TravelForm::where('id', $request->id)
-            ->where('user_id', $request->user_id)
-            ->update([
-                'status' => $request->action,
-                'endorsed_by' => Auth::user()->id,
-            ]);
-           }
-
-           $notificationController = new NotificationController();
-           $notificationController->create(
-               'Travel Form',
-               $user->last_name .', '. $user->first_name . ' forwarded a travel application, check it now for approval',
-               'checking',
-               'vp-admin',
-               '/forms/checking'
-           );
-        
-        }
-
-       if($request->action == 'vp_admin_approved'){
-        if($request->form_type == 'Leave Form'){
-
-            LeaveForm::find($request->id)
-            ->update([
-                'days_with_pay'=> $request->days_with_pay ?? 0,
-                'days_without_pay'=> $request->days_with_pay ?? 0,
-                'status' => $request->action,
-               
-            ]);
-
-            $notificationController = new NotificationController();
-            $notificationController->create(
-             'Leave Form',
-             $user->last_name .', '. $user->first_name . ' forwarded a leave application, check it now for approval',
-             'checking',
-             'vp-acad',
-             '/forms/checking'
-         );
-           }else if($request->form_type == 'Travel Form'){
-
-            TravelForm::where('id', $request->id)
-            ->where('user_id', $request->user_id)
-            ->update([
-                'status' => $request->action,
-            ]);
-
-            $notificationController = new NotificationController();
-            $notificationController->create(
-             'Travel Form',
-             $user->last_name .', '. $user->first_name . ' forwarded a travel application, check it now for approval',
-             'checking',
-             'vp-acad',
-             '/forms/checking'
-         );
-           }
-       }
-
-       if($request->action == 'vp_acad_approved'){
-        if($request->form_type == 'Leave Form'){
-
-            LeaveForm::find($request->id)
-            ->update([
-                'status' => $request->action,
-            ]);
-
-            $notificationController = new NotificationController();
-            $notificationController->create(
-             'Leave Form',
-             $user->last_name .', '. $user->first_name . ' forwarded a leave application, check it now for approval',
-             'checking',
-             'p-admin',
-             '/forms/checking'
-            );
-           }else if($request->form_type == 'Travel Form'){
-
-            TravelForm::where('id', $request->id)
-            ->where('user_id', $request->user_id)
-            ->update([
-                'status' => $request->action,
-            ]);
-
-            $notificationController = new NotificationController();
-            $notificationController->create(
-             'Travel Form',
-             $user->last_name .', '. $user->first_name . ' forwarded a leave application, check it now for approval',
-             'checking',
-             'p-admin',
-             '/forms/checking'
-            );
-           }
-
-       }
-
-       if($request->action == 'p_admin_approved'){
-        if($request->form_type == 'Leave Form'){
-
-            LeaveForm::find($request->id)
-            ->update([
-                'status' => 'approved',
-            ]);
-
-            $notificationController = new NotificationController();
-            $notificationController->create(
-             'Leave Form',
-             $user->last_name .', '. $user->first_name . ' approved your leave application, check it now.',
-             'tracking',
-             $request->user_id,
-             '/forms/tracking'
-            );
-
-           }else if($request->form_type == 'Travel Form'){
-
-            TravelForm::where('id', $request->id)
-            ->where('user_id', $request->user_id)
-            ->update([
-                'status' => 'approved',
-            ]);
-
-            $notificationController = new NotificationController();
-            $notificationController->create(
-             'Travel Form',
-             $user->last_name .', '. $user->first_name . ' approved your travel application, check it now.',
-             'tracking',
-             $request->user_id,
-             '/forms/tracking'
-            );
-           }
-
-       }
-
-       if($request->action == 'disapproval'){
-        if($request->form_type == 'Leave Form'){
-
-            LeaveForm::find($request->id)
-            ->update([
-                'status' => 'declined',
-                'disapproved_by' => Auth::user()->id,
-                'disapproval_description' => $request->disapproval_description
-               
-            ]);
-           }
-
-           if($request->form_type == 'Travel Form'){
-
-            TravelForm::find($request->id)
-                ->update([
-                    'status' => 'declined',
-                    'disapproved_by' => Auth::user()->id,
-                    'disapproval_description' => $request->disapproval_description
-                
-                ]);
+        // Common notification controller initialization
+        $notificationController = new NotificationController();
+    
+        // Actions for 'dean_approved'
+        if ($request->action == 'dean_approved') {
+            if ($request->form_type === 'Leave Form') {
+                LeaveForm::find($request->id)
+                    ->update([
+                        'status' => $request->action,
+                        'recommended_by' => Auth::user()->id,
+                    ]);
+    
+                $notificationController->create(
+                    'Leave Form',
+                    $user->last_name . ', ' . $user->first_name . ' forwarded a leave application, check it now.',
+                    'checking',
+                    'hr',
+                    '/forms/checking'
+                );
+            } elseif ($request->form_type === 'Travel Form') {
+                TravelForm::where('id', $request->id)
+                    ->where('user_id', $request->user_id)
+                    ->update([
+                        'status' => $request->action,
+                        'recommended_by' => Auth::user()->id,
+                    ]);
+    
+                $notificationController->create(
+                    'Travel Form',
+                    $user->last_name . ', ' . $user->first_name . ' forwarded a travel form, check it now for approval.',
+                    'checking',
+                    'hr',
+                    '/forms/checking'
+                );
             }
+        }elseif ($request->action == 'hr_approved') {
+            if ($request->form_type == 'Leave Form') {
+                LeaveForm::find($request->id)
+                    ->update([
+                        'status' => $request->action,
+                        'endorsed_by' => Auth::user()->id,
+                    ]);
+    
+                $notificationController->create(
+                    'Leave Form',
+                    $user->last_name . ', ' . $user->first_name . ' forwarded a leave application, check it now for approval.',
+                    'checking',
+                    'vp-admin',
+                    '/forms/checking'
+                );
+            } elseif ($request->form_type == 'Travel Form') {
+                TravelForm::where('id', $request->id)
+                    ->where('user_id', $request->user_id)
+                    ->update([
+                        'status' => $request->action,
+                        'endorsed_by' => Auth::user()->id,
+                    ]);
+    
+                $notificationController->create(
+                    'Travel Form',
+                    $user->last_name . ', ' . $user->first_name . ' forwarded a travel application, check it now for approval.',
+                    'checking',
+                    'vp-admin',
+                    '/forms/checking'
+                );
+            }
+        }elseif ($request->action == 'vp_admin_approved') {
+            if ($request->form_type == 'Leave Form') {
+                LeaveForm::find($request->id)
+                    ->update([
+                        'days_with_pay' => $request->days_with_pay ?? 0,
+                        'days_without_pay' => $request->days_without_pay ?? 0,
+                        'status' => $request->action,
+                    ]);
+    
+                $notificationController->create(
+                    'Leave Form',
+                    $user->last_name . ', ' . $user->first_name . ' forwarded a leave application, check it now for approval.',
+                    'checking',
+                    'vp-acad',
+                    '/forms/checking'
+                );
+            } elseif ($request->form_type == 'Travel Form') {
+                TravelForm::where('id', $request->id)
+                    ->where('user_id', $request->user_id)
+                    ->update([
+                        'status' => $request->action,
+                    ]);
+    
+                $notificationController->create(
+                    'Travel Form',
+                    $user->last_name . ', ' . $user->first_name . ' forwarded a travel application, check it now for approval.',
+                    'checking',
+                    'vp-acad',
+                    '/forms/checking'
+                );
+            }
+        }elseif ($request->action == 'vp_acad_approved') {
+            if ($request->form_type == 'Leave Form') {
+                LeaveForm::find($request->id)
+                    ->update([
+                        'status' => $request->action,
+                    ]);
+    
+                $notificationController->create(
+                    'Leave Form',
+                    $user->last_name . ', ' . $user->first_name . ' forwarded a leave application, check it now for approval.',
+                    'checking',
+                    'p-admin',
+                    '/forms/checking'
+                );
+            } elseif ($request->form_type == 'Travel Form') {
+                TravelForm::where('id', $request->id)
+                    ->where('user_id', $request->user_id)
+                    ->update([
+                        'status' => $request->action,
+                    ]);
+    
+                $notificationController->create(
+                    'Travel Form',
+                    $user->last_name . ', ' . $user->first_name . ' forwarded a travel application, check it now for approval.',
+                    'checking',
+                    'p-admin',
+                    '/forms/checking'
+                );
+            }
+        }elseif ($request->action == 'p_admin_approved') {
+            if ($request->form_type == 'Leave Form') {
+                LeaveForm::find($request->id)
+                    ->update([
+                        'status' => 'approved',
+                    ]);
 
-       }
+                $userId = LeaveForm::where('id', $request->id)->get()->pluck('user_id');
+    
+                $notificationController->create(
+                    'Leave Form',
+                    $user->last_name . ', ' . $user->first_name . ' approved your leave application, check it now.',
+                    'tracking',
+                    $userId,
+                    '/forms/tracking'
+                );
+            } elseif ($request->form_type == 'Travel Form') {
+                TravelForm::where('id', $request->id)
+                    ->where('user_id', $request->user_id)
+                    ->update([
+                        'status' => 'approved',
+                    ]);
 
-       return redirect()->back()->with([
-        'success'=>'Form submitted successfully!'
-       ]);
+                $userId = TravelForm::where('id', $request->id)->get()->pluck('user_id');
+    
+                $notificationController->create(
+                    'Travel Form',
+                    $user->last_name . ', ' . $user->first_name . ' approved your travel application, check it now.',
+                    'tracking',
+                    $userId,
+                    '/forms/tracking'
+                );
+            }
+        }
 
+        else {
+            if ($request->form_type == 'Leave Form') {
+                LeaveForm::find($request->id)
+                    ->update([
+                        'status' => 'declined',
+                        'disapproved_by' => Auth::user()->id,
+                        'disapproval_description' => $request->disapproval_description,
+                    ]);
+            }
+    
+            if ($request->form_type == 'Travel Form') {
+                TravelForm::find($request->id)
+                    ->update([
+                        'status' => 'declined',
+                        'disapproved_by' => Auth::user()->id,
+                        'disapproval_description' => $request->disapproval_description,
+                    ]);
+            }
+        }
+    
+        return redirect()->back()->with([
+            'success' => 'Form submitted successfully!',
+        ]);
     }
+    
     public function find($form_type, $user_id, $year)
     {
         $forms = [];
