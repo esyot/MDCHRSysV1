@@ -278,12 +278,20 @@
     background-color: #e1e1e1;
   }
 
-  .notification-container .column{
+  .notification-container .item-left{
     display: flex;
     flex-direction: column;
     width: 310px;
   }
-  .notification-container .column .notif-title{
+
+  .notification-container .item-right{
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+  }
+
+
+  .notification-container .item-left .notif-title{
     font-weight: bold;
   }
 

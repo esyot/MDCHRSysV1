@@ -81,7 +81,7 @@ export default {
       this.fetchNotifCount(this.user.id);
       this.fetchInterval = setInterval(() => {
         this.fetchNotifCount(this.user.id);
-      }, 10000);
+      }, 1000);
     },
     stopFetchingNotifications() {
       if (this.fetchInterval) {
@@ -174,10 +174,10 @@ export default {
               v-if="isOpenNotificationsOptions"
               class="notification-options"
             >
-              <InertiaLink :href="'/notifications/read/' + user.id + '/all'"
+              <InertiaLink :href="`/notifications/read/${user.id}/all`"
                 >Mark all as read</InertiaLink
               >
-              <InertiaLink :href="`/notifications/${user.id}/delete/all`"
+              <InertiaLink :href="`/notifications/delete/${user.id}/all`"
                 >Delete all</InertiaLink
               >
             </div>
@@ -189,11 +189,11 @@ export default {
             :class="checkStatus(notification.isReadBy)"
           >
             <div class="notif-item">
-              <div class="column">
+              <div class="item-left">
                 <span class="notif-title">{{ notification.title }}</span>
                 <small class="notif-desc">{{ notification.description }}</small>
               </div>
-              <div>
+              <div class="item-right">
                 <small>{{ calculateTimeAgo(notification.created_at) }}</small>
               </div>
             </div>

@@ -102,7 +102,7 @@ Route::middleware([Check2WayVerification::class])->group(function () {
 
         Route::get('/notifications/{id}', [NotificationController::class,'fetch']);
         Route::get('/notifications/read/{id}/{type}', [NotificationController::class, 'read']);
-        Route::get('/notifications/{id}/delete/{selection}', [NotificationController::class, 'delete']);
+        Route::get('/notifications/delete/{id}/{type}', [NotificationController::class, 'delete']);
 
     });
     });

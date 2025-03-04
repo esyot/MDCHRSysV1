@@ -82,12 +82,17 @@ class NotificationController extends Controller
     
         $filteredNotifications = $notifications->filter(function ($notification) use ($id) {
             $array = json_decode($notification->for, true);
+            $arrayDeleted = json_decode($notification->isDeletedBy, true);
     
             if (!is_array($array)) {
                 $array = [];
             }
+
+            if (!is_array($arrayDeleted)) {
+                $arrayDeleted = [];
+            }
     
-            return in_array($id, $array);
+            return in_array($id, $array) && !in_array($id, $arrayDeleted);
         });
     
        
@@ -132,8 +137,12 @@ class NotificationController extends Controller
             ->get(); 
     
             foreach ($notifications as $notification) {
+
+               
                
                 $isReadBy = json_decode($notification->isReadBy, true);
+                $for = json_decode($notification->for, true);
+               
         
                 
                 if (!is_array($isReadBy)) {
@@ -148,6 +157,11 @@ class NotificationController extends Controller
                 $notification->isReadBy = json_encode($isReadBy);
                 $notification->save();
 
+    
+                if($for === $isReadBy){
+                    $notification->delete();
+                }
+
                 
             }
 
@@ -158,10 +172,39 @@ class NotificationController extends Controller
     }
     
 
-    public function delete($id, $selection){
-
-       
-        return redirect()->back()->with('success', 'Notifications deleted successfully!');
+    public function delete($id , $type)
+    {
+        
+        $id = (int)$id;
+        $type = (string)$type;
+           
+            $notifications = Notification::whereJsonContains('for', $id)
+            ->whereJsonDoesntContain('isDeletedBy', $id)
+            ->get(); 
     
-}
+            foreach ($notifications as $notification) {
+               
+                $isDeletedBy = json_decode($notification->isDeletedBy, true);
+        
+                
+                if (!is_array($isDeletedBy)) {
+                    $isDeletedBy = [];
+                }
+        
+              
+                if (!in_array($id, $isDeletedBy)) {
+                    $isDeletedBy[] = $id; 
+                }
+        
+                $notification->isDeletedBy = json_encode($isDeletedBy);
+                $notification->save();
+
+                
+            }
+
+            return redirect()->back()->with('success', 'Notifications deleted successfully!');
+        
+       
+       
+    }
 }
