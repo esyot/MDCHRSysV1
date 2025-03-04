@@ -25,8 +25,6 @@ return new class extends Migration
             $table->string('other_reason')->nullable();
             $table->text('description')->nullable();
             $table->enum('status', ['pending', 'dean_approved', 'hr_approved', 'vp_acad_approved','vp_admin_approved', 'declined', 'approved'])->default('pending');
-            $table->string('endorsed_by')->nullable();
-            $table->string('recommended_by')->nullable();
             $table->date('date_start');
             $table->date('date_end');
             $table->date('date_of_confinement')->nullable();
@@ -35,7 +33,10 @@ return new class extends Migration
             $table->integer('days_with_pay')->nullable();
             $table->integer('days_without_pay')->nullable();
             $table->integer('others')->nullable();
-            $table->String('disapproval_description')->nullable();
+            $table->string('endorsed_by')->nullable();
+            $table->string('recommended_by')->nullable();
+            $table->string('disapproved_by')->nullable();
+            $table->string('disapproval_description')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

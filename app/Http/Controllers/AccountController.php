@@ -42,6 +42,8 @@ class AccountController extends Controller
             ->where('users.id', Auth::user()->id)
             ->first();
 
+           
+
 
         $auth = Session::get('authenticate');
 

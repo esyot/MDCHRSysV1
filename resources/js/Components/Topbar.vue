@@ -81,7 +81,7 @@ export default {
       this.fetchNotifCount(this.user.id);
       this.fetchInterval = setInterval(() => {
         this.fetchNotifCount(this.user.id);
-      }, 1000);
+      }, 5000);
     },
     stopFetchingNotifications() {
       if (this.fetchInterval) {

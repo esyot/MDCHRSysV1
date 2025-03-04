@@ -1,3 +1,12 @@
+<script>
+export default {
+      props: {
+        personalDetails: Object,
+    },
+  name: "Page2",
+};
+</script>
+
 <template>
   <div class="page-content">
         <div class="title">IV. PROFESSIONAL GOVERNMENT EXAMINATION PASSED/CIVIL SERVICE ELIGIBILITY</div>
@@ -16,38 +25,14 @@
                         <th>Date of Validity</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody v-for="prof_examination in personalDetails.user_professional_examinations">
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>{{ prof_examination.title}}</td>
+                        <td>{{ prof_examination.rating }}</td>
+                        <td>{{ prof_examination.date }}</td>
+                        <td>{{ prof_examination.place }}</td>
+                        <td>{{ prof_examination.license_no }}</td>
+                        <td>{{ prof_examination.validity }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -65,30 +50,12 @@
                         <th>AWARDED BY</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody v-for="award in personalDetails.user_award_receives">
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>{{ award.date_received }}</td>
+                        <td>{{ award.title }}</td>
+                        <td>{{ award.recognition_place }}</td>
+                        <td>{{ award.awarded_by }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -105,18 +72,12 @@
                             <th>AWARDED BY</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody v-for="admin_pos in personalDetails.user_admin_pos_helds">
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{{ admin_pos.date }}</td>
+                            <td>{{ admin_pos.title }}</td>
+                            <td>{{ admin_pos.recognition_place }}</td>
+                            <td>{{ admin_pos.awarded_by }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -138,58 +99,17 @@
                         <th>From</th>
                         <th>To</th>
                     </tr>
-
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
                 </thead>
-                <tbody>
+                <tbody v-for="work_exp in personalDetails.user_work_experiences">
+                     <tr>
 
+                        <td>{{ work_exp.date_from }}</td>
+                        <td>{{ work_exp.date_to }}</td>
+                        <td>{{ work_exp.position }}</td>
+                        <td>{{ work_exp.company_name }}</td>
+                        <td>{{ work_exp.rank }}</td>
+                        <td>{{ work_exp.status }}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -206,69 +126,13 @@
                         <th>LINK OF JOURNAL/VOLUME NUMBER</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody  v-for="research in personalDetails.user_studies">
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
 
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-
+                        <td>{{ research.date_published }}</td>
+                        <td>{{ research.research_title }}</td>
+                        <td>{{ research.journal_name }}</td>
+                        <td>{{ research.link }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -286,12 +150,6 @@
         </div>
     </div>
 </template>
-
-<script>
-export default {
-  name: "Page2",
-};
-</script>
 
 <style scoped>
 ::-webkit-scrollbar {

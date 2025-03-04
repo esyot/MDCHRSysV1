@@ -1,3 +1,11 @@
+<script>
+export default {
+    props: {
+        personalDetails: Object,
+    },
+    name: "Page3",
+};
+</script>
 <template>
   <div class="page-content">
 
@@ -19,55 +27,20 @@
                 </tr>
             </thead>
 
-            <tbody>
+            <tbody v-for="participation in personalDetails.user_participations">
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ participation.title }}</td>
+                    <td>{{ participation.date_from }}</td>
+                    <td>{{ participation.date_to }}</td>
+                    <td>{{ participation.hours_no }}</td>
+                    <td>{{ participation.position }}</td>
                 </tr>
             </tbody>
         </table>
     </div>
     <div class="title">XII. SPECIAL TRAINING COURSES, SEMINARS, CONFERENCES, SYMPOSIA, ETC. PARTICIPATED(last 5 years) </br>
     (Start from the most recent training and include only the relevant training or program)</div>
- 
+
     <div class="table-group">
         <table>
             <thead>
@@ -86,123 +59,15 @@
                     <th>To</th>
                 </tr>
             </thead>
-            <tbody>
-
-                
+            <tbody v-for="training in personalDetails.user_special_trainings">
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ training.title }}</td>
+                    <td>{{ training.attendance_from }}</td>
+                    <td>{{ training.attendance_to }}</td>
+                    <td>{{ training.days }}</td>
+                    <td>{{ training.type }}</td>
+                    <td>{{ training.conducted_by }}</td>
                 </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-               
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-
             </tbody>
         </table>
     </div>
@@ -218,43 +83,12 @@
                     (Write in full)</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody v-for="other_infos in personalDetails.user_other_infos"></br>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ other_infos.skill }}</td>
+                    <td>{{ other_infos.recognition_title }}</td>
+                    <td>{{ other_infos.org_name }}</td>
                 </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-
             </tbody>
         </table>
     </div>
@@ -272,12 +106,6 @@
 
   </div>
 </template>
-
-<script>
-export default {
-  name: "Page3",
-};
-</script>
 
 <style scoped>
 ::-webkit-scrollbar {
@@ -337,9 +165,9 @@ body {
             overflow-x: auto;
         }
 
-       
+
         table {
-           
+
   border-collapse: collapse;
   table-layout: auto;
         }
@@ -350,7 +178,7 @@ body {
         }
         td {
             height: 10px;
-          
+
         }
 
         th {

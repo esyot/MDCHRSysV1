@@ -107,21 +107,6 @@ Route::middleware([Check2WayVerification::class])->group(function () {
     });
     });
 
-    Route::get('/personal-data-sheet', function(){
-        return view('forms.personalDataSheet');
-    });
-
-    Route::get('/personal-data-sheet2', function(){
-        return view('forms.page2');
-    });
-
-    Route::get('/personal-data-sheet3', function(){
-        return view('forms.page3');
-    });
-
-    Route::get('/personal-data-sheet4', function(){
-        return view('forms.page4');
-    });
 
    
 

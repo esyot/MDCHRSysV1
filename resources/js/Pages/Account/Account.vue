@@ -82,17 +82,18 @@ export default {
       v-if="activeTab === 'personalDetails'"
       title="Click to preview personal data"
       class="toggle-btn"
+      @click="toggleDropdown"
     >
-      <i class="fas fa-ellipsis-v" @click="toggleDropdown"></i>
+      <i class="fas fa-ellipsis-v"></i>
+
       <div class="dropdown-content" v-if="dropdownOpen" @click.self="toggleDropdown">
-        <ul>
-          <a
-            href="/account/personal-data-sheet/preview"
-            target="_blank"
-            title="Click to preview personal data"
-            ><li>View as .pdf</li></a
-          >
-        </ul>
+        <a
+          href="/account/personal-data-sheet/preview"
+          target="_blank"
+          title="Click to preview personal data"
+        >
+          View as .pdf
+        </a>
       </div>
     </div>
   </nav>
@@ -156,205 +157,5 @@ export default {
 </template>
 
 <style scoped>
-#section {
-  user-select: none;
-}
-.blur {
-  filter: blur(5px);
-}
-@media (orientation: landscape) {
-  nav {
-    display: flex;
-    align-items: center;
-    justify-content: start;
-    margin: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  nav span {
-    text-align: center;
-    font-weight: bold;
-    z-index: 10;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    opacity: 40%;
-    color: #fff;
-    margin-left: 3rem;
-  }
-
-  nav span:hover {
-    opacity: 100%;
-    scale: 1.3;
-    transition-duration: 600ms;
-  }
-
-  nav i {
-    filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.3));
-  }
-  nav span.active {
-    color: #fff;
-    opacity: 100%;
-    scale: 1.3;
-  }
-}
-
-@media (orientation: portrait) {
-  nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    margin: 5px;
-    border-radius: 5px;
-  }
-  nav span {
-    text-align: center;
-    font-weight: bold;
-    z-index: 10;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    opacity: 40%;
-    color: #fff;
-  }
-
-  nav span:hover {
-    opacity: 100%;
-    scale: 1.2;
-  }
-
-  nav i {
-    filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.3));
-  }
-  nav span.active {
-    color: #fff;
-    opacity: 100%;
-    scale: 1.3;
-  }
-}
-
-.user-content {
-  padding: 10px;
-}
-
-.user-role {
-  display: flex;
-  gap: 0.5rem;
-}
-.user-details {
-  display: flex;
-  flex-direction: column;
-}
-.user-details .name {
-  font-size: 30px;
-  font-weight: bold;
-}
-
-.user-details h1 {
-  color: #fff;
-}
-
-.user-details i {
-  color: #fff;
-}
-
-.user-details span {
-  color: #fff;
-}
-
-.content {
-  margin: 5px;
-}
-.security {
-  width: 100%;
-  height: auto;
-}
-
-.count {
-  font-size: 16px;
-}
-
-.profile-container {
-  display: flex;
-}
-
-.user {
-  border-radius: 5px;
-  background: linear-gradient(to top, rgb(0, 0, 0), rgba(0, 0, 0, 0.1));
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-  align-items: start;
-  height: 30vh;
-  box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.3);
-}
-
-.user-img {
-  height: 100px;
-  width: 100px;
-  border-radius: 50%;
-  object-fit: fill;
-  border: #dadada 4px solid;
-  box-shadow: 1px 2px 10px rgb(0, 0, 0);
-}
-.user-img:hover {
-  cursor: pointer;
-  opacity: 60%;
-}
-
-.edit-btn {
-  display: absolute;
-  position: relative;
-  right: 30px;
-  bottom: 12px;
-  z-index: 9;
-  color: #fff;
-  font-size: 12px;
-  background-color: rgb(55, 103, 246);
-  padding: 7px;
-  border-radius: 100%;
-  cursor: pointer;
-  box-shadow: 1px 2px 10px rgb(0, 0, 0);
-}
-
-.edit-btn:hover {
-  background-color: rgb(29, 81, 236);
-}
-
-.dropdown-content {
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 100;
-}
-
-.dropdown-content ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-.dropdown-content ul a {
-  text-decoration: none;
-  color: #000;
-}
-
-.dropdown-content li {
-  padding: 8px 16px;
-  cursor: pointer;
-}
-
-.dropdown-content li:hover {
-  background-color: #cccccc;
-}
-
-.toggle-btn {
-  display: block;
-  margin-left: 20px;
-  padding: 10px;
-}
-
-.toggle-btn i {
-  color: #fff;
-}
+@import "./css/account.css";
 </style>

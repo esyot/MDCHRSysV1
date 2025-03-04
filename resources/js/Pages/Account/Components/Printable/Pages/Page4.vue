@@ -1,3 +1,11 @@
+<script>
+export default {
+        props: {
+            personalDetails: Object,
+        },
+        name: "Page4",
+    };
+</script>
 <template>
   <div class="page-content">
         <div class="title">XII. CORRICULAR/CO-CURRICULAR/EXTRA CURRICULAR AND SCHOOL COMMITTEE ASSIGNMENTS </br>
@@ -12,106 +20,13 @@
                         <th>INCLUSIVE DATES</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody v-for="school_curricular in personalDetails.user_school_curriculars">
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>{{ school_curricular.designation }}</td>
+                        <td>{{ school_curricular.event_name }}</td>
+                        <td>{{ school_curricular.title }}</td>
+                        <td>{{ school_curricular.date }}</td>
                     </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                   
-                       
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-
                 </tbody>
             </table>
 
@@ -121,16 +36,18 @@
                 <div class="questions">
                     <label for="">a. Have you ever been found guilty of any administrative offense?</label>
                 </div>
+               <div class="answers" v-if="personalDetails.user_other_details">
 
-                <div class="answers">
-
-                    <input type="checkbox"> <label for="">Yes</label>
-                    <input type="checkbox"> <label for="">No</label> </br>
+                    <input type="checkbox" :checked="personalDetails.user_other_details.administrative_offense !== 'no'"> <label for="">Yes</label>
+                    <input type="checkbox" :checked="personalDetails.user_other_details.administrative_offense === 'no'"> <label for="">No</label> </br>
                     <label for="">If YES, give details:</label> </br>
-                    <input type="text">
+                    <div v-if="personalDetails.user_other_details.administrative_offense !== 'no'">
+                            <input type="text" :value="personalDetails.user_other_details.administrative_offense">
+                    </div>
+                    <div v-else>
+                        <input type="text">
+                    </div>
                 </div>
-
-
             </div>
 
             <div class="questions-group">
@@ -138,12 +55,17 @@
                     <label for="">b. Have you been criminally charged before any court?</label>
                 </div>
 
-                <div class="answers">
-                    <input type="checkbox"> <label for="">Yes</label>
-                    <input type="checkbox"> <label for="">No</label> </br>
-                    <label for="">If YES, give details:</label> </br>
-                    <label for="">Date Filed:</label><input type="text"> </br>
-                    <label for="">Status of Case/s:</label><input type="text">
+                <div class="answers" v-if="personalDetails.user_other_details" >
+                    <input type="checkbox" :checked="personalDetails.user_other_details.criminal_charge !=='no'"> <label for="">Yes</label>
+                    <input type="checkbox" :checked="personalDetails.user_other_details.criminal_charge ==='no'"> <label for="">No</label> </br>
+                    <label for="">If YES, give details:</label> </br><label for="">Date Filed:</label><input type="text"> </br>
+                    <div v-if="personalDetails.user_other_details.criminal_charge !== 'no'">
+                        <input type="text" :value="personalDetails.user_other_details.criminal_charge">
+                    </div>
+                    <div v-else>
+                        <input type="text">
+                    </div>
+
                 </div>
 
 
@@ -154,12 +76,16 @@
                     <label for="">Have you even been convicted of any crime or violation of any law, decree, ordinance or regulation by any court or tribunal?</label>
                 </div>
 
-                <div class="answers">
-
-                    <input type="checkbox"> <label for="">Yes</label>
-                    <input type="checkbox"> <label for="">No</label> </br>
+                <div class="answers" v-if="personalDetails.user_other_details">
+                    <input type="checkbox" :checked="personalDetails.user_other_details.tribunal !=='no'"> <label for="">Yes</label>
+                    <input type="checkbox" :checked="personalDetails.user_other_details.tribunal ==='no'"> <label for="">No</label> </br>
                     <label for="">If YES, give details:</label> </br>
-                    <input type="text">
+                    <div v-if="personalDetails.user_other_details.tribunal !== 'no'">
+                        <input type="text" :value="personalDetails.user_other_details.tribunal">
+                    </div>
+                    <div v-else>
+                        <input type="text">
+                    </div>
                 </div>
 
 
@@ -170,11 +96,16 @@
                     <label for="">Have you even been separated from the service in any of the following modes: resignation, retirement, dropped from the rolls, dismissal, termination, end of term, finished contract of phased out (abolition) in the public or private sector?</label>
                 </div>
 
-                <div class="answers">
-                    <input type="checkbox"> <label for="">Yes</label>
-                    <input type="checkbox"> <label for="">No</label> </br>
+                <div class="answers" v-if="personalDetails.user_other_details">
+                    <input type="checkbox" :checked="personalDetails.user_other_details.service_separation !=='no'"> <label for="">Yes</label>
+                    <input type="checkbox" :checked="personalDetails.user_other_details.service_separation ==='no'"> <label for="">No</label> </br>
                     <label for="">If YES, give details:</label> </br>
-                    <input type="text">
+                    <div v-if="personalDetails.user_other_details.service_separation !== 'no'">
+                        <input type="text" :value="personalDetails.user_other_details.service_separation">
+                    </div>
+                    <div v-else>
+                        <input type="text">
+                    </div>
                 </div>
 
 
@@ -185,11 +116,16 @@
                     <label for="">Have you ever been a candidate in a national or local election held within the last year (except Barangay election)?</label>
                 </div>
 
-                <div class="answers">
-                    <input type="checkbox"> <label for="">Yes</label>
-                    <input type="checkbox"> <label for="">No</label> </br>
+                <div class="answers" v-if="personalDetails.user_other_details">
+                    <input type="checkbox" :checked="personalDetails.user_other_details.election_candidacy !=='no'"> <label for="">Yes</label>
+                    <input type="checkbox" :checked="personalDetails.user_other_details.election_candidacy ==='no'"> <label for="">No</label> </br>
                     <label for="">If YES, give details:</label> </br>
-                    <input type="text">
+                    <div v-if="personalDetails.user_other_details.election_candidacy !== 'no'">
+                        <input type="text" :value="personalDetails.user_other_details.election_candidacy">
+                    </div>
+                    <div v-else>
+                        <input type="text">
+                    </div>
                 </div>
 
 
@@ -208,28 +144,13 @@
                             <th>TEL. NO.</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody v-for="references in personalDetails.user_references">
                         <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{{ references.name }}</td>
+                            <td>{{ references.address.house_no }}, {{ references.address.street }}, {{ references.address.subdv }}, {{ references.address.brgy }}, {{ references.address.municipality }}, {{ references.address.province }}, {{ references.address.zip_code }}</td>
+                            <td>{{ references.contact_no }}</td>
 
                         </tr>
-
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-
-                        </tr>
-
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-
-                        </tr>
-
                     </tbody>
                 </table>
                 <div class="questions">
@@ -249,12 +170,25 @@
     <div class="card-container">
         <div class="card-group">
             <div class="cards">
-                <label for="" style="background-color: #accdfb">Government Issued ID(Passport, GSIS, SSS, PRC, Driver's License, etc.)</br>
+                <label class="ids-label" for="" style="background-color: #accdfb">Government Issued ID(Passport, GSIS, SSS, PRC, Driver's License, etc.)</br>
                     PLEASE INDICATE ID NUMBER and Date of Issuance
                 </label>
-                <label for="">Government Issued ID:</label>
-                <label for="">ID/License/Passport No.:</label>
-                <label for="">Date/Place of Issuance:</label>
+                <table>
+                    <thead>
+                        <tr class="ids">
+                            <td >Issued ID: </td>
+                            <td >ID No.:</td>
+                            <td >Date of Issuance:</td>
+                        </tr>
+                    </thead>
+                    <tbody v-for="valid_ids in personalDetails.user_valid_ids">
+                        <tr class="ids">
+                            <td>{{ valid_ids.id_type }}</td>
+                            <td>{{ valid_ids.id_no }}</td>
+                            <td>{{ valid_ids.date_issued }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <div class="second-card">
@@ -283,12 +217,6 @@
 </div>
 
 </template>
-
-<script>
-export default {
-  name: "Page4",
-};
-</script>
 
 <style scoped>
 ::-webkit-scrollbar {
@@ -455,7 +383,7 @@ body {
 }
 
 .cards label {
-    font-size: 10px;
+    font-size: 8px;
     padding: 2px 0 4.5px 2px;
     border-bottom: 1px solid black;
 }
@@ -544,5 +472,9 @@ body {
     th, td {
         border: 1px solid black;
     }
+}
+.ids{
+    font-size: 8px;
+    padding: 0,0,0,0;
 }
 </style>

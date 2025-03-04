@@ -450,6 +450,17 @@ class FormsController extends Controller
             ]);
            }
 
+           if($request->form_type == 'Travel Form'){
+
+            TravelForm::find($request->id)
+                ->update([
+                    'status' => 'declined',
+                    'disapproved_by' => Auth::user()->id,
+                    'disapproval_description' => $request->disapproval_description
+                
+                ]);
+            }
+
        }
 
        return redirect()->back()->with([

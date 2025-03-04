@@ -542,6 +542,9 @@ class PersonalDetailController extends Controller
             ->where('users.id', Auth::user()->id)
             ->first();
 
+
+           
+
             if($action === 'preview'){
 
         return inertia('Pages/Account/Components/Printable/Printable', [
