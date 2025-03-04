@@ -43,7 +43,8 @@ class DashboardController extends Controller
             'leaveRequestCount' => $leaveRequestCount,
             'travelRequestCount' => $travelRequestCount,
             'userOnLeave' => $userOnLeave,
-            'userOnTravel'=>  $userOnTravel
+            'userOnTravel'=>  $userOnTravel,
+            'messageSuccess' => session('success') ?? null,
 
         ]);
     }

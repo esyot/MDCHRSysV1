@@ -66,9 +66,9 @@ export default {
     <table>
       <thead>
         <tr>
-          <th class="start">Department Name</th>
-          <th>Department Acronym</th>
-          <th>Parent Department</th>
+          <th class="start">Name</th>
+          <th>Acronym</th>
+          <th>Parent</th>
           <th>Dean</th>
           <th class="center">Actions</th>
         </tr>

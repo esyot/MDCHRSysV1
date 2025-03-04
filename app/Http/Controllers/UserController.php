@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
+use App\Models\Evaluation;
 use App\Models\LeaveForm;
 use App\Models\TravelForm;
 use App\Models\User;
@@ -204,18 +205,29 @@ class UserController extends Controller
                return strtotime($b['created_at']) - strtotime($a['created_at']);
             });
 
+
+            $pageTitle = $personalDetails->last_name .', ' .$personalDetails->first_name .' '. $personalDetails->middle_name[0].'.';
+
+            $evaluations = Evaluation::where('user_id', $id)->with([
+                'user', 
+                'conductor'
+            ])->get();
+
+           
+          
          return Inertia::render('Pages/Admin/UserView', [
             'user' => Auth::user(),
             'personalDetails' => $personalDetails,
             'roles' => $roles,
             'userRoles' => $userRoles,
-            'pageTitle' => 'User Details',
+            'pageTitle' =>  $pageTitle,
             'userDepartments' => $userDepartments,
             'roleList'=>  $roleList,
             'user_id' => $id,
             'messageSuccess' => session('success') ?? null,
             'departmentList' => $departmentList,
-            'forms'=>  $flattenedForms
+            'forms'=>  $flattenedForms,
+            'evaluations' => $evaluations
         ]);
 
     }

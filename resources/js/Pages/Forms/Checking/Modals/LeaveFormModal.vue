@@ -277,7 +277,7 @@
             </span>
           </div>
 
-          <table>
+          <table v-if="roles.includes('hr')">
             <thead>
               <tr>
                 <th></th>

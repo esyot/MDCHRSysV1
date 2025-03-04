@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('questions');
             $table->text('comments');
-            $table->date('date');
+            $table->dateTime('date_time');
             $table->string('ratings');
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('conducted_by')->unsigned();

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationCreate;
 use App\Models\LeaveForm;
 use App\Models\Substitute;
 use App\Models\User;
+use App\Models\UserDepartment;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -110,10 +112,22 @@ class LeaveFormController extends Controller
               
                 Substitute::create($sub);
 
-
                }
               
             }
+
+           
+            $notificationController = new NotificationController();
+
+            $notificationController->create(
+                'Leave Form', 
+                'A user submitted a leave form, check it now!',
+                'checking',
+                'dean',
+                '/forms/checking'
+        );
+          
+
         
     
         return redirect()->route('forms.tracking')->with('success', 'Leave request submitted successfully!.');

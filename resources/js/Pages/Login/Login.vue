@@ -47,18 +47,19 @@
               {{ responseData.password.errorMessage }}
             </span>
           </div>
-
-          <button type="submit">Log In</button>
+          <div class="login-btn" @mouseover="moveButton" :style="buttonStyle">
+            <button type="submit">Log In</button>
+          </div>
         </form>
 
-        <p class="forgot-password">
-          <a href="#">Forgot Password?</a>
+        <p class="description">
+          If you don’t remember your account credentials or have forgotten your password,
+          please get in touch with the Systems Development & Administration Office.
         </p>
       </div>
     </div>
   </div>
 </template>
-
 <script>
 import { Inertia } from "@inertiajs/inertia";
 
@@ -76,11 +77,32 @@ export default {
       errorMessage: this.$page?.props?.errorMessage || "",
       loading: false,
       isPasswordVisible: false,
+      buttonStyle: {
+        transition: "transform 0.3s ease",
+      },
     };
   },
   props: {
     responseData: {
       type: Object,
+    },
+  },
+  watch: {
+    "user.value": function (newValue) {
+      if (newValue && this.password.value) {
+        this.buttonStyle = {
+          transition: "transform 0.3s ease",
+          transform: "translate(0, 0)",
+        };
+      }
+    },
+    "password.value": function (newValue) {
+      if (this.user.value && newValue) {
+        this.buttonStyle = {
+          transition: "transform 0.3s ease",
+          transform: "translate(0, 0)",
+        };
+      }
     },
   },
   methods: {
@@ -108,187 +130,23 @@ export default {
     viewPassword() {
       this.isPasswordVisible = !this.isPasswordVisible;
     },
+
+    moveButton(event) {
+      if (!this.user.value || !this.password.value) {
+        const distance = 500;
+        const offsetX = Math.random() * distance - distance / 2;
+        const offsetY = Math.random() * distance - distance / 2;
+
+        this.buttonStyle = {
+          transition: "transform 0.2s ease-out",
+          transform: `translate(${offsetX}px, ${offsetY}px)`,
+        };
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
-.error {
-  display: flex;
-  font-style: italic;
-  color: #ff0000;
-  font-weight: lighter;
-  font-size: 12px;
-}
-.usernameField i {
-  opacity: 50%;
-  padding: 10px 11px;
-  cursor: pointer;
-}
-
-.usernameField i:hover {
-  opacity: 60%;
-}
-.field-icon-user {
-  background-color: #0051ff;
-  color: #fff;
-  padding: 10px 11px;
-  border-top-left-radius: 2px;
-  border-bottom-left-radius: 2px;
-}
-
-.field-icon-pass {
-  background-color: #ff0000;
-  color: #fff;
-  border-top-left-radius: 2px;
-  border-bottom-left-radius: 2px;
-}
-.usernameField {
-  display: flex;
-  border: 1px solid #ddd;
-}
-.passwordField {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #000;
-  width: 100%;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.usernameField {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #000;
-  width: 100%;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.userField i {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #000;
-  width: 100%;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.passwordField i {
-  opacity: 50%;
-  padding: 10px;
-  cursor: pointer;
-}
-
-.passwordField i:hover {
-  opacity: 60%;
-}
-#user {
-  background-color: transparent;
-  border: none;
-}
-#password {
-  background-color: transparent;
-  border: none;
-}
-.container {
-  display: flex;
-  position: fixed;
-  align-items: center;
-  justify-content: center;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(94, 204, 216, 0.3), rgba(10, 124, 137));
-}
-
-.content {
-  background-color: #fff;
-  padding: 40px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  width: 350px;
-  text-align: center;
-  margin: 10px;
-}
-
-.logo {
-  margin-bottom: 20px;
-}
-
-.logo img {
-  width: 120px;
-  height: auto;
-  filter: drop-shadow(4px 4px 10px rgba(0, 0, 0, 0.3));
-}
-
-.login-form h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.input-group {
-  text-align: left;
-  margin-bottom: 18px;
-}
-
-.input-group label {
-  display: block;
-  font-size: 14px;
-  color: #555;
-}
-
-input {
-  width: 100%;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.input-group input:focus {
-  border-color: #007bff;
-}
-
-button {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-.forgot-password {
-  margin-top: 10px;
-}
-
-.forgot-password a {
-  font-size: 14px;
-  color: #007bff;
-  text-decoration: none;
-}
-
-.forgot-password a:hover {
-  text-decoration: underline;
-}
+@import "./css/login.css";
 </style>

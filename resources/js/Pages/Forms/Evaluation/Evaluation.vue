@@ -34,6 +34,7 @@
               <td v-for="rating in 5" :key="rating">
                 <input
                   type="radio"
+                  @change="saveToLocalStorage"
                   :name="'q1-' + index"
                   v-model="ratings.q1[index]"
                   :value="rating"
@@ -46,7 +47,13 @@
         <div class="last">
           <div class="comment">
             <label>Comments:</label>
-            <textarea name="c1" id="" rows="3" required></textarea>
+            <textarea
+              @input="saveToLocalStorage"
+              name="c1"
+              id=""
+              rows="3"
+              required
+            ></textarea>
           </div>
           <div class="rating">
             <label>Rating:</label>
@@ -76,6 +83,7 @@
               <td v-for="rating in 5" :key="rating">
                 <input
                   type="radio"
+                  @change="saveToLocalStorage"
                   :name="'q2-' + index"
                   v-model="ratings.q2[index]"
                   :value="rating"
@@ -88,7 +96,13 @@
         <div class="last">
           <div class="comment">
             <label>Comments:</label>
-            <textarea id="" name="c2" rows="3" required></textarea>
+            <textarea
+              @input="saveToLocalStorage"
+              id=""
+              name="c2"
+              rows="3"
+              required
+            ></textarea>
           </div>
           <div class="rating">
             <label>Rating:</label>
@@ -118,6 +132,7 @@
               <td v-for="rating in 5" :key="rating">
                 <input
                   type="radio"
+                  @change="saveToLocalStorage"
                   :name="'q3-' + index"
                   v-model="ratings.q3[index]"
                   :value="rating"
@@ -130,7 +145,13 @@
         <div class="last">
           <div class="comment">
             <label>Comments:</label>
-            <textarea name="c3" id="" rows="3" required></textarea>
+            <textarea
+              @input="saveToLocalStorage"
+              name="c3"
+              id=""
+              rows="3"
+              required
+            ></textarea>
           </div>
           <div class="rating">
             <label>Rating:</label>
@@ -160,6 +181,7 @@
               <td v-for="rating in 5" :key="rating">
                 <input
                   type="radio"
+                  @change="saveToLocalStorage"
                   :name="'q4-' + index"
                   v-model="ratings.q4[index]"
                   :value="rating"
@@ -172,7 +194,13 @@
         <div class="last">
           <div class="comment">
             <label>Comments:</label>
-            <textarea name="c4" id="" rows="3" required></textarea>
+            <textarea
+              @input="saveToLocalStorage"
+              name="c4"
+              id=""
+              rows="3"
+              required
+            ></textarea>
           </div>
           <div class="rating">
             <label>Rating:</label>
@@ -184,10 +212,8 @@
           <div class="overall-rating">
             <label for="">Overall Rating:</label>
             <input type="text" :value="overallRating" disabled />
+            <button class="submit-btn">Submit</button>
           </div>
-        </div>
-        <div class="container">
-          <button class="submit-btn">Submit</button>
         </div>
       </div>
     </form>
@@ -259,6 +285,9 @@ export default {
       ],
     };
   },
+  created() {
+    this.loadFromLocalStorage();
+  },
   methods: {
     goBack() {
       window.history.back();
@@ -277,6 +306,9 @@ export default {
         formData: formObject,
         ratings: this.overallRating,
       });
+
+      localStorage.removeItem("ratings");
+      localStorage.removeItem("comments");
     },
     formatDate(date) {
       const convertedDate = new Date(date);
@@ -295,6 +327,47 @@ export default {
       const total = ratings.reduce((sum, rating) => sum + (rating || 0), 0);
       const count = ratings.filter((rating) => rating !== null).length;
       return count === 0 ? 0 : (total / count).toFixed(2);
+    },
+    saveToLocalStorage() {
+      localStorage.setItem("ratings", JSON.stringify(this.ratings));
+      localStorage.setItem("comments", JSON.stringify(this.comments));
+    },
+    loadFromLocalStorage() {
+      const savedRatings = localStorage.getItem("ratings");
+      const savedComments = localStorage.getItem("comments");
+
+      if (savedRatings) {
+        try {
+          this.ratings = JSON.parse(savedRatings);
+        } catch (e) {
+          console.error("Error parsing ratings from localStorage:", e);
+        }
+      }
+
+      if (savedComments) {
+        try {
+          this.comments = JSON.parse(savedComments);
+        } catch (e) {
+          console.error("Error parsing comments from localStorage:", e);
+        }
+      }
+
+      if (!this.ratings) {
+        this.ratings = {
+          q1: Array(10).fill(null),
+          q2: Array(10).fill(null),
+          q3: Array(10).fill(null),
+          q4: Array(10).fill(null),
+        };
+      }
+      if (!this.comments) {
+        this.comments = {
+          c1: "",
+          c2: "",
+          c3: "",
+          c4: "",
+        };
+      }
     },
   },
   computed: {
@@ -411,9 +484,10 @@ textarea {
 }
 
 .overall-rating {
-  margin-right: 30px;
-  padding: 30px;
   display: flex;
+  margin: 10px;
+  align-items: center;
+  gap: 1rem;
   flex-direction: row;
   align-items: flex-end;
 }

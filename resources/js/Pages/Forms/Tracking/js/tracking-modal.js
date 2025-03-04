@@ -42,7 +42,7 @@ export default {
     },
     methods: {
       closeFormModal() {
-        this.$emit("toggleFormModal", this.selected_id, this.selected_type);
+        this.$emit("toggleFormModal", this.modal_id, this.modal_type);
       },
     },
     computed: {

@@ -12,8 +12,10 @@ export default {
   },
   data() {
     return {
-      selected_id: null,
-      selected_type: null,
+      selected_id: "",
+      selected_type: "",
+      selected_id_to_delete: "",
+      selected_type_to_delete: "",
       isConfirmation: false,
       isDelete: false,
       statusMap: {
@@ -60,22 +62,30 @@ export default {
     },
 
     toggleFormModal(id, type) {
-      this.selected_id = this.selected_id === id ? null : id + "";
-      this.selected_type = this.selected_type === type ? null : type + "";
+      this.selected_id = this.selected_id === id ? null : String(id);
+      this.selected_type = this.selected_type === type ? null : String(type);
     },
 
     toggleDeleteForm(id, type) {
       this.isDelete = !this.isDelete;
-      this.selected_id = this.selected_id === id ? null : id + "";
-      this.selected_type = this.selected_type === type ? null : type + "";
+
+      this.selected_id_to_delete = this.selected_id_to_delete === id ? null : String(id);
+      this.selected_type_to_delete =
+        this.selected_type_to_delete === type ? null : String(type);
     },
 
     deleteForm() {
-      Inertia.delete(`/form/delete/${this.selected_type}/${this.selected_id}`, {
-        onSuccess: () => {
-          this.toggleDeleteForm(this.selected_id, this.selected_type);
-        },
-      });
+      Inertia.delete(
+        `/form/delete/${this.selected_type_to_delete}/${this.selected_id_to_delete}`,
+        {
+          onSuccess: () => {
+            this.toggleDeleteForm(
+              this.selected_id_to_delete,
+              this.selected_type_to_delete
+            );
+          },
+        }
+      );
     },
   },
 };
@@ -83,7 +93,6 @@ export default {
 
 <template>
   <Modal
-    v-if="!isDelete"
     :forms="forms"
     :selected_id="selected_id"
     :selected_type="selected_type"
@@ -92,8 +101,8 @@ export default {
 
   <DeleteModal
     v-if="isDelete"
-    :selected_id="selected_id"
-    :selected_type="selected_type"
+    :selected_id="selected_id_to_delete"
+    :selected_type="selected_type_to_delete"
     @deleteForm="deleteForm"
     @toggleDeleteForm="toggleDeleteForm"
   ></DeleteModal>
@@ -123,11 +132,7 @@ export default {
         </thead>
 
         <tbody>
-          <tr
-            v-for="form in forms"
-            :key="form.id"
-            @click="toggleFormModal(form.id, form.form_type)"
-          >
+          <tr v-for="form in forms" :key="form.id">
             <td>{{ form.form_type }}</td>
             <td class="td-status">
               <div class="status-item" v-if="statusMap[form.status]">

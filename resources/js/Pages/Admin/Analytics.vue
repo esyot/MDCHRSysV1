@@ -152,7 +152,7 @@ export default {
     <div class="header-item">
       <div class="search-bar">
         <i class="fas fa-magnifying-glass"></i>
-        <input type="text" placeholder="Search a user" v-model="search_value" />
+        <input type="text" placeholder="Search" v-model="search_value" />
         <span
           v-if="search_value"
           @click="clearSearchBar"
@@ -160,19 +160,19 @@ export default {
         ></span>
       </div>
       <select name="" id="" v-model="selectedYear">
-        <option disabled selected value="">Select Year</option>
+        <option disabled selected value="">Year</option>
         <option value="">All</option>
         <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
       </select>
       <select name="" id="" v-model="form_selection">
-        <option value="" disabled selected>Select Type of form</option>
-        <option value="all">All Forms</option>
-        <option value="leave">Leave Forms</option>
-        <option value="travel">Travel Forms</option>
+        <option value="" disabled selected>Type</option>
+        <option value="all">All</option>
+        <option value="leave">Leave</option>
+        <option value="travel">Travel</option>
       </select>
 
       <select name="" id="" v-model="date_report">
-        <option value="" disabled selected>Select Filter</option>
+        <option value="" disabled selected>Filter</option>
 
         <option value="">Annually</option>
         <option value="Monthly">Monthly</option>
@@ -247,6 +247,11 @@ export default {
 </template>
 
 <style scoped>
+@media (orientation: portrait) {
+  .header .search-bar input {
+    width: 60px;
+  }
+}
 .header {
   display: flex;
   justify-content: space-between;
@@ -259,6 +264,8 @@ export default {
   background-color: transparent;
   border: none;
   outline: none;
+  margin: 0;
+  padding: 0;
 }
 
 .header .search-bar i {

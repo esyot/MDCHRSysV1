@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->string('tribunal');
             $table->string('service_separation');
             $table->string('election_candidacy');
+            $table->date('date_filed');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

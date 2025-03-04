@@ -14,7 +14,7 @@ class Evaluation extends Model
     }
 
     // Relationship to the User who conducted the evaluation
-    public function conductedBy()
+    public function conductor()
     {
         return $this->belongsTo(User::class, 'conducted_by');
     }

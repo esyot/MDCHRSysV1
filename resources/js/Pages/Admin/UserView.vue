@@ -4,6 +4,7 @@ import PersonalDetails from "@/Pages/Admin/PersonalDetails.vue";
 import { Inertia } from "@inertiajs/inertia";
 import EditRoleModal from "@/Modals/EditRoleModal.vue";
 import EditDepartmentModal from "@/Modals/EditDepartmentModal.vue";
+import Evaluations from "./Evaluations.vue";
 
 export default {
   layout: Layout,
@@ -19,10 +20,11 @@ export default {
     },
     roleList: Array,
     departmentList: Array,
+    evaluations: Object,
   },
   data() {
     return {
-      activeTab: localStorage.getItem("activeTab") || "overview",
+      AdminActiveTab: localStorage.getItem("AdminActiveTab") || "overview",
       isEditRole: false,
       isEditDepartment: false,
       selectedFormType: "All",
@@ -54,6 +56,7 @@ export default {
     PersonalDetails,
     EditRoleModal,
     EditDepartmentModal,
+    Evaluations,
   },
   computed: {
     filteredForms() {
@@ -122,9 +125,9 @@ export default {
     openEval() {
       Inertia.visit(`/users/user-list/${this.personalDetails.id}/evaluation-form`);
     },
-    setActiveTab(tab) {
-      this.activeTab = tab;
-      localStorage.setItem("activeTab", tab);
+    setAdminActiveTab(tab) {
+      this.AdminActiveTab = tab;
+      localStorage.setItem("AdminActiveTab", tab);
     },
     toggleEditRole() {
       this.isEditRole = !this.isEditRole;
@@ -185,29 +188,29 @@ export default {
   ></EditDepartmentModal>
   <nav>
     <span
-      :class="{ active: activeTab === 'overview' }"
-      @click="setActiveTab('overview')"
+      :class="{ active: AdminActiveTab === 'overview' }"
+      @click="setAdminActiveTab('overview')"
       title="User Overview"
     >
       <i class="fa-solid fa-circle-info fa-lg"></i>
     </span>
     <span
-      :class="{ active: activeTab === 'personalDetails' }"
-      @click="setActiveTab('personalDetails')"
+      :class="{ active: AdminActiveTab === 'personalDetails' }"
+      @click="setAdminActiveTab('personalDetails')"
       title="Personal Details"
     >
       <i class="fa-solid fa-list fa-lg"></i>
     </span>
     <span
-      :class="{ active: activeTab === 'personalDetails' }"
-      @click="setActiveTab('personalDetails')"
+      :class="{ active: AdminActiveTab === 'evaluations' }"
+      @click="setAdminActiveTab('evaluations')"
       title="Evaluations"
     >
       <i class="fas fa-file"></i>
     </span>
   </nav>
   <div class="container">
-    <div class="content" v-if="activeTab === 'overview'">
+    <div class="content" v-if="AdminActiveTab === 'overview'">
       <div class="user">
         <div class="user-content">
           <div>
@@ -341,8 +344,12 @@ export default {
         </table>
       </div>
     </div>
-    <div v-if="activeTab === 'personalDetails'" class="content">
+    <div v-if="AdminActiveTab === 'personalDetails'" class="content">
       <PersonalDetails :personalDetails="personalDetails" />
+    </div>
+
+    <div v-if="AdminActiveTab === 'evaluations'" class="content">
+      <Evaluations :evaluations="evaluations" />
     </div>
   </div>
 </template>

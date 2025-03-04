@@ -10,9 +10,6 @@ export default {
 <template>
   <div class="about-container">
     <div class="details">
-      <div class="title">
-        <span>About</span>
-      </div>
       <div class="paragraph">
         This system is created and developed to assist the Human Resource (HR) department
         at Mater Dei College (MDC) in effectively managing, maintaining, and monitoring
@@ -101,7 +98,6 @@ export default {
 .about-container {
   overflow-y: auto;
   background-color: #fff;
-  padding-top: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -131,10 +127,10 @@ export default {
 .cards-container {
   display: flex;
   overflow-x: auto;
-  white-space: nowrap;
+  flex-wrap: nowrap;
+  margin: 10px;
+  justify-content: space-around;
   padding: 10px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .card {
@@ -144,7 +140,7 @@ export default {
   margin-right: 10px;
   padding: 10px;
   text-align: center;
-  width: 250px;
+  width: 230px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -154,7 +150,7 @@ export default {
   overflow: hidden;
   border-radius: 50%;
   margin: 0 auto 10px;
-  border: 3px solid #5e5e5e;
+  border: 3px solid #007bff;
   box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1);
 }
 .image-container:hover {

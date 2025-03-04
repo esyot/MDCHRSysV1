@@ -23,9 +23,7 @@ export default {
       <text>Are you sure you want to delete this form?</text>
 
       <div class="modal-buttons">
-        <button @click="toggleDeleteForm(selected_id, selected_type)" class="no-btn">
-          No
-        </button>
+        <button @click="toggleDeleteForm()" class="no-btn">No</button>
         <button @click="deleteForm" class="yes-btn">Yes</button>
       </div>
     </div>
@@ -39,7 +37,7 @@ export default {
   align-items: center;
   position: fixed;
   inset: 0;
-  z-index: 90;
+  z-index: 100;
   animation: popUp 0.3s ease-in-out forwards, increaseOpacity 2s 0.3s forwards;
 }
 

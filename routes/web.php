@@ -10,6 +10,7 @@ use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\FormsController;
 use App\Http\Controllers\LeaveFormController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PersonalDetailController;
 use App\Http\Controllers\TravelFormController;
 use App\Http\Controllers\UserController;
@@ -96,6 +97,12 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::get('/account/personal-data-sheet/{action}', [PersonalDetailController::class, 'preview']);
 
         Route::post('/users/{id}/evaluation-submit/', [EvaluationController::class, 'create']);
+
+         // Notifications
+
+        Route::get('/notifications/{id}', [NotificationController::class,'fetch']);
+        Route::get('/notifications/read/{id}/{type}', [NotificationController::class, 'read']);
+        Route::get('/notifications/{id}/delete/{selection}', [NotificationController::class, 'delete']);
 
     });
     });

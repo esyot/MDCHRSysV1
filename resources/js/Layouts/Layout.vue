@@ -20,13 +20,13 @@ export default {
 
   data() {
     return {
-      successMessage: this.messageSuccess || null, // Initialize with messageSuccess or null if undefined
+      successMessage: this.messageSuccess || null,
     };
   },
 
   methods: {
     closeSuccessModal() {
-      this.successMessage = null; // Close the modal by clearing the successMessage
+      this.successMessage = null;
     },
   },
 
@@ -59,7 +59,7 @@ export default {
     <div class="main-content">
       <Topbar :pageTitle="pageTitle" :user="user" />
       <slot> </slot>
-      <Footer />
+      <Footer :roles="roles" :user="user" />
     </div>
   </div>
 </template>

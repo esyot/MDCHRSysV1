@@ -46,7 +46,7 @@ $commentsText = "[" . implode("], [", array_map(function($item) {
             'questions' => $questionsText,
             'comments' => $commentsText,
             'ratings' => $request->ratings,
-            'date' => Carbon::today(),
+            'date_time' => Carbon::now(),
             'user_id' => $id,
             'conducted_by' => Auth::user()->id,
         ]);
