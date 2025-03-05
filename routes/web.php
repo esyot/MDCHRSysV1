@@ -48,7 +48,9 @@ Route::middleware([Check2WayVerification::class])->group(function () {
             return inertia('Pages/Forms/Evaluation/Evaluation');
         });
 
-       
+        Route::get('/forms/edit-mode/{id}/{type}', [FormsController::class, 'editMode']);
+
+    
         // Forms Checking
         Route::middleware([CheckUserRole::class .':dean,hr,v-admin,vp-acad,p-admin,admin'])->group(function () {
             Route::get('/forms/checking', [FormsController::class, 'checking']);
@@ -72,6 +74,9 @@ Route::middleware([Check2WayVerification::class])->group(function () {
             Route::delete('/form/delete/{type}/{id}', [FormsController::class, 'delete']);
             Route::get('/users/analytics/', [AnalyticsController::class, 'index']);
         });
+
+        //Api
+        Route::get('/users/search/{value}', [UserController::class, 'search']);
 
         // Notifications
         Route::get('/notifications/{id}', [NotificationController::class, 'fetch']);

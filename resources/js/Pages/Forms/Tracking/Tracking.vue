@@ -87,6 +87,10 @@ export default {
         }
       );
     },
+
+    redirectToEditForm(id, type) {
+      Inertia.visit(`/forms/edit-mode/${id}/${type}`);
+    },
   },
 };
 </script>
@@ -159,13 +163,17 @@ export default {
             <td class="td-action">
               <button
                 v-if="form.status === 'declined'"
-                @click="toggleFormModal(form.id, form.form_type)"
+                @click="redirectToEditForm(form.id, form.form_type)"
                 class="edit-btn"
                 title="Click to update your application"
               >
                 <i class="fas fa-pencil"></i>
               </button>
-              <button @click="toggleFormModal(form.id, form.form_type)" class="edit-btn">
+              <button
+                @click="toggleFormModal(form.id, form.form_type)"
+                class="edit-btn"
+                title="Click to view application"
+              >
                 <i class="fas fa-eye"></i>
               </button>
               <button

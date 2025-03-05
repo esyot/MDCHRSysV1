@@ -78,6 +78,7 @@ export default {
       <div class="form-subtitle">
         <label>Departments: </label>
       </div>
+
       <div class="form-checkbox-items form-checkbox">
         <div class="" v-for="department in departmentList" :key="department.id">
           <div class="checkbox-group">

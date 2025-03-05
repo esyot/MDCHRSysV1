@@ -45,8 +45,8 @@
                 <label>Date End: </label>
                 <span class="underline">{{ formatDate(formData.date_end) }} </span>
 
-                <label>Place: </label>
-                <span class="underline">{{ formData.place }}</span>
+                <label>Destination: </label>
+                <span class="underline">{{ formData.destination }}</span>
 
                 <label>Purpose/Event: </label>
                 <span class="underline">{{ formData.purpose }}</span>
@@ -181,7 +181,7 @@
         </div>
 
         <div class="certitification-credits">
-          <div class="certification-title">
+          <div class="certification-title" v-if="roles.includes('hr')">
             <text>Certification of Leave Credits as of </text>
             <select v-model="currentYear">
               <option v-for="year in 2030 - 2021 + 1" :key="year" :value="2021 + year">
@@ -205,7 +205,7 @@
             </span>
           </div>
 
-          <table>
+          <table v-if="roles.includes('hr')">
             <thead>
               <tr>
                 <th></th>
@@ -327,6 +327,7 @@
           <div
             class="radio-group"
             v-if="
+              formData.status === 'pending' ||
               formData.status === 'hr_approved' ||
               formData.status === 'vp_admin_approved' ||
               formData.status === 'vp_acad_approved'
@@ -360,7 +361,9 @@
               (submission_type === 'disapproval' && formData.status == 'hr_approved') ||
               (submission_type === 'disapproval' &&
                 formData.status == 'vp_admin_approved') ||
-              (submission_type === 'disapproval' && formData.status == 'vp_acad_approved')
+              (submission_type === 'disapproval' &&
+                formData.status == 'vp_acad_approved') ||
+              (submission_type === 'disapproval' && formData.status == 'pending')
             "
           >
             <textarea
@@ -371,9 +374,26 @@
           </div>
         </div>
       </div>
-      <div class="btn-container" v-if="formData.status === 'pending'">
+      <div
+        class="btn-container"
+        v-if="
+          formData.status === 'pending' && submission_type === 'approval'
+            ? disapproval_description == null
+            : (disapproval_description && formData.status === 'pending') ||
+              (submission_type === 'disapproval' &&
+                disapproval_description &&
+                formData.status === 'pending')
+        "
+      >
         <button class="close-btn" @click="toggleFormModal">Close</button>
-        <button class="submit-btn" @click="toggleConfirmForm('dean_approved')">
+        <button
+          class="submit-btn"
+          @click="
+            submission_type === 'approval'
+              ? toggleConfirmForm('dean_approved')
+              : toggleConfirmForm('declined')
+          "
+        >
           Submit
         </button>
       </div>

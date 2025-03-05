@@ -11,6 +11,7 @@ use App\Models\UserDepartment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
@@ -151,7 +152,7 @@ class UserController extends Controller
         $userRoles = User::find($id)->getRoleNames();
         $userDepartments = User::where('id', $id)->with('departments:id,name,acronym')->first();
 
-        $userDepartments =  $userDepartments->departments->pluck('name');
+        $userDepartments =  $userDepartments->departments->pluck('acronym');
 
         $this->globalVariables();
         $roles = $this->roles;
@@ -310,6 +311,26 @@ class UserController extends Controller
     
         return redirect()->back()->with('success', 'Roles updated successfully!');
     }
+
+    public function search($value)
+    {
+        $searchTerms = explode(" ", $value);
+        $users = User::where(function($query) use ($searchTerms) {
+            foreach ($searchTerms as $term) {
+               
+                $query->orWhere(DB::raw('LOWER(first_name)'), 'LIKE', '%' . strtolower($term) . '%')
+                      ->orWhere(DB::raw('LOWER(last_name)'), 'LIKE', '%' . strtolower($term) . '%')
+                      ->orWhere(DB::raw('LOWER(middle_name)'), 'LIKE', '%' . strtolower($term) . '%');
+            }
+        })
+        ->select(['id', 'first_name', 'last_name', 'middle_name'])
+        ->take(10)
+        ->get();
+    
+    
+        return response()->json($users ?? []);
+    }
     
 
+    
 }
