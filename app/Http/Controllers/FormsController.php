@@ -576,6 +576,14 @@ class FormsController extends Controller
             $budgetTypes = config('local_variables.budget_types');
             $budgetCharges = config('local_variables.budget_charges');
 
+            foreach ($formData->substitutes as $sub)
+            {
+                $teacher = $sub->user->last_name . ', ' . $sub->user->first_name;
+                $sub['teacher'] = $teacher;
+
+                $sub['days'] = explode(', ', $sub['days']);
+            }
+
 
 
             return inertia('Pages/Forms/TravelForm/TravelForm', [

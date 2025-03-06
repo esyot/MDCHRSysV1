@@ -11,13 +11,18 @@ class User extends Authenticatable
 {
     use HasFactory, HasRoles, Notifiable;
 
-   protected $guarded = [];
+    protected $guarded = [];
 
-    public function departments()
+    public function teacher()
     {
-        return $this->belongsToMany(Department::class, 'user_departments');
+        return $this->hasOne(Teacher::class);
     }
-   
+
+    public function staff()
+    {
+        return $this->hasOne(Staff::class);
+    }
+
     public function personalDetails()
     {
         return $this->hasOne(PersonalDetail::class);
@@ -28,59 +33,76 @@ class User extends Authenticatable
         return $this->hasMany(UserJobDetail::class);
     }
 
-    public function userFamilies(){
+    public function userFamilies()
+    {
         return $this->hasMany(UserFamily::class);
     }
-    public function userEducationalBackgrounds(){
+    public function userEducationalBackgrounds()
+    {
         return $this->hasMany(UserEducationalBackground::class);
     }
-    public function userProfessionalExaminations(){
+    public function userProfessionalExaminations()
+    {
         return $this->hasMany(UserProfessionalExamination::class);
     }
-    public function userAwardReceives(){
+    public function userAwardReceives()
+    {
         return $this->hasMany(UserAwardReceive::class);
     }
-    public function userAdminPosHelds(){
+    public function userAdminPosHelds()
+    {
         return $this->hasMany(UserAdministrativePositionsHeld::class);
     }
-    public function userWorkExperiences(){
+    public function userWorkExperiences()
+    {
         return $this->hasMany(UserWorkExperience::class);
     }
-    public function userStudies(){
+    public function userStudies()
+    {
         return $this->hasMany(UserStudy::class);
     }
 
-    public function userParticipations(){
+    public function userParticipations()
+    {
         return $this->hasMany(UserParticipation::class);
     }
-    public function userSpecialTrainings(){
+    public function userSpecialTrainings()
+    {
         return $this->hasMany(UserSpecialTraining::class);
     }
-    public function userOtherInfos(){
+    public function userOtherInfos()
+    {
         return $this->hasMany(UserOtherInformation::class);
     }
-    public function userSchoolCurriculars(){
+    public function userSchoolCurriculars()
+    {
         return $this->hasMany(UserSchoolCurricular::class);
     }
-    public function userOtherDetails(){
+    public function userOtherDetails()
+    {
         return $this->hasOne(UserOtherDetail::class);
     }
-    public function userReferences(){
+    public function userReferences()
+    {
         return $this->hasMany(UserReference::class);
     }
-    public function userValidIds(){
+    public function userValidIds()
+    {
         return $this->hasMany(UserValidId::class);
     }
 
-    public function substitute(){
+    public function substitute()
+    {
         return $this->hasMany(Substitute::class);
     }
 
-    public function travelForm(){
+    public function travelForm()
+    {
         return $this->hasOne(TravelForm::class);
     }
 
-    public function leaveForm(){
+    public function leaveForm()
+    {
         return $this->hasOne(LeaveForm::class);
     }
 }

@@ -178,7 +178,7 @@ export default {
               </button>
               <button
                 @click="toggleDeleteForm(form.id, form.form_type)"
-                v-if="form.status == 'pending'"
+                v-if="form.status === 'pending' || form.status === 'declined'"
                 class="delete-btn"
               >
                 <i class="fas fa-trash"></i>

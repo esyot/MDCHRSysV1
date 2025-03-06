@@ -49,6 +49,7 @@ export default {
       month: "",
       date_report: "",
       week: "",
+      isOpenEvalationDropDown: false,
     };
   },
 
@@ -122,8 +123,12 @@ export default {
     },
   },
   methods: {
-    openEval() {
-      Inertia.visit(`/users/user-list/${this.personalDetails.id}/evaluation-form`);
+    openEval(type) {
+      if (type === "teacher") {
+        Inertia.visit(`/forms/evaluation-form/${this.personalDetails.id}/teacher`);
+      } else if (type === "staff") {
+        Inertia.visit(`/forms/evaluation-form/${this.personalDetails.id}/staff`);
+      }
     },
     setAdminActiveTab(tab) {
       this.AdminActiveTab = tab;
@@ -166,6 +171,24 @@ export default {
       const diff = date.getDate() + startOfMonth - 1;
       return Math.ceil(diff / 7);
     },
+    toggleEvaluationDropDown() {
+      this.isOpenEvalationDropDown = !this.isOpenEvalationDropDown;
+    },
+    closeEvaluationDropDown(event) {
+      if (
+        this.$refs.evaluationDropDown &&
+        !this.$refs.toggleEvaluationDropDown.contains(event.target) &&
+        !this.$refs.toggleEvaluationDropDown.contains(event.target)
+      ) {
+        this.isOpenEvalationDropDown = false;
+      }
+    },
+  },
+  mounted() {
+    document.addEventListener("click", this.closeEvaluationDropDown);
+  },
+  beforeDestroy() {
+    document.removeEventListener("click", this.closeEvaluationDropDown);
   },
 };
 </script>
@@ -307,10 +330,20 @@ export default {
 
           <button
             :title="`Add evaluation for  ${personalDetails.last_name}, ${personalDetails.first_name}`"
-            @click="openEval()"
+            @click="toggleEvaluationDropDown"
+            ref="toggleEvaluationDropDown"
           >
             Evaluate
           </button>
+
+          <div
+            ref="evaluationDropDown"
+            class="evalution-dropdown"
+            v-if="isOpenEvalationDropDown"
+          >
+            <span @click="openEval('teacher')">Teacher Evaluation</span>
+            <span @click="openEval('staff')">Staff Evaluation</span>
+          </div>
         </div>
       </div>
       <div class="forms">

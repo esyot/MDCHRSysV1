@@ -23,12 +23,16 @@ class DatabaseSeeder extends Seeder
         $this->call(PersonalDetailSeeder::class);
 
         $this->call(DepartmentSeeder::class);
-        
+
         $this->call(UserJobDetailSeeder::class);
 
-        $this->call(UserDepartmentSeeder::class);
+        $this->call(TeacherSeeder::class);
 
-       
+        $this->call(StaffSeeder::class);
+
+
+
+
 
     }
 }

@@ -29,6 +29,11 @@
     cursor: pointer;
 }
 
+.error-msg {
+    padding: 10px 5px;
+    color: red;
+}
+
 .search-bar {
     display: flex;
     gap: 0.2rem;
@@ -249,9 +254,4 @@
 .condition-suggestions span:hover {
     background-color: #ccc;
     cursor: pointer;
-}
-
-.error-msg {
-    padding: 10px 5px;
-    color: red;
 }

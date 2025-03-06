@@ -148,32 +148,29 @@ class TravelFormController extends Controller
 
                     $sub['travel_form_id'] = $form_id;
 
-                    unset($sub['days']);
+
                     unset($sub['teacher']);
+                    unset($sub['user']);
 
-
-                    $days = isset($sub['days']) && is_array($sub['days']) ? implode(', ', $sub['days']) : '';
-
-                    $sub['days'] = $days;
+                    $sub['days'] = implode(', ', $sub['days']);
 
                     Substitute::create($sub);
                 }
 
-            } else
+            }
+
+
+            if ($travelForm)
             {
+
                 $travelForm->update([
-                    'class_alternatives_description' => $request->formData['class_alternatives_description'],
                     'status' => 'pending',
                     'disapproved_by' => '',
                     'endorsed_by' => '',
                     'recommended_by' => '',
 
                 ]);
-            }
 
-
-            if ($travelForm)
-            {
                 $notificationController = new NotificationController();
 
                 $notificationController->create(

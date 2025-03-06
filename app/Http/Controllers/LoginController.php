@@ -12,7 +12,8 @@ class LoginController extends Controller
     public function index()
     {
 
-        if(auth()->check()){
+        if (auth()->check())
+        {
             return redirect()->route('dashboard');
         }
 
@@ -43,20 +44,25 @@ class LoginController extends Controller
             'errorMessage' => '',
         ];
 
-        if (!$user) {
+        if (!$user)
+        {
 
             $responseData['user']['errorMessage'] = 'Username does not exist.';
-        } elseif (!Hash::check($validatedData['password'], $user->password)) {
+        } elseif (!Hash::check($validatedData['password'], $user->password))
+        {
 
             $responseData['password']['errorMessage'] = 'Invalid password.';
-        } else {
+        } else
+        {
 
-            if($user->is_two_step_verification == true){
+            if ($user->is_two_step_verification == true)
+            {
 
                 Auth::login($user);
                 return redirect()->route('verification');
-    
-            }else{
+
+            } else
+            {
 
                 Auth::login($user);
                 return redirect()->route('dashboard');

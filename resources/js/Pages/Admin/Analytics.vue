@@ -9,6 +9,7 @@ export default {
   data() {
     return {
       form_selection: "",
+      leave_type: "",
       currentYear: new Date().getFullYear(),
       selectedYear: new Date().getFullYear(),
       months: [
@@ -169,6 +170,13 @@ export default {
         <option value="all">All</option>
         <option value="leave">Leave</option>
         <option value="travel">Travel</option>
+      </select>
+
+      <select name="" id="" v-if="form_selection === 'leave'" v-model="leave_type">
+        <option value="" disabled selected>Type of Leave</option>
+        <option value="all">All</option>
+        <option value="personal">Personal</option>
+        <option value="sick">Sick</option>
       </select>
 
       <select name="" id="" v-model="date_report">

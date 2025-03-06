@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string('img')->nullable();
             $table->tinyInteger('is_two_step_verification')->default(false);
             $table->tinyInteger('is_update_with_email')->default(false);
+            $table->tinyInteger('is_active')->default(true);
             $table->string('code')->nullable();
             $table->timestamps();
         });

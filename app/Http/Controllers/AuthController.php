@@ -16,17 +16,19 @@ class AuthController extends Controller
 
         $isAuthenticated = Hash::check($request->password, $user->password);
 
-        if ($isAuthenticated) {
-           
+        if ($isAuthenticated)
+        {
+
             Session::put('authenticate', true);
 
             return redirect()->back()->with([
                 'success' => 'Authenticated successfully!'
             ]);
 
-        } else {
+        } else
+        {
 
-             return redirect()->back()->with([
+            return redirect()->back()->with([
                 'authenticated' => false,
                 'error' => 'Authentication failed!'
             ]);

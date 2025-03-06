@@ -44,39 +44,45 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::post('/leave-form-submit', [LeaveFormController::class, 'submit'])->name('forms.leave-form-submit');
         Route::get('/leave-form-preview', [LeaveFormController::class, 'preview'])->name('forms.leave-form-preview');
         Route::get('/forms/tracking', [FormsController::class, 'index'])->name('forms.tracking');
-        Route::get('/forms/evaluation-form', function() {
-            return inertia('Pages/Forms/Evaluation/Evaluation');
-        });
+        Route::get('/forms/evaluation-form/{type}/{id}', [EvaluationController::class, 'evaluate']);
 
         Route::get('/forms/edit-mode/{id}/{type}', [FormsController::class, 'editMode']);
 
-    
+
         // Forms Checking
-        Route::middleware([CheckUserRole::class .':dean,hr,v-admin,vp-acad,p-admin,admin'])->group(function () {
+        Route::middleware([CheckUserRole::class . ':dean,hr,v-admin,vp-acad,p-admin,admin'])->group(function () {
             Route::get('/forms/checking', [FormsController::class, 'checking']);
             Route::get('/forms/checking/{action}', [FormsController::class, 'checking']);
             Route::post('/forms/checking/forward', [FormsController::class, 'forward']);
             Route::get('/forms/find/{form_type}/{user_id}/{year}', [FormsController::class, 'find']);
         });
 
+        Route::delete('/form/delete/{type}/{id}', [FormsController::class, 'delete']);
+
         // Admin Routes
-        Route::middleware(CheckUserRole::class .':admin')->group(function () {
+        Route::middleware(CheckUserRole::class . ':admin')->group(function () {
             Route::get('/users/user-list/{id}/evaluation-form', [UserController::class, 'userEvaluation'])->name('user.evaluation');
             Route::post('/users/{id}/evaluation-submit/', [EvaluationController::class, 'create']);
             Route::get('/users/user-list/{id}', [UserController::class, 'userView'])->name('user.view');
-            Route::get('/users/user-list', [UserController::class, 'users'])->name('user.list');
-            Route::post('/users/user-add', [UserController::class, 'userAdd'])->name('user.add');
             Route::post('/users/{id}/role-edit', [UserRoleController::class, 'userUpdateRole']);
             Route::post('/users/{id}/department-edit', [UserDepartmentController::class, 'userUpdateDepartment']);
             Route::get('/departments', [DepartmentController::class, 'index']);
             Route::post('/departments/department-add', [DepartmentController::class, 'create']);
             Route::get('/departments/department-delete/{id}', [DepartmentController::class, 'delete']);
-            Route::delete('/form/delete/{type}/{id}', [FormsController::class, 'delete']);
+
             Route::get('/users/analytics/', [AnalyticsController::class, 'index']);
+
+            Route::get('/users/users-list', [UserController::class, 'users']);
+            Route::get('/users/teachers-list', [UserController::class, 'teachers']);
+            Route::get('/users/staffs-list', [UserController::class, 'staffs']);
+
+            Route::post('/users/{type}/add', [UserController::class, 'userAdd']);
+
         });
 
+
         //Api
-        Route::get('/users/search/{value}', [UserController::class, 'search']);
+        Route::get('/users/search/{type}/{value}', [UserController::class, 'search']);
 
         // Notifications
         Route::get('/notifications/{id}', [NotificationController::class, 'fetch']);
@@ -85,7 +91,7 @@ Route::middleware([Check2WayVerification::class])->group(function () {
 
         // Miscellaneous
         Route::get('/about', [AboutController::class, 'index']);
-        Route::get('/success-session-remove', function() {
+        Route::get('/success-session-remove', function () {
             session()->forget('success');
             return redirect()->back();
         });

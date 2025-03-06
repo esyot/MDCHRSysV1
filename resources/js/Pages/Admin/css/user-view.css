@@ -176,7 +176,6 @@
     overflow-y: auto;
     overflow-x: hidden;
     padding: 10px;
-
 }
 
 table {
@@ -216,6 +215,18 @@ td {
     margin: 10px;
 }
 
+@media (orientation: portrait) {
+    .btn-right {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .btn-left {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
 .btn-right button {
     background-color: rgb(35, 134, 200);
     color: #fff;
@@ -225,9 +236,9 @@ td {
     opacity: 50%;
 }
 
-.btn-right button:hover{
+.btn-right button:hover {
     opacity: 100%;
-   justify-content: end;
+    justify-content: end;
     cursor: pointer;
 }
 
@@ -235,5 +246,39 @@ td {
     padding: 10px;
     margin: 5px;
     border-radius: 7px;
+    cursor: pointer;
+}
+
+.evalution-dropdown {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    right: 16px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.5);
+    border: 1px solid #b6b6b6;
+    z-index: 100;
+}
+
+.evalution-dropdown span {
+    padding: 10px;
+}
+
+.evalution-dropdown span:first-child {
+    border-bottom: 1px solid #676767;
+}
+.evalution-dropdown span:first-child:hover {
+    background-color: #ddd;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom: 1px solid #676767;
+    cursor: pointer;
+}
+
+.evalution-dropdown span:last-child:hover {
+    background-color: #ddd;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
     cursor: pointer;
 }

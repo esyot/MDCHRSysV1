@@ -15,7 +15,7 @@ export default {
     auth: Boolean,
     roles: Object,
     authError: String,
-    overviewData: Array,
+    overviewData: Object,
   },
   data() {
     return {
@@ -118,16 +118,10 @@ export default {
 
         <div class="user-details">
           <span class="name">{{ user.first_name }} {{ user.last_name }}</span>
-          <div class="user-role">
+          <div class="user-role" v-if="user.teacher">
             <i class="fas fa-globe"></i>
             <div>
-              <span
-                class="role-desc"
-                v-for="(department, index) in user.departments"
-                :key="department.id"
-                >{{ department.name }}
-                {{ user.departments.length >= index ? "" : ", " }}</span
-              >
+              <span class="role-desc"> {{ user.teacher.departments.join(", ") }}</span>
             </div>
           </div>
           <div class="user-role">

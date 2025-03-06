@@ -23,12 +23,14 @@ abstract class Controller
 
         $this->roles = Auth::user()->getRoleNames();
 
-        $this->user = User::with(['departments:id,name,acronym'])
-            ->where('id', Auth::user()->id)
-            ->select(['id', 'img','first_name', 'last_name', 'middle_name', 'email'])
-            ->with('departments:id,name,acronym')
-            ->first();
-       
+        $this->user = User::where('id', Auth::user()->id)
+            ->with([
+                'teacher',
+                'teacher.departments',
+                'staff'
+            ])->first();
+
+
         $departmentsWithParent = DB::table('departments as t1')
             ->leftJoin('departments as t2', 't1.parent_id', '=', 't2.id')
             ->leftJoin('departments as t3', 't2.parent_id', '=', 't3.id')
