@@ -114,6 +114,12 @@ export default {
                 <li><span>Staffs</span></li>
               </InertiaLink>
 
+              <InertiaLink :href="'/forms/evaluation-manager'" class="link">
+                <li>
+                  <span>Evaluation Manager</span>
+                </li></InertiaLink
+              >
+
               <InertiaLink :href="'/users/analytics'" class="link">
                 <li><span>Analytics</span></li>
               </InertiaLink>

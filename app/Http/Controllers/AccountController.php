@@ -19,6 +19,7 @@ class AccountController extends Controller
         $roles = $this->roles;
         $user = $this->user;
 
+
         $personalDetails = User::with([
             'personalDetails',
             'personalDetails.permanentAddress',

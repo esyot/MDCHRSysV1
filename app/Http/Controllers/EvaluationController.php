@@ -10,6 +10,26 @@ use Illuminate\Support\Facades\Auth;
 
 class EvaluationController extends Controller
 {
+
+
+    public function index()
+    {
+
+        $this->globalVariables();
+
+        $roles = $this->roles;
+        $user = $this->user;
+
+        $templates = [];
+
+        return inertia('Pages/Admin/EvaluationManager/EvaluationManager', [
+            'templates' => $templates,
+            'roles' => $roles,
+            'user' => $user,
+            'pageTitle' => 'Evaluation Manager'
+        ]);
+    }
+
     public function create($id, Request $request)
     {
         $questions = [];

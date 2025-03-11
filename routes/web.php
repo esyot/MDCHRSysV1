@@ -78,6 +78,8 @@ Route::middleware([Check2WayVerification::class])->group(function () {
 
             Route::post('/users/{type}/add', [UserController::class, 'userAdd']);
 
+            Route::get('/forms/evaluation-manager', [EvaluationController::class, 'index']);
+
         });
 
 

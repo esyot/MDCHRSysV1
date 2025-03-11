@@ -251,10 +251,12 @@ export default {
             <span class="name"
               >{{ personalDetails.first_name }} {{ personalDetails.last_name }}</span
             >
-            <div class="user-role">
+            <div class="user-role" v-if="userDepartments">
               <i class="fas fa-globe"></i>
               <div>
-                <span class="role-desc">{{ userDepartments.join(", ") }}</span>
+                <span class="role-desc" v-for="dept in userDepartments" :key="dept.id">
+                  {{ dept.name }}
+                </span>
               </div>
             </div>
             <div class="user-role">
@@ -322,6 +324,7 @@ export default {
             Edit Role
           </button>
           <button
+            v-if="userRoles.includes('teacher')"
             :title="`Edit department of  ${personalDetails.last_name}, ${personalDetails.first_name}`"
             @click="toggleEditDepartment"
           >

@@ -12,6 +12,7 @@ class Department extends Model
 
     protected $guarded = [];
 
+
     public function parent()
     {
         return $this->belongsTo(Department::class, 'parent_id');
@@ -20,12 +21,12 @@ class Department extends Model
     public function userHeads()
     {
         return $this->belongsToMany(User::class, 'user_departments', 'department_id', 'user_id')
-                    ->wherePivot('type', 'head')
-                    ->select([
-                        'users.id', 
-                        'users.first_name',
-                        'users.last_name',
-                        'users.middle_name'
-                    ]);
+            ->wherePivot('type', 'head')
+            ->select([
+                'users.id',
+                'users.first_name',
+                'users.last_name',
+                'users.middle_name'
+            ]);
     }
 }

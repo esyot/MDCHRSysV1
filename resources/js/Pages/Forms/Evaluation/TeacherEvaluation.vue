@@ -10,6 +10,16 @@
         Name: {{ user.last_name }}, {{ user.first_name }} {{ user.middle_name[0] }}.
       </span>
       <span>Date: {{ formatDate(currentDate) }}</span>
+
+      <div>
+        <select name="" id="">
+          <option value="" selected disabled>Select Term</option>
+        </select>
+
+        <select name="" id="">
+          <option value="" selected disabled>Select Subject</option>
+        </select>
+      </div>
     </div>
     <h1>Evaluation Form</h1>
     <form @submit.prevent="submitForm">

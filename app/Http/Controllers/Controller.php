@@ -18,6 +18,7 @@ abstract class Controller
     protected $parentDepartments;
 
 
+
     protected function globalVariables()
     {
 
@@ -29,6 +30,8 @@ abstract class Controller
                 'teacher.departments',
                 'staff'
             ])->first();
+
+
 
 
         $departmentsWithParent = DB::table('departments as t1')

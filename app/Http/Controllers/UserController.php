@@ -221,9 +221,14 @@ class UserController extends Controller
         ])->findOrFail($id);
 
         $userRoles = User::find($id)->getRoleNames();
-        $userDepartments = User::where('id', $id)->with('departments:id,name,acronym')->first();
 
-        $userDepartments = $userDepartments->departments->pluck('acronym');
+        $userDepartment = [];
+        if ($userRoles->contains('teacher'))
+        {
+            $departmentId = Teacher::where('user_id', $id)->first()->pluck('department_id');
+            $userDepartment = Department::find($departmentId);
+        }
+
 
         $this->globalVariables();
         $roles = $this->roles;
@@ -282,10 +287,7 @@ class UserController extends Controller
 
         $pageTitle = $personalDetails->last_name . ', ' . $personalDetails->first_name . ' ' . $personalDetails->middle_name[0] . '.';
 
-        $evaluations = Evaluation::where('user_id', $id)->with([
-            'user',
-            'conductor'
-        ])->get();
+
 
         return Inertia::render('Pages/Admin/UserView', [
             'user' => Auth::user(),
@@ -293,13 +295,13 @@ class UserController extends Controller
             'roles' => $roles,
             'userRoles' => $userRoles,
             'pageTitle' => $pageTitle,
-            'userDepartments' => $userDepartments,
             'roleList' => $roleList,
             'user_id' => $id,
             'messageSuccess' => session('success') ?? null,
             'departmentList' => $departmentList,
             'forms' => $flattenedForms,
-            'evaluations' => $evaluations
+            'userDepartment' => $userDepartment
+
         ]);
 
     }
