@@ -45,14 +45,14 @@ export default {
         <table>
             <thead>
                 <tr>
-                    <th rowspan="2">TITLE OF TRAINING/SEMINARS/CONFERENCES ATTENDED </br>
+                    <th rowspan="2">TITLE OF TRAINING/SEMINARS/ <br> CONFERENCES ATTENDED <br>
                     (Write in full)</th>
                     <th colspan="2">INCLUSIVE DATES OF ATTENDANCE </br>
                     (mm/dd/yyyy)</th>
                     <th rowspan="2">NUMBER OF DAYS</th>
                     <th rowspan="2">TYPE OF TRAINING </br>
-                    (Managerial/Supervisory/Technical/etc)</th>
-                    <th rowspan="2">Conducted/Sponsored By</th>
+                    (Managerial/Supervisory/ <br> Technical/etc)</th>
+                    <th rowspan="2">Conducted/ <br> Sponsored By</th>
                 </tr>
                 <tr>
                     <th>From</th>

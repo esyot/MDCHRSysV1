@@ -39,8 +39,8 @@ export default {
                <div class="answers" v-if="personalDetails.user_other_details">
 
                     <input type="checkbox" :checked="personalDetails.user_other_details.administrative_offense !== 'no'"> <label for="">Yes</label>
-                    <input type="checkbox" :checked="personalDetails.user_other_details.administrative_offense === 'no'"> <label for="">No</label> </br>
-                    <label for="">If YES, give details:</label> </br>
+                    <input type="checkbox" :checked="personalDetails.user_other_details.administrative_offense === 'no'"> <label for="">No</label> <br>
+                    <label for="">If YES, give details:</label>
                     <div v-if="personalDetails.user_other_details.administrative_offense !== 'no'">
                             <input type="text" :value="personalDetails.user_other_details.administrative_offense">
                     </div>
@@ -57,14 +57,21 @@ export default {
 
                 <div class="answers" v-if="personalDetails.user_other_details" >
                     <input type="checkbox" :checked="personalDetails.user_other_details.criminal_charge !=='no'"> <label for="">Yes</label>
-                    <input type="checkbox" :checked="personalDetails.user_other_details.criminal_charge ==='no'"> <label for="">No</label> </br>
-                    <label for="">If YES, give details:</label> </br><label for="">Date Filed:</label><input type="text"> </br>
+                    <input type="checkbox" :checked="personalDetails.user_other_details.criminal_charge ==='no'"> <label for="">No</label> <br/>
+                      <label for="">If YES, give details:</label>
+                   <div>
                     <div v-if="personalDetails.user_other_details.criminal_charge !== 'no'">
-                        <input type="text" :value="personalDetails.user_other_details.criminal_charge">
+
+                        <input type="text" :value="personalDetails.user_other_details.criminal_charge"><br>
+                        <label for="">Date Filed:</label>
+                            <input type="text" :value="personalDetails.user_other_details.date_filed"> <br>
+
                     </div>
-                    <div v-else>
+                        <div v-else>
                         <input type="text">
                     </div>
+                   </div>
+
 
                 </div>
 
@@ -78,8 +85,8 @@ export default {
 
                 <div class="answers" v-if="personalDetails.user_other_details">
                     <input type="checkbox" :checked="personalDetails.user_other_details.tribunal !=='no'"> <label for="">Yes</label>
-                    <input type="checkbox" :checked="personalDetails.user_other_details.tribunal ==='no'"> <label for="">No</label> </br>
-                    <label for="">If YES, give details:</label> </br>
+                    <input type="checkbox" :checked="personalDetails.user_other_details.tribunal ==='no'"> <label for="">No</label> <br>
+                    <label for="">If YES, give details:</label>
                     <div v-if="personalDetails.user_other_details.tribunal !== 'no'">
                         <input type="text" :value="personalDetails.user_other_details.tribunal">
                     </div>
@@ -98,8 +105,8 @@ export default {
 
                 <div class="answers" v-if="personalDetails.user_other_details">
                     <input type="checkbox" :checked="personalDetails.user_other_details.service_separation !=='no'"> <label for="">Yes</label>
-                    <input type="checkbox" :checked="personalDetails.user_other_details.service_separation ==='no'"> <label for="">No</label> </br>
-                    <label for="">If YES, give details:</label> </br>
+                    <input type="checkbox" :checked="personalDetails.user_other_details.service_separation ==='no'"> <label for="">No</label> <br>
+                    <label for="">If YES, give details:</label> <br>
                     <div v-if="personalDetails.user_other_details.service_separation !== 'no'">
                         <input type="text" :value="personalDetails.user_other_details.service_separation">
                     </div>
@@ -118,8 +125,8 @@ export default {
 
                 <div class="answers" v-if="personalDetails.user_other_details">
                     <input type="checkbox" :checked="personalDetails.user_other_details.election_candidacy !=='no'"> <label for="">Yes</label>
-                    <input type="checkbox" :checked="personalDetails.user_other_details.election_candidacy ==='no'"> <label for="">No</label> </br>
-                    <label for="">If YES, give details:</label> </br>
+                    <input type="checkbox" :checked="personalDetails.user_other_details.election_candidacy ==='no'"> <label for="">No</label> <br>
+                    <label for="">If YES, give details:</label> <br>
                     <div v-if="personalDetails.user_other_details.election_candidacy !== 'no'">
                         <input type="text" :value="personalDetails.user_other_details.election_candidacy">
                     </div>
