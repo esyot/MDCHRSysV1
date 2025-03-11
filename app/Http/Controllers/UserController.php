@@ -18,7 +18,10 @@ use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 use Storage;
-use Illuminate\Support\Str;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
+
+
 
 class UserController extends Controller
 {
@@ -461,6 +464,47 @@ class UserController extends Controller
         return response()->json($users ?? []);
     }
 
+    public function sync()
+    {
+        $currentUsers = User::pluck('id')->toArray();
+
+        $code = config('variables.api_key');
+        $url = 'https://sis.materdeicollege.com/api/hr/users-teachers';
+
+        $client = new Client();
+
+        $response = $client->get($url, [
+            'query' => [
+                'user_ids' => $currentUsers,
+                'code' => $code,
+            ],
+            'verify' => false,
+        ]);
+
+        $newUsers = json_decode($response->getBody(), true);
+
+
+
+        foreach ($newUsers as $user)
+        {
+
+            User::create([
+                'id' => $user['id'],
+                'user' => $user['user'],
+                'first_name' => $user['fname'],
+                'last_name' => $user['lname'],
+                'email' => $user['email'],
+            ]);
+
+            Teacher::create([
+                'user_id' => $user['teacher_account']['user_id'],
+                'department_id' => $user['teacher_account']['department_id'],
+                'specialization' => $user['teacher_account']['specialization']
+            ]);
+
+        }
+
+    }
 
 
 }

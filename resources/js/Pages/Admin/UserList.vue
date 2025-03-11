@@ -26,6 +26,16 @@
       <div>
         <button @click="toggleAddUserModal" class="add-btn">Add a {{ type }}</button>
       </div>
+
+      <div>
+        <button
+          @click="toggleSyncUsers"
+          class="add-btn"
+          title="Sync users from Mater Dei College SIS"
+        >
+          Sync Users
+        </button>
+      </div>
     </div>
 
     <div class="content">

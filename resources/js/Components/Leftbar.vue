@@ -98,13 +98,13 @@ export default {
           <li title="Users" v-if="roles.includes('admin') || roles.includes('hr')">
             <div class="menu-li" @click="openSubMenu('Users')">
               <i class="fa-solid fa-users"></i>
-              <span>Admin</span>
+              <span>Administrator</span>
               <i class="fas fa-chevron-down"></i>
             </div>
 
             <ul id="submenu-users" class="submenu">
               <InertiaLink :href="'/users/users-list'" class="link">
-                <li><span>User List</span></li>
+                <li><span>Users</span></li>
               </InertiaLink>
               <InertiaLink :href="'/users/teachers-list'" class="link">
                 <li><span>Teachers</span></li>

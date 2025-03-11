@@ -47,5 +47,8 @@ export default {
         toggleAddUserModal() {
             this.isAddUser = !this.isAddUser;
         },
+        toggleSyncUsers() {
+            Inertia.visit("/users/sync");
+        },
     },
 };

@@ -80,6 +80,8 @@ Route::middleware([Check2WayVerification::class])->group(function () {
 
             Route::get('/forms/evaluation-manager', [EvaluationController::class, 'index']);
 
+            Route::get('/users/sync', [UserController::class, 'sync']);
+
         });
 
 

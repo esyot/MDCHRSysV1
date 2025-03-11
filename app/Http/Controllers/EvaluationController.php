@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use GuzzleHttp\Client;
 
 class EvaluationController extends Controller
 {
@@ -80,10 +81,34 @@ class EvaluationController extends Controller
     {
         if ($type === 'teacher')
         {
+
+
             $user = User::findOrFail($id);
+
+            $code = config('variables.api_key');
+
+            $url = 'https://sis.materdeicollege.com/api/hr/terms';
+
+            $client = new Client();
+
+            $response = $client->get($url, [
+                'query' => [
+                    'code' => $code,
+                ],
+                'verify' => false,
+            ]);
+
+            $terms = json_decode($response->getBody(), true);
+
+            usort($terms, fn($a, $b) => strcmp($b['start'], $a['start']) ?: strcmp($b['end'], $a['end']));
+
+
             return inertia('Pages/Forms/Evaluation/TeacherEvaluation', [
                 'user' => $user,
+                'terms' => $terms,
             ]);
+
+
         } elseif ($type === 'staff')
         {
             $user = User::findOrFail($id);

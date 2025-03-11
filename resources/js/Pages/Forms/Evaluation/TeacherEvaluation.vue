@@ -1,3 +1,170 @@
+<script>
+import { Inertia } from "@inertiajs/inertia";
+export default {
+  props: {
+    user: Object,
+    terms: Object,
+  },
+  data() {
+    return {
+      term: "",
+      currentDate: new Date(),
+      ratings: {
+        q1: Array(10).fill(null),
+        q2: Array(10).fill(null),
+        q3: Array(10).fill(null),
+        q4: Array(10).fill(null),
+      },
+      question1: [
+        "1. Is neat and well-groomed and manifests decency in his/attire.",
+        "2. Is free from distracting mannerisms.",
+        "3. Can command respect and attention in the class.",
+        "4. Shows dynamism and enthusiasm in teaching.",
+        "5. Delivers the lesson with a well-modulated voice.",
+        "6. Establishes eye contact in delivering the lesson.",
+        "7. Manifests a non-threatening personality which enhances student-teacher relationship.",
+        "8. Shows a sense of humor that makes the class alive.",
+        "9. Displays self-confidence in delivering the lesson.",
+        "10. Exercises tact and shows respect and fairness in dealing with the students.",
+      ],
+      question2: [
+        "1. Manifests mastery of the topic being discussed.",
+        "2. Presents the lesson in an interesting and organized manner.",
+        "3. Aligns the parts of the lesson with the course learning outcomes.",
+        "4. Sets clear expectations of students' performance",
+        "5. Explains the subject matter without completely relying on the references.",
+        "6. Relates the subject matter to real life situations.",
+        "7. Clarifies ideas in answer to students' questions regarding the lesson.",
+        "8. Elaborates lessons with current developments or up-to-date information on the subject matter.",
+        "9. Integrates values in the lesson.",
+        "10. Maximizes the use of instructional time for students' participation.",
+      ],
+      question3: [
+        "1. Starts and ends the class on time.",
+        "2. Checks the attendance systematically.",
+        "3. Establishes a conductive learning environment.",
+        "4. Makes sure that order and discipline are being observed in the class.",
+        "5. Spends time efficiently by refraining from discussing topics not related to the lesson.",
+        "6. Uses varied teaching strategies to achieve the learning outcomes.",
+        "7. Motivates the students by giving praises and words of affirmation.",
+        "8. Utilizes varied instructional materials and integrates technology in teaching.",
+        "9. Prescribes reasonable course requirements within reasonable time.",
+        "10. Evaluates students' performance and informs them of the outcomes.",
+      ],
+      question4: [
+        "1. Incorporates independent study through library work and research activities.",
+        "2. Promotes teacher-student and student-student interactions.",
+        "3. Gives interesting and imaginative, stimulating or challenging activities.",
+        "4. Encourages the students to ask questions to stimulate analytical and critical thinking.",
+        "5. Provides appropriate worksheets, exercises, activities, and handouts to students.",
+        "6. Relates the subject matter to real life situations.",
+        "7. Employs cooperative learning activities to encourage interaction and deepen discussion.",
+        "8. Motivates students to do reflective thinking and relate learning to daily life.",
+        "9. Provides an atmosphere that stimulates learning by encouraging the students to express themselves freely.",
+        "10. Encourages students' participation in formulating class rules and learning activities.",
+      ],
+    };
+  },
+  created() {
+    this.loadFromLocalStorage();
+  },
+  methods: {
+    goBack() {
+      window.history.back();
+    },
+    submitForm(event) {
+      event.preventDefault();
+
+      const formData = new FormData(event.target);
+
+      const formObject = {};
+      formData.forEach((value, key) => {
+        formObject[key] = value;
+      });
+
+      Inertia.post(`/users/${this.user.id}/evaluation-submit/`, {
+        formData: formObject,
+        ratings: this.overallRating,
+      });
+
+      localStorage.removeItem("ratings");
+      localStorage.removeItem("comments");
+    },
+    formatDate(date) {
+      const convertedDate = new Date(date);
+      const options = {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      };
+      return convertedDate.toLocaleString("en-US", options);
+    },
+    averageRating(section) {
+      const ratings = this.ratings[section];
+      const total = ratings.reduce((sum, rating) => sum + (rating || 0), 0);
+      const count = ratings.filter((rating) => rating !== null).length;
+      return count === 0 ? 0 : (total / count).toFixed(2);
+    },
+    saveToLocalStorage() {
+      localStorage.setItem("ratings", JSON.stringify(this.ratings));
+      localStorage.setItem("comments", JSON.stringify(this.comments));
+    },
+    loadFromLocalStorage() {
+      const savedRatings = localStorage.getItem("ratings");
+      const savedComments = localStorage.getItem("comments");
+
+      if (savedRatings) {
+        try {
+          this.ratings = JSON.parse(savedRatings);
+        } catch (e) {
+          console.error("Error parsing ratings from localStorage:", e);
+        }
+      }
+
+      if (savedComments) {
+        try {
+          this.comments = JSON.parse(savedComments);
+        } catch (e) {
+          console.error("Error parsing comments from localStorage:", e);
+        }
+      }
+
+      if (!this.ratings) {
+        this.ratings = {
+          q1: Array(10).fill(null),
+          q2: Array(10).fill(null),
+          q3: Array(10).fill(null),
+          q4: Array(10).fill(null),
+        };
+      }
+      if (!this.comments) {
+        this.comments = {
+          c1: "",
+          c2: "",
+          c3: "",
+          c4: "",
+        };
+      }
+    },
+  },
+  computed: {
+    overallRating() {
+      const allRatings = [
+        ...this.ratings.q1,
+        ...this.ratings.q2,
+        ...this.ratings.q3,
+        ...this.ratings.q4,
+      ];
+      const total = allRatings.reduce((sum, rating) => sum + (rating || 0), 0);
+      const count = allRatings.filter((rating) => rating !== null).length;
+      return count === 0 ? 0 : (total / count).toFixed(2);
+    },
+  },
+};
+</script>
 <template>
   <div class="evaluation-container">
     <div class="navigation">
@@ -12,11 +179,14 @@
       <span>Date: {{ formatDate(currentDate) }}</span>
 
       <div>
-        <select name="" id="">
+        <select name="" id="" v-model="term">
           <option value="" selected disabled>Select Term</option>
+          <option :value="term.id" v-for="term in terms" :key="term.id">
+            {{ term.name }}
+          </option>
         </select>
 
-        <select name="" id="">
+        <select name="" id="" v-if="term">
           <option value="" selected disabled>Select Subject</option>
         </select>
       </div>
@@ -229,172 +399,6 @@
     </form>
   </div>
 </template>
-
-<script>
-import { Inertia } from "@inertiajs/inertia";
-export default {
-  props: {
-    user: Object,
-  },
-  data() {
-    return {
-      currentDate: new Date(),
-      ratings: {
-        q1: Array(10).fill(null),
-        q2: Array(10).fill(null),
-        q3: Array(10).fill(null),
-        q4: Array(10).fill(null),
-      },
-      question1: [
-        "1. Is neat and well-groomed and manifests decency in his/attire.",
-        "2. Is free from distracting mannerisms.",
-        "3. Can command respect and attention in the class.",
-        "4. Shows dynamism and enthusiasm in teaching.",
-        "5. Delivers the lesson with a well-modulated voice.",
-        "6. Establishes eye contact in delivering the lesson.",
-        "7. Manifests a non-threatening personality which enhances student-teacher relationship.",
-        "8. Shows a sense of humor that makes the class alive.",
-        "9. Displays self-confidence in delivering the lesson.",
-        "10. Exercises tact and shows respect and fairness in dealing with the students.",
-      ],
-      question2: [
-        "1. Manifests mastery of the topic being discussed.",
-        "2. Presents the lesson in an interesting and organized manner.",
-        "3. Aligns the parts of the lesson with the course learning outcomes.",
-        "4. Sets clear expectations of students' performance",
-        "5. Explains the subject matter without completely relying on the references.",
-        "6. Relates the subject matter to real life situations.",
-        "7. Clarifies ideas in answer to students' questions regarding the lesson.",
-        "8. Elaborates lessons with current developments or up-to-date information on the subject matter.",
-        "9. Integrates values in the lesson.",
-        "10. Maximizes the use of instructional time for students' participation.",
-      ],
-      question3: [
-        "1. Starts and ends the class on time.",
-        "2. Checks the attendance systematically.",
-        "3. Establishes a conductive learning environment.",
-        "4. Makes sure that order and discipline are being observed in the class.",
-        "5. Spends time efficiently by refraining from discussing topics not related to the lesson.",
-        "6. Uses varied teaching strategies to achieve the learning outcomes.",
-        "7. Motivates the students by giving praises and words of affirmation.",
-        "8. Utilizes varied instructional materials and integrates technology in teaching.",
-        "9. Prescribes reasonable course requirements within reasonable time.",
-        "10. Evaluates students' performance and informs them of the outcomes.",
-      ],
-      question4: [
-        "1. Incorporates independent study through library work and research activities.",
-        "2. Promotes teacher-student and student-student interactions.",
-        "3. Gives interesting and imaginative, stimulating or challenging activities.",
-        "4. Encourages the students to ask questions to stimulate analytical and critical thinking.",
-        "5. Provides appropriate worksheets, exercises, activities, and handouts to students.",
-        "6. Relates the subject matter to real life situations.",
-        "7. Employs cooperative learning activities to encourage interaction and deepen discussion.",
-        "8. Motivates students to do reflective thinking and relate learning to daily life.",
-        "9. Provides an atmosphere that stimulates learning by encouraging the students to express themselves freely.",
-        "10. Encourages students' participation in formulating class rules and learning activities.",
-      ],
-    };
-  },
-  created() {
-    this.loadFromLocalStorage();
-  },
-  methods: {
-    goBack() {
-      window.history.back();
-    },
-    submitForm(event) {
-      event.preventDefault();
-
-      const formData = new FormData(event.target);
-
-      const formObject = {};
-      formData.forEach((value, key) => {
-        formObject[key] = value;
-      });
-
-      Inertia.post(`/users/${this.user.id}/evaluation-submit/`, {
-        formData: formObject,
-        ratings: this.overallRating,
-      });
-
-      localStorage.removeItem("ratings");
-      localStorage.removeItem("comments");
-    },
-    formatDate(date) {
-      const convertedDate = new Date(date);
-      const options = {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-      };
-      return convertedDate.toLocaleString("en-US", options);
-    },
-    averageRating(section) {
-      const ratings = this.ratings[section];
-      const total = ratings.reduce((sum, rating) => sum + (rating || 0), 0);
-      const count = ratings.filter((rating) => rating !== null).length;
-      return count === 0 ? 0 : (total / count).toFixed(2);
-    },
-    saveToLocalStorage() {
-      localStorage.setItem("ratings", JSON.stringify(this.ratings));
-      localStorage.setItem("comments", JSON.stringify(this.comments));
-    },
-    loadFromLocalStorage() {
-      const savedRatings = localStorage.getItem("ratings");
-      const savedComments = localStorage.getItem("comments");
-
-      if (savedRatings) {
-        try {
-          this.ratings = JSON.parse(savedRatings);
-        } catch (e) {
-          console.error("Error parsing ratings from localStorage:", e);
-        }
-      }
-
-      if (savedComments) {
-        try {
-          this.comments = JSON.parse(savedComments);
-        } catch (e) {
-          console.error("Error parsing comments from localStorage:", e);
-        }
-      }
-
-      if (!this.ratings) {
-        this.ratings = {
-          q1: Array(10).fill(null),
-          q2: Array(10).fill(null),
-          q3: Array(10).fill(null),
-          q4: Array(10).fill(null),
-        };
-      }
-      if (!this.comments) {
-        this.comments = {
-          c1: "",
-          c2: "",
-          c3: "",
-          c4: "",
-        };
-      }
-    },
-  },
-  computed: {
-    overallRating() {
-      const allRatings = [
-        ...this.ratings.q1,
-        ...this.ratings.q2,
-        ...this.ratings.q3,
-        ...this.ratings.q4,
-      ];
-      const total = allRatings.reduce((sum, rating) => sum + (rating || 0), 0);
-      const count = allRatings.filter((rating) => rating !== null).length;
-      return count === 0 ? 0 : (total / count).toFixed(2);
-    },
-  },
-};
-</script>
 
 <style scoped>
 .evaluation-container {

@@ -177,6 +177,7 @@ import { Inertia } from "@inertiajs/inertia";
 export default {
   props: {
     user: Object,
+    terms: Object,
   },
   data() {
     return {
