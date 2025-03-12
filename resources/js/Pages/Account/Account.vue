@@ -15,6 +15,7 @@ export default {
     auth: Boolean,
     roles: Object,
     authError: String,
+    overviewData: Object,
   },
   data() {
     return {
@@ -26,6 +27,7 @@ export default {
         password: "",
       },
       dropdownOpen: false,
+      user_job_details: this.personalDetails.user_job_details,
     };
   },
   components: {
@@ -116,15 +118,15 @@ export default {
 
         <div class="user-details">
           <span class="name">{{ user.first_name }} {{ user.last_name }}</span>
-          <div class="user-role">
+          <div class="user-role" v-if="user.teacher">
             <i class="fas fa-globe"></i>
             <div>
               <span
                 class="role-desc"
-                v-for="(department, index) in user.departments"
-                :key="department.id"
-                >{{ department.name }}
-                {{ user.departments.length >= index ? "" : ", " }}</span
+                v-for="dept in user.teacher.departments"
+                :key="dept.id"
+              >
+                {{ dept.name }}</span
               >
             </div>
           </div>
@@ -142,7 +144,7 @@ export default {
 
     <section id="section" :class="!auth ? 'blur' : 'none-blur'">
       <div v-if="activeTab === 'overview'">
-        <Overview :personalDetails="personalDetails" />
+        <Overview :user_job_details="user_job_details" :overviewData="overviewData" />
       </div>
 
       <div v-if="activeTab === 'personalDetails'" class="personal-details-container">

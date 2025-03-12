@@ -14,13 +14,14 @@ return new class extends Migration {
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('middle_name');
+            $table->string('middle_name')->nullable();
             $table->string('user');
-            $table->string('password');
+            $table->string('password')->default('ilovemdc2025');
             $table->string('email');
             $table->string('img')->nullable();
             $table->tinyInteger('is_two_step_verification')->default(false);
             $table->tinyInteger('is_update_with_email')->default(false);
+            $table->tinyInteger('is_active')->default(true);
             $table->string('code')->nullable();
             $table->timestamps();
         });

@@ -1,7 +1,6 @@
 <script>
 import { InertiaLink } from "@inertiajs/inertia-vue3";
-import { formatDistanceToNow } from "date-fns";
-
+import { formatDistanceToNow, differenceInSeconds } from "date-fns";
 export default {
   data() {
     return {
@@ -81,7 +80,7 @@ export default {
       this.fetchNotifCount(this.user.id);
       this.fetchInterval = setInterval(() => {
         this.fetchNotifCount(this.user.id);
-      }, 5000);
+      }, 6000);
     },
     stopFetchingNotifications() {
       if (this.fetchInterval) {
@@ -90,7 +89,15 @@ export default {
       }
     },
     calculateTimeAgo(createdAt) {
-      const timeAgo = formatDistanceToNow(new Date(createdAt), { addSuffix: false });
+      const now = new Date();
+      const createdDate = new Date(createdAt);
+      const secondsAgo = differenceInSeconds(now, createdDate);
+
+      if (secondsAgo < 60) {
+        return `${secondsAgo} secs`;
+      }
+
+      const timeAgo = formatDistanceToNow(createdDate, { addSuffix: false });
       const regex = /about |ago/gi;
       let result = timeAgo.replace(regex, "").trim();
 
@@ -103,7 +110,6 @@ export default {
 
       return result;
     },
-
     checkStatus(array) {
       if (array && array.includes(this.user.id)) {
         return "";

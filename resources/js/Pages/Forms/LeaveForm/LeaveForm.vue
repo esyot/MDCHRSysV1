@@ -6,6 +6,7 @@
 <template>
   <ConfirmationFormModal
     :isConfirmation="isConfirmation"
+    :message="message"
     @submitForm="submitForm"
     @toggleConfirmForm="toggleConfirmForm"
   ></ConfirmationFormModal>
@@ -16,6 +17,7 @@
         <div class="forms-title">
           <span class="title">DETAILS OF APPLICATION</span>
         </div>
+
         <div class="form-section">
           <label for="leave_name">TYPE OF LEAVE:</label>
           <select
@@ -27,7 +29,7 @@
             <option value="" disabled selected>Select type of leave</option>
             <option value="Personal">Personal</option>
             <option value="Maternity">Maternity</option>
-            <option value="Paternity">Peternity</option>
+            <option value="Paternity">Paternity</option>
             <option value="Sick">Sick</option>
             <option value="Educational">Educational</option>
             <option value="Others">Others</option>
@@ -108,14 +110,24 @@
           <label for="leave_sick_hospital"
             >If in Hospital, please specify your illness:</label
           >
+
           <input
             type="text"
-            id="leave_sick_hospital"
             class="forms-controller"
-            placeholder="eg., Fever"
             v-model="formData.illness"
-            required
+            @input="fetchCondition(formData.illness)"
+            placeholder="Search for a condition..."
           />
+
+          <div v-if="isDisplaySuggestion" class="condition-suggestions">
+            <span
+              v-for="(suggestion, index) in suggestions"
+              :key="index"
+              @click="selectedSuggestion(suggestion)"
+            >
+              {{ suggestion }}
+            </span>
+          </div>
         </div>
 
         <div
@@ -144,10 +156,10 @@
             formData.convalescence_place === 'Out Patient'
           "
         >
-          <label for="leave_sick_outpatient">Specify illness:</label>
+          <label for="condition">Specify illness:</label>
           <input
             type="text"
-            id="leave_sick_outpatient"
+            id="condition"
             class="forms-controller"
             placeholder="eg., Fever"
             v-model="formData.illness"
@@ -276,7 +288,7 @@
                 type="radio"
                 id="yes-substitute"
                 class="forms-controller"
-                v-model="formData.substitute"
+                v-model="isSubstitute"
                 :value="true"
               />
               <span> Yes</span>
@@ -287,17 +299,14 @@
                 type="radio"
                 id="no-substitute"
                 class="forms-controller"
-                v-model="formData.substitute"
+                v-model="isSubstitute"
                 :value="false"
               />
               <span> No</span>
             </div>
           </div>
         </div>
-        <div
-          v-if="!formData.substitute && roles.includes('teacher')"
-          class="form-section"
-        >
+        <div v-if="!isSubstitute && roles.includes('teacher')" class="form-section">
           <label for="date_end">Please specify the alternatives used to the class.</label>
           <textarea
             type="text"
@@ -307,7 +316,7 @@
           />
         </div>
       </div>
-      <div class="forms" v-if="formData.substitute">
+      <div class="forms" v-if="isSubstitute">
         <div class="forms-title">
           <span class="title">SUBSTITUTE</span>
           <button type="button" @click="addTeachingSubstitute">
@@ -334,7 +343,7 @@
           </div>
 
           <div class="form-section">
-            <label for="'teacher' + index">Substitute Teacher</label>
+            <label :for="'teacher' + index">Substitute Teacher:</label>
             <div class="search-bar">
               <input
                 title="Add teacher"
@@ -346,17 +355,26 @@
                 required
               />
             </div>
+
             <div class="dropdown-teachers">
               <ul v-if="searchTeacher">
                 <li
                   @click="selectTeacher(user.id, index)"
-                  v-for="user in filteredUsers"
+                  v-for="user in users"
                   :key="user.id"
                 >
                   {{ user.last_name }}, {{ user.first_name }}
                 </li>
+                <li class="empty-msg" v-if="users.length === 0">
+                  <small class="error-msg" v-if="!teachingSubstitutes[index].user_id"
+                    >No match found!</small
+                  >
+                </li>
               </ul>
             </div>
+            <small class="error-msg" v-if="!teachingSubstitutes[index].user_id"
+              >Select a valid teacher</small
+            >
           </div>
 
           <div class="form-section">
@@ -405,7 +423,9 @@
     </div>
 
     <div class="form-submit">
-      <button type="submit" class="submit" title="Submit for approval">Submit</button>
+      <button type="submit" class="submit" title="Submit for approval">
+        {{ formDataToEditCopy ? "Re-Submit Application" : "Submit Apllication" }}
+      </button>
     </div>
   </form>
 </template>

@@ -31,107 +31,315 @@ class LeaveFormController extends Controller
             ->where('users.id', Auth::user()->id)
             ->first();
 
-            $users = User::whereNot('id', Auth::user()->id)
+        $users = User::whereNot('id', Auth::user()->id)
             ->orderBy('last_name')
             ->get([
-                'id','first_name', 'last_name'
-            ]); 
-            
+                'id',
+                'first_name',
+                'last_name'
+            ]);
+
         return inertia('Pages/Forms/LeaveForm/LeaveForm', [
 
             'user' => Auth::user(),
             'roles' => $roles,
             'personalDetails' => $personalDetails->toArray(),
-            'pageTitle'=> 'Leave Form',
-            'users'=> $users->toArray(),
+            'pageTitle' => 'Leave Form',
+            'users' => $users->toArray(),
         ]);
     }
 
     public function submit(Request $request)
-    {        
-        $formData = $request->toArray();
+    {
+        if (!$request->form_id)
+        {
 
-        unset($formData['medical_certificate']); 
-        
-        unset($formData['substitutes']);
+            $formData = $request->toArray();
 
-        unset($formData['substitute']);
-        
-        $formData['user_id'] = Auth::user()->id;
+            unset($formData['medical_certificate']);
 
-        $leave_form = LeaveForm::create($formData);
+            unset($formData['substitutes']);
 
-        if ($request->hasFile('medical_certificate')) {
-           
-            $file = $request->file('medical_certificate');
-            
-           
-            $path = 'public/users/medical_certificates';
+            unset($formData['form_id']);
 
-            if (!Storage::exists($path)) {
-                Storage::makeDirectory($path, 0775, true);
-            }
-            
-            if (!$file->isValid()) {
-                return redirect()->back()->with('error', 'Invalid file uploaded.');
-            }
-        
-            $extension = $file->getClientOriginalExtension();
-    
-            $dateTimeNow = Carbon::now()->format('Y-m-d-H-i-s');
-            $fileName = $leave_form->user_id . '-' . $dateTimeNow . '.' . $extension;
-    
-            Storage::putFileAs($path, $file, $fileName);
-    
-            $leave_form->update([
-                'medical_certificate' => $fileName,
-            ]);
-        }
-
-        if ($request['substitute'] !== 'true') {
-            unset($request['substitutes']);
-        }
-    
-        if ($request->substitutes) {
-          
-            $array = $request->substitutes;
-
-            $substitutes = json_decode($array, true);
-        
-               foreach($substitutes as $sub){
-
-                $sub['leave_form_id'] = $leave_form->id;
-                
-                unset($sub['days']);
-                unset($sub['teacher']);
-    
-               
-                $days = isset($sub['days']) && is_array($sub['days']) ? implode(', ', $sub['days']) : '';
-
-                $sub['days'] = $days;
-              
-                Substitute::create($sub);
-
-               }
-              
+            if ($formData['leave_type'] === 'Paternity' || $formData['leave_type'] === 'Maternity')
+            {
+                unset($formData['leave_type_option']);
+                unset($formData['vacation_option']);
+                unset($formData['convalescence_place']);
+                unset($formData['address']);
+                unset($formData['sick_type']);
+                unset($formData['illness']);
+                unset($formData['description']);
+                unset($formData['date_of_confinement']);
+                unset($formData['date_of_discharge']);
+                unset($formData['medical_certificate']);
+            } elseif ($formData['leave_type'] === 'Educational')
+            {
+                unset($formData['vacation_option']);
+                unset($formData['convalescence_place']);
+                unset($formData['address']);
+                unset($formData['sick_type']);
+                unset($formData['illness']);
+                unset($formData['description']);
+                unset($formData['date_of_confinement']);
+                unset($formData['date_of_discharge']);
+                unset($formData['medical_certificate']);
+            } elseif ($formData['leave_type'] === 'Personal')
+            {
+                unset($formData['convalescence_place']);
+                unset($formData['sick_type']);
+                unset($formData['illness']);
+                unset($formData['description']);
+                unset($formData['date_of_confinement']);
+                unset($formData['date_of_discharge']);
+                unset($formData['medical_certificate']);
+            } elseif ($formData['leave_type'] === 'Sick')
+            {
+                unset($formData['vacation_option']);
+                unset($formData['address']);
+                unset($formData['description']);
             }
 
-           
+            $formData['user_id'] = Auth::user()->id;
+
+            $leave_form = LeaveForm::create($formData);
+
+            if ($request->hasFile('medical_certificate'))
+            {
+
+                $file = $request->file('medical_certificate');
+
+
+                $path = 'public/users/medical_certificates';
+
+                if (!Storage::exists($path))
+                {
+                    Storage::makeDirectory($path, 0775, true);
+                }
+
+                if (!$file->isValid())
+                {
+                    return redirect()->back()->with('error', 'Invalid file uploaded.');
+                }
+
+                $extension = $file->getClientOriginalExtension();
+
+                $dateTimeNow = Carbon::now()->format('Y-m-d-H-i-s');
+                $fileName = $leave_form->user_id . '-' . $dateTimeNow . '.' . $extension;
+
+                Storage::putFileAs($path, $file, $fileName);
+
+                $leave_form->update([
+                    'medical_certificate' => $fileName,
+                ]);
+            }
+
+
+            if ($request->substitutes)
+            {
+
+                $array = $request->substitutes;
+
+                $substitutes = json_decode($array, true);
+
+                foreach ($substitutes as $sub)
+                {
+
+                    $sub['leave_form_id'] = $leave_form->id;
+
+                    unset($sub['teacher']);
+
+                    $sub['days'] = implode(', ', $sub['days']);
+
+                    Substitute::create($sub);
+
+                }
+
+            }
+
+
             $notificationController = new NotificationController();
 
             $notificationController->create(
-                'Leave Form', 
+                'Leave Form',
                 'A user submitted a leave form, check it now!',
                 'checking',
                 'dean',
                 '/forms/checking'
-        );
-          
+            );
 
-        
-    
-        return redirect()->route('forms.tracking')->with('success', 'Leave request submitted successfully!.');
-            
+            return redirect()->route('forms.tracking')->with('success', 'Leave request submitted successfully!.');
+
+        } else
+        {
+
+            $formData = $request->toArray();
+
+
+            $form_id = $formData['form_id'];
+
+            foreach ($formData as $key => $value)
+            {
+                if ($value === 'null')
+                {
+                    unset($formData[$key]);
+                }
+            }
+
+
+            unset($formData['medical_certificate']);
+
+            unset($formData['substitutes']);
+
+            unset($formData['substitute']);
+
+            unset($formData['form_id']);
+
+            if ($formData['leave_type'] === 'Paternity' || $formData['leave_type'] === 'Maternity')
+            {
+                unset($formData['leave_type_option']);
+                unset($formData['vacation_option']);
+                unset($formData['convalescence_place']);
+                unset($formData['address']);
+                unset($formData['sick_type']);
+                unset($formData['illness']);
+                unset($formData['description']);
+                unset($formData['date_of_confinement']);
+                unset($formData['date_of_discharge']);
+                unset($formData['medical_certificate']);
+            } elseif ($formData['leave_type'] === 'Educational')
+            {
+                unset($formData['vacation_option']);
+                unset($formData['convalescence_place']);
+                unset($formData['address']);
+                unset($formData['sick_type']);
+                unset($formData['illness']);
+                unset($formData['description']);
+                unset($formData['date_of_confinement']);
+                unset($formData['date_of_discharge']);
+                unset($formData['medical_certificate']);
+            } elseif ($formData['Personal'])
+            {
+                unset($formData['convalescence_place']);
+                unset($formData['sick_type']);
+                unset($formData['illness']);
+                unset($formData['description']);
+                unset($formData['date_of_confinement']);
+                unset($formData['date_of_discharge']);
+                unset($formData['medical_certificate']);
+            } elseif ($formData['leave_type'] === 'Personal')
+            {
+                unset($formData['convalescence_place']);
+                unset($formData['sick_type']);
+                unset($formData['illness']);
+                unset($formData['description']);
+                unset($formData['date_of_confinement']);
+                unset($formData['date_of_discharge']);
+                unset($formData['medical_certificate']);
+            } elseif ($formData['leave_type'] === 'Sick')
+            {
+                unset($formData['vacation_option']);
+                unset($formData['address']);
+                unset($formData['description']);
+            }
+
+
+
+
+            $record = LeaveForm::find($form_id);
+
+            if ($record)
+            {
+
+                $columns = \Schema::getColumnListing((new LeaveForm)->getTable());
+                $columns = array_diff($columns, ['id', 'user_id', 'date_start', 'status', 'date_end', 'created_at', 'updated_at']);
+
+                foreach ($columns as $column)
+                {
+                    $record->$column = null;
+                }
+
+                $record->save();
+            }
+
+            $formData['status'] = 'Pending';
+
+
+            LeaveForm::where('id', $form_id)
+                ->first()
+                ->update($formData);
+
+            if ($request->hasFile('medical_certificate'))
+            {
+
+                $file = $request->file('medical_certificate');
+
+
+                $path = 'public/users/medical_certificates';
+
+                if (!Storage::exists($path))
+                {
+                    Storage::makeDirectory($path, 0775, true);
+                }
+
+                if (!$file->isValid())
+                {
+                    return redirect()->back()->with('error', 'Invalid file uploaded.');
+                }
+
+                $extension = $file->getClientOriginalExtension();
+
+                $dateTimeNow = Carbon::now()->format('Y-m-d-H-i-s');
+                $fileName = $leave_form->user_id . '-' . $dateTimeNow . '.' . $extension;
+
+                Storage::putFileAs($path, $file, $fileName);
+
+                $leave_form->update([
+                    'medical_certificate' => $fileName,
+                ]);
+            }
+
+
+            if ($request->substitutes)
+            {
+
+                Substitute::where('leave_form_id', $form_id)->delete();
+
+                $array = $request->substitutes;
+
+                $substitutes = json_decode($array, true);
+
+                foreach ($substitutes as $sub)
+                {
+
+                    $sub['leave_form_id'] = $form_id;
+
+                    unset($sub['teacher']);
+                    unset($sub['user']);
+
+                    $sub['days'] = implode(', ', $sub['days']);
+
+                    Substitute::create($sub);
+
+                }
+
+            }
+
+            $notificationController = new NotificationController();
+
+            $notificationController->create(
+                'Leave Form',
+                'A user submitted a leave form, check it now!',
+                'checking',
+                'dean',
+                '/forms/checking'
+            );
+
+            return redirect()->route('forms.tracking')->with('success', 'Leave request submitted successfully!.');
+
+
+        }
     }
-    
+
 }

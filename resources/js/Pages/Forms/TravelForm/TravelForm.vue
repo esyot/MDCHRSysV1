@@ -5,6 +5,7 @@
 <template>
   <ConfirmationFormModal
     :isConfirmation="isConfirmation"
+    :message="message"
     @submitForm="submitForm"
     @toggleConfirmForm="toggleConfirmForm"
   ></ConfirmationFormModal>
@@ -16,37 +17,48 @@
           <span class="title">Travel details</span>
         </div>
         <div class="form-section">
-          <label for="dates">Date Start of Travel:</label>
+          <label for="date_start">Date Start of Travel:</label>
           <input
             type="date"
-            id="dates"
-            v-model="travelForm.date_start"
+            id="date_start"
+            v-model="formData.date_start"
             class="form-control"
             required
           />
         </div>
 
         <div class="form-section">
-          <label for="dates">Date End of Travel:</label>
+          <label for="date_end">Date End of Travel:</label>
           <input
             type="date"
-            id="dates"
-            v-model="travelForm.date_end"
+            id="date_end"
+            v-model="formData.date_end"
             class="form-control"
             required
           />
         </div>
 
         <div class="form-section">
-          <label for="place">Place:</label>
+          <label for="destination">Destination:</label>
           <input
             type="text"
-            id="place"
-            v-model="travelForm.place"
+            id="destination"
+            v-model="formData.destination"
             class="form-control"
-            placeholder="Enter the place of travel"
+            placeholder="Enter the destination of travel eg. 'Tokyo, Japan'"
             required
+            @input="fetchPlaceSuggestions(formData.destination)"
           />
+
+          <div v-if="isDisplaySuggestion" class="suggestions">
+            <span
+              v-for="(suggestion, index) in suggestions"
+              :key="index"
+              @click="selectedSuggestion(suggestion)"
+            >
+              {{ suggestion }}
+            </span>
+          </div>
         </div>
 
         <div class="form-section">
@@ -54,7 +66,7 @@
           <input
             type="text"
             id="purpose"
-            v-model="travelForm.purpose"
+            v-model="formData.purpose"
             class="form-control"
             placeholder="Enter the purpose or event"
             required
@@ -66,7 +78,7 @@
           <input
             type="text"
             id="contact_person"
-            v-model="travelForm.contact_person"
+            v-model="formData.contact_person"
             class="form-control"
             placeholder="Enter the organizer or contact person"
             required
@@ -78,7 +90,7 @@
           <input
             type="text"
             id="contact_person_no"
-            v-model="travelForm.contact_person_no"
+            v-model="formData.contact_person_no"
             class="form-control"
             placeholder="Enter the organizer or contact person's contact number"
             required
@@ -89,7 +101,7 @@
           <label for="description">Short Description:</label>
           <textarea
             id="description"
-            v-model="travelForm.description"
+            v-model="formData.description"
             class="form-control"
             placeholder="Enter a short description of the purpose or event"
             rows="4"
@@ -113,7 +125,7 @@
               <input
                 type="radio"
                 :id="item.value"
-                v-model="budget.selectedBudgetType"
+                v-model="formData.budget_type"
                 :value="item.value"
               />
               <label :for="item.id">{{ item.label }}</label>
@@ -129,7 +141,7 @@
               <input
                 type="radio"
                 :id="item.value"
-                v-model="budget.selectedChargedTo"
+                v-model="formData.budget_charged_to"
                 :value="item.value"
               />
               <label :for="item.value">{{ item.label }}</label>
@@ -142,15 +154,15 @@
           <input
             type="number"
             id="amount"
-            v-model="budget.amount"
+            v-model="formData.amount"
             class="form-control"
             placeholder="Enter amount requested"
             required
           />
         </div>
         <div class="form-section">
-          <label for="amount">Select Term:</label>
-          <select class="form-control" v-model="travelForm.semister" required>
+          <label for="term">Select Term:</label>
+          <select id="term" class="form-control" v-model="formData.term" required>
             <option value="" disabled selected>Select Term</option>
             <option value="1st">1st Semister</option>
             <option value="2nd">2nd Semister</option>
@@ -158,9 +170,9 @@
           </select>
         </div>
         <div class="form-section" v-if="roles.includes('teacher')">
-          <label for="date_end">Do you have a substitute teacher?</label>
+          <label for="isSubstitute">Do you have a substitute teacher?</label>
 
-          <div class="radio-container">
+          <div id="isSubstitute" class="radio-container">
             <div class="radio" for="yes-substitute">
               <input
                 type="radio"
@@ -185,10 +197,14 @@
           </div>
         </div>
         <div v-if="!isSubstitute" class="form-section">
-          <label for="date_end">Please specify the alternatives used to the class.</label>
+          <label for="alternative_description"
+            >Please specify the alternatives that have been used in the class.</label
+          >
+
           <textarea
+            id="alternative_description"
             type="text"
-            v-model="formData.description"
+            v-model="formData.class_alternatives_description"
             placeholder="Input text here."
             required
           />
@@ -211,7 +227,7 @@
           class="substitute-form"
         >
           <div class="form-section">
-            <label for="'subject' + index">Subject</label>
+            <label :for="'subject' + index">Subject:</label>
             <input
               type="text"
               :id="'subject' + index"
@@ -223,7 +239,7 @@
           </div>
 
           <div class="form-section">
-            <label for="'teacher' + index">Substitute Teacher</label>
+            <label :for="'teacher' + index">Substitute Teacher:</label>
             <div class="search-bar">
               <input
                 title="Add teacher"
@@ -235,20 +251,30 @@
                 required
               />
             </div>
+
             <div class="dropdown-teachers">
               <ul v-if="searchTeacher">
                 <li
                   @click="selectTeacher(user.id, index)"
-                  v-for="user in filteredUsers"
+                  v-for="user in users"
                   :key="user.id"
                 >
                   {{ user.last_name }}, {{ user.first_name }}
                 </li>
+                <li class="empty-msg" v-if="users.length === 0">
+                  <small class="error-msg" v-if="!teachingSubstitutes[index].user_id"
+                    >No match found!</small
+                  >
+                </li>
               </ul>
             </div>
+            <small class="error-msg" v-if="!teachingSubstitutes[index].user_id"
+              >Select a valid teacher</small
+            >
           </div>
 
           <div class="form-section">
+            <label :for="'days' + index">Days:</label>
             <div class="days">
               <div class="days-item" v-for="(day, dayIndex) in days" :key="dayIndex">
                 <input
@@ -263,7 +289,7 @@
           </div>
 
           <div class="form-section">
-            <label for="'start_time' + index">Start Time</label>
+            <label :for="'start_time' + index">Start Time:</label>
             <input
               type="time"
               :id="'start_time' + index"
@@ -274,7 +300,7 @@
           </div>
 
           <div class="form-section">
-            <label for="'end_time' + index">End Time</label>
+            <label :for="'end_time' + index">End Time</label>
             <input
               type="time"
               :id="'end_time' + index"

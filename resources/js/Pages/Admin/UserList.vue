@@ -1,56 +1,13 @@
-<script>
-import Layout from "@/Layouts/Layout.vue";
-import { Inertia } from "@inertiajs/inertia";
-import AddUserModal from "@/Modals/AddUserModal.vue";
-
-export default {
-  layout: Layout,
-  components: {
-    AddUserModal,
-  },
-  props: {
-    users: Object,
-    roles: Array,
-    departments: Array,
-    roleList: Array,
-  },
-  data() {
-    return {
-      search_value: "",
-      isAddUser: false,
-    };
-  },
-  computed: {
-    filteredUsers() {
-      if (!this.search_value) return this.users;
-
-      const searchLower = this.search_value.toLowerCase();
-
-      return this.users.filter(
-        (user) =>
-          user.last_name.toLowerCase().includes(searchLower) ||
-          user.first_name.toLowerCase().includes(searchLower) ||
-          (user.middle_name?.toLowerCase().includes(searchLower) ?? false)
-      );
-    },
-  },
-  methods: {
-    handleClick(user) {
-      Inertia.visit(`/users/user-list/${user.id}`);
-    },
-
-    toggleAddUserModal() {
-      this.isAddUser = !this.isAddUser;
-    },
-  },
-};
-</script>
+<script src="./js/user-list.js"></script>
 
 <template>
   <AddUserModal
     v-if="isAddUser"
+    :type="type"
     :departments="departments"
     :roleList="roleList"
+    :specializationList="specializationList"
+    :positionList="positionList"
     @toggleAddUserModal="toggleAddUserModal"
   ></AddUserModal>
 
@@ -66,7 +23,19 @@ export default {
         />
       </div>
 
-      <button @click="toggleAddUserModal" class="add-btn">Add User</button>
+      <div>
+        <button @click="toggleAddUserModal" class="add-btn">Add a {{ type }}</button>
+      </div>
+
+      <div>
+        <button
+          @click="toggleSyncUsers"
+          class="add-btn"
+          title="Sync users from Mater Dei College SIS"
+        >
+          Sync Users
+        </button>
+      </div>
     </div>
 
     <div class="content">
@@ -75,7 +44,7 @@ export default {
           <tr>
             <td class="td-title">
               <i class="fa-solid fa-user"></i>
-              <span>User Name</span>
+              <span>{{ type.charAt(0).toUpperCase() + type.slice(1) }} </span>
             </td>
           </tr>
         </thead>

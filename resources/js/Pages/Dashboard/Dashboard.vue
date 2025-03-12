@@ -1,12 +1,7 @@
 <template>
   <div class="container-body">
     <div class="content-container">
-      <section
-        class="cards"
-        v-if="
-          roles.includes('hr') || roles.includes('admin') || roles.includes('p-admin')
-        "
-      >
+      <section class="cards">
         <div class="card">
           <i class="fas fa-users fa-2x"></i>
           <span>Users</span>
@@ -25,7 +20,13 @@
           <span>{{ userOnTravel }}</span>
         </div>
 
-        <div @click="toFormsChecking('leave')" class="card">
+        <div
+          @click="toFormsChecking('leave')"
+          class="card"
+          v-if="
+            roles.includes('hr') || roles.includes('admin') || roles.includes('p-admin')
+          "
+        >
           <i class="fas fa-hourglass-half fa-2x"></i>
           <span>Leave Requests</span>
           <span>{{ leaveRequestCount }}</span>

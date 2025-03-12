@@ -11,7 +11,7 @@
       </span>
       <span>Date: {{ formatDate(currentDate) }}</span>
     </div>
-    <h1>Evaluation Form</h1>
+    <h1>MDC STAFF PERFORMANCE EVALUATION FORM</h1>
     <form @submit.prevent="submitForm">
       <div class="forms">
         <div class="table-title">
@@ -20,15 +20,18 @@
         <table class="evaluation-table">
           <thead>
             <tr>
-              <th>The teacher ...</th>
-              <th><label>Outstanding</label><br />5</th>
-              <th><label>Very Satisfactory</label><br />4</th>
-              <th><label>Satisfactory</label><br />3</th>
-              <th><label>Poor</label><br />2</th>
-              <th><label>Very Poor</label><br />1</th>
+              <th>Performance Indicator</th>
+              <th>5</th>
+              <th>4</th>
+              <th>3</th>
+              <th>2</th>
+              <th>1</th>
             </tr>
           </thead>
           <tbody>
+            <tr class="indicators">
+              <td colspan="6">Use Of Time</td>
+            </tr>
             <tr v-for="(question1, index) in question1" :key="index">
               <td>{{ question1 }}</td>
               <td v-for="rating in 5" :key="rating">
@@ -37,6 +40,110 @@
                   @change="saveToLocalStorage"
                   :name="'q1-' + index"
                   v-model="ratings.q1[index]"
+                  :value="rating"
+                  required
+                />
+              </td>
+            </tr>
+
+            <tr class="indicators">
+              <td colspan="6">Job Knowledge</td>
+            </tr>
+            <tr v-for="(question2, index) in question2" :key="index">
+              <td>{{ question2 }}</td>
+              <td v-for="rating in 5" :key="rating">
+                <input
+                  type="radio"
+                  @change="saveToLocalStorage"
+                  :name="'q2-' + index"
+                  v-model="ratings.q2[index]"
+                  :value="rating"
+                  required
+                />
+              </td>
+            </tr>
+
+            <tr class="indicators">
+              <td colspan="6">Quality of Work</td>
+            </tr>
+            <tr v-for="(question3, index) in question3" :key="index">
+              <td>{{ question3 }}</td>
+              <td v-for="rating in 5" :key="rating">
+                <input
+                  type="radio"
+                  @change="saveToLocalStorage"
+                  :name="'q3-' + index"
+                  v-model="ratings.q3[index]"
+                  :value="rating"
+                  required
+                />
+              </td>
+            </tr>
+
+            <tr class="indicators">
+              <td colspan="6">Quantity of Work</td>
+            </tr>
+            <tr v-for="(question4, index) in question4" :key="index">
+              <td>{{ question4 }}</td>
+              <td v-for="rating in 5" :key="rating">
+                <input
+                  type="radio"
+                  @change="saveToLocalStorage"
+                  :name="'q4-' + index"
+                  v-model="ratings.q4[index]"
+                  :value="rating"
+                  required
+                />
+              </td>
+            </tr>
+
+            <tr class="indicators">
+              <td colspan="6">Utilization of Resources</td>
+            </tr>
+            <tr v-for="(question5, index) in question5" :key="index">
+              <td>{{ question5 }}</td>
+              <td v-for="rating in 5" :key="rating">
+                <input
+                  type="radio"
+                  @change="saveToLocalStorage"
+                  :name="'q5-' + index"
+                  v-model="ratings.q5[index]"
+                  :value="rating"
+                  required
+                />
+              </td>
+            </tr>
+
+            <tr class="indicators">
+              <td colspan="6">
+                The Initiative, Judgment, and Decision Making Capability
+              </td>
+            </tr>
+            <tr v-for="(question6, index) in question6" :key="index">
+              <td>{{ question6 }}</td>
+              <td v-for="rating in 5" :key="rating">
+                <input
+                  type="radio"
+                  @change="saveToLocalStorage"
+                  :name="'q6-' + index"
+                  v-model="ratings.q6[index]"
+                  :value="rating"
+                  required
+                />
+              </td>
+            </tr>
+
+            <tr class="indicators">
+              <td colspan="6">Working Relationship</td>
+            </tr>
+            <tr v-for="(question7, index) in question7" :key="index">
+              <td>{{ question7 }}</td>
+              <td v-for="rating in 5" :key="rating">
+                <input
+                  type="radio"
+                  @change="saveToLocalStorage"
+                  :name="'q7-' + index"
+                  v-model="ratings.q7[index]"
                   :value="rating"
                   required
                 />
@@ -61,161 +168,6 @@
           </div>
         </div>
       </div>
-
-      <div class="forms">
-        <div class="table-title">
-          <span> B. TEACHER'S KNOWLEDGE OF THE SUBJECT MATTER </span>
-        </div>
-        <table class="evaluation-table">
-          <thead>
-            <tr>
-              <th>The teacher ...</th>
-              <th><label>Outstanding</label><br />5</th>
-              <th><label>Very Satisfactory</label><br />4</th>
-              <th><label>Satisfactory</label><br />3</th>
-              <th><label>Poor</label><br />2</th>
-              <th><label>Very Poor</label><br />1</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(question2, index) in question2" :key="index">
-              <td>{{ question2 }}</td>
-              <td v-for="rating in 5" :key="rating">
-                <input
-                  type="radio"
-                  @change="saveToLocalStorage"
-                  :name="'q2-' + index"
-                  v-model="ratings.q2[index]"
-                  :value="rating"
-                  required
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="last">
-          <div class="comment">
-            <label>Comments:</label>
-            <textarea
-              @input="saveToLocalStorage"
-              id=""
-              name="c2"
-              rows="3"
-              required
-            ></textarea>
-          </div>
-          <div class="rating">
-            <label>Rating:</label>
-            <input type="text" :value="averageRating('q2')" disabled />
-          </div>
-        </div>
-      </div>
-
-      <div class="forms">
-        <div class="table-title">
-          <span> C. CLASSROOM MANAGEMENT </span>
-        </div>
-        <table class="evaluation-table">
-          <thead>
-            <tr>
-              <th>The teacher ...</th>
-              <th><label>Outstanding</label><br />5</th>
-              <th><label>Very Satisfactory</label><br />4</th>
-              <th><label>Satisfactory</label><br />3</th>
-              <th><label>Poor</label><br />2</th>
-              <th><label>Very Poor</label><br />1</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(question3, index) in question3" :key="index">
-              <td>{{ question3 }}</td>
-              <td v-for="rating in 5" :key="rating">
-                <input
-                  type="radio"
-                  @change="saveToLocalStorage"
-                  :name="'q3-' + index"
-                  v-model="ratings.q3[index]"
-                  :value="rating"
-                  required
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="last">
-          <div class="comment">
-            <label>Comments:</label>
-            <textarea
-              @input="saveToLocalStorage"
-              name="c3"
-              id=""
-              rows="3"
-              required
-            ></textarea>
-          </div>
-          <div class="rating">
-            <label>Rating:</label>
-            <input type="text" :value="averageRating('q3')" disabled />
-          </div>
-        </div>
-      </div>
-
-      <div class="forms">
-        <div class="table-title">
-          <span> D. TEACHER'S TECHNIQUES FOR INDEPENDENT LEARNING </span>
-        </div>
-        <table class="evaluation-table">
-          <thead>
-            <tr>
-              <th>The teacher ...</th>
-              <th><label>Outstanding</label><br />5</th>
-              <th><label>Very Satisfactory</label><br />4</th>
-              <th><label>Satisfactory</label><br />3</th>
-              <th><label>Poor</label><br />2</th>
-              <th><label>Very Poor</label><br />1</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(question4, index) in question4" :key="index">
-              <td>{{ question4 }}</td>
-              <td v-for="rating in 5" :key="rating">
-                <input
-                  type="radio"
-                  @change="saveToLocalStorage"
-                  :name="'q4-' + index"
-                  v-model="ratings.q4[index]"
-                  :value="rating"
-                  required
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="last">
-          <div class="comment">
-            <label>Comments:</label>
-            <textarea
-              @input="saveToLocalStorage"
-              name="c4"
-              id=""
-              rows="3"
-              required
-            ></textarea>
-          </div>
-          <div class="rating">
-            <label>Rating:</label>
-            <input type="text" :value="averageRating('q4')" disabled />
-          </div>
-        </div>
-
-        <div class="container">
-          <div class="overall-rating">
-            <label for="">Overall Rating:</label>
-            <input type="text" :value="overallRating" disabled />
-            <button class="submit-btn">Submit</button>
-          </div>
-        </div>
-      </div>
     </form>
   </div>
 </template>
@@ -225,6 +177,7 @@ import { Inertia } from "@inertiajs/inertia";
 export default {
   props: {
     user: Object,
+    terms: Object,
   },
   data() {
     return {
@@ -234,54 +187,35 @@ export default {
         q2: Array(10).fill(null),
         q3: Array(10).fill(null),
         q4: Array(10).fill(null),
+        q5: Array(10).fill(null),
+        q6: Array(10).fill(null),
+        q7: Array(10).fill(null),
       },
       question1: [
-        "1. Is neat and well-groomed and manifests decency in his/attire.",
-        "2. Is free from distracting mannerisms.",
-        "3. Can command respect and attention in the class.",
-        "4. Shows dynamism and enthusiasm in teaching.",
-        "5. Delivers the lesson with a well-modulated voice.",
-        "6. Establishes eye contact in delivering the lesson.",
-        "7. Manifests a non-threatening personality which enhances student-teacher relationship.",
-        "8. Shows a sense of humor that makes the class alive.",
-        "9. Displays self-confidence in delivering the lesson.",
-        "10. Exercises tact and shows respect and fairness in dealing with the students.",
+        "Attendance and Punctuality in reporting to Duty",
+        "On-time in accomplishing tasks",
       ],
       question2: [
-        "1. Manifests mastery of the topic being discussed.",
-        "2. Presents the lesson in an interesting and organized manner.",
-        "3. Aligns the parts of the lesson with the course learning outcomes.",
-        "4. Sets clear expectations of students' performance",
-        "5. Explains the subject matter without completely relying on the references.",
-        "6. Relates the subject matter to real life situations.",
-        "7. Clarifies ideas in answer to students' questions regarding the lesson.",
-        "8. Elaborates lessons with current developments or up-to-date information on the subject matter.",
-        "9. Integrates values in the lesson.",
-        "10. Maximizes the use of instructional time for students' participation.",
+        "Degree of Technical Knowledge",
+        "Understanding of Job Procedures and Methods",
+        "Use of logical reasoning based on knowledge in performing task.",
       ],
-      question3: [
-        "1. Starts and ends the class on time.",
-        "2. Checks the attendance systematically.",
-        "3. Establishes a conductive learning environment.",
-        "4. Makes sure that order and discipline are being observed in the class.",
-        "5. Spends time efficiently by refraining from discussing topics not related to the lesson.",
-        "6. Uses varied teaching strategies to achieve the learning outcomes.",
-        "7. Motivates the students by giving praises and words of affirmation.",
-        "8. Utilizes varied instructional materials and integrates technology in teaching.",
-        "9. Prescribes reasonable course requirements within reasonable time.",
-        "10. Evaluates students' performance and informs them of the outcomes.",
-      ],
+      question3: ["Competence", "Accuracy of Job Performed", "Neatness", "Thoroughness"],
       question4: [
-        "1. Incorporates independent study through library work and research activities.",
-        "2. Promotes teacher-student and student-student interactions.",
-        "3. Gives interesting and imaginative, stimulating or challenging activities.",
-        "4. Encourages the students to ask questions to stimulate analytical and critical thinking.",
-        "5. Provides appropriate worksheets, exercises, activities, and handouts to students.",
-        "6. Relates the subject matter to real life situations.",
-        "7. Employs cooperative learning activities to encourage interaction and deepen discussion.",
-        "8. Motivates students to do reflective thinking and relate learning to daily life.",
-        "9. Provides an atmosphere that stimulates learning by encouraging the students to express themselves freely.",
-        "10. Encourages students' participation in formulating class rules and learning activities.",
+        "Use of Time",
+        "The volume of work accomplished",
+        "Ability to meet schedules",
+        "Production levels",
+      ],
+      question5: ["Effectiveness in utilizing the resources of the School"],
+      question6: [
+        "Have initiative in doing tasks",
+        "Analyzes issues and concerns thoroughly",
+      ],
+      question7: [
+        "Cooperation and ability to work with superiors",
+        "Relationship with co-workers",
+        "Ability to mingle and served the clientele-students",
       ],
     };
   },
@@ -358,6 +292,9 @@ export default {
           q2: Array(10).fill(null),
           q3: Array(10).fill(null),
           q4: Array(10).fill(null),
+          q5: Array(10).fill(null),
+          q6: Array(10).fill(null),
+          q7: Array(10).fill(null),
         };
       }
       if (!this.comments) {
@@ -377,6 +314,9 @@ export default {
         ...this.ratings.q2,
         ...this.ratings.q3,
         ...this.ratings.q4,
+        ...this.ratings.q5,
+        ...this.ratings.q6,
+        ...this.ratings.q7,
       ];
       const total = allRatings.reduce((sum, rating) => sum + (rating || 0), 0);
       const count = allRatings.filter((rating) => rating !== null).length;
@@ -414,7 +354,7 @@ export default {
 }
 
 .evaluation-table th:first-child {
-  text-align: left;
+  text-align: center;
   width: 40%;
 }
 
@@ -547,6 +487,13 @@ textarea {
 .submit-btn:hover {
   opacity: 100%;
   cursor: pointer;
+}
+
+.indicators td {
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid #ddd;
+  background-color: #f4f4f4;
 }
 
 @media (max-width: 768px) {

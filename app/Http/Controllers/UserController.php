@@ -5,17 +5,23 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Models\Evaluation;
 use App\Models\LeaveForm;
+use App\Models\Staff;
+use App\Models\Teacher;
 use App\Models\TravelForm;
 use App\Models\User;
 use App\Models\UserDepartment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 use Storage;
-use Illuminate\Support\Str;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
+
+
 
 class UserController extends Controller
 {
@@ -27,33 +33,38 @@ class UserController extends Controller
 
         $imageData = $request->input('image');
 
-        if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $matches)) {
+        if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $matches))
+        {
             $extension = $matches[1];
             $imageData = substr($imageData, strpos($imageData, ',') + 1);
             $imageData = base64_decode($imageData);
 
-            if (!$imageData) {
+            if (!$imageData)
+            {
                 return redirect()->back()->with('error', 'Invalid image data.');
             }
 
 
             $path = 'public/users/images';
 
-            if (!Storage::exists($path)) {
+            if (!Storage::exists($path))
+            {
                 Storage::makeDirectory($path, 0775, true);
             }
 
 
-            $userId = (string)Auth::user()->id;
+            $userId = (string) Auth::user()->id;
 
 
             $files = Storage::files($path);
 
-            foreach ($files as $file) {
+            foreach ($files as $file)
+            {
 
                 $filePrefix = strtok(basename($file), '-');
 
-                if ($filePrefix === $userId) {
+                if ($filePrefix === $userId)
+                {
                     Storage::delete($file);
                 }
             }
@@ -68,20 +79,24 @@ class UserController extends Controller
                 'img' => $fileName,
             ]);
 
-            if ($storedPath) {
+            if ($storedPath)
+            {
                 session()->flash('success', 'Image uploaded successfully!');
                 return redirect()->route('account');
-            } else {
+            } else
+            {
                 return redirect()->back()->with([
                     'error' => 'Error uploading the new image.',
                 ]);
             }
-        } else {
+        } else
+        {
             return redirect()->back()->with('error', 'Invalid image format.');
         }
     }
 
-    public function update(Request $request) {
+    public function update(Request $request)
+    {
 
         $request->validate([
             'email' => 'required|email',
@@ -92,7 +107,8 @@ class UserController extends Controller
 
 
         $user->email = $request->email;
-        if ($request->filled('password')) {
+        if ($request->filled('password'))
+        {
             $user->password = Hash::make($request->password);
         }
 
@@ -101,7 +117,8 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Account updated successfully!');
     }
 
-    public function users(Request $request) {
+    public function users(Request $request)
+    {
 
         $users = User::orderBy('last_name')->get();
 
@@ -112,17 +129,75 @@ class UserController extends Controller
         $roleList = Role::all();
 
         return Inertia::render('Pages/Admin/UserList', [
+            'type' => 'user',
             'user' => Auth::user(),
             'users' => $users,
             'roles' => $roles,
-            'pageTitle' => 'User List',
+            'pageTitle' => 'Users',
             'messageSuccess' => session('success') ?? null,
             'departments' => $departments,
-            'roleList' =>  $roleList
+            'roleList' => $roleList
         ]);
     }
 
-    public function userView($id){
+    public function teachers(Request $request)
+    {
+        $this->globalVariables();
+        $roles = $this->roles;
+        $departments = $this->departments;
+
+        $users = User::orderBy('last_name')
+            ->whereHas('teacher')
+            ->get();
+
+
+        $roleList = Role::all();
+
+        $specializationList = config('variables.specializationList');
+
+        return Inertia::render('Pages/Admin/UserList', [
+            'type' => 'teacher',
+            'user' => Auth::user(),
+            'users' => $users,
+            'roles' => $roles,
+            'pageTitle' => 'Teachers',
+            'messageSuccess' => session('success') ?? null,
+            'departments' => $departments,
+            'roleList' => $roleList,
+            'specializationList' => $specializationList
+        ]);
+    }
+
+    public function staffs(Request $request)
+    {
+
+        $users = User::orderBy('last_name')
+            ->whereHas('staff')
+            ->get();
+
+        $this->globalVariables();
+        $roles = $this->roles;
+        $departments = $this->departments;
+
+        $roleList = Role::all();
+
+        $positionList = config('variables.positionList');
+
+        return Inertia::render('Pages/Admin/UserList', [
+            'type' => 'staff',
+            'user' => Auth::user(),
+            'users' => $users,
+            'roles' => $roles,
+            'pageTitle' => 'Staffs',
+            'messageSuccess' => session('success') ?? null,
+            'departments' => $departments,
+            'roleList' => $roleList,
+            'positionList' => $positionList,
+        ]);
+    }
+
+    public function userView($id)
+    {
         $personalDetails = User::with([
             'personalDetails',
             'personalDetails.permanentAddress',
@@ -149,9 +224,14 @@ class UserController extends Controller
         ])->findOrFail($id);
 
         $userRoles = User::find($id)->getRoleNames();
-        $userDepartments = User::where('id', $id)->with('departments:id,name,acronym')->first();
 
-        $userDepartments =  $userDepartments->departments->pluck('name');
+        $userDepartment = [];
+        if ($userRoles->contains('teacher'))
+        {
+            $departmentId = Teacher::where('user_id', $id)->first()->pluck('department_id');
+            $userDepartment = Department::find($departmentId);
+        }
+
 
         $this->globalVariables();
         $roles = $this->roles;
@@ -160,156 +240,271 @@ class UserController extends Controller
         $roleList = Role::all();
 
 
-            $leaveForms = LeaveForm::where('user_id', $id)
+        $leaveForms = LeaveForm::where('user_id', $id)
             ->where('status', 'approved')
             ->with([
                 'substitutes.user',
                 'user',
                 'endorser',
                 'userJobDetail',
-                
+
             ])->orderBy('created_at', 'ASC')->get();
 
 
-            $travelForms = TravelForm::where('user_id', $id)
-            ->where('status', 'approved' )
+        $travelForms = TravelForm::where('user_id', $id)
+            ->where('status', 'approved')
             ->orderBy('created_at', 'ASC')
             ->with([
                 'substitutes.user',
                 'user',
                 'endorser',
                 'userJobDetail',
-                
+
             ])->orderBy('created_at', 'ASC')->get();
-            
-            
-           
-            $forms = [];
-            $forms['Travel Form'] = $travelForms;
-            $forms['Leave Form'] = $leaveForms;
 
-            
-            $flattenedForms = [];
-            foreach ($forms as $formType => $formArray) {
-                foreach ($formArray as $form) {
-                    $form['form_type'] = $formType;
-            
-                    $form['endorser'] = $form['endorser'] ? $form['endorser']->toArray() : null;
-                    $form['user_job_detail'] = $form['user_job_detail'] ? $form['user_job_detail']->toArray() : null;
-                    
-                    $flattenedForms[] = $form;
-                }
+
+
+        $forms = [];
+        $forms['Travel Form'] = $travelForms;
+        $forms['Leave Form'] = $leaveForms;
+
+
+        $flattenedForms = [];
+        foreach ($forms as $formType => $formArray)
+        {
+            foreach ($formArray as $form)
+            {
+                $form['form_type'] = $formType;
+
+                $form['endorser'] = $form['endorser'] ? $form['endorser']->toArray() : null;
+                $form['user_job_detail'] = $form['user_job_detail'] ? $form['user_job_detail']->toArray() : null;
+
+                $flattenedForms[] = $form;
             }
-  
-            usort($flattenedForms, function($a, $b) {
-               return strtotime($b['created_at']) - strtotime($a['created_at']);
-            });
+        }
+
+        usort($flattenedForms, function ($a, $b) {
+            return strtotime($b['created_at']) - strtotime($a['created_at']);
+        });
 
 
-            $pageTitle = $personalDetails->last_name .', ' .$personalDetails->first_name .' '. $personalDetails->middle_name[0].'.';
+        $pageTitle = $personalDetails->last_name . ', ' . $personalDetails->first_name . ' ' . $personalDetails->middle_name[0] . '.';
 
-            $evaluations = Evaluation::where('user_id', $id)->with([
-                'user', 
-                'conductor'
-            ])->get();
 
-           
-          
-         return Inertia::render('Pages/Admin/UserView', [
+
+        return Inertia::render('Pages/Admin/UserView', [
             'user' => Auth::user(),
             'personalDetails' => $personalDetails,
             'roles' => $roles,
             'userRoles' => $userRoles,
-            'pageTitle' =>  $pageTitle,
-            'userDepartments' => $userDepartments,
-            'roleList'=>  $roleList,
+            'pageTitle' => $pageTitle,
+            'roleList' => $roleList,
             'user_id' => $id,
             'messageSuccess' => session('success') ?? null,
             'departmentList' => $departmentList,
-            'forms'=>  $flattenedForms,
-            'evaluations' => $evaluations
+            'forms' => $flattenedForms,
+            'userDepartment' => $userDepartment
+
         ]);
 
     }
 
-    public function userEvaluation($id){
-        $user = User::findOrFail($id);
-        return inertia('Pages/Forms/Evaluation/Evaluation',[
-        'user' => $user,
-        ]);
-    }
+    public function userAdd($type, Request $request)
+    {
 
+        if ($type && $type === 'user')
+        {
 
-    public function userAdd(Request $request){
+            $username = $request->first_name[0] . $request->last_name;
+            $originalUsername = $username;
+            $counter = 1;
 
-        $username = $request->first_name[0] . $request->last_name;
-        $originalUsername = $username;
-        $counter = 1;
-
-        while (User::where('user', $username)->exists()) {
-            $username = $originalUsername . '_' . $counter;
-            $counter++;
-        }
-
-        $user = User::create([
-            'user' => $username,
-            'first_name' => $request->first_name,
-            'middle_name' => $request->middle_name,
-            'last_name' => $request->last_name,
-            'email' => 'example@email.com',
-            'password' => Hash::make('12345678'),
-        ]);
-
-        $roles = Role::whereIn('id', $request->roles)->get();
-
-        foreach ($request->departments as $dept) {
-            $department = Department::where('parent_id',$dept)->get();
-        
-            foreach($department as $subDept){
-          
-                UserDepartment::create([
-                    'user_id' => $user->id,
-                    'department_id' => $subDept->id,
-                    'type' => $roles->contains(function ($role) {
-                        return $role->name === 'dean';
-                    }) ? 'head' : 'member',
-                ]);
+            while (User::where('user', $username)->exists())
+            {
+                $username = $originalUsername . '_' . $counter;
+                $counter++;
             }
 
-            UserDepartment::create([
-                'user_id' => $user->id,
-                'department_id' => $dept,
-                'type' => $roles->contains(function ($role) {
-                    return $role->name === 'dean';
-                }) ? 'head' : 'member',
+            $user = User::create([
+                'user' => $username,
+                'first_name' => $request->first_name,
+                'middle_name' => $request->middle_name,
+                'last_name' => $request->last_name,
+                'email' => 'example@email.com',
+                'password' => Hash::make('12345678'),
             ]);
-        }
 
-        foreach ($request->roles as $role) {
-            $user->assignRole($role);
-        }
 
-        if ($user) {
-            return redirect()->back()->with('success', 'User added successfully!');
-        } else {
-            return redirect()->back()->with('error', 'Error adding user.');
+            foreach ($request->roles as $role)
+            {
+                $user->assignRole($role);
+            }
+
+
+
+            if ($user)
+            {
+                return redirect()->back()->with('success', 'User added successfully!');
+            } else
+            {
+                return redirect()->back()->with('error', 'Error adding user.');
+            }
+        } elseif ($type && $type === 'teacher')
+        {
+
+            $formData = $request->formData;
+
+            $teacher = Teacher::create([
+                'user_id' => $request->selected_id,
+                'specialization' => $formData['specialization'],
+                'department_id' => $formData['department_id'],
+            ]);
+
+            if ($teacher)
+            {
+                return redirect()->back()->with('success', 'User added successfully!');
+            } else
+            {
+                return redirect()->back()->with('error', 'Error adding user.');
+            }
+
+
+        } elseif ($type && $type === 'staff')
+        {
+
+            $formData = $request->formData;
+
+            $staff = Staff::create([
+                'user_id' => $request->selected_id,
+                'position' => $formData['position'],
+                'date_hired' => $formData['date_hired'],
+            ]);
+
+            if ($staff)
+            {
+                return redirect()->back()->with('success', 'User added successfully!');
+            } else
+            {
+                return redirect()->back()->with('error', 'Error adding user.');
+            }
         }
     }
-    
+
     public function userUpdateRole($user_id, Request $request)
     {
         $user = User::find($user_id);
-    
-       
+
+
         $user->syncRoles([]);
 
-        
-        if ($request->roles && !empty($request->roles)) {
+
+        if ($request->roles && !empty($request->roles))
+        {
             $user->assignRole($request->roles);
         }
-    
+
         return redirect()->back()->with('success', 'Roles updated successfully!');
     }
-    
+
+    public function search($type, $value)
+    {
+        if ($type === 'user')
+        {
+            $searchTerms = explode(" ", $value);
+            $users = User::where(function ($query) use ($searchTerms) {
+                foreach ($searchTerms as $term)
+                {
+
+                    $query->orWhere(DB::raw('LOWER(first_name)'), 'LIKE', '%' . strtolower($term) . '%')
+                        ->orWhere(DB::raw('LOWER(last_name)'), 'LIKE', '%' . strtolower($term) . '%')
+                        ->orWhere(DB::raw('LOWER(middle_name)'), 'LIKE', '%' . strtolower($term) . '%');
+                }
+            })
+                ->select(['id', 'first_name', 'last_name', 'middle_name'])
+                ->take(10)
+                ->get();
+
+        } elseif ($type === 'teacher')
+        {
+            $searchTerms = explode(" ", $value);
+            $users = User::whereDoesntHave('teacher')
+                ->where(function ($query) use ($searchTerms) {
+                    foreach ($searchTerms as $term)
+                    {
+
+                        $query->orWhere(DB::raw('LOWER(first_name)'), 'LIKE', '%' . strtolower($term) . '%')
+                            ->orWhere(DB::raw('LOWER(last_name)'), 'LIKE', '%' . strtolower($term) . '%')
+                            ->orWhere(DB::raw('LOWER(middle_name)'), 'LIKE', '%' . strtolower($term) . '%');
+                    }
+                })
+                ->select(['id', 'first_name', 'last_name', 'middle_name'])
+                ->take(10)
+                ->get();
+
+        } elseif ($type === 'staff')
+        {
+            $searchTerms = explode(" ", $value);
+            $users = User::whereDoesntHave('staff')
+                ->where(function ($query) use ($searchTerms) {
+                    foreach ($searchTerms as $term)
+                    {
+
+                        $query->orWhere(DB::raw('LOWER(first_name)'), 'LIKE', '%' . strtolower($term) . '%')
+                            ->orWhere(DB::raw('LOWER(last_name)'), 'LIKE', '%' . strtolower($term) . '%')
+                            ->orWhere(DB::raw('LOWER(middle_name)'), 'LIKE', '%' . strtolower($term) . '%');
+                    }
+                })
+                ->select(['id', 'first_name', 'last_name', 'middle_name'])
+                ->take(10)
+                ->get();
+
+        }
+
+
+        return response()->json($users ?? []);
+    }
+
+    public function sync()
+    {
+        $currentUsers = User::pluck('id')->toArray();
+
+        $code = config('variables.api_key');
+        $url = 'https://sis.materdeicollege.com/api/hr/users-teachers';
+
+        $client = new Client();
+
+        $response = $client->get($url, [
+            'query' => [
+                'user_ids' => $currentUsers,
+                'code' => $code,
+            ],
+            'verify' => false,
+        ]);
+
+        $newUsers = json_decode($response->getBody(), true);
+
+
+
+        foreach ($newUsers as $user)
+        {
+
+            User::create([
+                'id' => $user['id'],
+                'user' => $user['user'],
+                'first_name' => $user['fname'],
+                'last_name' => $user['lname'],
+                'email' => $user['email'],
+            ]);
+
+            Teacher::create([
+                'user_id' => $user['teacher_account']['user_id'],
+                'department_id' => $user['teacher_account']['department_id'],
+                'specialization' => $user['teacher_account']['specialization']
+            ]);
+
+        }
+
+    }
+
 
 }
