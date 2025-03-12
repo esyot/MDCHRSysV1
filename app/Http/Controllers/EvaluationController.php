@@ -31,6 +31,20 @@ class EvaluationController extends Controller
         ]);
     }
 
+    public function view()
+    {
+        $this->globalVariables();
+
+        $roles = $this->roles;
+        $user = $this->user;
+
+        return inertia('Pages/Admin/EvaluationManager/EvaluationView', [
+            'roles' => $roles,
+            'user' => $user,
+            'pageTitle' => 'Evaluation View'
+        ]);
+    }
+
     public function create($id, Request $request)
     {
         $questions = [];
