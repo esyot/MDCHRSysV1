@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EvalTemplate;
 use App\Models\Evaluation;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -13,22 +14,75 @@ class EvaluationController extends Controller
 {
 
 
-    public function index()
+    public function evaluationManager($id = null)
     {
+
 
         $this->globalVariables();
 
         $roles = $this->roles;
         $user = $this->user;
+        if (!$id)
+        {
 
-        $templates = [];
+            $templates = EvalTemplate::orderBy('created_at', 'ASC')->get();
 
-        return inertia('Pages/Admin/EvaluationManager/EvaluationManager', [
-            'templates' => $templates,
-            'roles' => $roles,
-            'user' => $user,
-            'pageTitle' => 'Evaluation Manager'
-        ]);
+            return inertia('Pages/Admin/EvaluationManager/EvaluationManager', [
+                'templates' => $templates,
+                'roles' => $roles,
+                'user' => $user,
+                'pageTitle' => 'Evaluation Manager',
+                'messageSuccess' => session('success') ?? null,
+            ]);
+        } else
+        {
+
+            $template = EvalTemplate::find($id);
+
+
+            return inertia('Pages/Admin/EvaluationManager/EvaluationView', [
+                'template' => $template,
+                'roles' => $roles,
+                'user' => $user,
+                'pageTitle' => 'Evaluation Manager',
+                'messageSuccess' => session('success') ?? null,
+            ]);
+
+        }
+
+    }
+
+    public function createTemplate(Request $request)
+    {
+
+        if (!$request->template_id)
+        {
+            $template = EvalTemplate::create($request->toArray());
+
+            if ($template)
+            {
+                return redirect()->back()->with('success', 'A new template has been added successfully!');
+            } else
+            {
+                return redirect()->back()->with('error', 'Template creation failed!');
+
+            }
+        } else
+        {
+            $template = EvalTemplate::create($request->toArray());
+
+            if ($template)
+            {
+                return redirect()->back()->with('success', 'A new template has been added successfully!');
+            } else
+            {
+                return redirect()->back()->with('error', 'Template creation failed!');
+
+            }
+        }
+
+
+
     }
 
     public function view()
@@ -132,6 +186,8 @@ class EvaluationController extends Controller
         }
 
     }
+
+
 
 
 }

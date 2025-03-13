@@ -78,8 +78,12 @@ Route::middleware([Check2WayVerification::class])->group(function () {
 
             Route::post('/users/{type}/add', [UserController::class, 'userAdd']);
 
-            Route::get('/forms/evaluation-manager', [EvaluationController::class, 'index']);
-            Route::get('/forms/evaluation-manager/sample', [EvaluationController::class, 'view']);
+            Route::get('/evaluations/evaluation-manager', [EvaluationController::class, 'evaluationManager']);
+            Route::get('/evaluations/evaluation-manager/{id}', [EvaluationController::class, 'evaluationManager']);
+            Route::get('/evaluations/evaluation-manager/sample', [EvaluationController::class, 'view']);
+            Route::post('/evaluations/add-new-template', [EvaluationController::class, 'createTemplate']);
+            Route::post('/evalutions/copy-old-template/', [EvaluationController::class, 'createTemplate']);
+            Route::post('/evalutions/evaluation-delete/${id}', [EvaluationController::class, 'deleteTemplate']);
 
             Route::get('/users/sync', [UserController::class, 'sync']);
 

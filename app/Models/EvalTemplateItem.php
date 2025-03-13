@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Evaluation extends Model
+class EvalTemplateItem extends Model
 {
     protected $guarded = [];
 }
