@@ -1,6 +1,7 @@
 <script>
 import { InertiaLink } from "@inertiajs/inertia-vue3";
 import { formatDistanceToNow, differenceInSeconds } from "date-fns";
+
 export default {
   data() {
     return {
@@ -20,18 +21,11 @@ export default {
   },
 
   methods: {
-    trackHistory() {
-      this.historyStack.push(window.location.href);
+    // Native browser back behavior
+    goBack() {
+      window.history.back(); // Goes back to the previous page in the history
     },
 
-    goBackToSecondLast() {
-      if (this.historyStack.length > 1) {
-        const secondLastUrl = this.historyStack[this.historyStack.length - 2];
-        window.location.href = secondLastUrl;
-      } else {
-        alert("No second-to-last URL in history.");
-      }
-    },
     toggleAccountOptions() {
       this.isOpenAccountOptions = !this.isOpenAccountOptions;
     },
@@ -131,7 +125,6 @@ export default {
     },
   },
   mounted() {
-    this.trackHistory();
     this.startFetchingNotifications();
     document.addEventListener("click", this.closeAccountOptions);
     document.addEventListener("click", this.closeNotifications);
@@ -154,7 +147,6 @@ export default {
 
       const unreadNotifications = notificationsArray.filter((notification) => {
         const isReadByArray = notification.isReadBy ? notification.isReadBy : [];
-
         return !isReadByArray.includes(this.user.id);
       });
 
@@ -168,7 +160,11 @@ export default {
   <div class="topbar" ref="topbar">
     <div class="left">
       <div class="page-title">
-        <i @click="goBackToSecondLast" class="back-btn fas fa-arrow-circle-left"></i>
+        <i
+          @click="goBack"
+          title="Click this to go back previous tab"
+          class="back-btn fas fa-arrow-circle-left"
+        ></i>
 
         <span class="app-name">MDC HR Sys v1.0</span>
         <i class="fas fa-chevron-right"></i>
