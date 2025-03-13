@@ -22,6 +22,7 @@ export default {
             isAddUser: false,
             isAddTeacher: false,
             isAddStaff: false,
+            user_type: this.type,
         };
     },
     computed: {
@@ -40,7 +41,7 @@ export default {
         },
     },
     methods: {
-        handleClick(user) {
+        visitUser(user) {
             Inertia.visit(`/users/user-list/${user.id}`);
         },
 
@@ -49,6 +50,17 @@ export default {
         },
         toggleSyncUsers() {
             Inertia.visit("/users/sync");
+        },
+    },
+    watch: {
+        user_type(newVal) {
+            if (newVal === "user") {
+                Inertia.visit("/users/users-list");
+            } else if (newVal === "teacher") {
+                Inertia.visit("/users/teachers-list");
+            } else if (newVal === "staff") {
+                Inertia.visit("/users/staffs-list");
+            }
         },
     },
 };

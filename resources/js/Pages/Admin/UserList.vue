@@ -15,12 +15,20 @@
     <div class="forms-selection">
       <div class="search-bar">
         <i class="fa-solid fa-search"></i>
+
         <input
           type="text"
           name="search_value"
           v-model="search_value"
           placeholder="Search a user..."
         />
+      </div>
+      <div>
+        <select name="" id="" class="select-type" v-model="user_type">
+          <option value="user">All</option>
+          <option value="teacher">Teachers</option>
+          <option value="staff">Staff</option>
+        </select>
       </div>
 
       <div>
@@ -44,15 +52,23 @@
           <tr>
             <td class="td-title">
               <i class="fa-solid fa-user"></i>
-              <span>{{ type.charAt(0).toUpperCase() + type.slice(1) }} </span>
+              <span>{{ type.charAt(0).toUpperCase() + type.slice(1) }}'s Name</span>
             </td>
+            <td class="td-action">Action</td>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="user in filteredUsers" :key="user.id" @click="handleClick(user)">
+          <tr v-for="user in filteredUsers" :key="user.id">
             <td>
               {{ user.last_name }}, {{ user.first_name }}
               <span v-if="user.middle_name">{{ user.middle_name[0] }}.</span>
+            </td>
+            <td class="td-action">
+              <i
+                title="Click to visit user"
+                @click="visitUser(user)"
+                class="fas fa-eye"
+              ></i>
             </td>
           </tr>
         </tbody>

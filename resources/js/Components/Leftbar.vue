@@ -106,13 +106,6 @@ export default {
               <InertiaLink :href="'/users/users-list'" class="link">
                 <li><span>Users</span></li>
               </InertiaLink>
-              <InertiaLink :href="'/users/teachers-list'" class="link">
-                <li><span>Teachers</span></li>
-              </InertiaLink>
-
-              <InertiaLink :href="'/users/staffs-list'" class="link">
-                <li><span>Staffs</span></li>
-              </InertiaLink>
 
               <InertiaLink :href="'/forms/evaluation-manager'" class="link">
                 <li>

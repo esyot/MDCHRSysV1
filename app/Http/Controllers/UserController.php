@@ -219,8 +219,6 @@ class UserController extends Controller
             'userReferences.address',
             'userValidIds',
 
-
-
         ])->findOrFail($id);
 
         $userRoles = User::find($id)->getRoleNames();
@@ -288,7 +286,7 @@ class UserController extends Controller
         });
 
 
-        $pageTitle = $personalDetails->last_name . ', ' . $personalDetails->first_name . ' ' . $personalDetails->middle_name[0] . '.';
+        $pageTitle = $personalDetails->last_name . ', ' . $personalDetails->first_name;
 
 
 
@@ -483,26 +481,36 @@ class UserController extends Controller
 
         $newUsers = json_decode($response->getBody(), true);
 
-
-
-        foreach ($newUsers as $user)
+        foreach ($newUsers as $userData)
         {
 
-            User::create([
-                'id' => $user['id'],
-                'user' => $user['user'],
-                'first_name' => $user['fname'],
-                'last_name' => $user['lname'],
-                'email' => $user['email'],
+            $user = User::create([
+                'id' => $userData['id'],
+                'user' => $userData['user'],
+                'first_name' => $userData['fname'],
+                'last_name' => $userData['lname'],
+                'email' => $userData['email'],
             ]);
 
-            Teacher::create([
-                'user_id' => $user['teacher_account']['user_id'],
-                'department_id' => $user['teacher_account']['department_id'],
-                'specialization' => $user['teacher_account']['specialization']
-            ]);
 
+
+
+
+            if (isset($userData['teacher_account']))
+            {
+                Teacher::create([
+                    'user_id' => $userData['teacher_account']['user_id'],
+                    'department_id' => $userData['teacher_account']['department_id'],
+                    'specialization' => $userData['teacher_account']['specialization'],
+                ]);
+
+                $user->assignRole('teacher');
+            } else
+            {
+                $user->assignRole('staff');
+            }
         }
+
 
     }
 
