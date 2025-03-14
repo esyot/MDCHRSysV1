@@ -1,26 +1,55 @@
 <script>
+import { Inertia } from "@inertiajs/inertia";
 import ConfirmationFormModal from "./ConfirmationFormModal.vue";
 export default {
-  emits: ["toggleNewCategory"],
+  emits: ["toggleOldTemplate"],
   components: {
     ConfirmationFormModal,
   },
   methods: {
     closeModal() {
-      this.$emit("toggleNewCategory");
+      this.$emit("toggleOldTemplate");
     },
 
     toggleConfirmForm() {
       this.isConfirmation = !this.isConfirmation;
     },
     submitForm() {
+      Inertia.post("/evalutions/copy-old-template/", this.formData);
       this.toggleConfirmForm();
+      this.closeModal();
+      this.removeFromLocalStorage();
+    },
+
+    saveToLocalStorage() {
+      localStorage.setItem("oldTemplateData", JSON.stringify(this.formData));
+    },
+
+    removeFromLocalStorage() {
+      localStorage.removeItem("oldTemplateData");
       this.closeModal();
     },
   },
+
+  created() {
+    const oldTemplateData = localStorage.getItem("oldTemplateData");
+
+    if (oldTemplateData) {
+      this.formData = JSON.parse(oldTemplateData);
+    }
+  },
+  props: {
+    templates: Object,
+  },
   data() {
     return {
+      formData: {
+        template_id: "",
+        name: "",
+        for: "",
+      },
       isConfirmation: false,
+      message: "Submit this as a new evaluation template?",
     };
   },
 };
@@ -30,6 +59,7 @@ export default {
   <ConfirmationFormModal
     v-if="isConfirmation"
     :isConfirmation="isConfirmation"
+    :message="message"
     @toggleConfirmForm="toggleConfirmForm"
     @submitForm="submitForm"
   ></ConfirmationFormModal>
@@ -37,20 +67,54 @@ export default {
     <div class="modal-content">
       <form @submit.prevent="toggleConfirmForm" class="form">
         <div class="form-title">
-          <span>Add Category</span>
+          <span>Create From Template</span>
           <i @click="closeModal">&times;</i>
         </div>
         <div class="form-group">
-          <label for="name">Category</label>
+          <label for="copy_from">Copy From</label>
+          <select
+            name="copy_from"
+            id="copy_from"
+            v-model="formData.template_id"
+            @change="saveToLocalStorage"
+          >
+            <option value="" selected disabled>Select From Template</option>
+            <option :value="template.id" v-for="template in templates" :key="template.id">
+              {{ template.name }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="name">Template Name</label>
           <input
             type="text"
             id="name"
             name="name"
-            placeholder="Enter category name. . ."
+            v-model="formData.name"
+            placeholder="Enter template name"
+            @input="saveToLocalStorage"
           />
         </div>
+
+        <div class="form-group">
+          <label>For:</label>
+          <select
+            id="temp_type"
+            name="temp_type"
+            v-model="formData.for"
+            @change="saveToLocalStorage"
+          >
+            <option value="" selected disabled>Select evaluation type</option>
+            <option value="teacher">Teachers</option>
+            <option value="staff">Staffs</option>
+            <option value="others">Others</option>
+          </select>
+        </div>
+
         <div class="form-buttons">
-          <button type="button" @click="closeModal" class="cancel-btn">Cancel</button>
+          <button type="button" @click="removeFromLocalStorage" class="cancel-btn">
+            Cancel
+          </button>
           <button type="submit" class="submit-btn">Submit</button>
         </div>
       </form>
@@ -75,13 +139,15 @@ export default {
   border: 1px solid #888;
   box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
   border-radius: 5px;
+  min-width: 400px;
 }
 
 .form-title {
   display: flex;
   justify-content: space-between;
-  font-size: 1.5rem;
+  font-size: 14pt !important;
   font-weight: bold;
+  align-items: center;
   margin-bottom: 10px;
   background-color: #007bff;
   color: #fff;
@@ -91,6 +157,7 @@ export default {
 }
 
 .form-title i {
+  font-size: 20pt !important;
   opacity: 50%;
 }
 

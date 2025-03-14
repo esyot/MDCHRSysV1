@@ -13,11 +13,13 @@ return new class extends Migration {
         Schema::create('eval_template_categories', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('eval_template_id')->unsigned();
-            $table->integer('category_serial');
-            $table->string('category');
+            $table->string('title');
             $table->timestamps();
 
-            $table->foreign('eval_template_id')->references('id')->on('eval_templates');
+            $table->foreign('eval_template_id')
+                ->references('id')
+                ->on('eval_templates')
+                ->onDelete('cascade');
         });
     }
 

@@ -1,20 +1,22 @@
 <script>
 import Layout from "@/Layouts/Layout.vue";
-import AddCategory from "./Modals/AddCategory.vue";
+import AddCategoryModal from "./Modals/AddCategoryModal.vue";
 import AddItemModal from "./Modals/AddItemModal.vue";
 export default {
   layout: Layout,
   components: {
-    AddCategory,
+    AddCategoryModal,
     AddItemModal,
   },
   props: {
-    template: Array,
+    template: Object,
+    categories: Object,
   },
   data() {
     return {
       isNewCategoryModal: false,
       isNewItemModal: false,
+      template_id: this.template.id,
     };
   },
   methods: {
@@ -28,15 +30,16 @@ export default {
 };
 </script>
 <template>
-  <AddCategory
+  <AddCategoryModal
     v-if="isNewCategoryModal"
-    :isNewCategoryModal="isNewCategoryModal"
+    :template_id="template_id"
     @toggleNewCategory="toggleNewCategory"
   >
-  </AddCategory>
+  </AddCategoryModal>
+
   <AddItemModal
     v-if="isNewItemModal"
-    :isNewItemModal="isNewItemModal"
+    :categories="categories"
     @toggleNewItem="toggleNewItem"
   >
   </AddItemModal>
@@ -45,29 +48,35 @@ export default {
       <div class="title">
         <span>View Evaluation - ({{ template.name }})</span>
       </div>
-      <div class="buttons">
+      <div class="top-nav-buttons">
         <button @click="toggleNewCategory">
           <i class="fa fa-plus"></i> Add Category
         </button>
         <button @click="toggleNewItem"><i class="fa fa-plus"></i> Add Item</button>
       </div>
     </div>
-    <div class="content">
-      <div class="category" v-for="i in 3" :key="i">
+    <ul class="content">
+      <li class="category" v-for="category in categories" :key="category.id">
         <div class="category-header">
-          <span>{{ i }}. Category</span>
+          <span>{{ category.title }}</span>
+          <ul>
+            <li v-for="item in category.items" :key="item.id">
+              {{ item.description }}
+            </li>
+          </ul>
         </div>
         <div class="category-body">
-          <div class="item" v-for="j in 3" :key="j">
+          <div class="item" v-for="item in template.item" :key="item.id">
             <div class="item-header">
-              <span>{{ j }}. Item</span>
+              <span>{{ item.description }}</span>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </li>
+    </ul>
   </div>
 </template>
+s
 <style scoped>
 @import "./css/evaluation-view.css";
 </style>

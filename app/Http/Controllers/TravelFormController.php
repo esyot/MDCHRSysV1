@@ -6,7 +6,6 @@ use App\Models\Department;
 use App\Models\Substitute;
 use App\Models\TravelForm;
 use App\Models\User;
-use App\Models\UserDepartment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

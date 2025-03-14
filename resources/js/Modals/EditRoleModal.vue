@@ -17,6 +17,7 @@ export default {
       formData: {
         roles: [],
       },
+      message: "Are you sure to update role?",
       isConfirmation: false,
     };
   },
@@ -58,6 +59,7 @@ export default {
 <template>
   <ConfirmationFormModal
     :isConfirmation="isConfirmation"
+    :message="message"
     @toggleConfirmForm="toggleConfirmForm"
     @submitForm="submitForm"
   ></ConfirmationFormModal>

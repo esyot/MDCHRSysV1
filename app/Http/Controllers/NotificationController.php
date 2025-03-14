@@ -4,73 +4,83 @@ namespace App\Http\Controllers;
 
 use App\Events\NotificationEvent;
 use App\Models\Notification;
+use App\Models\Teacher;
 use App\Models\User;
-use App\Models\UserDepartment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 
 class NotificationController extends Controller
 {
-    public function create($title, $description, $type, $for, $link){
+    public function create($title, $description, $type, $for, $link)
+    {
 
-        if($for === 'all'){
+        if ($for === 'all')
+        {
 
             $userIds = User::orderBy('id', 'ASC')->get()->pluck('id');
-            $for =  $userIds->implode(', ');
+            $for = $userIds->implode(', ');
 
-        }else if($for === 'staff'){
+        } else if ($for === 'staff')
+        {
 
-            $staffs = User::role('staff')->get()->pluck('id'); 
+            $staffs = User::role('staff')->get()->pluck('id');
             $for = $for . $staffs->implode(', ');
 
-        
-        }else if($for === 'admin'){
 
-            $admins = User::role('admin')->get()->pluck('id'); 
+        } else if ($for === 'admin')
+        {
+
+            $admins = User::role('admin')->get()->pluck('id');
             $for = $for . $admins->implode(', ');
 
-            
-        }else if($for === 'p-admin'){
 
-            $p_admins = User::role('p-admin')->get()->pluck('id'); 
+        } else if ($for === 'p-admin')
+        {
+
+            $p_admins = User::role('p-admin')->get()->pluck('id');
             $for = $p_admins;
 
-        
-        }else if($for === 'vp-admin'){
 
-            $vp_admins = User::role('vp-admin')->get()->pluck('id'); 
+        } else if ($for === 'vp-admin')
+        {
+
+            $vp_admins = User::role('vp-admin')->get()->pluck('id');
             $for = $vp_admins;
 
-        
 
-        }else if($for === 'vp-acad'){
 
-            $vp_acads = User::role('vp-acad')->get()->pluck('id'); 
+        } else if ($for === 'vp-acad')
+        {
+
+            $vp_acads = User::role('vp-acad')->get()->pluck('id');
             $for = $vp_acads;
 
-        
-        }else if($for === 'hr'){
 
-            $hrs = User::role('hr')->get()->pluck('id'); 
+        } else if ($for === 'hr')
+        {
+
+            $hrs = User::role('hr')->get()->pluck('id');
             $for = $hrs;
 
-        }else if($for === 'dean'){
+        } else if ($for === 'dean')
+        {
 
-            $departmentId = UserDepartment::where('user_id', Auth::user()->id)->pluck('department_id')->first();
-            $userIds = UserDepartment::where('type', 'head')->where('department_id', $departmentId)->pluck('user_id');
+            $departmentId = Teacher::where('user_id', Auth::user()->id)->pluck('department_id')->first();
+            $userIds = User::whereIn('department_id', $departmentId)->pluck('user_id');
 
             $for = $userIds;
 
-        }else{
-            $for = '['.$for.']';
+        } else
+        {
+            $for = '[' . $for . ']';
         }
 
         Notification::create([
             'title' => $title,
             'description' => $description,
             'type' => $type,
-            'for' => $for ,            
+            'for' => $for,
             'link' => $link
         ]);
     }
@@ -79,132 +89,146 @@ class NotificationController extends Controller
     {
 
         $notifications = Notification::orderBy('created_at', 'DESC')->get();
-    
+
         $filteredNotifications = $notifications->filter(function ($notification) use ($id) {
             $array = json_decode($notification->for, true);
             $arrayDeleted = json_decode($notification->isDeletedBy, true);
-    
-            if (!is_array($array)) {
+
+            if (!is_array($array))
+            {
                 $array = [];
             }
 
-            if (!is_array($arrayDeleted)) {
+            if (!is_array($arrayDeleted))
+            {
                 $arrayDeleted = [];
             }
-    
+
             return in_array($id, $array) && !in_array($id, $arrayDeleted);
         });
-    
-       
+
+
         return $filteredNotifications;
     }
-    
 
-    public function read($id , $type)
+
+    public function read($id, $type)
     {
-        $id = (int)$id;
-        $type = (string)$type;
-       
-        if($type != 'all'){
+        $id = (int) $id;
+        $type = (string) $type;
+
+        if ($type != 'all')
+        {
             $notifications = Notification::whereJsonContains('for', $id * 1)
-            ->where('type', $type)->get(); 
-    
-       
-            foreach ($notifications as $notification) {
-               
+                ->where('type', $type)->get();
+
+
+            foreach ($notifications as $notification)
+            {
+
                 $isReadBy = json_decode($notification->isReadBy, true);
-        
-                
-                if (!is_array($isReadBy)) {
+
+
+                if (!is_array($isReadBy))
+                {
                     $isReadBy = [];
                 }
-        
-              
-                if (!in_array($id, $isReadBy)) {
-                    $isReadBy[] = $id; 
+
+
+                if (!in_array($id, $isReadBy))
+                {
+                    $isReadBy[] = $id;
                 }
-        
-               
+
+
                 $notification->isReadBy = json_encode($isReadBy);
                 $notification->save();
             }
-        }else{
+        } else
+        {
 
-           
+
             $notifications = Notification::whereJsonContains('for', $id)
-            ->whereJsonDoesntContain('isReadBy', $id)
-            ->whereJsonDoesntContain('isDeletedBy', $id)
-            ->get(); 
-    
-            foreach ($notifications as $notification) {
+                ->whereJsonDoesntContain('isReadBy', $id)
+                ->whereJsonDoesntContain('isDeletedBy', $id)
+                ->get();
 
-               
-               
+            foreach ($notifications as $notification)
+            {
+
+
+
                 $isReadBy = json_decode($notification->isReadBy, true);
                 $for = json_decode($notification->for, true);
-               
-        
-                
-                if (!is_array($isReadBy)) {
+
+
+
+                if (!is_array($isReadBy))
+                {
                     $isReadBy = [];
                 }
-        
-              
-                if (!in_array($id, $isReadBy)) {
-                    $isReadBy[] = $id; 
+
+
+                if (!in_array($id, $isReadBy))
+                {
+                    $isReadBy[] = $id;
                 }
-        
+
                 $notification->isReadBy = json_encode($isReadBy);
                 $notification->save();
 
-    
-                if($for === $isReadBy){
+
+                if ($for === $isReadBy)
+                {
                     $notification->delete();
                 }
 
-                
+
             }
 
             return redirect()->back()->with('success', 'Notifications marked as all read successfully!');
         }
-       
-       
+
+
     }
-    
 
-    public function delete($id , $type)
+
+    public function delete($id, $type)
     {
-        
-        $id = (int)$id;
-        $type = (string)$type;
-           
-            $notifications = Notification::whereJsonContains('for', $id)
-            ->whereJsonDoesntContain('isDeletedBy', $id)
-            ->get(); 
-    
-            foreach ($notifications as $notification) {
-               
-                $isDeletedBy = json_decode($notification->isDeletedBy, true);
-        
-                
-                if (!is_array($isDeletedBy)) {
-                    $isDeletedBy = [];
-                }
-        
-              
-                if (!in_array($id, $isDeletedBy)) {
-                    $isDeletedBy[] = $id; 
-                }
-        
-                $notification->isDeletedBy = json_encode($isDeletedBy);
-                $notification->save();
 
-                
+        $id = (int) $id;
+        $type = (string) $type;
+
+        $notifications = Notification::whereJsonContains('for', $id)
+            ->whereJsonDoesntContain('isDeletedBy', $id)
+            ->get();
+
+        foreach ($notifications as $notification)
+        {
+
+            $isDeletedBy = json_decode($notification->isDeletedBy, true);
+
+
+            if (!is_array($isDeletedBy))
+            {
+                $isDeletedBy = [];
             }
 
-            return redirect()->back()->with('success', 'Notifications deleted successfully!');
-        
-       
-       
+
+            if (!in_array($id, $isDeletedBy))
+            {
+                $isDeletedBy[] = $id;
+            }
+
+            $notification->isDeletedBy = json_encode($isDeletedBy);
+            $notification->save();
+
+
+        }
+
+        return redirect()->back()->with('success', 'Notifications deleted successfully!');
+
+
+
     }
 }

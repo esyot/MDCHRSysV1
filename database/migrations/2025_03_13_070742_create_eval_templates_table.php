@@ -13,11 +13,10 @@ return new class extends Migration {
         Schema::create('eval_templates', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->date('start');
-            $table->date('end');
             $table->string('dept')->nullable();
             $table->enum('for', ['staff', 'teacher', 'others']);
             $table->boolean('is_per_subject')->default(true);
+            $table->boolean('is_open')->default(false);
             $table->timestamps();
         });
     }

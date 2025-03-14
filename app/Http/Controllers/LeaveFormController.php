@@ -6,7 +6,6 @@ use App\Events\NotificationCreate;
 use App\Models\LeaveForm;
 use App\Models\Substitute;
 use App\Models\User;
-use App\Models\UserDepartment;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;

@@ -19,18 +19,33 @@ export default {
       Inertia.post("/evaluations/add-new-template", this.formData);
       this.toggleConfirmForm();
       this.closeModal();
+      this.removeFromLocalStorage();
     },
+    saveToLocalStorage() {
+      localStorage.setItem("newTemplateData", JSON.stringify(this.formData));
+    },
+    removeFromLocalStorage() {
+      localStorage.removeItem("newTemplateData");
+    },
+    cancelForm() {
+      this.removeFromLocalStorage();
+      this.closeModal();
+    },
+  },
+  created() {
+    const newTemplateData = localStorage.getItem("newTemplateData");
+    if (newTemplateData) {
+      this.formData = JSON.parse(newTemplateData);
+    }
   },
   data() {
     return {
       formData: {
         name: "",
-        start: "",
-        end: "",
         for: "",
       },
       isConfirmation: false,
-      message: "Are you sure you want to submit this new Evaluation Template",
+      message: "Are you sure you want to submit?",
     };
   },
 };
@@ -58,22 +73,19 @@ export default {
             id="name"
             name="name"
             v-model="formData.name"
-            placeholder="Enter template name. . ."
+            placeholder="Enter template name"
+            @input="saveToLocalStorage"
           />
         </div>
 
         <div class="form-group">
-          <label for="start_date">Start Date</label>
-          <input type="date" name="start_date" id="start_date" v-model="formData.start" />
-        </div>
-        <div class="form-group">
-          <label for="end_date">End Date</label>
-          <input type="date" name="end_date" id="end_date" v-model="formData.end" />
-        </div>
-
-        <div class="form-group">
           <label>For:</label>
-          <select id="temp_type" name="temp_type" v-model="formData.for">
+          <select
+            id="temp_type"
+            name="temp_type"
+            v-model="formData.for"
+            @change="saveToLocalStorage"
+          >
             <option value="" selected disabled>Select evaluation type</option>
             <option value="teacher">Teachers</option>
             <option value="staff">Staffs</option>
@@ -82,7 +94,7 @@ export default {
         </div>
 
         <div class="form-buttons">
-          <button type="button" @click="closeModal" class="cancel-btn">Cancel</button>
+          <button type="button" @click="cancelForm" class="cancel-btn">Cancel</button>
           <button type="submit" class="submit-btn">Submit</button>
         </div>
       </form>
@@ -107,12 +119,14 @@ export default {
   border: 1px solid #888;
   box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
   border-radius: 5px;
+  min-width: 400px;
 }
 
 .form-title {
   display: flex;
   justify-content: space-between;
-  font-size: 1.5rem;
+  align-items: center;
+  font-size: 14pt !important;
   font-weight: bold;
   margin-bottom: 10px;
   background-color: #007bff;
@@ -123,6 +137,7 @@ export default {
 }
 
 .form-title i {
+  font-size: 20pt !important;
   opacity: 50%;
 }
 

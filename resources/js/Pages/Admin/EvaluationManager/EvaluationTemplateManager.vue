@@ -1,14 +1,14 @@
 <script>
 import Layout from "@/Layouts/Layout.vue";
 import NewTemplateModal from "../EvaluationManager/Modals/NewTemplateModal.vue";
-import FromTemplateModal from "../EvaluationManager/Modals/FromOldTemplateModal.vue";
+import OldTemplateModal from "../EvaluationManager/Modals/OldTemplateModal.vue";
 import { Inertia } from "@inertiajs/inertia";
 import ConfirmationDeleteModal from "@/Modals/ConfirmationDeleteModal.vue";
 export default {
   layout: Layout,
   components: {
     NewTemplateModal,
-    FromTemplateModal,
+    OldTemplateModal,
     ConfirmationDeleteModal,
   },
   props: {
@@ -17,7 +17,7 @@ export default {
   data() {
     return {
       isNewTempModal: false,
-      isFromTempModal: false,
+      isOldTempModal: false,
       isDelete: false,
       selected_id: null,
     };
@@ -38,8 +38,8 @@ export default {
     toggleNewTemplate() {
       this.isNewTempModal = !this.isNewTempModal;
     },
-    toggleFromOldTemplate() {
-      this.isFromTempModal = !this.isFromTempModal;
+    toggleOldTemplate() {
+      this.isOldTempModal = !this.isOldTempModal;
     },
     viewEvaluationTemplate(id) {
       Inertia.visit(`/evaluations/evaluation-manager/${id}`);
@@ -50,10 +50,14 @@ export default {
       this.isDelete = !this.isDelete;
     },
     deleteForm(id) {
-      Inertia.get(`/evluations/template-delete/${id}`);
+      Inertia.get(`/evaluations/template-delete/${this.selected_id}`);
       this.toggleDeleteForm();
     },
+    switchToggle(id, type) {
+      Inertia.put(`/evaluations/template-toggle/${id}/${type}`);
+    },
   },
+  watch: {},
 };
 </script>
 
@@ -61,13 +65,12 @@ export default {
   <NewTemplateModal v-if="isNewTempModal" @toggleNewTemplate="toggleNewTemplate">
   </NewTemplateModal>
 
-  <FromTemplateModal
-    v-if="isFromTempModal"
-    :isFromTempModal="isFromTempModal"
+  <OldTemplateModal
+    v-if="isOldTempModal"
     :templates="templates"
-    @toggleFromOlTemplate="toggleFromOlTemplate"
+    @toggleOldTemplate="toggleOldTemplate"
   >
-  </FromTemplateModal>
+  </OldTemplateModal>
 
   <ConfirmationDeleteModal
     v-if="isDelete"
@@ -82,7 +85,7 @@ export default {
       <button @click="toggleNewTemplate">
         <i class="fa fa-plus"></i> Create New Template
       </button>
-      <button @click="toggleFromOldTemplate">
+      <button @click="toggleOldTemplate">
         <i class="fa fa-plus"></i> Create From Template
       </button>
     </div>
@@ -99,17 +102,24 @@ export default {
               <label for="">For:</label>
               <span> {{ template.for }}</span>
             </div>
-            <div class="card-body-item">
-              <label for="">Date start:</label>
-              <span> {{ template.start }}</span>
-            </div>
-            <div class="card-body-item">
-              <label for="">Date End:</label>
-              <span> {{ template.end }}</span>
-            </div>
+
             <div class="card-body-item">
               <label for="">Created on:</label>
               <span> {{ formatDate(template.created_at) }}</span>
+            </div>
+
+            <div class="card-body">
+              <div class="card-body-item">
+                <span>Online:</span>
+                <label class="switch">
+                  <input
+                    type="checkbox"
+                    :checked="template.is_open === 1"
+                    @change="switchToggle(template.id, template.for)"
+                  />
+                  <span class="slider"></span>
+                </label>
+              </div>
             </div>
           </div>
           <div class="card-footer">

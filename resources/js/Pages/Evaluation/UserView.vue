@@ -1,10 +1,6 @@
 <script>
 import Layout from "@/Layouts/Layout.vue";
-import PersonalDetails from "@/Pages/Admin/PersonalDetails.vue";
 import { Inertia } from "@inertiajs/inertia";
-import EditRoleModal from "@/Modals/EditRoleModal.vue";
-import EditDepartmentModal from "@/Modals/EditDepartmentModal.vue";
-import Evaluations from "./Evaluations.vue";
 
 export default {
   layout: Layout,
@@ -22,10 +18,11 @@ export default {
     departmentList: Array,
     evaluations: Object,
     is_evaluation: Boolean,
+    terms: Object,
   },
   data() {
     return {
-      AdminActiveTab: localStorage.getItem("AdminActiveTab") || "overview",
+      AdminActiveTab: "overview",
       isEditRole: false,
       isEditDepartment: false,
       selectedFormType: "All",
@@ -51,68 +48,12 @@ export default {
       date_report: "",
       week: "",
       isOpenEvalationDropDown: false,
+      selectedTerm: "",
     };
   },
 
-  components: {
-    PersonalDetails,
-    EditRoleModal,
-    EditDepartmentModal,
-    Evaluations,
-  },
+  components: {},
   computed: {
-    filteredForms() {
-      let filtered = this.forms;
-
-      if (this.form_selection) {
-        filtered = filtered.filter((item) => {
-          if (this.form_selection === "travel") {
-            return item.form_type === "Travel Form";
-          } else if (this.form_selection === "leave") {
-            return item.form_type === "Leave Form";
-          } else {
-            return true;
-          }
-        });
-      }
-
-      if (this.selectedYear) {
-        filtered = filtered.filter((item) => {
-          const startYear = new Date(item.date_start).getFullYear();
-          const endYear = new Date(item.date_end).getFullYear();
-          return (
-            startYear === parseInt(this.selectedYear) ||
-            endYear === parseInt(this.selectedYear)
-          );
-        });
-      }
-
-      if (this.date_report && this.month) {
-        const monthIndex = this.months.indexOf(this.month);
-        filtered = filtered.filter((item) => {
-          const startMonth = new Date(item.date_start).getMonth();
-          const endMonth = new Date(item.date_end).getMonth();
-          return startMonth === monthIndex || endMonth === monthIndex;
-        });
-
-        if (this.date_report === "Weekly" && this.week) {
-          filtered = filtered.filter((item) => {
-            const startDate = new Date(item.date_start);
-            const endDate = new Date(item.date_end);
-            const startWeek = this.getWeekOfMonth(startDate);
-            const endWeek = this.getWeekOfMonth(endDate);
-            const startMonth = startDate.getMonth();
-            const endMonth = endDate.getMonth();
-            return (
-              (startWeek === parseInt(this.week) && startMonth === monthIndex) ||
-              (endWeek === parseInt(this.week) && endMonth === monthIndex)
-            );
-          });
-        }
-      }
-
-      return filtered;
-    },
     years() {
       const startYear = 2025;
       const endYear = this.currentYear + 30;
@@ -130,16 +71,6 @@ export default {
       } else if (type === "staff") {
         Inertia.visit(`/forms/evaluation-form/${this.personalDetails.id}/staff`);
       }
-    },
-    setAdminActiveTab(tab) {
-      this.AdminActiveTab = tab;
-      localStorage.setItem("AdminActiveTab", tab);
-    },
-    toggleEditRole() {
-      this.isEditRole = !this.isEditRole;
-    },
-    toggleEditDepartment() {
-      this.isEditDepartment = !this.isEditDepartment;
     },
     getWeekNumber(date) {
       const tempDate = new Date(date.getTime());
@@ -210,29 +141,6 @@ export default {
     :user_id="user_id"
     @toggleEditDepartment="toggleEditDepartment"
   ></EditDepartmentModal>
-  <nav>
-    <span
-      :class="{ active: AdminActiveTab === 'overview' }"
-      @click="setAdminActiveTab('overview')"
-      title="User Overview"
-    >
-      <i class="fa-solid fa-circle-info fa-lg"></i>
-    </span>
-    <span
-      :class="{ active: AdminActiveTab === 'personalDetails' }"
-      @click="setAdminActiveTab('personalDetails')"
-      title="Personal Details"
-    >
-      <i class="fa-solid fa-list fa-lg"></i>
-    </span>
-    <span
-      :class="{ active: AdminActiveTab === 'evaluations' }"
-      @click="setAdminActiveTab('evaluations')"
-      title="Evaluations"
-    >
-      <i class="fas fa-file"></i>
-    </span>
-  </nav>
   <div class="container">
     <div class="content" v-if="AdminActiveTab === 'overview'">
       <div class="user">
@@ -260,7 +168,7 @@ export default {
                 </span>
               </div>
             </div>
-            <div class="user-role">
+            <div class="user-role" v-if="userRoles">
               <i class="fas fa-user-cog"></i>
               <div>
                 <span class="role-desc">{{ userRoles.join(", ") }}</span>
@@ -275,36 +183,18 @@ export default {
             v-model="selectedFormType"
             title="Select type of forms to be displayed in the table below."
           >
-            <option value="All">All Forms</option>
-            <option value="Travel Form">Travel Forms</option>
-            <option value="Leave Form">Leave Forms</option>
+            <option value="All">All</option>
+            <option value="teacher">Teacher Evaluation</option>
+            <option value="staff">Staff Evaluation</option>
           </select>
+
           <select
-            v-model="selectedYear"
+            v-model="selectedTerm"
             title="Select a year to be filtered in the table below."
           >
-            <option value="" disabled>Select Year</option>
-            <option v-for="year in years" :key="year" :value="year">
-              {{ year }}
-            </option>
-          </select>
-          <select name="" id="" v-model="date_report">
-            <option value="" disabled selected>Select Filter</option>
-
-            <option value="">Annually</option>
-            <option value="Monthly">Monthly</option>
-            <option value="Weekly">Weekly</option>
-          </select>
-
-          <select
-            name=""
-            id=""
-            v-model="month"
-            v-if="date_report == 'Monthly' || date_report == 'Weekly'"
-          >
-            <option disabled selected value="">Select Month</option>
-            <option v-for="month in months" :key="month" :value="month">
-              {{ month }}
+            <option value="" disabled>Select Term</option>
+            <option v-for="term in terms" :key="term.id" :value="term.id">
+              {{ term.name }}
             </option>
           </select>
 
@@ -319,30 +209,12 @@ export default {
         </div>
         <div class="btn-right">
           <button
-            v-if="roles.includes('admin')"
-            :title="`Edit role of  ${personalDetails.last_name}, ${personalDetails.first_name}`"
-            @click="toggleEditRole"
-          >
-            Edit Role
-          </button>
-          <button
-            v-if="userRoles.includes('teacher') && roles.includes('admin')"
-            :title="`Edit department of  ${personalDetails.last_name}, ${personalDetails.first_name}`"
-            @click="toggleEditDepartment"
-          >
-            Edit Department
-          </button>
-
-          <button
-            v-if="
-              (is_evaluation && roles.includes('dean')) ||
-              (is_evaluation && roles.includes('hr'))
-            "
+            v-if="roles.includes('dean') || roles.includes('hr')"
             :title="`Add evaluation for  ${personalDetails.last_name}, ${personalDetails.first_name}`"
             @click="toggleEvaluationDropDown"
             ref="toggleEvaluationDropDown"
           >
-            Evaluate
+            Add Another Evaluation
           </button>
 
           <div
@@ -350,29 +222,55 @@ export default {
             class="evalution-dropdown"
             v-if="isOpenEvalationDropDown"
           >
-            <span
-              v-if="is_evaluation && roles.includes('dean')"
-              @click="openEval('teacher')"
+            <span v-if="roles.includes('dean')" @click="openEval('teacher')"
               >Teacher Evaluation</span
             >
-            <span v-if="is_evaluation && roles.includes('hr')" @click="openEval('staff')"
+            <span v-if="roles.includes('hr')" @click="openEval('staff')"
               >Staff Evaluation</span
             >
           </div>
         </div>
       </div>
-      <div class="forms">
+      <div class="tables">
         <table>
           <thead>
             <tr>
               <td class="td-title">
-                <span>Leave Type</span>
+                <span>Evaluation Type</span>
               </td>
               <td class="td-title">
-                <span>Date start of Leave</span>
+                <span>Subject</span>
               </td>
               <td class="td-title">
-                <span>Date end of Leave</span>
+                <span>Rating</span>
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="form in filteredForms" :key="form.form_type">
+              <td>
+                <span>{{ form.form_type }}</span>
+              </td>
+              <td>
+                <span>{{ formatDate(form.date_start) }}</span>
+              </td>
+              <td>
+                <span>{{ formatDate(form.date_end) }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table>
+          <thead>
+            <tr>
+              <td class="td-title">
+                <span>Evaluation Type</span>
+              </td>
+              <td class="td-title">
+                <span>Subject</span>
+              </td>
+              <td class="td-title">
+                <span>Rating</span>
               </td>
             </tr>
           </thead>

@@ -1,14 +1,17 @@
 import Layout from "@/Layouts/Layout.vue";
 import { Inertia } from "@inertiajs/inertia";
+import { InertiaLink } from "@inertiajs/inertia-vue3";
 import AddUserModal from "@/Modals/AddUserModal.vue";
 
 export default {
     layout: Layout,
     components: {
         AddUserModal,
+        InertiaLink,
     },
     props: {
         users: Object,
+        allUsers: Object,
         roles: Array,
         departments: Array,
         roleList: Array,
@@ -23,15 +26,18 @@ export default {
             isAddTeacher: false,
             isAddStaff: false,
             user_type: this.type,
+            combinedData: this.users.data,
+            nextPageUrl: this.users.next_page_url,
+            loading: false,
         };
     },
     computed: {
         filteredUsers() {
-            if (!this.search_value) return this.users;
+            if (!this.search_value) return this.users.data;
 
             const searchLower = this.search_value.toLowerCase();
 
-            return this.users.filter(
+            return this.allUsers.filter(
                 (user) =>
                     user.last_name.toLowerCase().includes(searchLower) ||
                     user.first_name.toLowerCase().includes(searchLower) ||
@@ -40,9 +46,10 @@ export default {
             );
         },
     },
+
     methods: {
         visitUser(user) {
-            Inertia.visit(`/users/user-list/${user.id}`);
+            Inertia.visit(`/users/user-list/${user.id}/false`);
         },
 
         toggleAddUserModal() {

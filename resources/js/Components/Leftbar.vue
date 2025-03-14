@@ -18,8 +18,15 @@ export default {
         } else {
           submenu.style.display = "block";
         }
-      } else if (menuName === "Users") {
-        const submenu = document.getElementById("submenu-users");
+      } else if (menuName === "Admin Panel") {
+        const submenu = document.getElementById("submenu-admin-panel");
+        if (submenu.style.display === "block") {
+          submenu.style.display = "none";
+        } else {
+          submenu.style.display = "block";
+        }
+      } else if (menuName === "Evaluation") {
+        const submenu = document.getElementById("submenu-evaluation");
         if (submenu.style.display === "block") {
           submenu.style.display = "none";
         } else {
@@ -78,6 +85,22 @@ export default {
               </InertiaLink>
             </ul>
           </li>
+          <li title="Evaluation" v-if="roles.includes('dean') || roles.includes('hr')">
+            <div class="menu-li" @click="openSubMenu('Evaluation')">
+              <i class="fa-solid fa-file"></i>
+              <span>Evaluation</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+
+            <ul id="submenu-evaluation" class="submenu">
+              <InertiaLink :href="'/evaluations/evaluation/teacher'" class="link">
+                <li><span>Teacher Evaluation</span></li>
+              </InertiaLink>
+              <InertiaLink :href="'/evaluations/evaluation/staff'" class="link">
+                <li><span>Staff Evaluation</span></li>
+              </InertiaLink>
+            </ul>
+          </li>
           <InertiaLink
             v-if="!roles.includes('staff')"
             :href="'/forms/checking'"
@@ -96,13 +119,13 @@ export default {
           </InertiaLink>
 
           <li title="Users" v-if="roles.includes('admin') || roles.includes('hr')">
-            <div class="menu-li" @click="openSubMenu('Users')">
+            <div class="menu-li" @click="openSubMenu('Admin Panel')">
               <i class="fa-solid fa-users"></i>
               <span>Administrator</span>
               <i class="fas fa-chevron-down"></i>
             </div>
 
-            <ul id="submenu-users" class="submenu">
+            <ul id="submenu-admin-panel" class="submenu">
               <InertiaLink :href="'/users/users-list'" class="link">
                 <li><span>Users</span></li>
               </InertiaLink>

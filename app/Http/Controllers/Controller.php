@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Department;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -17,6 +17,8 @@ abstract class Controller
 
     protected $parentDepartments;
 
+    protected $roleList;
+
 
 
     protected function globalVariables()
@@ -24,14 +26,16 @@ abstract class Controller
 
         $this->roles = Auth::user()->getRoleNames();
 
+
+
+        $this->roleList = Role::all()->pluck('name');
+
         $this->user = User::where('id', Auth::user()->id)
             ->with([
                 'teacher',
                 'teacher.departments',
                 'staff'
             ])->first();
-
-
 
 
         $departmentsWithParent = DB::table('departments as t1')

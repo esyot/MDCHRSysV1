@@ -1,18 +1,53 @@
-<script src="./js/user-list.js"></script>
+<script>
+import Layout from "@/Layouts/Layout.vue";
+import { InertiaLink } from "@inertiajs/inertia-vue3";
+import { Inertia } from "@inertiajs/inertia";
+
+export default {
+  layout: Layout,
+  props: {
+    users: Object,
+    allUsers: Object,
+    department: Object,
+    terms: Object,
+  },
+  components: {
+    InertiaLink,
+  },
+  data() {
+    return {
+      search_value: "",
+    };
+  },
+  methods: {
+    visitUser(user) {
+      Inertia.visit(`/evaluations/evaluate-user/${user}`);
+    },
+  },
+  computed: {
+    filteredUsers() {
+      if (!this.search_value) return this.users.data;
+
+      const searchLower = this.search_value.toLowerCase();
+
+      return this.allUsers.filter(
+        (user) =>
+          user.last_name.toLowerCase().includes(searchLower) ||
+          user.first_name.toLowerCase().includes(searchLower) ||
+          (user.middle_name?.toLowerCase().includes(searchLower) ?? false)
+      );
+    },
+  },
+};
+</script>
 
 <template>
-  <AddUserModal
-    v-if="isAddUser"
-    :type="type"
-    :departments="departments"
-    :roleList="roleList"
-    :specializationList="specializationList"
-    :positionList="positionList"
-    @toggleAddUserModal="toggleAddUserModal"
-  ></AddUserModal>
-
   <div class="container">
     <div class="forms-selection">
+      <div>
+        <span class="department-name" v-if="department"> {{ department.name }} </span>
+      </div>
+
       <div class="search-bar">
         <i class="fa-solid fa-search"></i>
 
@@ -23,27 +58,6 @@
           placeholder="Search a user..."
         />
       </div>
-      <div>
-        <select name="" id="" class="select-type" v-model="user_type">
-          <option value="user">All</option>
-          <option value="teacher">Teachers</option>
-          <option value="staff">Staff</option>
-        </select>
-      </div>
-
-      <div>
-        <button @click="toggleAddUserModal" class="add-btn">Add a {{ type }}</button>
-      </div>
-
-      <div>
-        <button
-          @click="toggleSyncUsers"
-          class="add-btn"
-          title="Sync users from Mater Dei College SIS"
-        >
-          Sync Users
-        </button>
-      </div>
     </div>
 
     <div class="content">
@@ -52,7 +66,7 @@
           <tr>
             <td class="td-title">
               <i class="fa-solid fa-user"></i>
-              <span>{{ type.charAt(0).toUpperCase() + type.slice(1) }}'s Name</span>
+              <span>User's Name</span>
             </td>
             <td class="td-action">Action</td>
           </tr>
@@ -66,17 +80,13 @@
             <td class="td-action">
               <i
                 title="Click to visit user"
-                @click="visitUser(user)"
+                @click="visitUser(user.id)"
                 class="fas fa-eye"
               ></i>
             </td>
           </tr>
         </tbody>
-        <tbody v-if="filteredUsers.length === 0">
-          <tr>
-            <td>No users found.</td>
-          </tr>
-        </tbody>
+        <span class="table-msg" v-if="filteredUsers.length === 0"> No users found. </span>
       </table>
     </div>
     <div class="footer">
@@ -100,5 +110,5 @@
 </template>
 
 <style scoped>
-@import "./css/user-list.css";
+@import "./css/evaluation.css";
 </style>

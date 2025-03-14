@@ -14,7 +14,6 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PersonalDetailController;
 use App\Http\Controllers\TravelFormController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\UserDepartmentController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Middleware\Check2WayVerification;
@@ -63,9 +62,8 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::middleware(CheckUserRole::class . ':admin')->group(function () {
             Route::get('/users/user-list/{id}/evaluation-form', [UserController::class, 'userEvaluation'])->name('user.evaluation');
             Route::post('/users/{id}/evaluation-submit/', [EvaluationController::class, 'create']);
-            Route::get('/users/user-list/{id}', [UserController::class, 'userView'])->name('user.view');
+            Route::get('/users/user-list/{id}/{is_evaluation}', [UserController::class, 'userView'])->name('user.view');
             Route::post('/users/{id}/role-edit', [UserRoleController::class, 'userUpdateRole']);
-            Route::post('/users/{id}/department-edit', [UserDepartmentController::class, 'userUpdateDepartment']);
             Route::get('/departments', [DepartmentController::class, 'index']);
             Route::post('/departments/department-add', [DepartmentController::class, 'create']);
             Route::get('/departments/department-delete/{id}', [DepartmentController::class, 'delete']);
@@ -83,8 +81,17 @@ Route::middleware([Check2WayVerification::class])->group(function () {
             Route::get('/evaluations/evaluation-manager/sample', [EvaluationController::class, 'view']);
             Route::post('/evaluations/add-new-template', [EvaluationController::class, 'createTemplate']);
             Route::post('/evalutions/copy-old-template/', [EvaluationController::class, 'createTemplate']);
-            Route::post('/evalutions/evaluation-delete/${id}', [EvaluationController::class, 'deleteTemplate']);
+            Route::get('/evaluations/template-delete/{id}', [EvaluationController::class, 'deleteTemplate']);
 
+            Route::post('/evaluations/template/add-category', [EvaluationController::class, 'addCategory']);
+            Route::post('/evaluations/template/add-item', [EvaluationController::class, 'addItem']);
+
+            Route::put('/evaluations/template-toggle/{id}/{type}', [EvaluationController::class, 'toggleEvaluationTemplate']);
+
+            Route::get('/evaluations/evaluation/{type}', [EvaluationController::class, 'evaluation']);
+            Route::get('/evaluations/evaluate-user/{id}', [EvaluationController::class, 'evaluateUser']);
+
+            Route::get('/forms/evaluation-form/{id}/teacher', [EvaluationController::class, 'evaluate']);
             Route::get('/users/sync', [UserController::class, 'sync']);
 
         });

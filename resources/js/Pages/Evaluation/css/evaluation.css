@@ -36,7 +36,6 @@
     display: block;
     height: 79vh;
     overflow-y: auto;
-    margin: 10px;
     background-color: #fff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -58,6 +57,10 @@ thead td {
     padding: 12px 15px;
     font-weight: bold;
     text-align: left;
+}
+
+table thead tr {
+    padding: 10px;
 }
 
 tbody tr {
@@ -152,8 +155,13 @@ td i:hover {
 
 .forms-selection {
     display: flex;
-    justify-content: end;
-    margin-top: 10px;
+    align-items: center;
+    justify-content: space-between;
+    margin: 5px;
+}
+.forms-selection .department-name {
+    font-weight: bold;
+    padding: 10px;
 }
 
 .forms-selection input {
@@ -235,4 +243,10 @@ td i:hover {
 .footer i:hover {
     opacity: 100%;
     cursor: pointer;
+}
+
+.table-msg {
+    display: flex;
+    justify-content: center;
+    margin: 10px;
 }

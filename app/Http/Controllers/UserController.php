@@ -9,7 +9,6 @@ use App\Models\Staff;
 use App\Models\Teacher;
 use App\Models\TravelForm;
 use App\Models\User;
-use App\Models\UserDepartment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -120,7 +119,8 @@ class UserController extends Controller
     public function users(Request $request)
     {
 
-        $users = User::orderBy('last_name')->get();
+        $users = User::orderBy('last_name')->paginate(20);
+        $allUsers = User::orderBy('last_name')->get();
 
         $this->globalVariables();
         $roles = $this->roles;
@@ -132,6 +132,7 @@ class UserController extends Controller
             'type' => 'user',
             'user' => Auth::user(),
             'users' => $users,
+            'allUsers' => $allUsers,
             'roles' => $roles,
             'pageTitle' => 'Users',
             'messageSuccess' => session('success') ?? null,
@@ -148,6 +149,10 @@ class UserController extends Controller
 
         $users = User::orderBy('last_name')
             ->whereHas('teacher')
+            ->paginate(12);
+
+        $allUsers = User::orderBy('last_name')
+            ->whereHas('teacher')
             ->get();
 
 
@@ -159,6 +164,7 @@ class UserController extends Controller
             'type' => 'teacher',
             'user' => Auth::user(),
             'users' => $users,
+            'allUsers' => $allUsers,
             'roles' => $roles,
             'pageTitle' => 'Teachers',
             'messageSuccess' => session('success') ?? null,
@@ -172,6 +178,10 @@ class UserController extends Controller
     {
 
         $users = User::orderBy('last_name')
+            ->whereHas('staff')
+            ->paginate(12);
+
+        $allUsers = User::orderBy('last_name')
             ->whereHas('staff')
             ->get();
 
@@ -187,6 +197,7 @@ class UserController extends Controller
             'type' => 'staff',
             'user' => Auth::user(),
             'users' => $users,
+            'allUsers' => $allUsers,
             'roles' => $roles,
             'pageTitle' => 'Staffs',
             'messageSuccess' => session('success') ?? null,
@@ -288,8 +299,6 @@ class UserController extends Controller
 
         $pageTitle = $personalDetails->last_name . ', ' . $personalDetails->first_name;
 
-
-
         return Inertia::render('Pages/Admin/UserView', [
             'user' => Auth::user(),
             'personalDetails' => $personalDetails,
@@ -301,7 +310,8 @@ class UserController extends Controller
             'messageSuccess' => session('success') ?? null,
             'departmentList' => $departmentList,
             'forms' => $flattenedForms,
-            'userDepartment' => $userDepartment
+            'userDepartment' => $userDepartment,
+
 
         ]);
 
@@ -390,18 +400,16 @@ class UserController extends Controller
 
     public function userUpdateRole($user_id, Request $request)
     {
+
         $user = User::find($user_id);
 
-
         $user->syncRoles([]);
-
 
         if ($request->roles && !empty($request->roles))
         {
             $user->assignRole($request->roles);
         }
 
-        return redirect()->back()->with('success', 'Roles updated successfully!');
     }
 
     public function search($type, $value)
@@ -491,9 +499,6 @@ class UserController extends Controller
                 'last_name' => $userData['lname'],
                 'email' => $userData['email'],
             ]);
-
-
-
 
 
             if (isset($userData['teacher_account']))
