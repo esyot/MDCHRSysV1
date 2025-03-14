@@ -300,41 +300,23 @@ class EvaluationController extends Controller
 
     public function create($id, Request $request)
     {
-        $questions = [];
-        $comments = [];
+        $categories = collect($request->ratings)
+            ->reduce(function ($cats, $v, $k) {
+                if (preg_match('/^c(\d+)_i(\d+)/', $k, $m))
+                {
+                    $cid = (int) $m[1];
+                    $iid = (int) $m[2];
 
-        foreach ($request->formData as $key => $value)
-        {
+                    $cats[$cid] ??= ['id' => $cid, 'items' => []];
+                    $cats[$cid]['items'][] = ['id' => $iid, 'rating' => (int) $v];
+                }
+                return $cats;
+            }, []);
 
-            if (strpos($key, 'q') === 0)
-            {
-                preg_match('/q(\d+)/', $key, $matches);
-                $questionNumber = $matches[1];
-
-
-                $questions[$questionNumber][] = $value;
-            } elseif (strpos($key, 'c') === 0)
-            {
-                preg_match('/c(\d+)/', $key, $matches);
-                $commentNumber = $matches[1];
-
-
-                $comments[$commentNumber][] = $value;
-            }
-        }
-        $questionsText = "[" . implode("], [", array_map(function ($item) {
-            return implode(",", $item);
-        }, $questions)) . "]";
-
-        $commentsText = "[" . implode("], [", array_map(function ($item) {
-            return implode(",", $item);
-        }, array: $comments)) . "]";
-
+        $categories = array_values($categories);
 
 
         $evaluation = Evaluation::create([
-            'questions' => $questionsText,
-            'comments' => $commentsText,
             'ratings' => $request->ratings,
             'date_time' => Carbon::now(),
             'user_id' => $id,
@@ -370,7 +352,9 @@ class EvaluationController extends Controller
             usort($terms, fn($a, $b) => strcmp($b['start'], $a['start']) ?: strcmp($b['end'], $a['end']));
 
 
-            $template = EvalTemplate::where('for', 'teacher')->first();
+            $template = EvalTemplate::where('for', 'teacher')
+                ->where('is_open', 1)
+                ->first();
 
             $evalCategories = EvalTemplateCategory::where('eval_template_id', $template->id)->with([
                 'items'
