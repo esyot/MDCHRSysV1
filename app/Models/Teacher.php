@@ -13,14 +13,10 @@ class Teacher extends Model
     {
         $this->hasOne(User::class);
     }
-    public function departments()
+
+    public function department()
     {
-        return $this->hasMany(Department::class, 'id', 'department_id')
-            ->select([
-                'id',
-                'name',
-                'acronym'
-            ]);
+        return $this->belongsTo(Department::class, 'department_id', 'id');
     }
 
 }

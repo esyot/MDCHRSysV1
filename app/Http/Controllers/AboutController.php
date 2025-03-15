@@ -6,13 +6,14 @@ use Illuminate\Http\Request;
 
 class AboutController extends Controller
 {
-    public function index(){
+    public function index()
+    {
 
         $this->globalVariables();
         $user = $this->user;
         $roles = $this->roles;
 
-        $developers = @config('local_variables.developers');
+        $developers = @config('variables.developers');
 
         return inertia('Pages/Others/About', [
             'user' => $user,

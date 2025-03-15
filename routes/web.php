@@ -58,10 +58,16 @@ Route::middleware([Check2WayVerification::class])->group(function () {
 
         Route::delete('/form/delete/{type}/{id}', [FormsController::class, 'delete']);
 
+        //dean routes
+        Route::middleware(CheckUserRole::class . ':dean')->group(function () {
+
+            Route::post('/evaluations/evaluation-submit', [EvaluationController::class, 'create']);
+
+        });
         // Admin Routes
         Route::middleware(CheckUserRole::class . ':admin')->group(function () {
             Route::get('/users/user-list/{id}/evaluation-form', [UserController::class, 'userEvaluation'])->name('user.evaluation');
-            Route::post('/users/{id}/evaluation-submit/', [EvaluationController::class, 'create']);
+
             Route::get('/users/user-list/{id}/{is_evaluation}', [UserController::class, 'userView'])->name('user.view');
             Route::post('/users/{id}/role-edit', [UserRoleController::class, 'userUpdateRole']);
             Route::get('/departments', [DepartmentController::class, 'index']);
@@ -88,14 +94,13 @@ Route::middleware([Check2WayVerification::class])->group(function () {
 
             Route::put('/evaluations/template-toggle/{id}/{type}', [EvaluationController::class, 'toggleEvaluationTemplate']);
 
-            Route::get('/evaluations/evaluation/{type}', [EvaluationController::class, 'evaluation']);
-            Route::get('/evaluations/evaluate-user/{id}', [EvaluationController::class, 'evaluateUser']);
+            Route::get('/evaluations/users-list/{type}', [EvaluationController::class, 'userList']);
+            Route::get('/evaluations/user-view/{id}', [EvaluationController::class, 'userView'])->name('evaluations.user-view');
 
             Route::get('/forms/evaluation-form/{id}/teacher', [EvaluationController::class, 'evaluate']);
             Route::get('/users/sync', [UserController::class, 'sync']);
 
         });
-
 
         //Api
         Route::get('/users/search/{type}/{value}', [UserController::class, 'search']);

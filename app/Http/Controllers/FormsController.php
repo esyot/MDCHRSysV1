@@ -140,9 +140,10 @@ class FormsController extends Controller
         } else if ($roles->contains('dean'))
         {
 
-            $departmentIds = UserDepartment::where('user_id', $user->id)->pluck('department_id')->toArray();
+            $userIds = User::whereRelation('teacher', 'department_id', '=', $user->teacher->department_id)
+                ->get()
+                ->pluck('id');
 
-            $userIds = UserDepartment::whereIn('department_id', $departmentIds)->pluck('user_id')->toArray();
 
             $leaveForms = LeaveForm::whereIn('user_id', $userIds)
                 ->where('status', 'pending')
@@ -162,6 +163,7 @@ class FormsController extends Controller
                     'endorser',
                     'userJobDetail',
                 ])->orderBy('created_at', 'ASC')->get();
+
         } else if ($roles->contains('vp-acad'))
         {
 

@@ -20,7 +20,8 @@ class DashboardController extends Controller
         $user = $this->user;
 
         //Local Variables
-        $userCount = User::all()->count();
+        $teacherCount = User::whereHas('teacher')->count();
+        $staffCount = User::whereHas('staff')->count();
 
         $leaveRequestCount = LeaveForm::where('status', 'pending')->get()->count();
         $travelRequestCount = TravelForm::where('status', 'pending')->get()->count();
@@ -39,7 +40,8 @@ class DashboardController extends Controller
             'user' => $user,
             'roles' => $roles,
             'pageTitle' => 'Dashboard',
-            'userCount' => $userCount,
+            'teacherCount' => $teacherCount,
+            'staffCount' => $staffCount,
             'leaveRequestCount' => $leaveRequestCount,
             'travelRequestCount' => $travelRequestCount,
             'userOnLeave' => $userOnLeave,

@@ -12,46 +12,49 @@ use Illuminate\Support\Str;
 
 class VerificationController extends Controller
 {
-    public function index(){
+    public function index()
+    {
 
         $code = Str::random(6);
 
-        
+
         $user = Auth::user();
 
         $user->update([
             'code' => $code
         ]);
-        
-        Mail::to(Auth::user()->email)->send(new VerificationEmail()); 
 
-        $user->toArray(); 
+        Mail::to(Auth::user()->email)->send(new VerificationEmail());
 
-        $user = collect($user)->only(['first_name', 'last_name', 'img']); 
+        $user->toArray();
 
-      
-        if($user){
+        $user = collect($user)->only(['first_name', 'last_name', 'img']);
+
+
+        if ($user)
+        {
 
             return inertia('Pages/Login/Verification', [
-                'user' =>  $user,
+                'user' => $user,
                 'error' => session('error') ?? null,
             ]);
 
         }
 
-       
+
     }
 
-    public function verify(Request $request){
+    public function verify(Request $request)
+    {
 
-        if(Auth::user()->code === $request->code) {
+        if (Auth::user()->code === $request->code)
+        {
             Session::put('code', Auth::user()->code);
             return redirect()->route('dashboard');
-        }
-
-        else{
+        } else
+        {
             return redirect()->back()->with('error', 'Verification code did not match, we sent you another code!');
         }
-     
+
     }
 }

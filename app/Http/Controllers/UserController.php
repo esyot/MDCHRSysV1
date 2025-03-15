@@ -504,6 +504,7 @@ class UserController extends Controller
             if (isset($userData['teacher_account']))
             {
                 Teacher::create([
+                    'id' => $userData['teacher_account']['id'],
                     'user_id' => $userData['teacher_account']['user_id'],
                     'department_id' => $userData['teacher_account']['department_id'],
                     'specialization' => $userData['teacher_account']['specialization'],

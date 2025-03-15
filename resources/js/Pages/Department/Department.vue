@@ -69,7 +69,6 @@ export default {
           <th class="start">Name</th>
           <th>Acronym</th>
           <th>Parent</th>
-          <th>Dean</th>
           <th class="center">Actions</th>
         </tr>
       </thead>
@@ -78,16 +77,6 @@ export default {
           <td>{{ department.name }}</td>
           <td class="center">{{ department.acronym }}</td>
           <td class="center">{{ department.parent ? department.parent.name : null }}</td>
-          <td class="center">
-            <span
-              v-if="department.user_heads.length > 0"
-              v-for="head in department.user_heads"
-            >
-              {{ head.last_name }},
-              {{ head.first_name }}
-              {{ head.middle_name[0] }}.
-            </span>
-          </td>
           <td class="buttons">
             <button @click="selectId(department.id)" class="delete-btn">
               <i class="fas fa-trash"></i>

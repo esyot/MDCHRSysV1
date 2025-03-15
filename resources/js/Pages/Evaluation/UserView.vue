@@ -19,6 +19,7 @@ export default {
     evaluations: Object,
     is_evaluation: Boolean,
     terms: Object,
+    department: Object,
   },
   data() {
     return {
@@ -160,11 +161,11 @@ export default {
             <span class="name"
               >{{ personalDetails.first_name }} {{ personalDetails.last_name }}</span
             >
-            <div class="user-role" v-if="userDepartments">
+            <div class="user-role" v-if="personalDetails.teacher.department">
               <i class="fas fa-globe"></i>
               <div>
-                <span class="role-desc" v-for="dept in userDepartments" :key="dept.id">
-                  {{ dept.name }}
+                <span class="role-desc">
+                  {{ personalDetails.teacher.department.name }}
                 </span>
               </div>
             </div>
@@ -232,34 +233,6 @@ export default {
         </div>
       </div>
       <div class="tables">
-        <table>
-          <thead>
-            <tr>
-              <td class="td-title">
-                <span>Evaluation Type</span>
-              </td>
-              <td class="td-title">
-                <span>Subject</span>
-              </td>
-              <td class="td-title">
-                <span>Rating</span>
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="form in filteredForms" :key="form.form_type">
-              <td>
-                <span>{{ form.form_type }}</span>
-              </td>
-              <td>
-                <span>{{ formatDate(form.date_start) }}</span>
-              </td>
-              <td>
-                <span>{{ formatDate(form.date_end) }}</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
         <table>
           <thead>
             <tr>

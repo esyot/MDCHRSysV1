@@ -14,44 +14,50 @@ class DepartmentController extends Controller
         $user = $this->user;
         $parentDepartments = $this->parentDepartments;
 
-        $departments = Department::with(['parent', 'userHeads'])->get();
+        $departments = Department::with(['parent'])->get();
 
         $departmentList = Department::all();
 
-       
+
 
         return inertia('Pages/Department/Department', [
             'roles' => $roles,
             'user' => $user,
             'departments' => $departments,
-            'departmentList' =>  $departmentList,
+            'departmentList' => $departmentList,
             'parentDepartments' => $parentDepartments,
             'messageSuccess' => session('success') ?? null,
             'pageTitle' => 'Departments'
         ]);
     }
 
-    public function create(Request $request){
+    public function create(Request $request)
+    {
 
         $department = Department::create($request->all());
 
 
-        if($department){
+        if ($department)
+        {
             return redirect()->back()->with('success', "Department added successfully!");
-        }else{
+        } else
+        {
             return redirect()->back()->with('error', "Department error!");
         }
 
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
 
         $department = Department::find($id);
 
-        if($department){
+        if ($department)
+        {
             $department->delete();
             return redirect()->back()->with('success', 'Department deleted successfully!');
-        }else{
+        } else
+        {
             return redirect()->back()->with('error', 'Department not found!');
         }
     }

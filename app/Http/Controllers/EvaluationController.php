@@ -18,16 +18,23 @@ use Illuminate\Support\Str;
 
 class EvaluationController extends Controller
 {
-    public function evaluateUser($id)
+    public function userView($id)
     {
         $this->globalVariables();
 
         $user = $this->user;
         $roles = $this->roles;
 
-        $fetchedUser = User::find($id);
+        $fetchedUser = User::where('id', $id)
+            ->with('teacher', 'teacher.department', 'staff')
+            ->first();
+
+        $userRoles = $fetchedUser->getRoleNames();
+
+        $evaluations = Evaluation::where('teacher_id', $fetchedUser->id)->get();
 
         $code = config('variables.api_key');
+
 
         $url = 'https://sis.materdeicollege.com/api/hr/terms';
 
@@ -45,18 +52,21 @@ class EvaluationController extends Controller
         usort($terms, fn($a, $b) => strcmp($b['start'], $a['start']) ?: strcmp($b['end'], $a['end']));
 
 
+
+
         return inertia('Pages/Evaluation/UserView', [
             'user' => $user,
+            'userRoles' => $userRoles,
             'personalDetails' => $fetchedUser,
             'roles' => $roles,
             'pageTitle' => $fetchedUser->last_name . ', ' . $fetchedUser->first_name,
             'user_id' => $id,
-            'evaluations' => null,
             'messageSuccess' => session('success') ?? null,
             'terms' => $terms,
+            'evaluations' => $evaluations
         ]);
     }
-    public function evaluation($type)
+    public function userList($type)
     {
         $this->globalVariables();
         $roles = $this->roles;
@@ -83,7 +93,7 @@ class EvaluationController extends Controller
             $department = Department::find(Teacher::where('id', $user->id)
                 ->pluck('department_id')->first());
 
-            return inertia('Pages/Evaluation/Evaluation', [
+            return inertia('Pages/Evaluation/UserList', [
                 'user' => $user,
                 'users' => $users,
                 'allUsers' => $allUsers,
@@ -103,7 +113,7 @@ class EvaluationController extends Controller
 
             $department = null;
 
-            return inertia('Pages/Evaluation/Evaluation', [
+            return inertia('Pages/Evaluation/UserList', [
                 'user' => $user,
                 'users' => $users,
                 'allUsers' => $allUsers,
@@ -298,8 +308,9 @@ class EvaluationController extends Controller
         ]);
     }
 
-    public function create($id, Request $request)
+    public function submitEvaluation(Request $request)
     {
+
         $categories = collect($request->ratings)
             ->reduce(function ($cats, $v, $k) {
                 if (preg_match('/^c(\d+)_i(\d+)/', $k, $m))
@@ -317,13 +328,15 @@ class EvaluationController extends Controller
 
 
         $evaluation = Evaluation::create([
-            'ratings' => $request->ratings,
-            'date_time' => Carbon::now(),
-            'user_id' => $id,
+            'template_id' => $request->template_id,
+            'user_id' => $request->user_id,
             'conducted_by' => Auth::user()->id,
+            'ratings' => $request->overallPoints,
+            'date_time' => Carbon::now(),
+
         ]);
 
-        return redirect()->route('user.view', $id)->with('success', 'Evaluation form submitted successfully!');
+        return redirect()->route('evaluations.user-view', $request->id)->with('success', 'Evaluation form submitted successfully!');
     }
 
     public function evaluate($id, $type)
@@ -331,7 +344,9 @@ class EvaluationController extends Controller
         if ($type === 'teacher')
         {
 
-            $user = User::where('id', $id)->first();
+            $user = User::where('id', $id)
+                ->with('teacher')
+                ->first();
 
             $code = config('variables.api_key');
 
@@ -360,11 +375,16 @@ class EvaluationController extends Controller
                 'items'
             ])->get()->toArray();
 
+            $api_key = config('variables.api_key');
+
 
             return inertia('Pages/Evaluation/TeacherEvaluation', [
+                'template_id' => $template->id,
                 'user' => $user,
                 'terms' => $terms,
                 'evalCategories' => $evalCategories,
+                'api_key' => $api_key,
+
             ]);
 
 

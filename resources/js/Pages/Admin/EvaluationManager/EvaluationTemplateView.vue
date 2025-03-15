@@ -46,7 +46,7 @@ export default {
   <div class="main-container">
     <div class="top-nav">
       <div class="title">
-        <span>View Evaluation - ({{ template.name }})</span>
+        <span>View & Edit - {{ template.name }}</span>
       </div>
       <div class="top-nav-buttons">
         <button @click="toggleNewCategory">

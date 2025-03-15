@@ -4,8 +4,14 @@
       <section class="cards">
         <div class="card">
           <i class="fas fa-users fa-2x"></i>
-          <span>Users</span>
-          <span>{{ userCount }}</span>
+          <span>Teachers</span>
+          <span>{{ teacherCount }}</span>
+        </div>
+
+        <div class="card">
+          <i class="fas fa-users-cog fa-2x"></i>
+          <span>Staffs</span>
+          <span>{{ staffCount }}</span>
         </div>
 
         <div class="card">
@@ -54,7 +60,8 @@ export default defineComponent({
   name: "BarChartComponent",
   layout: Layout,
   props: {
-    userCount: Number,
+    teacherCount: Number,
+    staffCount: Number,
     leaveRequestCount: Number,
     travelRequestCount: Number,
     userOnLeave: Number,

@@ -20,8 +20,8 @@ export default {
     };
   },
   methods: {
-    visitUser(user) {
-      Inertia.visit(`/evaluations/evaluate-user/${user}`);
+    visitUser(user_id) {
+      Inertia.visit(`/evaluations/user-view/${user_id}`);
     },
   },
   computed: {
@@ -71,6 +71,7 @@ export default {
             <td class="td-action">Action</td>
           </tr>
         </thead>
+
         <tbody>
           <tr v-for="user in filteredUsers" :key="user.id">
             <td>

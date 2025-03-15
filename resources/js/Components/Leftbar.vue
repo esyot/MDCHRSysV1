@@ -93,10 +93,10 @@ export default {
             </div>
 
             <ul id="submenu-evaluation" class="submenu">
-              <InertiaLink :href="'/evaluations/evaluation/teacher'" class="link">
+              <InertiaLink :href="'/evaluations/users-list/teacher'" class="link">
                 <li><span>Teacher Evaluation</span></li>
               </InertiaLink>
-              <InertiaLink :href="'/evaluations/evaluation/staff'" class="link">
+              <InertiaLink :href="'/evaluations/users-list/staff'" class="link">
                 <li><span>Staff Evaluation</span></li>
               </InertiaLink>
             </ul>

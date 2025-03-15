@@ -121,12 +121,10 @@ export default {
           <div class="user-role" v-if="user.teacher">
             <i class="fas fa-globe"></i>
             <div>
-              <span
-                class="role-desc"
-                v-for="dept in user.teacher.departments"
-                :key="dept.id"
-              >
-                {{ dept.name }}</span
+              <span class="role-desc">
+                {{ user.teacher.department.name }} ({{
+                  user.teacher.department.acronym
+                }})</span
               >
             </div>
           </div>

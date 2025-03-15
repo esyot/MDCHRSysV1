@@ -33,7 +33,7 @@ abstract class Controller
         $this->user = User::where('id', Auth::user()->id)
             ->with([
                 'teacher',
-                'teacher.departments',
+                'teacher.department',
                 'staff'
             ])->first();
 

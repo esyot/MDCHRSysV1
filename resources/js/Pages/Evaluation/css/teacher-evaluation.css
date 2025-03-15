@@ -2,7 +2,6 @@
     max-width: 90%;
     margin: auto;
     padding: 20px;
-    text-align: center;
 }
 
 .evaluation-table {
@@ -15,7 +14,6 @@
 .evaluation-table td {
     border: 1px solid #ddd;
     padding: 8px;
-    word-wrap: break-word;
 }
 
 .evaluation-table th {
@@ -26,13 +24,11 @@
 
 .evaluation-table th:first-child {
     text-align: left;
-    width: 40%;
 }
 
 .evaluation-table td:first-child {
     text-align: left;
     font-size: 14px;
-    width: 40%;
 }
 
 input[type="radio"] {
@@ -73,20 +69,6 @@ textarea {
     border: 1px solid #ddd;
 }
 
-.rating {
-    margin: 0px 50px 0 20px;
-    font-size: 14px;
-}
-
-.rating input {
-    width: 50px;
-    border: none;
-    border-bottom: 1px solid black;
-    outline: none;
-    text-align: center;
-    margin-left: 5px;
-}
-
 .container {
     display: flex;
     justify-content: flex-end;
@@ -117,20 +99,24 @@ textarea {
     margin-left: 5px;
     font-weight: bold;
 }
+
 .user-details {
     display: flex;
-    flex-direction: column;
-    text-align: left;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
-.user-details span {
-    font-size: 18px;
+.user-details label {
     font-weight: bold;
-    margin-left: 5px;
+}
+
+.user-details-item span {
+    text-decoration: underline;
 }
 .navigation {
     display: flex;
     justify-content: start;
-    padding: 10px;
+    margin-bottom: 5px;
 }
 .navigation button {
     background-color: #4caf50;
@@ -184,4 +170,45 @@ ul {
     justify-content: center;
     flex-direction: column;
     align-items: center;
+}
+
+.evaluation-form-title {
+    text-align: center;
+    font-size: 24pt;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.td-rating {
+    display: flex;
+    width: 200px;
+    justify-content: space-between;
+}
+
+.th-rating {
+    text-align: center;
+}
+
+.td-item {
+    width: 100%;
+}
+
+.instruction {
+    background-color: #d7f1f5;
+    padding-inline: 20px;
+    padding-block: 5px;
+    border-radius: 10px;
+    margin-top: 5px;
+}
+
+.instruction ul {
+    list-style: disc;
+}
+
+.table-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10rem;
+    align-items: center;
+    margin-top: 5px;
 }
