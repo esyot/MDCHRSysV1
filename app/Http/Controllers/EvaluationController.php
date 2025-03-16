@@ -31,10 +31,50 @@ class EvaluationController extends Controller
 
         $userRoles = $fetchedUser->getRoleNames();
 
-        $evaluations = Evaluation::where('teacher_id', $fetchedUser->id)->get();
+        $evaluations = Evaluation::where('teacher_id', $fetchedUser->id)
+            ->with('evaluator')
+            ->get();
 
         $code = config('variables.api_key');
+        $subj_url = 'https://sis.materdeicollege.com/api/hr/subject-classes';
 
+        foreach ($evaluations as $evaluation)
+        {
+
+            $subj_client = new Client();
+
+            $response = $subj_client->get($subj_url, [
+                'query' => [
+                    'code' => $code,
+                    'term_id' => $evaluation->term_id,
+                    'teacher_id' => $fetchedUser->teacher->id,
+                ],
+                'verify' => false,
+            ]);
+
+            $subjects = json_decode($response->getBody(), true);
+
+            $subject = collect($subjects)->firstWhere('id', $evaluation->subject_id);
+
+            $evaluation['subject'] = $subject;
+
+            $eval_template_category_items = EvalTemplateCategory::where('eval_template_id', $evaluation->eval_template_id)
+                ->with('items')
+                ->get();
+
+
+            $total_descriptions_count = 0;
+
+            foreach ($eval_template_category_items as $category)
+            {
+
+                $total_descriptions_count += $category->items->whereNotNull('description')->count();
+            }
+
+
+            $evaluation['maxPoints'] = $total_descriptions_count * 5;
+
+        }
 
         $url = 'https://sis.materdeicollege.com/api/hr/terms';
 
@@ -49,10 +89,22 @@ class EvaluationController extends Controller
 
         $terms = json_decode($response->getBody(), true);
 
+
+        $annuals = array_filter($terms, function ($item) {
+            return $item['type'] === 'annual';
+        });
+
+        $annuals = array_values($annuals);
+
+
+        $terms = array_map(function ($row) {
+
+            $row['start'] = Carbon::parse($row['start'])->format('Y');
+            $row['end'] = Carbon::parse($row['end'])->format('Y');
+            return $row;
+        }, $annuals);
+
         usort($terms, fn($a, $b) => strcmp($b['start'], $a['start']) ?: strcmp($b['end'], $a['end']));
-
-
-
 
         return inertia('Pages/Evaluation/UserView', [
             'user' => $user,
@@ -63,7 +115,8 @@ class EvaluationController extends Controller
             'user_id' => $id,
             'messageSuccess' => session('success') ?? null,
             'terms' => $terms,
-            'evaluations' => $evaluations
+            'evaluations' => $evaluations,
+            'api_key' => config('variable.api_key'),
         ]);
     }
     public function userList($type)
@@ -311,32 +364,64 @@ class EvaluationController extends Controller
     public function submitEvaluation(Request $request)
     {
 
-        $categories = collect($request->ratings)
-            ->reduce(function ($cats, $v, $k) {
-                if (preg_match('/^c(\d+)_i(\d+)/', $k, $m))
-                {
-                    $cid = (int) $m[1];
-                    $iid = (int) $m[2];
+        if ($request->type === 'teacher')
+        {
 
-                    $cats[$cid] ??= ['id' => $cid, 'items' => []];
-                    $cats[$cid]['items'][] = ['id' => $iid, 'rating' => (int) $v];
-                }
-                return $cats;
-            }, []);
-
-        $categories = array_values($categories);
+            $code = config('variables.api_key');
 
 
-        $evaluation = Evaluation::create([
-            'template_id' => $request->template_id,
-            'user_id' => $request->user_id,
-            'conducted_by' => Auth::user()->id,
-            'ratings' => $request->overallPoints,
-            'date_time' => Carbon::now(),
+            $url = 'https://sis.materdeicollege.com/api/hr/terms';
 
-        ]);
+            $client = new Client();
 
-        return redirect()->route('evaluations.user-view', $request->id)->with('success', 'Evaluation form submitted successfully!');
+            $response = $client->get($url, [
+                'query' => [
+                    'code' => $code,
+                ],
+                'verify' => false,
+            ]);
+
+            $terms = json_decode($response->getBody(), true);
+
+            $term = collect($terms)->where('id', $request->term_id)->first();
+
+            $semister = "";
+
+            if (strpos($term['name'], "1st") !== false)
+            {
+                $semister = 'first';
+            } else if (strpos($term['name'], "2nd") !== false)
+            {
+                $semister = "second";
+            } else
+            {
+                $semister = "summer";
+            }
+
+            $evaluation = Evaluation::create([
+                'teacher_id' => $request->user_id,
+                'eval_template_id' => $request->template_id,
+                'term_id' => $request->term_id,
+                'subject_id' => $request->subject_id,
+                'evaluator_id' => Auth::user()->id,
+                'semister' => $semister,
+                'overall_points' => $request->overallPoints,
+                'overall_mean' => $request->overallMean,
+
+            ]);
+
+
+            if ($evaluation)
+            {
+
+                return redirect()->route('evaluations.user-view', $request->user_id)->with('success', 'Evaluation form submitted successfully!');
+
+            }
+
+
+
+        }
+
     }
 
     public function evaluate($id, $type)
@@ -364,6 +449,13 @@ class EvaluationController extends Controller
 
             $terms = json_decode($response->getBody(), true);
 
+
+            $annuals = array_filter($terms, function ($item) {
+                return $item['type'] === 'sem' && strpos($item['name'], 'Summer') === false;
+            });
+
+            $terms = array_values($annuals);
+
             usort($terms, fn($a, $b) => strcmp($b['start'], $a['start']) ?: strcmp($b['end'], $a['end']));
 
 
@@ -377,6 +469,8 @@ class EvaluationController extends Controller
 
             $api_key = config('variables.api_key');
 
+            $evaluations = Evaluation::where('teacher_id', $id)->get();
+
 
             return inertia('Pages/Evaluation/TeacherEvaluation', [
                 'template_id' => $template->id,
@@ -384,16 +478,35 @@ class EvaluationController extends Controller
                 'terms' => $terms,
                 'evalCategories' => $evalCategories,
                 'api_key' => $api_key,
+                'evaluations' => $evaluations,
 
             ]);
 
 
         } elseif ($type === 'staff')
         {
-            $user = User::findOrFail($id);
+            $user = User::where('id', $id)
+                ->with('staff')
+                ->first();
+
+            $template = EvalTemplate::where('for', 'staff')
+                ->where('is_open', 1)
+                ->first();
+
+            $evalCategories = EvalTemplateCategory::where('eval_template_id', $template->id)->with([
+                'items'
+            ])->get()->toArray();
+
+            $api_key = config('variables.api_key');
+
+
             return inertia('Pages/Evaluation/StaffEvaluation', [
+                'template_id' => $template->id,
                 'user' => $user,
+                'evalCategories' => $evalCategories,
+
             ]);
+
         }
 
     }

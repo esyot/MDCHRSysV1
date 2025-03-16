@@ -69,11 +69,15 @@ textarea {
     border: 1px solid #ddd;
 }
 
-.container {
+.footer {
     display: flex;
     justify-content: flex-end;
-    align-items: flex-start;
+    align-items: center;
     width: 100%;
+}
+
+.footer .item {
+    margin-inline: 10px;
 }
 
 .overall-rating {

@@ -179,6 +179,14 @@
     padding: 10px;
 }
 
+.table {
+    user-select: none;
+    width: 100%;
+}
+.table-title span {
+    font-weight: bold;
+    padding: 10px;
+}
 table {
     user-select: none;
     width: 100%;
@@ -190,12 +198,14 @@ thead {
     color: #676767;
 }
 
-thead td {
+thead th {
     padding: 12px 15px;
     font-weight: bold;
+    min-width: 60px;
+}
+.left {
     text-align: left;
 }
-
 tbody tr {
     border-bottom: 1px solid #ddd;
     cursor: pointer;
@@ -208,6 +218,12 @@ tbody tr:hover {
 td {
     padding: 12px 15px;
     text-align: left;
+}
+
+.ratings {
+    border-top: 1px solid #b1b1b1;
+    font-weight: bold;
+    color: rgb(30, 131, 27);
 }
 
 .buttons {

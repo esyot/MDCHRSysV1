@@ -150,7 +150,7 @@ export default {
       </button>
     </div>
     <div class="evaluation-form-title">
-      <span>Teacher's Evaluation</span>
+      <span>Staff's Evaluation</span>
     </div>
     <div class="user-details">
       <div class="user-details-item">

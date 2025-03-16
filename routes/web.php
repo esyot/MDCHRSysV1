@@ -61,7 +61,7 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         //dean routes
         Route::middleware(CheckUserRole::class . ':dean')->group(function () {
 
-            Route::post('/evaluations/evaluation-submit', [EvaluationController::class, 'create']);
+            Route::post('/evaluations/evaluation-submit', [EvaluationController::class, 'submitEvaluation']);
 
         });
         // Admin Routes
