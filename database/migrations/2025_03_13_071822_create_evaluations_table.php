@@ -19,7 +19,8 @@ return new class extends Migration {
             $table->bigInteger('acad_term_id')->unsigned()->nullable();
             $table->bigInteger('subject_id')->unsigned()->nullable();
             $table->bigInteger('evaluator_id')->unsigned()->nullable();
-            $table->enum('semister', ['first', 'second', 'summer'])->nullable();
+            $table->enum('semister', ['first', 'second']);
+            $table->enum('period', ['midterm', 'final']);
             $table->string('overall_points');
             $table->string('overall_mean');
             $table->timestamps();

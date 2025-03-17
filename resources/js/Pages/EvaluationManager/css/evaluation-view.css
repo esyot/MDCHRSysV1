@@ -20,6 +20,7 @@
 .top-nav-buttons {
     display: flex;
     justify-content: flex-end;
+
     gap: 0.3rem;
 }
 
@@ -42,10 +43,21 @@
     border-radius: 5px;
     gap: 1rem;
     margin-inline: 15px;
+    overflow-y: auto;
+    height: 80vh;
 }
 
 .category {
     margin: 1rem;
+}
+.category-header-item {
+    display: flex;
+    gap: 1rem;
+}
+
+.category-header-item i:hover {
+    opacity: 50%;
+    cursor: pointer;
 }
 
 .item {
@@ -54,4 +66,23 @@
 
 .category ul {
     list-style: decimal;
+}
+
+.category ul li {
+    display: flex;
+    gap: 1rem;
+    padding-block: 10px;
+}
+
+.category ul li i:hover {
+    opacity: 50%;
+    cursor: pointer;
+}
+
+.blue {
+    color: rgb(0, 110, 255);
+}
+
+.red {
+    color: rgb(230, 69, 69);
 }

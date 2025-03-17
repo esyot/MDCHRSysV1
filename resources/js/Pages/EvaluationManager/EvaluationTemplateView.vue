@@ -2,11 +2,16 @@
 import Layout from "@/Layouts/Layout.vue";
 import AddCategoryModal from "./Modals/AddCategoryModal.vue";
 import AddItemModal from "./Modals/AddItemModal.vue";
+import EditItemModal from "./Modals/EditItemModal.vue";
+import ConfirmationFormModal from "./Modals/ConfirmationFormModal.vue";
+import { Inertia } from "@inertiajs/inertia";
 export default {
   layout: Layout,
   components: {
     AddCategoryModal,
     AddItemModal,
+    EditItemModal,
+    ConfirmationFormModal,
   },
   props: {
     template: Object,
@@ -17,6 +22,10 @@ export default {
       isNewCategoryModal: false,
       isNewItemModal: false,
       template_id: this.template.id,
+      selectediItem: [],
+      isEditItem: false,
+      isConfirmation: false,
+      message: "Are you sure to remove this item?",
     };
   },
   methods: {
@@ -25,6 +34,22 @@ export default {
     },
     toggleNewItem() {
       this.isNewItemModal = !this.isNewItemModal;
+    },
+    toggleIsEditItem(item) {
+      this.isEditItem = !this.isEditItem;
+      this.selectediItem = item;
+    },
+
+    toggleConfirmForm(item) {
+      this.isConfirmation = !this.isConfirmation;
+      item === this.selectediItem
+        ? (this.selectediItem = null)
+        : (this.selectediItem = item);
+    },
+
+    submitForm() {
+      Inertia.delete(`/evaluations/template/delete-item/${this.selectediItem.id}`);
+      this.toggleConfirmForm();
     },
   },
 };
@@ -43,6 +68,20 @@ export default {
     @toggleNewItem="toggleNewItem"
   >
   </AddItemModal>
+
+  <EditItemModal
+    v-if="isEditItem"
+    :selectediItem="selectediItem"
+    @toggleIsEditItem="toggleIsEditItem"
+  ></EditItemModal>
+
+  <ConfirmationFormModal
+    :isConfirmation="isConfirmation"
+    :message="message"
+    @toggleConfirmForm="toggleConfirmForm"
+    @submitForm="submitForm"
+  ></ConfirmationFormModal>
+
   <div class="main-container">
     <div class="top-nav">
       <div class="title">
@@ -58,19 +97,17 @@ export default {
     <ul class="content">
       <li class="category" v-for="category in categories" :key="category.id">
         <div class="category-header">
-          <span>{{ category.title }}</span>
+          <div class="category-header-item">
+            <span>{{ category.title }}</span>
+          </div>
           <ul>
             <li v-for="item in category.items" :key="item.id">
-              {{ item.description }}
+              <span> {{ item.description }}</span>
+
+              <i class="blue fas fa-pencil" @click="toggleIsEditItem(item)"></i>
+              <i class="red fas fa-trash" @click="toggleConfirmForm(item)"></i>
             </li>
           </ul>
-        </div>
-        <div class="category-body">
-          <div class="item" v-for="item in template.item" :key="item.id">
-            <div class="item-header">
-              <span>{{ item.description }}</span>
-            </div>
-          </div>
         </div>
       </li>
     </ul>

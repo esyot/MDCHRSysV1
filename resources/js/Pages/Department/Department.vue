@@ -1,65 +1,8 @@
-<script>
-import Layout from "@/Layouts/Layout.vue";
-import AddDepartmentModal from "@/Modals/AddDepartmentModal.vue";
-import ConfirmationDeleteModal from "@/Modals/ConfirmationDeleteModal.vue";
-import { Inertia } from "@inertiajs/inertia";
-
-export default {
-  layout: Layout,
-  components: {
-    AddDepartmentModal,
-    ConfirmationDeleteModal,
-  },
-  props: {
-    departments: Array,
-    parentDepartments: Array,
-    departmentList: Object,
-  },
-  data() {
-    return {
-      isAddDepartment: false,
-      isDelete: false,
-      selected_id: "",
-    };
-  },
-  methods: {
-    toggleAddDepartmentModal() {
-      this.isAddDepartment = !this.isAddDepartment;
-    },
-
-    selectId(id) {
-      this.selected_id === id ? (this.selected_id = null) : (this.selected_id = id);
-
-      this.toggleDeleteForm();
-    },
-    toggleDeleteForm() {
-      this.isDelete = !this.isDelete;
-    },
-    deleteForm() {
-      Inertia.get(`/departments/department-delete/${this.selected_id}`);
-      this.selected_id = null;
-    },
-  },
-};
-</script>
+<script src="./js/department.js"></script>
 <template>
-  <ConfirmationDeleteModal
-    v-if="isDelete"
-    :isDelete="isDelete"
-    @deleteForm="deleteForm"
-    @toggleDeleteForm="toggleDeleteForm"
-  >
-  </ConfirmationDeleteModal>
-  <AddDepartmentModal
-    v-if="isAddDepartment"
-    :isAddDepartment="isAddDepartment"
-    :parentDepartments="parentDepartments"
-    :departmentList="departmentList"
-    @toggleAddDepartmentModal="toggleAddDepartmentModal"
-  ></AddDepartmentModal>
   <header>
     <div class="container-btn">
-      <button class="add-btn" @click="toggleAddDepartmentModal">Add Department</button>
+      <button class="add-btn" @click="toggleSyncDepartments">Sync Departments</button>
     </div>
   </header>
   <section class="container">
@@ -69,7 +12,6 @@ export default {
           <th class="start">Name</th>
           <th>Acronym</th>
           <th>Parent</th>
-          <th class="center">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -77,11 +19,6 @@ export default {
           <td>{{ department.name }}</td>
           <td class="center">{{ department.acronym }}</td>
           <td class="center">{{ department.parent ? department.parent.name : null }}</td>
-          <td class="buttons">
-            <button @click="selectId(department.id)" class="delete-btn">
-              <i class="fas fa-trash"></i>
-            </button>
-          </td>
         </tr>
       </tbody>
     </table>
@@ -96,7 +33,7 @@ header {
 }
 
 .add-btn {
-  background-color: rgb(55, 103, 246);
+  background-color: rgb(37, 154, 237);
   color: white;
   padding: 10px;
   margin: 10px;
@@ -151,7 +88,7 @@ table thead tr th {
 }
 
 tbody tr td {
-  padding: 5px;
+  padding: 10px 15px;
 }
 
 tbody tr:hover {

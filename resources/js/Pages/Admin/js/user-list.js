@@ -2,6 +2,7 @@ import Layout from "@/Layouts/Layout.vue";
 import { Inertia } from "@inertiajs/inertia";
 import { InertiaLink } from "@inertiajs/inertia-vue3";
 import AddUserModal from "@/Modals/AddUserModal.vue";
+import { useToast } from "vue-toastification";
 
 export default {
     layout: Layout,
@@ -55,10 +56,29 @@ export default {
         toggleAddUserModal() {
             this.isAddUser = !this.isAddUser;
         },
-        toggleSyncUsers() {
-            Inertia.visit("/users/sync");
+
+        toggleSyncUsers(type) {
+            const toast = useToast();
+
+            Inertia.visit(`/users/sync/${type}`, {
+                onSuccess() {
+                    toast.success("Users synced successfully!", {
+                        position: "top-center",
+                        timeout: 3000,
+                        closeButton: true,
+                    });
+                },
+                onError() {
+                    toast.error("Failed to sync users. Please try again.", {
+                        position: "top-center",
+                        timeout: 5000,
+                        closeButton: true,
+                    });
+                },
+            });
         },
     },
+
     watch: {
         user_type(newVal) {
             if (newVal === "user") {

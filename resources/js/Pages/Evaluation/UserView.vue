@@ -18,7 +18,7 @@ export default {
   data() {
     return {
       AdminActiveTab: "overview",
-      selectedFormType: "teacher",
+      selectedEvaluationType: "teacher",
       selectedTerm: this.currentTerm ?? null,
       isOpenEvalationDropDown: false,
     };
@@ -70,6 +70,15 @@ export default {
         hour12: true,
       };
       return convertedDate.toLocaleString("en-US", options);
+    },
+    calculateEvaluationPercentage(mean) {
+      let percentage = (mean / 5) * 100;
+
+      if (percentage === 0) {
+        return percentage.toString();
+      }
+
+      return percentage % 1 === 0 ? percentage.toString() : percentage.toFixed(2);
     },
     calculateOverallPercentage(evaluations) {
       let totalPercentage = 0;
@@ -175,15 +184,18 @@ export default {
       <div class="buttons">
         <div class="btn-left">
           <select
-            v-model="selectedFormType"
+            v-model="selectedEvaluationType"
             title="Select type of forms to be displayed in the table below."
           >
             <option value="teacher">Teacher Evaluation</option>
-            <option value="staff">Staff Evaluation</option>
+            <option value="staff" v-if="userRoles.includes('staff')">
+              Staff Evaluation
+            </option>
           </select>
 
           <select
             v-model="selectedTerm"
+            v-if="selectedEvaluationType === 'teacher'"
             title="Select a year to be filtered in the table below."
           >
             <option v-for="(term, index) in terms" :key="index" :value="term.id">
@@ -221,7 +233,7 @@ export default {
         </div>
       </div>
 
-      <div class="table-container">
+      <div class="table-container" v-if="selectedEvaluationType === 'teacher'">
         <div class="tables">
           <div class="table">
             <div class="table-title">
@@ -255,7 +267,9 @@ export default {
                   </td>
 
                   <td>
-                    <span>{{ (evaluation.overall_mean / 5) * 100 }}% </span>
+                    <span
+                      >{{ calculateEvaluationPercentage(evaluation.overall_mean) }}%
+                    </span>
                   </td>
                 </tr>
                 <tr class="ratings">
@@ -299,7 +313,9 @@ export default {
                   </td>
 
                   <td>
-                    <span>{{ (evaluation.overall_mean / 5) * 100 }}% </span>
+                    <span
+                      >{{ calculateEvaluationPercentage(evaluation.overall_mean) }}%
+                    </span>
                   </td>
                 </tr>
                 <tr class="ratings">
@@ -312,13 +328,13 @@ export default {
             </table>
           </div>
         </div>
-        <div class="table-footer">
+        <!-- <div class="table-footer">
           <label for="">Overall Semister Points</label>
           <span>{{ overallSemisterPoints(evaluations) }} pts</span>
 
           <label for="">Overall Semister Percentage</label>
           <span>{{ overallSemisterPercentage(evaluations) }}%</span>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

@@ -21,9 +21,8 @@ export default {
   },
 
   methods: {
-    // Native browser back behavior
     goBack() {
-      window.history.back(); // Goes back to the previous page in the history
+      window.history.back();
     },
 
     toggleAccountOptions() {
@@ -253,10 +252,10 @@ export default {
 
   <div @click.self="logoutConfirm" id="logoutConfirmModal" class="modal hidden">
     <section class="modal-content">
-      <h2>Are you sure to logout?</h2>
+      <h2>Are you sure to log-out?</h2>
       <footer>
-        <button @click="logoutConfirm">No</button>
-        <InertiaLink :href="'/logout'"> Yes </InertiaLink>
+        <button @click="logoutConfirm">No, cancel</button>
+        <InertiaLink :href="'/logout'">Yes, proceed. </InertiaLink>
       </footer>
     </section>
   </div>

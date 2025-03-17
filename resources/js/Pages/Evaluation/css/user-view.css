@@ -165,13 +165,22 @@
     .td-action span {
         display: none;
     }
+
+    .table-container {
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        height: 42vh;
+    }
 }
 
-.table-container {
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    height: 42vh;
+@media (orientation: landscape) {
+    .table-container {
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        height: 50vh;
+    }
 }
 
 .tables {

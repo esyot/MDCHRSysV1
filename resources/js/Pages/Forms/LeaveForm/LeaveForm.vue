@@ -424,7 +424,7 @@
 
     <div class="form-submit">
       <button type="submit" class="submit" title="Submit for approval">
-        {{ formDataToEditCopy ? "Re-Submit Application" : "Submit Apllication" }}
+        {{ formDataToEditCopy ? "Re-Submit Application" : "Submit Application" }}
       </button>
     </div>
   </form>

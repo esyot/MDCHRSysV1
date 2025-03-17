@@ -18,6 +18,30 @@ use Illuminate\Support\Str;
 
 class EvaluationController extends Controller
 {
+
+    public function updateTemplateItem(Request $request)
+    {
+
+        $item = EvalTemplateItem::find($request->item_id);
+
+        $item->update([
+            'description' => $request->description,
+        ]);
+
+        return redirect()->back();
+    }
+
+    public function deletTemplateItem($id)
+    {
+
+        $item = EvalTemplateItem::find($id);
+
+        $item->delete();
+
+        return redirect()->back();
+    }
+
+
     public function userView($id)
     {
         $this->globalVariables();
@@ -186,7 +210,7 @@ class EvaluationController extends Controller
 
             $templates = EvalTemplate::orderBy('created_at', 'ASC')->get();
 
-            return inertia('Pages/Admin/EvaluationManager/EvaluationTemplateManager', [
+            return inertia('Pages/EvaluationManager/EvaluationTemplateManager', [
                 'templates' => $templates,
                 'roles' => $roles,
                 'user' => $user,
@@ -203,7 +227,7 @@ class EvaluationController extends Controller
             ])->get();
 
 
-            return inertia('Pages/Admin/EvaluationManager/EvaluationTemplateView', [
+            return inertia('Pages/EvaluationManager/EvaluationTemplateView', [
                 'template' => $template,
                 'categories' => $categories,
                 'roles' => $roles,
@@ -352,7 +376,7 @@ class EvaluationController extends Controller
         $roles = $this->roles;
         $user = $this->user;
 
-        return inertia('Pages/Admin/EvaluationManager/EvaluationView', [
+        return inertia('Pages/EvaluationManager/EvaluationView', [
             'roles' => $roles,
             'user' => $user,
             'pageTitle' => 'Evaluation View'
@@ -399,7 +423,6 @@ class EvaluationController extends Controller
             {
                 return response()->json(['message' => 'Semester not found.'], 404);
             }
-
 
             $academicYear = null;
             foreach ($terms as $term)
@@ -449,8 +472,6 @@ class EvaluationController extends Controller
                 return redirect()->route('evaluations.user-view', $request->user_id)->with('success', 'Evaluation form submitted successfully!');
 
             }
-
-
 
         }
 
@@ -543,8 +564,5 @@ class EvaluationController extends Controller
         }
 
     }
-
-
-
 
 }

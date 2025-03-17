@@ -470,52 +470,103 @@ class UserController extends Controller
         return response()->json($users ?? []);
     }
 
-    public function sync()
+    public function syncUsers($type)
     {
-        $currentUsers = User::pluck('id')->toArray();
-
-        $code = config('variables.api_key');
-        $url = 'https://sis.materdeicollege.com/api/hr/users-teachers';
-
-        $client = new Client();
-
-        $response = $client->get($url, [
-            'query' => [
-                'user_ids' => $currentUsers,
-                'code' => $code,
-            ],
-            'verify' => false,
-        ]);
-
-        $newUsers = json_decode($response->getBody(), true);
-
-        foreach ($newUsers as $userData)
+        if ($type === 'teacher')
         {
+            $currentUsers = User::pluck('id')->toArray();
 
-            $user = User::create([
-                'id' => $userData['id'],
-                'user' => $userData['user'],
-                'first_name' => $userData['fname'],
-                'last_name' => $userData['lname'],
-                'email' => $userData['email'],
+            $code = config('variables.api_key');
+
+            $url = 'https://sis.materdeicollege.com/api/hr/users-teachers';
+
+            $client = new Client();
+
+            $response = $client->get($url, [
+                'query' => [
+                    'user_ids' => $currentUsers,
+                    'code' => $code,
+                ],
+                'verify' => false,
             ]);
 
+            $newUsers = json_decode($response->getBody(), true);
 
-            if (isset($userData['teacher_account']))
+            foreach ($newUsers as $userData)
             {
-                Teacher::create([
-                    'id' => $userData['teacher_account']['id'],
-                    'user_id' => $userData['teacher_account']['user_id'],
-                    'department_id' => $userData['teacher_account']['department_id'],
-                    'specialization' => $userData['teacher_account']['specialization'],
+
+                $user = User::create([
+                    'id' => $userData['id'],
+                    'user' => $userData['user'],
+                    'first_name' => $userData['fname'],
+                    'last_name' => $userData['lname'],
+                    'email' => $userData['email'],
                 ]);
 
-                $user->assignRole('teacher');
-            } else
-            {
-                $user->assignRole('staff');
+
+                if (isset($userData['teacher_account']))
+                {
+                    Teacher::create([
+                        'id' => $userData['teacher_account']['id'],
+                        'user_id' => $userData['teacher_account']['user_id'],
+                        'department_id' => $userData['teacher_account']['department_id'],
+                        'specialization' => $userData['teacher_account']['specialization'],
+                    ]);
+
+                    $user->assignRole('teacher');
+                }
             }
+
+            return redirect()->back();
+
+        } else if ($type === 'staff')
+        {
+            $currentUsers = User::pluck('id')->toArray();
+
+            $code = config('variables.api_key');
+
+            $url = 'https://sis.materdeicollege.com/api/hr/non-teaching-users/';
+
+            $client = new Client();
+
+            $response = $client->get($url, [
+                'query' => [
+                    'code' => $code,
+                ],
+                'verify' => false,
+            ]);
+
+            $newUsers = json_decode($response->getBody(), true);
+
+            dd($newUsers);
+
+            foreach ($newUsers as $userData)
+            {
+
+                $user = User::create([
+                    'id' => $userData['id'],
+                    'user' => $userData['user'],
+                    'first_name' => $userData['fname'],
+                    'last_name' => $userData['lname'],
+                    'email' => $userData['email'],
+                ]);
+
+
+                if (isset($userData['teacher_account']))
+                {
+                    Staff::create([
+                        'id' => $userData['teacher_account']['id'],
+                        'user_id' => $userData['teacher_account']['user_id'],
+
+                    ]);
+
+                    $user->assignRole('staff');
+                }
+            }
+
+            return redirect()->back();
         }
+
 
 
     }

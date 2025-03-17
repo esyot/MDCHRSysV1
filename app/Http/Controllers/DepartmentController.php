@@ -31,34 +31,10 @@ class DepartmentController extends Controller
         ]);
     }
 
-    public function create(Request $request)
+    public function syncDepartments()
     {
 
-        $department = Department::create($request->all());
 
 
-        if ($department)
-        {
-            return redirect()->back()->with('success', "Department added successfully!");
-        } else
-        {
-            return redirect()->back()->with('error', "Department error!");
-        }
-
-    }
-
-    public function delete($id)
-    {
-
-        $department = Department::find($id);
-
-        if ($department)
-        {
-            $department->delete();
-            return redirect()->back()->with('success', 'Department deleted successfully!');
-        } else
-        {
-            return redirect()->back()->with('error', 'Department not found!');
-        }
     }
 }

@@ -3,13 +3,13 @@
         display: none;
     }
 }
+
 .sidebar {
     overflow-x: hidden;
     overflow-y: hidden;
     width: 250px;
     background: linear-gradient(to bottom, #34ace0, #000000);
     color: white;
-    height: 100%;
     user-select: none;
     z-index: 99;
     box-shadow: 5px 0px 10px rgba(0, 0, 0, 0.4);
@@ -88,6 +88,13 @@ h1 {
     justify-content: start;
     margin-left: 20px;
     margin-top: 10%;
+    overflow-y: auto;
+    height: 10vh;
+    margin-bottom: 20px;
+}
+
+.menu::-webkit-scrollbar {
+    display: none;
 }
 
 .menu ul {

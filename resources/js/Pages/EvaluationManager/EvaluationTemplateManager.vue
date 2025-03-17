@@ -80,12 +80,13 @@ export default {
     @toggleDeleteForm="toggleDeleteForm"
     @deleteForm="deleteForm"
   ></ConfirmationDeleteModal>
+
   <div class="main-container">
     <div class="top-nav">
-      <button @click="toggleNewTemplate">
+      <button @click="toggleNewTemplate" title="Create a new template from scratch">
         <i class="fa fa-plus"></i> Create New Template
       </button>
-      <button @click="toggleOldTemplate">
+      <button @click="toggleOldTemplate" title="Create a new template from a copy ">
         <i class="fa fa-plus"></i> Create From Template
       </button>
     </div>

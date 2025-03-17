@@ -31,17 +31,13 @@
         </select>
       </div>
 
-      <div>
-        <button @click="toggleAddUserModal" class="add-btn">Add a {{ type }}</button>
-      </div>
-
-      <div>
+      <div v-if="user_type === 'teacher' || user_type === 'staff'">
         <button
-          @click="toggleSyncUsers"
+          @click="toggleSyncUsers(user_type)"
           class="add-btn"
           title="Sync users from Mater Dei College SIS"
         >
-          Sync Users
+          Sync {{ user_type }}s
         </button>
       </div>
     </div>
@@ -84,12 +80,12 @@
         <i class="fa-solid fa-angles-left"></i>
       </InertiaLink>
       <InertiaLink :href="users.prev_page_url">
-        <i class="fas fa-arrow-circle-left"></i>
+        <i class="fas fa-chevron-left"></i>
       </InertiaLink>
 
       <span>Page {{ users.current_page }} of {{ users.last_page }}</span>
       <InertiaLink :href="users.next_page_url">
-        <i class="fas fa-arrow-circle-right"></i>
+        <i class="fas fa-chevron-right"></i>
       </InertiaLink>
 
       <InertiaLink :href="users.last_page_url">
