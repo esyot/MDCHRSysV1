@@ -111,13 +111,6 @@ export default {
             </li>
           </InertiaLink>
 
-          <InertiaLink v-if="roles.includes('admin')" :href="'/departments'" class="link"
-            ><li class="menu-li" title="Add/Edit Departments">
-              <i class="fa-solid fa-list"></i>
-              <span>Departments</span>
-            </li>
-          </InertiaLink>
-
           <li title="Users" v-if="roles.includes('admin') || roles.includes('hr')">
             <div class="menu-li" @click="openSubMenu('Admin Panel')">
               <i class="fa-solid fa-users"></i>
@@ -128,6 +121,15 @@ export default {
             <ul id="submenu-admin-panel" class="submenu">
               <InertiaLink :href="'/users/users-list'" class="link">
                 <li><span>Users</span></li>
+              </InertiaLink>
+
+              <InertiaLink
+                v-if="roles.includes('admin')"
+                :href="'/departments'"
+                class="link"
+                ><li title="Add/Edit Departments">
+                  <span>Departments</span>
+                </li>
               </InertiaLink>
 
               <InertiaLink :href="'/evaluations/evaluation-manager/'" class="link">

@@ -42,7 +42,6 @@ class EvaluationController extends Controller
         {
 
             $subj_client = new Client();
-
             $response = $subj_client->get($subj_url, [
                 'query' => [
                     'code' => $code,
@@ -53,33 +52,26 @@ class EvaluationController extends Controller
             ]);
 
             $subjects = json_decode($response->getBody(), true);
-
             $subject = collect($subjects)->firstWhere('id', $evaluation->subject_id);
-
             $evaluation['subject'] = $subject;
 
             $eval_template_category_items = EvalTemplateCategory::where('eval_template_id', $evaluation->eval_template_id)
                 ->with('items')
                 ->get();
 
-
             $total_descriptions_count = 0;
 
             foreach ($eval_template_category_items as $category)
             {
-
                 $total_descriptions_count += $category->items->whereNotNull('description')->count();
             }
 
-
             $evaluation['maxPoints'] = $total_descriptions_count * 5;
-
         }
 
+
         $url = 'https://sis.materdeicollege.com/api/hr/terms';
-
         $client = new Client();
-
         $response = $client->get($url, [
             'query' => [
                 'code' => $code,
@@ -94,11 +86,16 @@ class EvaluationController extends Controller
             return $item['type'] === 'annual';
         });
 
-        $annuals = array_values($annuals);
+        $currentDate = Carbon::now();
 
+        $currentTerm = collect($terms)->first(function ($term) use ($currentDate) {
+            $termStart = Carbon::parse($term['start']);
+            $termEnd = Carbon::parse($term['end']);
+            return $currentDate->between($termStart, $termEnd);
+        });
+        $currentTerm = $currentTerm['id'];
 
         $terms = array_map(function ($row) {
-
             $row['start'] = Carbon::parse($row['start'])->format('Y');
             $row['end'] = Carbon::parse($row['end'])->format('Y');
             return $row;
@@ -116,6 +113,7 @@ class EvaluationController extends Controller
             'messageSuccess' => session('success') ?? null,
             'terms' => $terms,
             'evaluations' => $evaluations,
+            'currentTerm' => $currentTerm,
             'api_key' => config('variable.api_key'),
         ]);
     }
@@ -385,23 +383,57 @@ class EvaluationController extends Controller
 
             $term = collect($terms)->where('id', $request->term_id)->first();
 
-            $semister = "";
+            $selectedTerm = $term;
 
-            if (strpos($term['name'], "1st") !== false)
+            $semester = null;
+            foreach ($terms as $term)
             {
-                $semister = 'first';
-            } else if (strpos($term['name'], "2nd") !== false)
-            {
-                $semister = "second";
-            } else
-            {
-                $semister = "summer";
+                if ($term['id'] == $request->term_id)
+                {
+                    $semester = $term;
+                    break;
+                }
             }
 
+            if (!$semester)
+            {
+                return response()->json(['message' => 'Semester not found.'], 404);
+            }
+
+
+            $academicYear = null;
+            foreach ($terms as $term)
+            {
+                if ($term['type'] == 'annual')
+                {
+
+                    $semesterStart = Carbon::parse($semester['start']);
+                    $semesterEnd = Carbon::parse($semester['end']);
+                    $academicYearStart = Carbon::parse($term['start']);
+                    $academicYearEnd = Carbon::parse($term['end']);
+
+                    if ($semesterStart >= $academicYearStart && $semesterEnd <= $academicYearEnd)
+                    {
+                        $academicYear = $term;
+                        break;
+                    }
+                }
+            }
+
+            $semister = "";
+
+            if (strpos($selectedTerm['name'], "1st") !== false)
+            {
+                $semister = 'first';
+            } else if (strpos($selectedTerm['name'], "2nd") !== false)
+            {
+                $semister = "second";
+            }
             $evaluation = Evaluation::create([
                 'teacher_id' => $request->user_id,
                 'eval_template_id' => $request->template_id,
                 'term_id' => $request->term_id,
+                'acad_term_id' => $academicYear['id'],
                 'subject_id' => $request->subject_id,
                 'evaluator_id' => Auth::user()->id,
                 'semister' => $semister,
@@ -448,6 +480,7 @@ class EvaluationController extends Controller
 
 
             $terms = json_decode($response->getBody(), true);
+
 
 
             $annuals = array_filter($terms, function ($item) {

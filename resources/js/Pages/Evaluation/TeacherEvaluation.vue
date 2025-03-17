@@ -293,10 +293,7 @@ export default {
           <label for="">Overall Points:</label>
           <span class="underline">{{ overallPoints }}</span>
         </div>
-        <div class="item">
-          <label for="">Overall Mean: </label>
-          <span class="underline">{{ overallMean.toFixed(2) }}</span>
-        </div>
+
         <div class="item">
           <button class="submit-btn">Submit</button>
         </div>

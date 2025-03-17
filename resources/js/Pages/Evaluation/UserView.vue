@@ -1,14 +1,14 @@
 <script>
 import Layout from "@/Layouts/Layout.vue";
 import { Inertia } from "@inertiajs/inertia";
-
 export default {
   layout: Layout,
   props: {
     user_id: String,
     userRoles: Array,
     personalDetails: Object,
-    terms: Object,
+    terms: Array,
+    currentTerm: Number,
     roles: {
       type: Array,
       default: () => [],
@@ -19,19 +19,27 @@ export default {
     return {
       AdminActiveTab: "overview",
       selectedFormType: "teacher",
-      selectedTerm: "",
+      selectedTerm: this.currentTerm ?? null,
       isOpenEvalationDropDown: false,
     };
   },
 
   computed: {
     firstSem() {
-      return this.evaluations.filter((evaluation) => evaluation.semister === "first");
+      return this.evaluations.filter(
+        (evaluation) =>
+          evaluation.semister === "first" && evaluation.acad_term_id === this.selectedTerm
+      );
     },
     secondSem() {
-      return this.evaluations.filter((evaluation) => evaluation.semister === "second");
+      return this.evaluations.filter(
+        (evaluation) =>
+          evaluation.semister === "second" &&
+          evaluation.acad_term_id === this.selectedTerm
+      );
     },
   },
+
   methods: {
     openEval(type) {
       if (type === "teacher") {
@@ -74,7 +82,11 @@ export default {
 
       const percentage = count > 0 ? totalPercentage / count : 0;
 
-      return percentage.toFixed(2);
+      if (percentage === 0) {
+        return percentage.toString();
+      }
+
+      return percentage % 1 === 0 ? percentage.toString() : percentage.toFixed(2);
     },
     calculateOverallPoints(evaluations) {
       let totalPoints = 0;
@@ -85,6 +97,31 @@ export default {
       });
 
       return totalPoints;
+    },
+
+    overallSemisterPoints(evaluations) {
+      let totalPoints = 0;
+
+      evaluations.forEach((evaluation) => {
+        const point = evaluation.overall_points * 1;
+        totalPoints += point;
+      });
+
+      return totalPoints;
+    },
+
+    overallSemisterPercentage(evaluations) {
+      let totalPercentage = 0;
+      let count = evaluations.length;
+
+      evaluations.forEach((evaluation) => {
+        const percentage = (evaluation.overall_mean / 5) * 100;
+        totalPercentage += percentage;
+      });
+
+      const percentage = count > 0 ? totalPercentage / count : 0;
+
+      return percentage.toFixed(2);
     },
   },
 
@@ -149,9 +186,8 @@ export default {
             v-model="selectedTerm"
             title="Select a year to be filtered in the table below."
           >
-            <option value="" disabled>Select Term</option>
-            <option v-for="term in terms" :key="term.id" :value="term.id">
-              {{ term.start }} - {{ term.end }}
+            <option v-for="(term, index) in terms" :key="index" :value="term.id">
+              AY - {{ term.start }}-{{ term.end }}
             </option>
           </select>
         </div>
@@ -185,91 +221,103 @@ export default {
         </div>
       </div>
 
-      <div class="tables">
-        <div class="table">
-          <div class="table-title">
-            <span>1st Semester</span>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th class="left"><i class="fas fa-list"></i></th>
-                <th><i class="fas fa-calendar-days"></i></th>
-                <th><i class="fas fa-star"></i></th>
-                <th><i class="fas fa-percent"></i></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="evaluation in firstSem" :key="evaluation.id">
-                <td>
-                  <span
-                    >{{ evaluation.subject.course_no }} -
-                    {{ evaluation.subject.description }}</span
-                  >
-                </td>
-                <td>
-                  <span>{{ formatDate(evaluation.created_at) }}</span>
-                </td>
-                <td>
-                  <span>{{ evaluation.overall_points }} pts</span>
-                </td>
+      <div class="table-container">
+        <div class="tables">
+          <div class="table">
+            <div class="table-title">
+              <span>1st Semester</span>
+            </div>
 
-                <td>
-                  <span>{{ (evaluation.overall_mean / 5) * 100 }}% </span>
-                </td>
-              </tr>
-              <tr class="ratings">
-                <td>Overall Result:</td>
-                <td></td>
-                <td>{{ calculateOverallPoints(firstSem) }} pts</td>
-                <td>{{ calculateOverallPercentage(firstSem) }}%</td>
-              </tr>
-            </tbody>
-          </table>
+            <table>
+              <thead>
+                <tr>
+                  <th class="left"><i class="fas fa-list"></i></th>
+                  <th><i class="fas fa-calendar-days"></i></th>
+                  <th><i class="fas fa-star"></i></th>
+                  <th><i class="fas fa-percent"></i></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="evaluation in firstSem" :key="evaluation.id">
+                  <td>
+                    <span
+                      >{{ evaluation.subject.course_no }} -
+                      <small> {{ evaluation.subject.description }}</small></span
+                    >
+                  </td>
+                  <td>
+                    <span>{{ formatDate(evaluation.created_at) }}</span>
+                  </td>
+                  <td>
+                    <span
+                      >{{ evaluation.overall_points }} / {{ evaluation.maxPoints }}
+                    </span>
+                  </td>
+
+                  <td>
+                    <span>{{ (evaluation.overall_mean / 5) * 100 }}% </span>
+                  </td>
+                </tr>
+                <tr class="ratings">
+                  <td>Result:</td>
+                  <td></td>
+                  <td>{{ calculateOverallPoints(firstSem) }} pts</td>
+                  <td>{{ calculateOverallPercentage(firstSem) }}%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table">
+            <div class="table-title">
+              <span>2nd Semester</span>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th class="left"><i class="fas fa-list"></i></th>
+                  <th><i class="fas fa-calendar-days"></i></th>
+                  <th><i class="fas fa-star"></i></th>
+                  <th><i class="fas fa-percent"></i></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="evaluation in secondSem" :key="evaluation.id">
+                  <td>
+                    <span
+                      >{{ evaluation.subject.course_no }} -
+                      <small> {{ evaluation.subject.description }}</small></span
+                    >
+                  </td>
+                  <td>
+                    <span>{{ formatDate(evaluation.created_at) }}</span>
+                  </td>
+                  <td>
+                    <span
+                      >{{ evaluation.overall_points }} / {{ evaluation.maxPoints }}
+                    </span>
+                  </td>
+
+                  <td>
+                    <span>{{ (evaluation.overall_mean / 5) * 100 }}% </span>
+                  </td>
+                </tr>
+                <tr class="ratings">
+                  <td>Result:</td>
+                  <td></td>
+                  <td>{{ calculateOverallPoints(secondSem) }} pts</td>
+                  <td>{{ calculateOverallPercentage(secondSem) }}%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
+        <div class="table-footer">
+          <label for="">Overall Semister Points</label>
+          <span>{{ overallSemisterPoints(evaluations) }} pts</span>
 
-        <div class="table">
-          <div class="table-title">
-            <span>2nd Semester</span>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th class="left"><i class="fas fa-list"></i></th>
-                <th><i class="fas fa-calendar-days"></i></th>
-                <th><i class="fas fa-star"></i></th>
-                <th><i class="fas fa-percent"></i></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="evaluation in secondSem" :key="evaluation.id">
-                <td>
-                  <span
-                    >{{ evaluation.subject.course_no }} -
-                    {{ evaluation.subject.description }}</span
-                  >
-                </td>
-                <td>
-                  <span>{{ formatDate(evaluation.created_at) }}</span>
-                </td>
-                <td>
-                  <span
-                    >{{ evaluation.overall_points }} / {{ evaluation.maxPoints }}
-                  </span>
-                </td>
-
-                <td>
-                  <span>{{ (evaluation.overall_mean / 5) * 100 }}% </span>
-                </td>
-              </tr>
-              <tr class="ratings">
-                <td>Overall Result:</td>
-                <td></td>
-                <td>{{ calculateOverallPoints(secondSem) }} pts</td>
-                <td>{{ calculateOverallPercentage(secondSem) }}%</td>
-              </tr>
-            </tbody>
-          </table>
+          <label for="">Overall Semister Percentage</label>
+          <span>{{ overallSemisterPercentage(evaluations) }}%</span>
         </div>
       </div>
     </div>

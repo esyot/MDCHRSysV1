@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->bigInteger('staff_id')->unsigned()->nullable();
             $table->bigInteger('eval_template_id')->unsigned();
             $table->bigInteger('term_id')->unsigned()->nullable();
+            $table->bigInteger('acad_term_id')->unsigned()->nullable();
             $table->bigInteger('subject_id')->unsigned()->nullable();
             $table->bigInteger('evaluator_id')->unsigned()->nullable();
             $table->enum('semister', ['first', 'second', 'summer'])->nullable();
