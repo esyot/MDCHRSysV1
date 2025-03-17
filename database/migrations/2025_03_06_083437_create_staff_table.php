@@ -13,8 +13,8 @@ return new class extends Migration {
         Schema::create('staff', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned();
-            $table->string('position');
-            $table->date('date_hired');
+            $table->string('position')->default('staff');
+            $table->date('date_hired')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

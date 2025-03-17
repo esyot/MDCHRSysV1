@@ -1,37 +1,28 @@
 <script>
-import { InertiaLink } from "@inertiajs/inertia-vue3";
+import { usePage } from "@inertiajs/inertia-vue3";
+import { Link } from "@inertiajs/inertia-vue3";
 
 export default {
+  setup() {
+    const { url } = usePage();
+
+    return {
+      currentRoute: url,
+    };
+  },
   props: {
     roles: Object,
     user: Object,
   },
   components: {
-    InertiaLink,
+    Link,
   },
   methods: {
     openSubMenu(menuName) {
-      if (menuName === "Services") {
-        const submenu = document.getElementById("submenu-services");
-        if (submenu.style.display === "block") {
-          submenu.style.display = "none";
-        } else {
-          submenu.style.display = "block";
-        }
-      } else if (menuName === "Admin Panel") {
-        const submenu = document.getElementById("submenu-admin-panel");
-        if (submenu.style.display === "block") {
-          submenu.style.display = "none";
-        } else {
-          submenu.style.display = "block";
-        }
-      } else if (menuName === "Evaluation") {
-        const submenu = document.getElementById("submenu-evaluation");
-        if (submenu.style.display === "block") {
-          submenu.style.display = "none";
-        } else {
-          submenu.style.display = "block";
-        }
+      const submenuId = `submenu-${menuName.toLowerCase().replace(" ", "-")}`;
+      const submenu = document.getElementById(submenuId);
+      if (submenu) {
+        submenu.style.display = submenu.style.display === "block" ? "none" : "block";
       }
     },
   },
@@ -56,12 +47,15 @@ export default {
       <hr />
       <div id="menu" class="menu">
         <ul id="menu-items">
-          <InertiaLink :href="'/dashboard'" class="link"
-            ><li class="menu-li" title="Home">
+          <!-- Dashboard Link -->
+          <Link :href="'/dashboard'" :class="{ active: currentRoute === '/dashboard' }">
+            <li title="Home" class="menu-li">
               <i class="fas fa-gauge"></i>
               <span>Dashboard</span>
             </li>
-          </InertiaLink>
+          </Link>
+
+          <!-- Services Submenu -->
           <li title="Services">
             <div class="menu-li" @click="openSubMenu('Services')">
               <i class="fa-solid fa-screwdriver-wrench"></i>
@@ -70,21 +64,21 @@ export default {
             </div>
 
             <ul id="submenu-services" class="submenu">
-              <InertiaLink :href="'/forms/travel-form-request'" class="link">
-                <li>
-                  <span>Travel Form</span>
-                </li></InertiaLink
-              >
+              <Link :href="'/forms/travel-form-request'" class="link">
+                <li><span>Travel Form</span></li>
+              </Link>
 
-              <InertiaLink :href="'/forms/leave-form-request'" class="link">
+              <Link :href="'/forms/leave-form-request'" class="link">
                 <li><span>Leave Form</span></li>
-              </InertiaLink>
+              </Link>
 
-              <InertiaLink :href="'/forms/tracking'" class="link">
+              <Link :href="'/forms/tracking'" class="link">
                 <li><span>Track Submitted Forms</span></li>
-              </InertiaLink>
+              </Link>
             </ul>
           </li>
+
+          <!-- Evaluation Submenu (Conditionally Displayed for Roles) -->
           <li title="Evaluation" v-if="roles.includes('dean') || roles.includes('hr')">
             <div class="menu-li" @click="openSubMenu('Evaluation')">
               <i class="fa-solid fa-file"></i>
@@ -93,24 +87,28 @@ export default {
             </div>
 
             <ul id="submenu-evaluation" class="submenu">
-              <InertiaLink :href="'/evaluations/users-list/teacher'" class="link">
+              <Link :href="'/evaluations/users-list/teacher'" class="link">
                 <li><span>Teacher Evaluation</span></li>
-              </InertiaLink>
-              <InertiaLink :href="'/evaluations/users-list/staff'" class="link">
+              </Link>
+              <Link :href="'/evaluations/users-list/staff'" class="link">
                 <li><span>Staff Evaluation</span></li>
-              </InertiaLink>
+              </Link>
             </ul>
           </li>
-          <InertiaLink
+
+          <!-- Check Forms Link (Visible if User is Not a 'staff') -->
+          <Link
             v-if="!roles.includes('staff')"
             :href="'/forms/checking'"
-            class="link"
-            ><li class="menu-li" title="Check Forms">
+            :class="{ active: currentRoute === '/forms/checking' }"
+          >
+            <li class="menu-li" title="Check Forms">
               <i class="fas fa-desktop"></i>
               <span>Check Forms</span>
             </li>
-          </InertiaLink>
+          </Link>
 
+          <!-- Admin Panel Submenu (Visible for 'admin' or 'hr' Roles) -->
           <li title="Users" v-if="roles.includes('admin') || roles.includes('hr')">
             <div class="menu-li" @click="openSubMenu('Admin Panel')">
               <i class="fa-solid fa-users"></i>
@@ -119,36 +117,35 @@ export default {
             </div>
 
             <ul id="submenu-admin-panel" class="submenu">
-              <InertiaLink :href="'/users/users-list'" class="link">
+              <Link :href="'/users/users-list'" class="link">
                 <li><span>Users</span></li>
-              </InertiaLink>
+              </Link>
 
-              <InertiaLink
-                v-if="roles.includes('admin')"
-                :href="'/departments'"
-                class="link"
-                ><li title="Add/Edit Departments">
+              <Link v-if="roles.includes('admin')" :href="'/departments'" class="link">
+                <li title="Add/Edit Departments">
                   <span>Departments</span>
                 </li>
-              </InertiaLink>
+              </Link>
 
-              <InertiaLink :href="'/evaluations/evaluation-manager/'" class="link">
+              <Link :href="'/evaluations/evaluation-manager/'" class="link">
                 <li>
                   <span>Evaluation Manager</span>
-                </li></InertiaLink
-              >
+                </li>
+              </Link>
 
-              <InertiaLink :href="'/users/analytics'" class="link">
+              <Link :href="'/users/analytics'" class="link">
                 <li><span>Analytics</span></li>
-              </InertiaLink>
+              </Link>
             </ul>
           </li>
-          <InertiaLink :href="'/about'" class="link"
-            ><li class="menu-li" title="View About">
+
+          <!-- About Link -->
+          <Link :href="'/about'" :class="{ active: currentRoute === '/about' }">
+            <li class="menu-li" title="View About">
               <i class="fa-solid fa-info-circle"></i>
               <span>About</span>
             </li>
-          </InertiaLink>
+          </Link>
         </ul>
       </div>
       <div class="footer">

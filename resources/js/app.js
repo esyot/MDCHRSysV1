@@ -12,9 +12,7 @@ createInertiaApp({
     resolve: (name) => import(`./${name}.vue`),
     setup({ el, App, props }) {
         const app = createApp({ render: () => h(App, props) });
-
         app.use(Toast);
-
         app.mount(el);
     },
 });

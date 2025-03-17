@@ -12,7 +12,7 @@ export default {
     },
     props: {
         users: Object,
-        allUsers: Object,
+        search_value: String,
         roles: Array,
         departments: Array,
         roleList: Array,
@@ -22,7 +22,7 @@ export default {
     },
     data() {
         return {
-            search_value: "",
+            search_bar: this.search_value,
             isAddUser: false,
             isAddTeacher: false,
             isAddStaff: false,
@@ -32,23 +32,13 @@ export default {
             loading: false,
         };
     },
-    computed: {
-        filteredUsers() {
-            if (!this.search_value) return this.users.data;
-
-            const searchLower = this.search_value.toLowerCase();
-
-            return this.allUsers.filter(
-                (user) =>
-                    user.last_name.toLowerCase().includes(searchLower) ||
-                    user.first_name.toLowerCase().includes(searchLower) ||
-                    (user.middle_name?.toLowerCase().includes(searchLower) ??
-                        false),
-            );
-        },
-    },
 
     methods: {
+        searchUser(search_bar) {
+            Inertia.get("/users/users-list", {
+                search_value: search_bar,
+            });
+        },
         visitUser(user) {
             Inertia.visit(`/users/user-list/${user.id}/false`);
         },

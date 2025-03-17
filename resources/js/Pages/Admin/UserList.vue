@@ -19,8 +19,9 @@
         <input
           type="text"
           name="search_value"
-          v-model="search_value"
-          placeholder="Search a user..."
+          v-model="search_bar"
+          @input="searchUser(search_bar)"
+          placeholder="Search a user"
         />
       </div>
       <div>
@@ -30,7 +31,11 @@
           <option value="staff">Staff</option>
         </select>
       </div>
-
+      <div v-if="user_type === 'staff'">
+        <button @click="toggleAddUserModal()" class="add-btn" title="Add staff">
+          Add {{ user_type }}
+        </button>
+      </div>
       <div v-if="user_type === 'teacher' || user_type === 'staff'">
         <button
           @click="toggleSyncUsers(user_type)"
@@ -54,7 +59,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="user in filteredUsers" :key="user.id">
+          <tr v-for="user in users.data" :key="user.id">
             <td>
               {{ user.last_name }}, {{ user.first_name }}
               <span v-if="user.middle_name">{{ user.middle_name[0] }}.</span>
@@ -68,7 +73,7 @@
             </td>
           </tr>
         </tbody>
-        <tbody v-if="filteredUsers.length === 0">
+        <tbody v-if="users.data.length === 0">
           <tr>
             <td>No users found.</td>
           </tr>

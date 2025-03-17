@@ -118,13 +118,16 @@ class UserController extends Controller
 
     public function users(Request $request)
     {
-
-        $users = User::orderBy('last_name')->paginate(20);
-        $allUsers = User::orderBy('last_name')->get();
-
         $this->globalVariables();
         $roles = $this->roles;
         $departments = $this->departments;
+
+        $users = User::when($request->search_value, function ($query, $search_value) {
+            $query->where('last_name', 'LIKE', '%' . $search_value . '%')
+                ->orWhere('first_name', 'LIKE', '%' . $search_value . '%');
+        })
+            ->orderBy('last_name')
+            ->paginate(20);
 
         $roleList = Role::all();
 
@@ -132,12 +135,12 @@ class UserController extends Controller
             'type' => 'user',
             'user' => Auth::user(),
             'users' => $users,
-            'allUsers' => $allUsers,
             'roles' => $roles,
             'pageTitle' => 'Users',
             'messageSuccess' => session('success') ?? null,
             'departments' => $departments,
-            'roleList' => $roleList
+            'roleList' => $roleList,
+            'search_value' => $request->search_value ?? null,
         ]);
     }
 
@@ -538,7 +541,14 @@ class UserController extends Controller
 
             $newUsers = json_decode($response->getBody(), true);
 
-            dd($newUsers);
+            $existingUserIds = User::all()->pluck('id')->toArray();
+
+            $newUsers = array_filter($newUsers, function ($user) use ($existingUserIds) {
+                return !in_array($user['id'], $existingUserIds);
+            });
+
+
+            $newUsers = array_values($newUsers);
 
             foreach ($newUsers as $userData)
             {
@@ -549,19 +559,16 @@ class UserController extends Controller
                     'first_name' => $userData['fname'],
                     'last_name' => $userData['lname'],
                     'email' => $userData['email'],
+                    'password' => $userData['password'],
                 ]);
 
 
-                if (isset($userData['teacher_account']))
-                {
-                    Staff::create([
-                        'id' => $userData['teacher_account']['id'],
-                        'user_id' => $userData['teacher_account']['user_id'],
+                Staff::create([
+                    'user_id' => $userData['id'],
+                ]);
 
-                    ]);
+                $user->assignRole('staff');
 
-                    $user->assignRole('staff');
-                }
             }
 
             return redirect()->back();
