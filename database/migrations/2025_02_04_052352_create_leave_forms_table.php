@@ -33,9 +33,9 @@ return new class extends Migration {
             $table->integer('days_with_pay')->nullable();
             $table->integer('days_without_pay')->nullable();
             $table->integer('others')->nullable();
-            $table->string('endorsed_by')->nullable();
-            $table->string('recommended_by')->nullable();
-            $table->string('disapproved_by')->nullable();
+            $table->bigInteger('endorsed_by')->unsigned()->nullable();
+            $table->bigInteger('recommended_by')->unsigned()->nullable();
+            $table->bigInteger('disapproved_by')->unsigned()->nullable();
             $table->string('disapproval_description')->nullable();
             $table->timestamps();
 
