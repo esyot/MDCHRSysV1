@@ -23,14 +23,14 @@ return new class extends Migration {
             $table->string('budget_type');
             $table->string('budget_charged_to');
             $table->text('description');
-            $table->text('class_alternatives_description')->nullable();
+            $table->text('class_description')->nullable();
             $table->enum('term', ['1st', '2nd', 'summer']);
             $table->enum('status', ['pending', 'dean_approved', 'hr_approved', 'vp_acad_approved', 'vp_admin_approved', 'declined', 'approved'])->default('pending');
             $table->date('filing_date');
-            $table->string('recommended_by')->nullable();
-            $table->string('endorsed_by')->nullable();
-            $table->string('approved_by')->nullable();
-            $table->string('disapproved_by')->nullable();
+            $table->bigInteger('recommended_by')->unsigned()->nullable();
+            $table->bigInteger('endorsed_by')->unsigned()->nullable();
+            $table->bigInteger('approved_by')->unsigned()->nullable();
+            $table->bigInteger('disapproved_by')->unsigned()->nullable();
             $table->string('disapproval_description')->nullable();
             $table->timestamps();
 

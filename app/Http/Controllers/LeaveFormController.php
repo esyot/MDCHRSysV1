@@ -52,7 +52,6 @@ class LeaveFormController extends Controller
     {
         if (!$request->form_id)
         {
-
             $formData = $request->toArray();
 
             unset($formData['medical_certificate']);
@@ -157,18 +156,7 @@ class LeaveFormController extends Controller
 
             }
 
-
-            $notificationController = new NotificationController();
-
-            $notificationController->create(
-                'Leave Form',
-                'A user submitted a leave form, check it now!',
-                'checking',
-                'dean',
-                '/forms/checking'
-            );
-
-            return redirect()->route('forms.tracking')->with('success', 'Leave request submitted successfully!.');
+            return redirect()->back()->with('success', 'Leave request submitted successfully!.');
 
         } else
         {
@@ -242,9 +230,6 @@ class LeaveFormController extends Controller
                 unset($formData['address']);
                 unset($formData['description']);
             }
-
-
-
 
             $record = LeaveForm::find($form_id);
 
@@ -324,16 +309,6 @@ class LeaveFormController extends Controller
                 }
 
             }
-
-            $notificationController = new NotificationController();
-
-            $notificationController->create(
-                'Leave Form',
-                'A user submitted a leave form, check it now!',
-                'checking',
-                'dean',
-                '/forms/checking'
-            );
 
             return redirect()->route('forms.tracking')->with('success', 'Leave request submitted successfully!.');
 

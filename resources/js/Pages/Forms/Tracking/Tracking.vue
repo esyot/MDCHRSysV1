@@ -3,6 +3,7 @@ import Layout from "@/Layouts/Layout.vue";
 import { Inertia } from "@inertiajs/inertia";
 import Modal from "@/Pages/Forms/Tracking/TrackingModal.vue";
 import DeleteModal from "@/Modals/ConfirmationDeleteModal.vue";
+import { useToast } from "vue-toastification";
 export default {
   layout: Layout,
   props: {
@@ -75,10 +76,15 @@ export default {
     },
 
     deleteForm() {
+      const toast = useToast();
       Inertia.delete(
         `/form/delete/${this.selected_type_to_delete}/${this.selected_id_to_delete}`,
         {
           onSuccess: () => {
+            toast.success("Form deleted successfully", {
+              position: "top-center",
+            });
+
             this.toggleDeleteForm(
               this.selected_id_to_delete,
               this.selected_type_to_delete

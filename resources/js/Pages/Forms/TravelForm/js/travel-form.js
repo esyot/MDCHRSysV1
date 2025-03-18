@@ -1,6 +1,7 @@
 import Layout from "@/Layouts/Layout.vue";
 import { Inertia } from "@inertiajs/inertia";
 import ConfirmationFormModal from "@/Modals/ConfirmationFormModal.vue";
+import { useToast } from "vue-toastification";
 
 export default {
     layout: Layout,
@@ -120,8 +121,8 @@ export default {
             this.teachingSubstitutes.splice(index, 1);
         },
         submitForm() {
-            const formData = {
-                form_id: this.formDataToEdit.id,
+            let formData = {
+                form_id: this.formDataToEdit ? this.formDataToEdit.id : null,
                 date_start: this.formData.date_start,
                 date_end: this.formData.date_end,
                 description: this.formData.description,
@@ -139,16 +140,33 @@ export default {
                     this.formData.class_alternatives_description,
             };
 
+            const toast = useToast();
+
             Inertia.post(
                 "/forms/travel-form-submit",
                 {
                     formData: formData,
-                    substitutes: JSON.stringify(this.teachingSubstitutes),
+                    substitutes: this.teachingSubstitutes,
                 },
                 {
                     onSuccess: () => {
-                        this.isConfirmation = !this.isConfirmation;
-                        localStorage.removeItem("formData");
+                        toast.success("Form submitted successfully", {
+                            position: "top-center",
+                        });
+
+                        this.toggleConfirmForm();
+
+                        localStorage.removeItem("travelFormData");
+
+                        Inertia.visit("/forms/tracking");
+                    },
+                    onError: () => {
+                        toast.error(
+                            "An error occurred while submitting the form",
+                            {
+                                position: "top-center",
+                            },
+                        );
                     },
                 },
             );

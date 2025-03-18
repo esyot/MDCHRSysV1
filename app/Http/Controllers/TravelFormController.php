@@ -37,8 +37,8 @@ class TravelFormController extends Controller
         ])->get();
 
 
-        $budgetTypes = config('local_variables.budget_types');
-        $budgetCharges = config('local_variables.budget_charges');
+        $budgetTypes = config('variables.budgetTypes');
+        $budgetCharges = config('variables.budgetCharges');
 
         return inertia('Pages/Forms/TravelForm/TravelForm', [
             'user' => $user,
@@ -47,7 +47,6 @@ class TravelFormController extends Controller
             'personalDetails' => $personalDetails->toArray(),
             'budgetTypes' => $budgetTypes,
             'budgetCharges' => $budgetCharges,
-            'messageSuccess' => session('success') ?? null,
             'formData' => $request ?? null,
             'pageTitle' => 'Travel Form',
             'formDataToEdit' => null

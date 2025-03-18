@@ -32,6 +32,7 @@
 
 <script>
 import { Inertia } from "@inertiajs/inertia";
+import { useToast } from "vue-toastification";
 
 export default {
   name: "Authentication",
@@ -47,7 +48,20 @@ export default {
   },
   methods: {
     authCheckSubmit() {
-      Inertia.post("/authentication-check", { password: this.password });
+      const toast = useToast();
+      Inertia.post(
+        "/authentication-check",
+        {
+          password: this.password,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Authentication successful", {
+              position: "top-center",
+            });
+          },
+        }
+      );
     },
   },
 };

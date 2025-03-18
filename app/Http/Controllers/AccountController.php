@@ -101,7 +101,6 @@ class AccountController extends Controller
             'roles' => $roles,
             'auth' => $auth,
             'personalDetails' => $personalDetails,
-            'messageSuccess' => session('success') ?? null,
             'authError' => session('error') ?? null,
             'pageTitle' => 'Account',
             'overviewData' => $overview,

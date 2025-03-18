@@ -1,6 +1,7 @@
 import Layout from "@/Layouts/Layout.vue";
 import { Inertia } from "@inertiajs/inertia";
 import ConfirmationFormModal from "@/Modals/ConfirmationFormModal.vue";
+import { useToast } from "vue-toastification";
 
 export default {
     layout: Layout,
@@ -172,10 +173,19 @@ export default {
                 form.append("user_id", this.formDataToEditCopy.user_id);
             }
 
+            const toast = useToast();
+
             Inertia.post("/leave-form-submit", form, {
                 onSuccess: () => {
+                    toast.success("Leave form submitted successfully", {
+                        position: "top-center",
+                        timeout: 5000,
+                    });
                     this.toggleConfirmForm();
+
                     localStorage.removeItem("leaveFormData");
+
+                    Inertia.visit("/forms/tracking");
                 },
             });
         },

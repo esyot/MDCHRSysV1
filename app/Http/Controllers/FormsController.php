@@ -72,7 +72,6 @@ class FormsController extends Controller
             'roles' => $roles,
             'user' => $user,
             'forms' => $flattenedForms,
-            'messageSuccess' => session('success') ?? null,
             'pageTitle' => 'Track Forms'
         ]);
 

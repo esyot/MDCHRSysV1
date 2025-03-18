@@ -50,19 +50,20 @@ export default {
         toggleSyncUsers(type) {
             const toast = useToast();
 
+            type = type.charAt(0).toUpperCase() + type.slice(1) + "s";
+
+            const success_msg = `${type} have been synced successfully.`;
+            const error_msg = `Failed to sync ${type}. Please try again.`;
+
             Inertia.visit(`/users/sync/${type}`, {
                 onSuccess() {
-                    toast.success("Users synced successfully!", {
+                    toast.success(success_msg, {
                         position: "top-center",
-                        timeout: 3000,
-                        closeButton: true,
                     });
                 },
                 onError() {
-                    toast.error("Failed to sync users. Please try again.", {
+                    toast.error(error_msg, {
                         position: "top-center",
-                        timeout: 5000,
-                        closeButton: true,
                     });
                 },
             });
