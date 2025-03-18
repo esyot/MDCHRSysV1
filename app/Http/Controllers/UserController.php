@@ -137,7 +137,6 @@ class UserController extends Controller
             'users' => $users,
             'roles' => $roles,
             'pageTitle' => 'Users',
-            'messageSuccess' => session('success') ?? null,
             'departments' => $departments,
             'roleList' => $roleList,
             'search_value' => $request->search_value ?? null,
@@ -475,6 +474,7 @@ class UserController extends Controller
 
     public function syncUsers($type)
     {
+
         if ($type === 'teacher')
         {
             $currentUsers = User::pluck('id')->toArray();
@@ -520,7 +520,7 @@ class UserController extends Controller
                 }
             }
 
-            return redirect()->back();
+            return redirect()->back()->with('success', 'Users synced successfully!');
 
         } else if ($type === 'staff')
         {
@@ -571,12 +571,9 @@ class UserController extends Controller
 
             }
 
-            return redirect()->back();
+            return redirect()->back()->with('success', 'Users synced successfully!');
         }
 
-
-
     }
-
 
 }

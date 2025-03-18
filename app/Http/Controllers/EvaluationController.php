@@ -28,7 +28,7 @@ class EvaluationController extends Controller
             'description' => $request->description,
         ]);
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Item updated successfully!');
     }
 
     public function deletTemplateItem($id)
@@ -38,7 +38,7 @@ class EvaluationController extends Controller
 
         $item->delete();
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Item deleted successfully!');
     }
 
 
@@ -215,7 +215,7 @@ class EvaluationController extends Controller
                 'roles' => $roles,
                 'user' => $user,
                 'pageTitle' => 'Evaluation Manager',
-                'messageSuccess' => session('success') ?? null,
+                'successMessage' => session('success') ?? null,
             ]);
         } else
         {
@@ -233,7 +233,7 @@ class EvaluationController extends Controller
                 'roles' => $roles,
                 'user' => $user,
                 'pageTitle' => 'Evaluation Manager',
-                'messageSuccess' => session('success') ?? null,
+                'successMessage' => session('success') ?? null,
             ]);
 
         }
@@ -262,7 +262,8 @@ class EvaluationController extends Controller
 
             $template = EvalTemplate::create([
                 'name' => $request->name,
-                'for' => $request->for
+                'for' => $request->for,
+                'type' => $request->type ?? null,
             ]);
 
             foreach ($categories as $category)
@@ -342,7 +343,8 @@ class EvaluationController extends Controller
 
     public function toggleEvaluationTemplate($id, $type)
     {
-        $template = EvalTemplate::find($id);
+
+        $template = EvalTemplate::where('id', $id)->first();
 
         if ($template && $type === 'teacher')
         {
@@ -355,6 +357,7 @@ class EvaluationController extends Controller
                 'is_open' => $template->is_open === 1 ? 0 : 1,
             ]);
 
+
         } else if ($template && $type === 'staff')
         {
             EvalTemplate::where('for', 'staff')
@@ -366,6 +369,7 @@ class EvaluationController extends Controller
                 'is_open' => $template->is_open === 1 ? 0 : 1,
             ]);
         }
+        return redirect()->back();
     }
 
 

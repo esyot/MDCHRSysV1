@@ -4,6 +4,8 @@ import NewTemplateModal from "../EvaluationManager/Modals/NewTemplateModal.vue";
 import OldTemplateModal from "../EvaluationManager/Modals/OldTemplateModal.vue";
 import { Inertia } from "@inertiajs/inertia";
 import ConfirmationDeleteModal from "@/Modals/ConfirmationDeleteModal.vue";
+import { useToast } from "vue-toastification";
+
 export default {
   layout: Layout,
   components: {
@@ -50,14 +52,48 @@ export default {
       this.isDelete = !this.isDelete;
     },
     deleteForm(id) {
-      Inertia.get(`/evaluations/template-delete/${this.selected_id}`);
-      this.toggleDeleteForm();
+      const toast = useToast();
+
+      Inertia.delete(`/evaluations/template-delete/${this.selected_id}`, {
+        onSuccess: () => {
+          toast.success("Template deleted successfully", {
+            position: "top-center",
+            duration: 3000,
+          });
+
+          this.toggleDeleteForm();
+        },
+
+        onError: (errors) => {
+          toast.error("An error occurred. Please try again.", {
+            position: "top-center",
+            duration: 3000,
+          });
+
+          this.toggleDeleteForm();
+        },
+      });
     },
     switchToggle(id, type) {
-      Inertia.put(`/evaluations/template-toggle/${id}/${type}`);
+      const toast = useToast();
+
+      Inertia.visit(`/evaluations/template-toggle/${id}/${type}`, {
+        onSuccess: () => {
+          toast.success("Evaluation form updated successfully!", {
+            position: "top-center",
+            duration: 1000,
+          });
+        },
+
+        onError: (errors) => {
+          toast.error("An error occurred. Please try again.", {
+            position: "top-center",
+            duration: 1000,
+          });
+        },
+      });
     },
   },
-  watch: {},
 };
 </script>
 

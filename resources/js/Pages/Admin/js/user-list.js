@@ -1,6 +1,6 @@
 import Layout from "@/Layouts/Layout.vue";
 import { Inertia } from "@inertiajs/inertia";
-import { InertiaLink } from "@inertiajs/inertia-vue3";
+import { Link } from "@inertiajs/inertia-vue3";
 import AddUserModal from "@/Modals/AddUserModal.vue";
 import { useToast } from "vue-toastification";
 
@@ -8,7 +8,7 @@ export default {
     layout: Layout,
     components: {
         AddUserModal,
-        InertiaLink,
+        Link,
     },
     props: {
         users: Object,
@@ -50,12 +50,14 @@ export default {
         toggleSyncUsers(type) {
             const toast = useToast();
 
+            const userType = type;
+
             type = type.charAt(0).toUpperCase() + type.slice(1) + "s";
 
             const success_msg = `${type} have been synced successfully.`;
             const error_msg = `Failed to sync ${type}. Please try again.`;
 
-            Inertia.visit(`/users/sync/${type}`, {
+            Inertia.visit(`/users/sync/${userType}`, {
                 onSuccess() {
                     toast.success(success_msg, {
                         position: "top-center",

@@ -105,10 +105,10 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::get('/evaluations/evaluation-manager/sample', [EvaluationController::class, 'view']);
         Route::post('/evaluations/add-new-template', [EvaluationController::class, 'createTemplate']);
         Route::post('/evaluations/copy-old-template/', [EvaluationController::class, 'createTemplate']);
-        Route::get('/evaluations/template-delete/{id}', [EvaluationController::class, 'deleteTemplate']);
+        Route::delete('/evaluations/template-delete/{id}', [EvaluationController::class, 'deleteTemplate']);
         Route::post('/evaluations/template/add-category', [EvaluationController::class, 'addCategory']);
         Route::post('/evaluations/template/add-item', [EvaluationController::class, 'addItem']);
-        Route::put('/evaluations/template-toggle/{id}/{type}', [EvaluationController::class, 'toggleEvaluationTemplate']);
+        Route::get('/evaluations/template-toggle/{id}/{type}', [EvaluationController::class, 'toggleEvaluationTemplate']);
         Route::get('/evaluations/users-list/{type}', [EvaluationController::class, 'userList']);
         Route::get('/evaluations/user-view/{id}', [EvaluationController::class, 'userView'])->name('evaluations.user-view');
 

@@ -2,59 +2,23 @@
 import Leftbar from "@/Components/Leftbar.vue";
 import Topbar from "@/Components/Topbar.vue";
 import Footer from "@/Components/Footer.vue";
-import SuccessModal from "@/Modals/SuccessModal.vue";
 
 export default {
   components: {
     Leftbar,
     Topbar,
     Footer,
-    SuccessModal,
   },
   props: {
     user: Object,
     roles: Object,
-    messageSuccess: String,
     pageTitle: String,
-  },
-
-  data() {
-    return {
-      successMessage: this.messageSuccess || null,
-    };
-  },
-
-  methods: {
-    closeSuccessModal() {
-      this.successMessage = null;
-    },
-  },
-
-  watch: {
-    messageSuccess(newMessage) {
-      this.successMessage = newMessage && newMessage.trim() !== "" ? newMessage : null;
-    },
-
-    successMessage(newMessage) {
-      this.successMessage = newMessage && newMessage.trim() !== "" ? newMessage : null;
-    },
-  },
-
-  mounted() {
-    if (this.messageSuccess && this.messageSuccess.trim() !== "") {
-      this.successMessage = this.messageSuccess;
-    }
   },
 };
 </script>
 
 <template>
   <div class="container">
-    <SuccessModal
-      :successMessage="successMessage"
-      @close-success-modal="closeSuccessModal"
-      v-if="successMessage"
-    />
     <Leftbar :roles="roles" :user="user" />
     <div class="main-content">
       <Topbar :pageTitle="pageTitle" :user="user" />

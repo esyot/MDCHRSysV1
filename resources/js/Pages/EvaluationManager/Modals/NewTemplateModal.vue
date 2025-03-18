@@ -1,6 +1,7 @@
 <script>
 import ConfirmationFormModal from "./ConfirmationFormModal.vue";
 import { Inertia } from "@inertiajs/inertia";
+import { useToast } from "vue-toastification";
 export default {
   emits: ["toggleNewTemplate"],
   components: {
@@ -16,10 +17,24 @@ export default {
       this.isConfirmation = !this.isConfirmation;
     },
     submitForm() {
-      Inertia.post("/evaluations/add-new-template", this.formData);
-      this.toggleConfirmForm();
-      this.closeModal();
-      this.removeFromLocalStorage();
+      const toast = useToast();
+
+      Inertia.post("/evaluations/add-new-template", this.formData, {
+        onSuccess: () => {
+          toast.success("New template added successfully", {
+            position: "top-center",
+            duration: 3000,
+          });
+          this.removeFromLocalStorage();
+          this.closeModal();
+        },
+        onError: (errors) => {
+          toast.error("An error occurred. Please try again.", {
+            position: "top-center",
+            duration: 3000,
+          });
+        },
+      });
     },
     saveToLocalStorage() {
       localStorage.setItem("newTemplateData", JSON.stringify(this.formData));
@@ -43,6 +58,7 @@ export default {
       formData: {
         name: "",
         for: "",
+        type: "",
       },
       isConfirmation: false,
       message: "Are you sure you want to submit?",
@@ -59,6 +75,7 @@ export default {
     @toggleConfirmForm="toggleConfirmForm"
     @submitForm="submitForm"
   ></ConfirmationFormModal>
+
   <div class="modal" @click.self="closeModal">
     <div class="modal-content">
       <form @submit.prevent="toggleConfirmForm" class="form">
@@ -86,10 +103,23 @@ export default {
             v-model="formData.for"
             @change="saveToLocalStorage"
           >
+            <option value="" selected disabled>Select Evaluee</option>
+            <option value="teacher">Teacher</option>
+            <option value="staff">Staff</option>
+          </select>
+        </div>
+
+        <div class="form-group" v-if="formData.for === 'teacher'">
+          <label>Type:</label>
+          <select
+            id="temp_type"
+            name="temp_type"
+            v-model="formData.type"
+            @change="saveToLocalStorage"
+          >
             <option value="" selected disabled>Select evaluation type</option>
-            <option value="teacher">Teachers</option>
-            <option value="staff">Staffs</option>
-            <option value="others">Others</option>
+            <option value="work">Teacher's working performance</option>
+            <option value="teach">Teacher's teaching performance</option>
           </select>
         </div>
 

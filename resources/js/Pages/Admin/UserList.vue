@@ -81,21 +81,21 @@
       </table>
     </div>
     <div class="footer">
-      <InertiaLink :href="users.first_page_url">
+      <Link :href="users.first_page_url">
         <i class="fa-solid fa-angles-left"></i>
-      </InertiaLink>
-      <InertiaLink :href="users.prev_page_url">
+      </Link>
+      <Link :href="users.prev_page_url">
         <i class="fas fa-chevron-left"></i>
-      </InertiaLink>
+      </Link>
 
       <span>Page {{ users.current_page }} of {{ users.last_page }}</span>
-      <InertiaLink :href="users.next_page_url">
+      <Link :href="users.next_page_url">
         <i class="fas fa-chevron-right"></i>
-      </InertiaLink>
+      </Link>
 
-      <InertiaLink :href="users.last_page_url">
+      <Link :href="users.last_page_url">
         <i class="fa-solid fa-angles-right"></i>
-      </InertiaLink>
+      </Link>
     </div>
   </div>
 </template>
