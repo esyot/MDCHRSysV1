@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
@@ -18,8 +19,6 @@ class DepartmentController extends Controller
 
         $departmentList = Department::all();
 
-
-
         return inertia('Pages/Department/Department', [
             'roles' => $roles,
             'user' => $user,
@@ -34,7 +33,48 @@ class DepartmentController extends Controller
     public function syncDepartments()
     {
 
+        $url = 'https://sis.materdeicollege.com/api/hr/departments';
+
+        $api_key = config('variables.api_key');
+
+        $client = new Client();
+
+        $response = $client->get($url, [
+            'query' => [
+                'code' => $api_key,
+            ],
+
+            'verify' => false,
+        ]);
 
 
+        $departments = json_decode($response->getBody()->getContents(), true);
+
+        foreach ($departments as $department)
+        {
+            $exist = Department::find($department['id']);
+
+            if ($exist)
+            {
+                $exist->update([
+                    'acronym' => $department['accronym'],
+                    'name' => $department['name'],
+                    'parent_id' => $department['parent_id'],
+                ]);
+
+                continue;
+            } else
+            {
+                Department::Create([
+                    'id' => $department['id'],
+                    'acronym' => $department['accronym'],
+                    'name' => $department['name'],
+                    'parent_id' => $department['parent_id'],
+                ]);
+            }
+
+        }
+
+        return redirect()->back()->with('success', 'Departments Synced Successfully');
     }
 }

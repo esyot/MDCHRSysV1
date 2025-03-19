@@ -14,12 +14,14 @@ export default {
 
   data() {
     return {
-      term: "",
       currentDate: new Date(),
       comments: {},
       ratings: {},
       overallPoints: 0,
+      overallMean: 0,
       subjects: [],
+      subject_id: "",
+      term_id: "",
     };
   },
 
@@ -27,48 +29,7 @@ export default {
     this.loadFromLocalStorage();
   },
 
-  watch: {
-    term(newVal) {
-      if (newVal) {
-        this.fetchSubjects();
-      }
-    },
-  },
-
-  computed: {
-    filteredSubjects() {
-      return this.subjects.filter((subject) => {
-        return (
-          !Array.isArray(this.evaluations) ||
-          !this.evaluations.some((evaluation) => evaluation.subject_id === subject.id)
-        );
-      });
-    },
-  },
   methods: {
-    fetchSubjects() {
-      const params = {
-        code: this.api_key,
-        teacher_id: this.user.teacher.id,
-        term_id: this.term,
-      };
-
-      const queryString = new URLSearchParams(params).toString();
-
-      try {
-        axios
-          .get(`https://sis.materdeicollege.com/api/hr/subject-classes/?${queryString}`)
-          .then((response) => {
-            this.subjects = response.data;
-          })
-          .catch((error) => {
-            console.error("error fetching data:", error);
-          });
-      } catch (error) {
-        console.error("error method:", error);
-      }
-    },
-
     goBack() {
       window.history.back();
     },
@@ -77,11 +38,13 @@ export default {
       event.preventDefault();
 
       Inertia.post(`/evaluations/evaluation-submit`, {
+        type: "teacher",
         user_id: this.user.id,
         template_id: this.template_id,
-        ratings: this.ratings,
-        comments: this.comments,
+        term_id: this.term_id,
+        subject_id: this.subject_id,
         overallPoints: this.overallPoints,
+        overallMean: this.overallMean.toFixed(2),
       });
 
       localStorage.removeItem("ratings");
@@ -91,7 +54,6 @@ export default {
     saveToLocalStorage() {
       localStorage.setItem("ratings", JSON.stringify(this.ratings));
       localStorage.setItem("comments", JSON.stringify(this.comments));
-
       this.calculateOverallPoints();
     },
 
@@ -110,11 +72,26 @@ export default {
     },
 
     calculateOverallPoints() {
-      const totalPoints = Object.values(this.ratings).reduce((acc, rating) => {
-        return acc + rating;
-      }, 0);
+      let totalPoints = 0;
+      let totalMean = 0;
+
+      this.evalCategories.forEach((category) => {
+        const categoryPoints = category.items.reduce((acc, item) => {
+          const rating = this.ratings[`c${category.id}_i${item.id}`];
+          return acc + (rating || 0);
+        }, 0);
+
+        const categoryMean =
+          category.items.length > 0 ? categoryPoints / category.items.length : 0;
+
+        totalPoints += categoryPoints;
+
+        totalMean += categoryMean;
+      });
 
       this.overallPoints = totalPoints;
+
+      this.overallMean = totalMean / this.evalCategories.length;
     },
 
     calculateCategoryRating(categoryId) {
@@ -152,53 +129,62 @@ export default {
     <div class="evaluation-form-title">
       <span>Staff's Evaluation</span>
     </div>
-    <div class="user-details">
-      <div class="user-details-item">
-        <label for="">Name: </label>
-        <span> {{ user.last_name }}, {{ user.first_name }} </span>
-      </div>
-
-      <div class="user-details-item">
-        <label for="">Date: </label>
-        <span> {{ formatDate(currentDate) }}</span>
-      </div>
-    </div>
-
-    <div class="instruction">
-      <div>
-        <p>
-          <strong>INSTRUCTION:</strong> Rate the teacher using the 5-point rating scale by
-          checking the appropriate box that matches the given statement.
-        </p>
-        <p>
-          <strong>Description:</strong>
-        </p>
-        <ul>
-          <li>
-            <strong>5</strong> - Always Observed (When the teacher did not miss in doing
-            it all meetings)
-          </li>
-          <li>
-            <strong>4</strong> - Often Observed (When the teacher missed it around 1 to 3
-            times when appropriate)
-          </li>
-          <li>
-            <strong>3</strong> - Sometimes Observed (When the teacher missed it around 4
-            to 7 times when appropriate)
-          </li>
-          <li>
-            <strong>2</strong> - Rarely Observed (When the teacher missed it more than 7
-            times when appropriate)
-          </li>
-          <li>
-            <strong>1</strong> - Never Observed (When the teacher did not do it at all
-            when appropriate)
-          </li>
-        </ul>
-      </div>
-    </div>
-
     <form @submit.prevent="submitForm">
+      <div class="user-details">
+        <div class="user-details-item">
+          <label for="">Name: </label>
+          <span> {{ user.last_name }}, {{ user.first_name }} </span>
+        </div>
+
+        <div class="user-details-item">
+          <label for="">Date: </label>
+          <span> {{ formatDate(currentDate) }}</span>
+        </div>
+
+        <div class="user-details-item">
+          <label for="">Term: </label>
+          <select v-model="term_id" required>
+            <option value="" selected disabled>Select a Term</option>
+            <option v-for="term in terms" :key="term.id" :value="term.id">
+              {{ term.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="instruction">
+        <div>
+          <p>
+            <strong>INSTRUCTION:</strong> Rate the teacher using the 5-point rating scale
+            by checking the appropriate box that matches the given statement.
+          </p>
+          <p>
+            <strong>Description:</strong>
+          </p>
+          <ul>
+            <li>
+              <strong>5</strong> - Always Observed (When the teacher did not miss in doing
+              it all meetings)
+            </li>
+            <li>
+              <strong>4</strong> - Often Observed (When the teacher missed it around 1 to
+              3 times when appropriate)
+            </li>
+            <li>
+              <strong>3</strong> - Sometimes Observed (When the teacher missed it around 4
+              to 7 times when appropriate)
+            </li>
+            <li>
+              <strong>2</strong> - Rarely Observed (When the teacher missed it more than 7
+              times when appropriate)
+            </li>
+            <li>
+              <strong>1</strong> - Never Observed (When the teacher did not do it at all
+              when appropriate)
+            </li>
+          </ul>
+        </div>
+      </div>
       <div v-if="evalCategories && evalCategories.length > 0">
         <div v-for="(category, index) in evalCategories" :key="index" class="forms">
           <table class="evaluation-table">
@@ -241,17 +227,21 @@ export default {
               ></textarea>
             </div>
             <div class="rating">
-              <label>Rating: </label>
-              <span class="underline"> {{ calculateCategoryRating(category.id) }}</span>
+              <div>
+                <label>Points: </label>
+                <span class="underline"> {{ calculateCategoryRating(category.id) }}</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <div class="footer">
+        <div class="item">
+          <label for="">Overall Points:</label>
+          <span class="underline">{{ overallPoints }}</span>
+        </div>
 
-      <div class="container">
-        <div class="overall-rating">
-          <label for="">Overall Rating:</label>
-          <input type="text" :value="overallPoints" disabled />
+        <div class="item">
           <button class="submit-btn">Submit</button>
         </div>
       </div>

@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('dept')->nullable();
             $table->enum('for', ['staff', 'teacher', 'others']);
-            $table->enum('type', ['work', 'teach'])->nullable();
+            $table->enum('type', ['work', 'teaching'])->nullable();
             $table->boolean('is_open')->default(false);
             $table->timestamps();
         });

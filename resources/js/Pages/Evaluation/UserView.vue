@@ -9,16 +9,17 @@ export default {
     personalDetails: Object,
     terms: Array,
     currentTerm: Number,
-    roles: {
-      type: Array,
-      default: () => [],
-    },
+    roles: Array,
     evaluations: Object,
   },
   data() {
     return {
       AdminActiveTab: "overview",
-      selectedEvaluationType: "teacher",
+      selectedEvaluationType: this.userRoles.includes("staff")
+        ? "staff"
+        : this.userRoles.includes("teacher")
+        ? "work"
+        : "",
       selectedTerm: this.currentTerm ?? null,
       isOpenEvalationDropDown: false,
     };
@@ -26,26 +27,31 @@ export default {
 
   computed: {
     firstSem() {
-      return this.evaluations.filter(
-        (evaluation) =>
-          evaluation.semister === "first" && evaluation.acad_term_id === this.selectedTerm
+      return this.evaluations.filter((evaluation) =>
+        evaluation.semister === "first" &&
+        evaluation.acad_term_id === this.selectedTerm &&
+        this.selectedEvaluationType === "staff"
+          ? evaluation.eval_template.for === "staff"
+          : evaluation.eval_template.type === this.selectedEvaluationType
       );
     },
     secondSem() {
-      return this.evaluations.filter(
-        (evaluation) =>
-          evaluation.semister === "second" &&
-          evaluation.acad_term_id === this.selectedTerm
+      return this.evaluations.filter((evaluation) =>
+        evaluation.semister === "second" &&
+        evaluation.acad_term_id === this.selectedTerm &&
+        this.selectedEvaluationType === "staff"
+          ? evaluation.eval_template.for === "staff"
+          : evaluation.eval_template.type === this.selectedEvaluationType
       );
     },
   },
 
   methods: {
     openEval(type) {
-      if (type === "teacher") {
-        Inertia.visit(`/forms/evaluation-form/${this.personalDetails.id}/teacher`);
+      if (type === "teaching" || type === "work") {
+        Inertia.visit(`/evaluations/evaluate/${type}/${this.personalDetails.id}`);
       } else if (type === "staff") {
-        Inertia.visit(`/forms/evaluation-form/${this.personalDetails.id}/staff`);
+        Inertia.visit(`/evaluations/evaluate/${type}/${this.personalDetails.id}`);
       }
     },
     toggleEvaluationDropDown() {
@@ -163,8 +169,8 @@ export default {
             <span class="name"
               >{{ personalDetails.first_name }} {{ personalDetails.last_name }}</span
             >
-            <div class="user-role" v-if="personalDetails.teacher?.department">
-              <i class="fas fa-globe"></i>
+            <div class="user-department" v-if="personalDetails.teacher?.department">
+              <i class="fas fa-building"></i>
               <div>
                 <span class="role-desc">{{
                   personalDetails.teacher.department.name
@@ -187,7 +193,13 @@ export default {
             v-model="selectedEvaluationType"
             title="Select type of forms to be displayed in the table below."
           >
-            <option value="teacher">Teacher Evaluation</option>
+            <option value="" selected disabled>Select Evaluation Type</option>
+            <option value="work" v-if="userRoles.includes('teacher')">
+              Work Evaluation
+            </option>
+            <option value="teaching" v-if="userRoles.includes('teacher')">
+              Teaching Evaluation
+            </option>
             <option value="staff" v-if="userRoles.includes('staff')">
               Staff Evaluation
             </option>
@@ -206,12 +218,23 @@ export default {
 
         <div class="btn-right">
           <button
-            v-if="roles.includes('dean') || roles.includes('hr')"
+            v-if="userRoles.includes('staff') && roles.includes('hr')"
+            :title="`Add evaluation for ${personalDetails.last_name}, ${personalDetails.first_name}`"
+            @click="openEval('staff')"
+          >
+            Staff's Evaluation
+          </button>
+
+          <button
+            v-if="
+              (roles.includes('dean') && userRoles.includes('teacher')) ||
+              (roles.includes('hr') && userRoles.includes('teacher'))
+            "
             :title="`Add evaluation for ${personalDetails.last_name}, ${personalDetails.first_name}`"
             @click="toggleEvaluationDropDown"
             ref="toggleEvaluationDropDown"
           >
-            Add Another Evaluation
+            Teacher's Evaluation
           </button>
 
           <div
@@ -219,21 +242,16 @@ export default {
             class="evalution-dropdown"
             v-if="isOpenEvalationDropDown"
           >
-            <span
-              v-if="roles.includes('dean') && userRoles.includes('teacher')"
-              @click="openEval('teacher')"
-              >Teacher Evaluation</span
-            >
-            <span
-              v-if="roles.includes('hr') && userRoles.includes('staff')"
-              @click="openEval('staff')"
-              >Staff Evaluation</span
-            >
+            <span @click="openEval('work')">Work Evaluation</span>
+            <span @click="openEval('teaching')">Teaching Evaluation</span>
           </div>
         </div>
       </div>
 
-      <div class="table-container" v-if="selectedEvaluationType === 'teacher'">
+      <div
+        class="table-container"
+        v-if="selectedEvaluationType === 'work' || selectedEvaluationType === 'teaching'"
+      >
         <div class="tables">
           <div class="table">
             <div class="table-title">
@@ -328,13 +346,94 @@ export default {
             </table>
           </div>
         </div>
-        <!-- <div class="table-footer">
-          <label for="">Overall Semister Points</label>
-          <span>{{ overallSemisterPoints(evaluations) }} pts</span>
+      </div>
 
-          <label for="">Overall Semister Percentage</label>
-          <span>{{ overallSemisterPercentage(evaluations) }}%</span>
-        </div> -->
+      <div class="table-container" v-if="selectedEvaluationType === 'staff'">
+        <div class="tables">
+          <div class="table">
+            <div class="table-title">
+              <span>1st Semester</span>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th><i class="fas fa-calendar-days"></i></th>
+                  <th><i class="fas fa-star"></i></th>
+                  <th><i class="fas fa-percent"></i></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="evaluation in firstSem" :key="evaluation.id">
+                  <td>
+                    <span>{{ formatDate(evaluation.created_at) }}</span>
+                  </td>
+                  <td>
+                    <span
+                      >{{ evaluation.overall_points }} / {{ evaluation.maxPoints }}
+                    </span>
+                  </td>
+
+                  <td>
+                    <span
+                      >{{ calculateEvaluationPercentage(evaluation.overall_mean) }}%
+                    </span>
+                  </td>
+                </tr>
+                <tr class="ratings">
+                  <td>Result:</td>
+
+                  <td>{{ calculateOverallPoints(firstSem) }} pts</td>
+                  <td>{{ calculateOverallPercentage(firstSem) }}%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table">
+            <div class="table-title">
+              <span>2nd Semester</span>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th><i class="fas fa-calendar-days"></i></th>
+                  <th><i class="fas fa-star"></i></th>
+                  <th><i class="fas fa-percent"></i></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="evaluation in secondSem" :key="evaluation.id">
+                  <td>
+                    <span>{{ formatDate(evaluation.created_at) }}</span>
+                  </td>
+                  <td>
+                    <span
+                      >{{ evaluation.overall_points }} / {{ evaluation.maxPoints }}
+                    </span>
+                  </td>
+
+                  <td>
+                    <span
+                      >{{ calculateEvaluationPercentage(evaluation.overall_mean) }}%
+                    </span>
+                  </td>
+                </tr>
+                <tr class="ratings">
+                  <td>Result:</td>
+
+                  <td>{{ calculateOverallPoints(secondSem) }} pts</td>
+                  <td>{{ calculateOverallPercentage(secondSem) }}%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="error-msg" v-if="!selectedEvaluationType">
+        <i class="fas fa-circle-info"></i>
+        <span>This user is not available for evaluation!</span>
       </div>
     </div>
   </div>

@@ -87,6 +87,11 @@
     padding: 10px;
 }
 
+.user-department {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2px;
+}
 .user-role {
     display: flex;
     gap: 0.5rem;
@@ -116,7 +121,7 @@
 
 .content {
     width: 100%;
-    margin: 5px;
+    margin: 10px;
 }
 
 .profile-container {
@@ -126,7 +131,8 @@
 .user {
     border-radius: 5px;
     background: linear-gradient(to top, rgb(0, 0, 0), rgba(0, 0, 0, 0.1));
-    width: 100%;
+    margin-inline: 10px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     justify-content: end;
@@ -263,7 +269,7 @@ td {
 .buttons {
     display: flex;
     justify-content: space-between;
-    margin: 10px;
+    margin: 5px;
 }
 
 @media (orientation: portrait) {
@@ -328,4 +334,22 @@ td {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     cursor: pointer;
+}
+
+.error-msg {
+    display: flex;
+    justify-content: center;
+    background-color: #fff;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    gap: 0.3rem;
+}
+
+.error-msg span {
+    color: rgb(255, 57, 57);
+}
+
+.error-msg i {
+    color: rgb(255, 57, 57);
 }

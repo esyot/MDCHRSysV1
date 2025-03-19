@@ -77,6 +77,8 @@ Route::middleware([Check2WayVerification::class])->group(function () {
             Route::post('/evaluations/evaluation-submit', [EvaluationController::class, 'submitEvaluation']);
         });
 
+        Route::get('/evaluations/evaluate/{type}/{user_id}', [EvaluationController::class, 'evaluateUser']);
+
         // Admin-specific Routes
         Route::middleware(CheckUserRole::class . ':admin')->group(function () {
 
@@ -85,11 +87,10 @@ Route::middleware([Check2WayVerification::class])->group(function () {
             Route::get('/users/user-list/{id}/{is_evaluation}', [UserController::class, 'userView'])->name('user.view');
             Route::post('/users/{id}/role-edit', [UserRoleController::class, 'userUpdateRole']);
             Route::get('/users/users-list', [UserController::class, 'users']);
-            Route::get('/users/teachers-list', [UserController::class, 'teachers']);
-            Route::get('/users/staffs-list', [UserController::class, 'staffs']);
             Route::post('/users/{type}/add', [UserController::class, 'userAdd']);
             Route::get('/users/sync/{type}', [UserController::class, 'syncUsers']);
             Route::get('/users/search/{type}/{value}', [UserController::class, 'search']);
+            Route::patch('/users/user-department-update', [UserController::class, 'updateUserDepartment']);
 
             // Department Management
             Route::get('/departments', [DepartmentController::class, 'index']);
@@ -109,7 +110,7 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::post('/evaluations/template/add-category', [EvaluationController::class, 'addCategory']);
         Route::post('/evaluations/template/add-item', [EvaluationController::class, 'addItem']);
         Route::get('/evaluations/template-toggle/{id}/{type}', [EvaluationController::class, 'toggleEvaluationTemplate']);
-        Route::get('/evaluations/users-list/{type}', [EvaluationController::class, 'userList']);
+        Route::get('/evaluations/{type}', [EvaluationController::class, 'userList']);
         Route::get('/evaluations/user-view/{id}', [EvaluationController::class, 'userView'])->name('evaluations.user-view');
 
         // Evaluation Forms

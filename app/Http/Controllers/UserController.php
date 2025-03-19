@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
-use App\Models\Evaluation;
 use App\Models\LeaveForm;
 use App\Models\Staff;
 use App\Models\Teacher;
@@ -14,11 +13,10 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
-use Storage;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Http;
 
 
 
@@ -120,94 +118,68 @@ class UserController extends Controller
     {
         $this->globalVariables();
         $roles = $this->roles;
-        $departments = $this->departments;
+        $departmentList = Department::all();
 
-        $users = User::when($request->search_value, function ($query, $search_value) {
-            $query->where('last_name', 'LIKE', '%' . $search_value . '%')
-                ->orWhere('first_name', 'LIKE', '%' . $search_value . '%');
-        })
-            ->orderBy('last_name')
-            ->paginate(20);
+        $orderBy = $request->orderBy ?? 'ASC';
+        $type = $request->type ?? 'user';
+        $department = $request->department ?? null;
+
+        if ($type == 'user')
+        {
+            $users = User::when($request->search_value, function ($query, $search_value) {
+                $query->where('last_name', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('first_name', 'LIKE', '%' . $search_value . '%');
+            })
+                ->orderBy('last_name', $orderBy)
+                ->paginate(12);
+
+        } else if ($type == 'teacher')
+        {
+            $users = User::when($department, function ($query, $department) {
+                $query->whereRelation('teacher', 'department_id', '=', $department);
+            })
+                ->when($request->search_value, function ($query, $search_value) {
+                    $query->where('last_name', 'LIKE', '%' . $search_value . '%')
+                        ->orWhere('first_name', 'LIKE', '%' . $search_value . '%');
+                })
+                ->orderBy('last_name')
+                ->whereHas('teacher')
+                ->paginate(12);
+
+        } else if ($type == 'staff')
+        {
+
+            $users = User::
+
+                when($department, function ($query, $department) {
+                    $query->whereRelation('teacher', 'department_id', '=', $department);
+                })
+                ->when($request->search_value, function ($query, $search_value) {
+                    $query->where('last_name', 'LIKE', '%' . $search_value . '%')
+                        ->orWhere('first_name', 'LIKE', '%' . $search_value . '%');
+                })
+                ->orderBy('last_name')
+                ->whereHas('staff')
+                ->paginate(12);
+        }
 
         $roleList = Role::all();
 
         return Inertia::render('Pages/Admin/UserList', [
-            'type' => 'user',
+            'type' => $type,
+            'department' => $department ?? null,
             'user' => Auth::user(),
             'users' => $users,
             'roles' => $roles,
             'pageTitle' => 'Users',
-            'departments' => $departments,
+            'departmentList' => $departmentList,
             'roleList' => $roleList,
+            'orderBy' => $orderBy,
             'search_value' => $request->search_value ?? null,
         ]);
     }
 
-    public function teachers(Request $request)
-    {
-        $this->globalVariables();
-        $roles = $this->roles;
-        $departments = $this->departments;
 
-        $users = User::orderBy('last_name')
-            ->whereHas('teacher')
-            ->paginate(12);
-
-        $allUsers = User::orderBy('last_name')
-            ->whereHas('teacher')
-            ->get();
-
-
-        $roleList = Role::all();
-
-        $specializationList = config('variables.specializationList');
-
-        return Inertia::render('Pages/Admin/UserList', [
-            'type' => 'teacher',
-            'user' => Auth::user(),
-            'users' => $users,
-            'allUsers' => $allUsers,
-            'roles' => $roles,
-            'pageTitle' => 'Teachers',
-            'messageSuccess' => session('success') ?? null,
-            'departments' => $departments,
-            'roleList' => $roleList,
-            'specializationList' => $specializationList
-        ]);
-    }
-
-    public function staffs(Request $request)
-    {
-
-        $users = User::orderBy('last_name')
-            ->whereHas('staff')
-            ->paginate(12);
-
-        $allUsers = User::orderBy('last_name')
-            ->whereHas('staff')
-            ->get();
-
-        $this->globalVariables();
-        $roles = $this->roles;
-        $departments = $this->departments;
-
-        $roleList = Role::all();
-
-        $positionList = config('variables.positionList');
-
-        return Inertia::render('Pages/Admin/UserList', [
-            'type' => 'staff',
-            'user' => Auth::user(),
-            'users' => $users,
-            'allUsers' => $allUsers,
-            'roles' => $roles,
-            'pageTitle' => 'Staffs',
-            'messageSuccess' => session('success') ?? null,
-            'departments' => $departments,
-            'roleList' => $roleList,
-            'positionList' => $positionList,
-        ]);
-    }
 
     public function userView($id)
     {
@@ -231,24 +203,25 @@ class UserController extends Controller
             'userReferences',
             'userReferences.address',
             'userValidIds',
+            'teacher',
+            'teacher.department',
+            'staff'
 
         ])->findOrFail($id);
 
+
+
         $userRoles = User::find($id)->getRoleNames();
 
-        $userDepartment = [];
-        if ($userRoles->contains('teacher'))
-        {
-            $departmentId = Teacher::where('user_id', $id)->first()->pluck('department_id');
-            $userDepartment = Department::find($departmentId);
-        }
-
+        $userDepartment = $personalDetails->teacher->department;
 
         $this->globalVariables();
         $roles = $this->roles;
-        $departmentList = $this->parentDepartments;
+
+
 
         $roleList = Role::all();
+        $departmentList = Department::all();
 
 
         $leaveForms = LeaveForm::where('user_id', $id)
@@ -384,6 +357,10 @@ class UserController extends Controller
 
             $formData = $request->formData;
 
+            $fetchedUser = User::find($request->selected_id);
+
+            $fetchedUser->assignRole('staff');
+
             $staff = Staff::create([
                 'user_id' => $request->selected_id,
                 'position' => $formData['position'],
@@ -412,6 +389,20 @@ class UserController extends Controller
             $user->assignRole($request->roles);
         }
 
+    }
+
+    public function updateUserDepartment(Request $request)
+    {
+        $user = User::find($request->user_id);
+
+        if ($user->teacher)
+        {
+            $user->teacher->update([
+                'department_id' => $request->department_id,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Department updated successfully!');
     }
 
     public function search($type, $value)
@@ -452,6 +443,7 @@ class UserController extends Controller
         } elseif ($type === 'staff')
         {
             $searchTerms = explode(" ", $value);
+
             $users = User::whereDoesntHave('staff')
                 ->where(function ($query) use ($searchTerms) {
                     foreach ($searchTerms as $term)
@@ -504,6 +496,7 @@ class UserController extends Controller
                     'first_name' => $userData['fname'],
                     'last_name' => $userData['lname'],
                     'email' => $userData['email'],
+                    'password' => $userData['password'],
                 ]);
 
 

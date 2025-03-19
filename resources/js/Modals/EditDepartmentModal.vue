@@ -5,7 +5,7 @@ export default {
   emits: ["toggleEditDepartment"],
   props: {
     departmentList: Array,
-    userDepartments: Array,
+    userDepartment: Object,
     user_id: String,
   },
   components: {
@@ -14,47 +14,28 @@ export default {
 
   data() {
     return {
-      formData: {
-        departments: [],
-      },
+      department_id: "",
       isConfirmation: false,
+      message: "Confirm to update user's department?",
     };
   },
   methods: {
-    selectedDepartment(id, input) {
-      if (this.formData.departments.includes(id)) {
-        const index = this.formData.departments.indexOf(id);
-        if (index !== -1) {
-          this.formData.departments.splice(index, 1);
-        }
-      } else if (!this.userDepartments.includes(id) && input.checked) {
-        this.formData.departments.push(id);
-      }
-
-      console.log(this.formData.departments);
-    },
-
     closeModal() {
       this.$emit("toggleEditDepartment");
     },
     submitForm() {
       this.toggleConfirmForm();
       this.closeModal();
-      Inertia.post(`/users/${this.user_id}/department-edit`, this.formData);
+
+      Inertia.patch(`/users/user-department-update`, {
+        user_id: this.user_id,
+        department_id: this.department_id,
+      });
     },
 
     toggleConfirmForm() {
       this.isConfirmation = !this.isConfirmation;
     },
-  },
-
-  mounted() {
-    const currentDepartments = this.departmentList.filter((department) =>
-      this.userDepartments.includes(department.acronym)
-    );
-    this.formData.departments = currentDepartments.map(
-      (department) => department.department_id
-    );
   },
 };
 </script>
@@ -62,44 +43,42 @@ export default {
 <template>
   <ConfirmationFormModal
     :isConfirmation="isConfirmation"
+    :message="message"
     @toggleConfirmForm="toggleConfirmForm"
     @submitForm="submitForm"
   ></ConfirmationFormModal>
   <div class="modal" @click.self="closeModal">
     <div class="modal-content">
       <div class="modal-header">
-        <span>Edit Departments</span>
+        <span>Edit Department</span>
         <i @click="closeModal">&times;</i>
       </div>
       <div class="input-group">
-        <label for="">Current Departments: </label>
-        <span>{{ userDepartments.join(", ") }}</span>
+        <label for="">Current Department: </label>
+        <span v-if="userDepartment"
+          >{{ userDepartment.name }} ({{ userDepartment.acronym }})</span
+        >
       </div>
       <div class="form-subtitle">
         <label>Departments: </label>
       </div>
 
-      <div class="form-checkbox-items form-checkbox">
-        <div class="" v-for="department in departmentList" :key="department.id">
-          <div class="checkbox-group">
-            <input
-              type="checkbox"
-              :value="department.id"
-              :checked="userDepartments.includes(department.acronym)"
-              @change="selectedDepartment(department.department_id, $event.target)"
-            />
-            <span>{{ department.department_name }} ({{ department.acronym }})</span>
-          </div>
-        </div>
+      <div class="form-select">
+        <select name="" id="" v-model="department_id">
+          <option value="" selected disabled>Select a department</option>
+          <option
+            :value="department.id"
+            v-for="department in departmentList"
+            :key="department.id"
+          >
+            {{ department.name }}({{ department.acronym }})
+          </option>
+        </select>
       </div>
 
       <div class="buttons">
         <button @click="closeModal" class="close-btn">Close</button>
-        <button
-          v-if="formData.departments.length != 0"
-          @click="toggleConfirmForm()"
-          class="update-btn"
-        >
+        <button v-if="department_id" @click="toggleConfirmForm()" class="update-btn">
           Update
         </button>
       </div>
@@ -124,6 +103,7 @@ export default {
 .modal-header {
   display: flex;
   justify-content: space-between;
+  padding: 5px;
   align-items: center;
   border-bottom: 1px solid #c7c7c7;
 }
@@ -220,5 +200,14 @@ export default {
 .update-btn {
   background-color: rgb(32, 131, 222);
   color: #fff;
+}
+
+.form-select {
+  padding: 10px;
+}
+
+.form-select select {
+  padding: 10px;
+  border-radius: 5px;
 }
 </style>

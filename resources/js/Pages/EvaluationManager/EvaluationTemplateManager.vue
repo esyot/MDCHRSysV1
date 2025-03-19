@@ -140,6 +140,17 @@ export default {
               <span> {{ template.for }}</span>
             </div>
 
+            <div class="card-body-item" v-if="template.for === 'teacher'">
+              <label for="">Type: </label>
+              <span>
+                {{
+                  template.type === "work"
+                    ? "Working Performance"
+                    : "Teaching Performance"
+                }}</span
+              >
+            </div>
+
             <div class="card-body-item">
               <label for="">Created on:</label>
               <span> {{ formatDate(template.created_at) }}</span>

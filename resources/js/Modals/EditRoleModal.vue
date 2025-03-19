@@ -121,6 +121,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 5px;
   border-bottom: 1px solid #c7c7c7;
 }
 .modal-header span {

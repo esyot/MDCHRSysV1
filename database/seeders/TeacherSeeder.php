@@ -22,7 +22,6 @@ class TeacherSeeder extends Seeder
         {
             Teacher::create([
                 'user_id' => $id,
-                'department_id' => 2,
                 'specialization' => 'Information & Technology',
             ]);
         }

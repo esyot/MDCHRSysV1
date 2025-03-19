@@ -22,15 +22,13 @@ class AuthController extends Controller
             Session::put('authenticate', true);
 
             return redirect()->back()->with([
-                'success' => 'Authenticated successfully!'
+                'success' => 'Authentication successful!'
             ]);
 
         } else
         {
-
-            return redirect()->back()->with([
-                'authenticated' => false,
-                'error' => 'Authentication failed!'
+            return back()->withErrors([
+                'password' => 'Authentication failed!'
             ]);
         }
     }

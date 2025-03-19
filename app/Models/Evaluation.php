@@ -19,4 +19,9 @@ class Evaluation extends Model
                 'middle_name',
             ]);
     }
+
+    public function evalTemplate()
+    {
+        return $this->belongsTo(EvalTemplate::class, 'eval_template_id', 'id');
+    }
 }

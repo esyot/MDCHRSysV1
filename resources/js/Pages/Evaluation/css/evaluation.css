@@ -34,7 +34,6 @@
 
 .content {
     display: block;
-    height: 79vh;
     overflow-y: auto;
     background-color: #fff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

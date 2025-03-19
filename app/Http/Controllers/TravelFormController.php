@@ -100,15 +100,7 @@ class TravelFormController extends Controller
 
             if ($travelForm)
             {
-                $notificationController = new NotificationController();
 
-                $notificationController->create(
-                    'Leave Form',
-                    'A user submitted a travel form, check it now!',
-                    'checking',
-                    'dean',
-                    '/forms/checking'
-                );
 
                 return redirect()->route('forms.tracking')->with('success', 'Travel request submitted successfully!.');
             } else
@@ -169,15 +161,6 @@ class TravelFormController extends Controller
 
                 ]);
 
-                $notificationController = new NotificationController();
-
-                $notificationController->create(
-                    'Leave Form',
-                    'A user re-submitted a travel form, check it now!',
-                    'checking',
-                    'dean',
-                    '/forms/checking'
-                );
 
                 return redirect()->route('forms.tracking')->with('success', 'Travel request submitted successfully!.');
             } else

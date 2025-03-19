@@ -87,10 +87,10 @@ export default {
             </div>
 
             <ul id="submenu-evaluation" class="submenu">
-              <Link :href="'/evaluations/users-list/teacher'" class="link">
+              <Link :href="'/evaluations/teacher'" class="link">
                 <li><span>Teacher Evaluation</span></li>
               </Link>
-              <Link :href="'/evaluations/users-list/staff'" class="link">
+              <Link v-if="roles.includes('hr')" :href="'/evaluations/staff'" class="link">
                 <li><span>Staff Evaluation</span></li>
               </Link>
             </ul>

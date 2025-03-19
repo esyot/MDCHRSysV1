@@ -14,31 +14,37 @@ export default {
         users: Object,
         search_value: String,
         roles: Array,
-        departments: Array,
+        departmentList: Object,
         roleList: Array,
         specializationList: Array,
         positionList: Array,
         type: String,
+        orderBy: String,
+        department: String,
     },
     data() {
         return {
-            search_bar: this.search_value,
             isAddUser: false,
             isAddTeacher: false,
             isAddStaff: false,
             user_type: this.type,
-            combinedData: this.users.data,
             nextPageUrl: this.users.next_page_url,
-            loading: false,
+            order_by: this.orderBy,
+            search_bar: this.search_value ?? "",
+            department_id: this.department ?? "",
         };
     },
 
     methods: {
-        searchUser(search_bar) {
+        filterUsers() {
             Inertia.get("/users/users-list", {
-                search_value: search_bar,
+                type: this.user_type,
+                search_value: this.search_bar,
+                orderBy: this.orderBy,
+                department: this.department_id,
             });
         },
+
         visitUser(user) {
             Inertia.visit(`/users/user-list/${user.id}/false`);
         },
@@ -69,18 +75,6 @@ export default {
                     });
                 },
             });
-        },
-    },
-
-    watch: {
-        user_type(newVal) {
-            if (newVal === "user") {
-                Inertia.visit("/users/users-list");
-            } else if (newVal === "teacher") {
-                Inertia.visit("/users/teachers-list");
-            } else if (newVal === "staff") {
-                Inertia.visit("/users/staffs-list");
-            }
         },
     },
 };

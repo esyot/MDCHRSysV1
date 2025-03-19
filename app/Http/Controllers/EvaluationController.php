@@ -56,7 +56,10 @@ class EvaluationController extends Controller
         $userRoles = $fetchedUser->getRoleNames();
 
         $evaluations = Evaluation::where('teacher_id', $fetchedUser->id)
-            ->with('evaluator')
+            ->with([
+                'evaluator',
+                'evalTemplate',
+            ])
             ->get();
 
         $code = config('variables.api_key');
@@ -141,57 +144,57 @@ class EvaluationController extends Controller
             'api_key' => config('variable.api_key'),
         ]);
     }
-    public function userList($type)
+    public function userList($type, Request $request)
     {
         $this->globalVariables();
         $roles = $this->roles;
         $user = $this->user;
 
+        $search_value = $request->search_value;
+
         if ($type === 'teacher')
         {
-            $users = User::whereNot('id', $user->id)
-                ->whereIn('id', function ($query) use ($user) {
-                    $query->select('user_id')
-                        ->from('teachers')
-                        ->where('department_id', Teacher::where('id', $user->id)->pluck('department_id')->first());
-                })
+            $users = User::when($request->search_value, function ($query, $search_value) {
+                $query->where('last_name', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('first_name', 'LIKE', '%' . $search_value . '%');
+            })
+                ->whereNot('id', $user->id)
+                ->whereRelation('teacher', 'department_id', '=', $user->teacher->department_id)
+                ->role(['teacher'])
                 ->paginate(12);
-
-            $allUsers = User::whereNot('id', $user->id)
-                ->whereIn('id', function ($query) use ($user) {
-                    $query->select('user_id')
-                        ->from('teachers')
-                        ->where('department_id', Teacher::where('id', $user->id)->pluck('department_id')->first());
-                })
-                ->get();
 
             $department = Department::find(Teacher::where('id', $user->id)
                 ->pluck('department_id')->first());
 
             return inertia('Pages/Evaluation/UserList', [
                 'user' => $user,
+                'type' => $type,
+                'search_value' => $search_value,
                 'users' => $users,
-                'allUsers' => $allUsers,
                 'department' => $department,
                 'roles' => $roles,
                 'pageTitle' => "Teacher's Evaluation",
                 'is_evaluation' => true,
             ]);
+
         } else
         {
-            $users = User::whereHas('staff')
+            $users = User::when($request->search_value, function ($query, $search_value) {
+                $query->where('last_name', 'LIKE', '%' . $search_value . '%')
+                    ->orWhere('first_name', 'LIKE', '%' . $search_value . '%');
+            })
+                ->whereHas('staff')
+                ->role('staff')
                 ->paginate(12);
 
-
-            $allUsers = User::whereHas('staff')
-                ->get();
 
             $department = null;
 
             return inertia('Pages/Evaluation/UserList', [
                 'user' => $user,
+                'type' => $type,
+                'search_value' => $search_value,
                 'users' => $users,
-                'allUsers' => $allUsers,
                 'department' => $department,
                 'roles' => $roles,
                 'pageTitle' => "Staff's Evaluation",
@@ -348,7 +351,9 @@ class EvaluationController extends Controller
 
         if ($template && $type === 'teacher')
         {
-            EvalTemplate::where('for', 'teacher')
+            EvalTemplate::
+                where('type', $template->type)
+                ->where('for', 'teacher')
                 ->update([
                     'is_open' => 0,
                 ]);
@@ -481,12 +486,12 @@ class EvaluationController extends Controller
 
     }
 
-    public function evaluate($id, $type)
+    public function evaluateUser($type, $user_id)
     {
-        if ($type === 'teacher')
+        if ($type === 'teaching' || $type === 'work')
         {
 
-            $user = User::where('id', $id)
+            $user = User::where('id', $user_id)
                 ->with('teacher')
                 ->first();
 
@@ -519,6 +524,7 @@ class EvaluationController extends Controller
 
             $template = EvalTemplate::where('for', 'teacher')
                 ->where('is_open', 1)
+                ->where('type', $type)
                 ->first();
 
             $evalCategories = EvalTemplateCategory::where('eval_template_id', $template->id)->with([
@@ -527,7 +533,7 @@ class EvaluationController extends Controller
 
             $api_key = config('variables.api_key');
 
-            $evaluations = Evaluation::where('teacher_id', $id)->get();
+            $evaluations = Evaluation::where('teacher_id', $user_id)->get();
 
 
             return inertia('Pages/Evaluation/TeacherEvaluation', [
@@ -543,7 +549,37 @@ class EvaluationController extends Controller
 
         } elseif ($type === 'staff')
         {
-            $user = User::where('id', $id)
+
+
+            $code = config('variables.api_key');
+
+            $url = 'https://sis.materdeicollege.com/api/hr/terms';
+
+            $client = new Client();
+
+            $response = $client->get($url, [
+                'query' => [
+                    'code' => $code,
+                ],
+                'verify' => false,
+            ]);
+
+
+            $terms = json_decode($response->getBody(), true);
+
+
+
+            $annuals = array_filter($terms, function ($item) {
+                return $item['type'] === 'sem' && strpos($item['name'], 'Summer') === false;
+            });
+
+            $terms = array_values($annuals);
+
+            usort($terms, fn($a, $b) => strcmp($b['start'], $a['start']) ?: strcmp($b['end'], $a['end']));
+
+
+
+            $user = User::where('id', $user_id)
                 ->with('staff')
                 ->first();
 
@@ -559,6 +595,7 @@ class EvaluationController extends Controller
 
 
             return inertia('Pages/Evaluation/StaffEvaluation', [
+                'terms' => $terms,
                 'template_id' => $template->id,
                 'user' => $user,
                 'evalCategories' => $evalCategories,

@@ -118,8 +118,8 @@ export default {
             @change="saveToLocalStorage"
           >
             <option value="" selected disabled>Select evaluation type</option>
-            <option value="work">Teacher's working performance</option>
-            <option value="teach">Teacher's teaching performance</option>
+            <option value="work">Work performance</option>
+            <option value="teaching">Teaching performance</option>
           </select>
         </div>
 

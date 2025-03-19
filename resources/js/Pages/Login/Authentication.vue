@@ -13,12 +13,10 @@
             v-model="password"
             autocomplete="off"
             placeholder="Enter your password"
+            required
           />
-
           <button type="submit">Authenticate</button>
         </div>
-
-        <small class="error">{{ authError }}</small>
       </form>
       <div class="modal-footer">
         <div class="info">
@@ -41,22 +39,28 @@ export default {
       password: "",
     };
   },
-  props: {
-    authError: {
-      type: Object,
-    },
-  },
   methods: {
     authCheckSubmit() {
       const toast = useToast();
+
       Inertia.post(
         "/authentication-check",
         {
           password: this.password,
         },
         {
-          onSuccess: () => {
-            toast.success("Authentication successful", {
+          onSuccess: (response) => {
+            const message = response.props.success;
+
+            if (message) {
+              toast.success(message, {
+                position: "top-center",
+              });
+            }
+          },
+
+          onError: (errors) => {
+            toast.error(errors.password, {
               position: "top-center",
             });
           },

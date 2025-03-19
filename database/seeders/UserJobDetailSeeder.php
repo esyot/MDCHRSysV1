@@ -20,19 +20,16 @@ class UserJobDetailSeeder extends Seeder
         $faker = Faker::create();
 
         $users = User::all();
-        
-       
-        $departments = Department::all();
 
-        // Define available ranks
         $ranks = ['Teacher', 'Staff', 'Head', 'Finance'];
 
-        foreach ($users as $user) {
+        foreach ($users as $user)
+        {
             UserJobDetail::create([
-                'department' => $faker->randomElement($departments)->name, // Random department from the list
+                'department' => $faker->words,
                 'rank' => $faker->randomElement($ranks),                  // Random rank from the list
-                'date_hired' => $faker->date('Y-m-d', '2020-01-01'), 
-                'user_id' => $user->id, 
+                'date_hired' => $faker->date('Y-m-d', '2020-01-01'),
+                'user_id' => $user->id,
             ]);
         }
     }

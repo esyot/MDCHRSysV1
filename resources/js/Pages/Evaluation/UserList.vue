@@ -1,41 +1,37 @@
 <script>
 import Layout from "@/Layouts/Layout.vue";
-import { InertiaLink } from "@inertiajs/inertia-vue3";
+import { Link } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
 
 export default {
   layout: Layout,
   props: {
     users: Object,
-    allUsers: Object,
     department: Object,
     terms: Object,
+    search_value: String,
+    type: String,
   },
   components: {
-    InertiaLink,
+    Link,
   },
   data() {
     return {
-      search_value: "",
+      search_bar: this.search_value ?? "",
     };
   },
   methods: {
     visitUser(user_id) {
       Inertia.visit(`/evaluations/user-view/${user_id}`);
     },
-  },
-  computed: {
-    filteredUsers() {
-      if (!this.search_value) return this.users.data;
-
-      const searchLower = this.search_value.toLowerCase();
-
-      return this.allUsers.filter(
-        (user) =>
-          user.last_name.toLowerCase().includes(searchLower) ||
-          user.first_name.toLowerCase().includes(searchLower) ||
-          (user.middle_name?.toLowerCase().includes(searchLower) ?? false)
-      );
+    searchUsers() {
+      if (this.search_bar) {
+        Inertia.get(`/evaluations/${this.type}`, {
+          search_value: this.search_bar,
+        });
+      } else {
+        Inertia.get(`/evaluations/${this.type}`);
+      }
     },
   },
 };
@@ -54,7 +50,8 @@ export default {
         <input
           type="text"
           name="search_value"
-          v-model="search_value"
+          v-model="search_bar"
+          @input="searchUsers"
           placeholder="Search a user..."
         />
       </div>
@@ -73,7 +70,7 @@ export default {
         </thead>
 
         <tbody>
-          <tr v-for="user in filteredUsers" :key="user.id">
+          <tr v-for="user in users.data" :key="user.id">
             <td>
               {{ user.last_name }}, {{ user.first_name }}
               <span v-if="user.middle_name">{{ user.middle_name[0] }}.</span>
@@ -87,25 +84,25 @@ export default {
             </td>
           </tr>
         </tbody>
-        <span class="table-msg" v-if="filteredUsers.length === 0"> No users found. </span>
+        <span class="table-msg" v-if="users.data.length === 0"> No users found. </span>
       </table>
     </div>
     <div class="footer">
-      <InertiaLink :href="users.first_page_url">
+      <Link :href="users.first_page_url">
         <i class="fa-solid fa-angles-left"></i>
-      </InertiaLink>
-      <InertiaLink :href="users.prev_page_url">
+      </Link>
+      <Link :href="users.prev_page_url">
         <i class="fas fa-arrow-circle-left"></i>
-      </InertiaLink>
+      </Link>
 
       <span>Page {{ users.current_page }} of {{ users.last_page }}</span>
-      <InertiaLink :href="users.next_page_url">
+      <Link :href="users.next_page_url">
         <i class="fas fa-arrow-circle-right"></i>
-      </InertiaLink>
+      </Link>
 
-      <InertiaLink :href="users.last_page_url">
+      <Link :href="users.last_page_url">
         <i class="fa-solid fa-angles-right"></i>
-      </InertiaLink>
+      </Link>
     </div>
   </div>
 </template>

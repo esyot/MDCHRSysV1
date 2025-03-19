@@ -12,34 +12,75 @@
   ></AddUserModal>
 
   <div class="container">
-    <div class="forms-selection">
-      <div class="search-bar">
-        <i class="fa-solid fa-search"></i>
+    <div class="container-items">
+      <div class="left">
+        <div class="search-bar">
+          <i class="fa-solid fa-search"></i>
 
-        <input
-          type="text"
-          name="search_value"
-          v-model="search_bar"
-          @input="searchUser(search_bar)"
-          placeholder="Search a user"
-        />
+          <input
+            type="text"
+            name="search_value"
+            v-model="search_bar"
+            @input="filterUsers()"
+            placeholder="Search a user"
+          />
+        </div>
       </div>
-      <div>
-        <select name="" id="" class="select-type" v-model="user_type">
-          <option value="user">All</option>
+
+      <div class="right">
+        <select
+          name=""
+          id=""
+          class="select-type"
+          v-model="user_type"
+          @change="filterUsers()"
+        >
+          <option value="user">All Users</option>
           <option value="teacher">Teachers</option>
           <option value="staff">Staff</option>
         </select>
-      </div>
-      <div v-if="user_type === 'staff'">
-        <button @click="toggleAddUserModal()" class="add-btn" title="Add staff">
+
+        <select
+          name=""
+          id=""
+          v-if="user_type === 'teacher'"
+          v-model="department_id"
+          @change="filterUsers()"
+        >
+          <option value="" selected disabled>Department</option>
+          <option value="">All</option>
+          <option
+            :value="department.id"
+            v-for="department in departmentList"
+            :key="department.id"
+          >
+            {{ department.acronym }}
+          </option>
+        </select>
+
+        <select
+          name=""
+          id=""
+          class="select-type"
+          v-model="order_by"
+          @change="filterUsers()"
+        >
+          <option value="" selected disabled>Order By</option>
+          <option value="ASC">ASC</option>
+          <option value="DESC">DESC</option>
+        </select>
+
+        <button
+          v-if="user_type === 'staff'"
+          @click="toggleAddUserModal()"
+          title="Add staff"
+        >
           Add {{ user_type }}
         </button>
-      </div>
-      <div v-if="user_type === 'teacher' || user_type === 'staff'">
+
         <button
+          v-if="user_type === 'teacher' || user_type === 'staff'"
           @click="toggleSyncUsers(user_type)"
-          class="add-btn"
           title="Sync users from Mater Dei College SIS"
         >
           Sync {{ user_type }}s
@@ -51,11 +92,11 @@
       <table>
         <thead>
           <tr>
-            <td class="td-title">
-              <i class="fa-solid fa-user"></i>
-              <span>{{ type.charAt(0).toUpperCase() + type.slice(1) }}'s Name</span>
-            </td>
-            <td class="td-action">Action</td>
+            <th>
+              <i class="fa-solid fa-address-card"></i>
+              <span> {{ " " + type.charAt(0).toUpperCase() + type.slice(1) }} </span>
+            </th>
+            <th><i class="fas fa-cog"></i><span> Action</span></th>
           </tr>
         </thead>
         <tbody>
@@ -73,12 +114,12 @@
             </td>
           </tr>
         </tbody>
-        <tbody v-if="users.data.length === 0">
-          <tr>
-            <td>No users found.</td>
-          </tr>
-        </tbody>
       </table>
+      <div class="empty-msg" v-if="users.data.length === 0">
+        <div>
+          <p>No users found.</p>
+        </div>
+      </div>
     </div>
     <div class="footer">
       <Link :href="users.first_page_url">

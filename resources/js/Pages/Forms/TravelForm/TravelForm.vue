@@ -217,7 +217,6 @@
             <button type="button" @click="addTeachingSubstitute">
               <i class="fas fa-plus"></i> Add
             </button>
-            <small><i>(For MDC Teaching Employee only)</i></small>
           </div>
         </div>
 
