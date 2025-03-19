@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NotificationEvent;
 use App\Models\Notification;
 use App\Models\Teacher;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Permission\Traits\HasRoles;
 
 class NotificationController extends Controller
 {
@@ -67,7 +64,12 @@ class NotificationController extends Controller
         {
 
             $departmentId = Teacher::where('user_id', Auth::user()->id)->pluck('department_id')->first();
-            $userIds = User::whereIn('department_id', $departmentId)->pluck('user_id');
+
+            $userIds = User::whereHas('teacher', function ($query) use ($departmentId) {
+                $query->where('department_id', $departmentId);
+            })
+                ->role('dean')
+                ->pluck('id');
 
             $for = $userIds;
 

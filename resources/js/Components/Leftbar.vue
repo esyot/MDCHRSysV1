@@ -55,7 +55,6 @@ export default {
             </li>
           </Link>
 
-          <!-- Services Submenu -->
           <li title="Services">
             <div class="menu-li" @click="openSubMenu('Services')">
               <i class="fa-solid fa-screwdriver-wrench"></i>
@@ -64,39 +63,26 @@ export default {
             </div>
 
             <ul id="submenu-services" class="submenu">
-              <Link :href="'/forms/travel-form-request'" class="link">
-                <li><span>Travel Form</span></li>
+              <Link :href="'/forms/travel-form-request'">
+                <li :class="{ active: currentRoute === '/forms/travel-form-request' }">
+                  <span>Travel Form</span>
+                </li>
               </Link>
 
               <Link :href="'/forms/leave-form-request'" class="link">
-                <li><span>Leave Form</span></li>
+                <li :class="{ active: currentRoute === '/forms/leave-form-request' }">
+                  <span>Leave Form</span>
+                </li>
               </Link>
 
               <Link :href="'/forms/tracking'" class="link">
-                <li><span>Track Submitted Forms</span></li>
+                <li :class="{ active: currentRoute === '/forms/tracking' }">
+                  <span>Track Forms</span>
+                </li>
               </Link>
             </ul>
           </li>
 
-          <!-- Evaluation Submenu (Conditionally Displayed for Roles) -->
-          <li title="Evaluation" v-if="roles.includes('dean') || roles.includes('hr')">
-            <div class="menu-li" @click="openSubMenu('Evaluation')">
-              <i class="fa-solid fa-file"></i>
-              <span>Evaluation</span>
-              <i class="fas fa-chevron-down"></i>
-            </div>
-
-            <ul id="submenu-evaluation" class="submenu">
-              <Link :href="'/evaluations/teacher'" class="link">
-                <li><span>Teacher Evaluation</span></li>
-              </Link>
-              <Link v-if="roles.includes('hr')" :href="'/evaluations/staff'" class="link">
-                <li><span>Staff Evaluation</span></li>
-              </Link>
-            </ul>
-          </li>
-
-          <!-- Check Forms Link (Visible if User is Not a 'staff') -->
           <Link
             v-if="!roles.includes('staff')"
             :href="'/forms/checking'"
@@ -108,7 +94,27 @@ export default {
             </li>
           </Link>
 
-          <!-- Admin Panel Submenu (Visible for 'admin' or 'hr' Roles) -->
+          <li title="Evaluation" v-if="roles.includes('dean') || roles.includes('hr')">
+            <div class="menu-li" @click="openSubMenu('Evaluation')">
+              <i class="fa-solid fa-file"></i>
+              <span>Evaluation</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+
+            <ul id="submenu-evaluation" class="submenu">
+              <Link :href="'/evaluations/teacher'">
+                <li :class="{ active: currentRoute === '/evaluations/teacher' }">
+                  <span>Teacher Evaluation</span>
+                </li>
+              </Link>
+              <Link v-if="roles.includes('hr')" :href="'/evaluations/staff'" class="link">
+                <li :class="{ active: currentRoute === '/evaluations/staff' }">
+                  <span>Staff Evaluation</span>
+                </li>
+              </Link>
+            </ul>
+          </li>
+
           <li title="Users" v-if="roles.includes('admin') || roles.includes('hr')">
             <div class="menu-li" @click="openSubMenu('Admin Panel')">
               <i class="fa-solid fa-users"></i>
@@ -117,24 +123,33 @@ export default {
             </div>
 
             <ul id="submenu-admin-panel" class="submenu">
-              <Link :href="'/users/users-list'" class="link">
-                <li><span>Users</span></li>
+              <Link :href="'/users/users-list'">
+                <li :class="{ active: currentRoute === '/users/users-list' }">
+                  <span>Users</span>
+                </li>
               </Link>
 
-              <Link v-if="roles.includes('admin')" :href="'/departments'" class="link">
-                <li title="Add/Edit Departments">
+              <Link v-if="roles.includes('admin')" :href="'/departments'">
+                <li
+                  :class="{ active: currentRoute === '/departments' }"
+                  title="Add/Edit Departments"
+                >
                   <span>Departments</span>
                 </li>
               </Link>
 
-              <Link :href="'/evaluations/evaluation-manager/'" class="link">
-                <li>
+              <Link :href="'/evaluations/evaluation-manager'">
+                <li
+                  :class="{ active: currentRoute === '/evaluations/evaluation-manager' }"
+                >
                   <span>Evaluation Manager</span>
                 </li>
               </Link>
 
-              <Link :href="'/users/analytics'" class="link">
-                <li><span>Analytics</span></li>
+              <Link :href="'/users/analytics'">
+                <li :class="{ active: currentRoute === '/users/analytics' }">
+                  <span>Analytics</span>
+                </li>
               </Link>
             </ul>
           </li>

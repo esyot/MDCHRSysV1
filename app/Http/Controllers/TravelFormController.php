@@ -57,6 +57,8 @@ class TravelFormController extends Controller
 
     public function submit(Request $request)
     {
+        $name = Auth::user()->last_name . ', ' . Auth::user()->first_name;
+
         if (!$request->formData['form_id'])
         {
             $formData = $request->formData;
@@ -101,6 +103,16 @@ class TravelFormController extends Controller
             if ($travelForm)
             {
 
+
+                $notificationController = new NotificationController;
+
+                $notificationController->create(
+                    'Travel Form',
+                    $name . ' filed a travel form, please check it now!',
+                    'checking',
+                    'dean',
+                    '/forms/checking'
+                );
 
                 return redirect()->route('forms.tracking')->with('success', 'Travel request submitted successfully!.');
             } else
@@ -160,6 +172,16 @@ class TravelFormController extends Controller
                     'recommended_by' => '',
 
                 ]);
+
+                $notificationController = new NotificationController;
+
+                $notificationController->create(
+                    'Travel Form',
+                    $name . ' re-submits a travel form, please check it now!',
+                    'checking',
+                    'dean',
+                    '/forms/checking'
+                );
 
 
                 return redirect()->route('forms.tracking')->with('success', 'Travel request submitted successfully!.');

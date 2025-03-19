@@ -26,8 +26,6 @@ abstract class Controller
 
         $this->roles = Auth::user()->getRoleNames();
 
-
-
         $this->roleList = Role::all()->pluck('name');
 
         $this->user = User::where('id', Auth::user()->id)

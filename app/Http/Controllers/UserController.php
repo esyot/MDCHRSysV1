@@ -165,6 +165,8 @@ class UserController extends Controller
 
         $roleList = Role::all();
 
+
+
         return Inertia::render('Pages/Admin/UserList', [
             'type' => $type,
             'department' => $department ?? null,
@@ -274,6 +276,9 @@ class UserController extends Controller
 
         $pageTitle = $personalDetails->last_name . ', ' . $personalDetails->first_name;
 
+        $positionList = config('variables.positionList');
+        $specializationList = config('variables.specializationList');
+
         return Inertia::render('Pages/Admin/UserView', [
             'user' => Auth::user(),
             'personalDetails' => $personalDetails,
@@ -286,6 +291,8 @@ class UserController extends Controller
             'departmentList' => $departmentList,
             'forms' => $flattenedForms,
             'userDepartment' => $userDepartment,
+            'positionList' => $positionList,
+            'specializationList' => $specializationList
 
 
         ]);

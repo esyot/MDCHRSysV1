@@ -87,13 +87,18 @@ class FormsController extends Controller
         $notificationsController = new NotificationController();
         $notificationsController->read($user->id, 'checking');
 
+
         $travelForms = [];
         $leaveForms = [];
 
-        if ($roles->contains('vp-admin'))
+        if ($user->role('dean'))
         {
+            $userDepartmentId = $user->teacher->department_id;
+            $userIds = User::whereRelation('teacher', 'department_id', '=', $userDepartmentId)
+                ->pluck('id');
 
-            $leaveForms = LeaveForm::where('status', 'hr_approved')
+            $leaveForms = LeaveForm::where('status', 'pending')
+                ->whereIn('user_id', $userIds)
                 ->with([
                     'substitutes.user',
                     'user',
@@ -102,7 +107,7 @@ class FormsController extends Controller
 
                 ])->orderBy('created_at', 'ASC')->get();
 
-            $travelForms = TravelForm::where('status', 'hr_approved')
+            $travelForms = TravelForm::where('status', 'pending')
                 ->orderBy('created_at', 'ASC')
                 ->with([
                     'substitutes.user',
@@ -112,8 +117,11 @@ class FormsController extends Controller
 
                 ])->orderBy('created_at', 'ASC')->get();
 
+            $leaveForms = $leaveForms->merge($leaveForms);
+            $travelForms = $travelForms->merge($travelForms);
 
-        } else if ($roles->contains('hr'))
+
+        } else if ($user->role('hr'))
         {
 
             $leaveForms = LeaveForm::where('status', 'dean_approved')
@@ -136,16 +144,14 @@ class FormsController extends Controller
 
                 ])->orderBy('created_at', 'ASC')->get();
 
-        } else if ($roles->contains('dean'))
+
+            $leaveForms = $leaveForms->merge($leaveForms);
+            $travelForms = $travelForms->merge($travelForms);
+
+        } else if ($user->role('vp-admin'))
         {
 
-            $userIds = User::whereRelation('teacher', 'department_id', '=', $user->teacher->department_id)
-                ->get()
-                ->pluck('id');
-
-
-            $leaveForms = LeaveForm::whereIn('user_id', $userIds)
-                ->where('status', 'pending')
+            $leaveForms = LeaveForm::where('status', 'hr_approved')
                 ->with([
                     'substitutes.user',
                     'user',
@@ -153,8 +159,7 @@ class FormsController extends Controller
                     'userJobDetail',
                 ])->orderBy('created_at', 'ASC')->get();
 
-            $travelForms = TravelForm::whereIn('user_id', $userIds)
-                ->where('status', 'pending')
+            $travelForms = TravelForm::where('status', 'hr_approved')
                 ->orderBy('created_at', 'ASC')
                 ->with([
                     'substitutes.user',
@@ -163,7 +168,12 @@ class FormsController extends Controller
                     'userJobDetail',
                 ])->orderBy('created_at', 'ASC')->get();
 
-        } else if ($roles->contains('vp-acad'))
+            $leaveForms = $leaveForms->merge($leaveForms);
+            $travelForms = $travelForms->merge($travelForms);
+
+
+
+        } else if ($user->role('vp-acad'))
         {
 
 
@@ -186,7 +196,10 @@ class FormsController extends Controller
 
                 ])->orderBy('created_at', 'ASC')->get();
 
-        } else if ($roles->contains('p-admin'))
+            $leaveForms = $leaveForms->merge($leaveForms);
+            $travelForms = $travelForms->merge($travelForms);
+
+        } else if ($user->role('p-admin'))
         {
             $leaveForms = LeaveForm::where('status', 'vp_acad_approved')
                 ->with([
@@ -207,6 +220,9 @@ class FormsController extends Controller
                     'userJobDetail',
 
                 ])->orderBy('created_at', 'ASC')->get();
+
+            $leaveForms = $leaveForms->merge($leaveForms);
+            $travelForms = $travelForms->merge($travelForms);
 
         }
 

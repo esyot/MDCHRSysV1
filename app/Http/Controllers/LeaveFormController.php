@@ -50,6 +50,9 @@ class LeaveFormController extends Controller
 
     public function submit(Request $request)
     {
+
+        $name = Auth::user()->last_name . ', ' . Auth::user()->first_name;
+
         if (!$request->form_id)
         {
             $formData = $request->toArray();
@@ -155,6 +158,19 @@ class LeaveFormController extends Controller
                 }
 
             }
+
+
+
+
+            $notificationController = new NotificationController;
+
+            $notificationController->create(
+                'Leave Form',
+                $name . ' filed a new leave, please check it now!',
+                'checking',
+                'dean',
+                '/forms/checking'
+            );
 
             return redirect()->back()->with('success', 'Leave request submitted successfully!.');
 
@@ -309,6 +325,16 @@ class LeaveFormController extends Controller
                 }
 
             }
+
+            $notificationController = new NotificationController;
+
+            $notificationController->create(
+                'Leave Form',
+                $name . ' re-submits a leave, please check it now!',
+                'checking',
+                'dean',
+                '/forms/checking'
+            );
 
             return redirect()->route('forms.tracking')->with('success', 'Leave request submitted successfully!.');
 

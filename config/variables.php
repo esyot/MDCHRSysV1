@@ -114,6 +114,7 @@ return [
         "Computer Science",
         "Political Science",
         "Economics",
+        "Education",
         "Anthropology",
         "Sociology",
         "Journalism",

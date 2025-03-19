@@ -1,21 +1,31 @@
 <script src="./js/user-view.js"></script>
 
 <template>
+  <EditStaffModal
+    v-if="isEditStaff"
+    :positionList="positionList"
+    @toggleEditStaff="toggleEditStaff"
+  >
+  </EditStaffModal>
+
+  <EditTeacherModal
+    v-if="isEditTeacher"
+    :departmentList="departmentList"
+    :specializationList="specializationList"
+    :teacher="teacher"
+    @toggleEditTeacher="toggleEditTeacher"
+  >
+  </EditTeacherModal>
+
   <EditRoleModal
     v-if="isEditRole"
     :roleList="roleList"
     :userRoles="userRoles"
     :user_id="user_id"
     @toggleEditRole="toggleEditRole"
-  ></EditRoleModal>
+  >
+  </EditRoleModal>
 
-  <EditDepartmentModal
-    v-if="isEditDepartment"
-    :userDepartment="userDepartment"
-    :departmentList="departmentList"
-    :user_id="user_id"
-    @toggleEditDepartment="toggleEditDepartment"
-  ></EditDepartmentModal>
   <nav>
     <span
       :class="{ active: AdminActiveTab === 'overview' }"
@@ -117,6 +127,12 @@
           </select>
         </div>
         <div class="btn-right">
+          <button v-if="personalDetails.staff" @click="toggleEditStaff">
+            Edit Staff Details
+          </button>
+          <button v-if="personalDetails.teacher" @click="toggleEditTeacher">
+            Edit Teacher Details
+          </button>
           <button
             v-if="roles.includes('admin')"
             :title="`Edit role of  ${personalDetails.last_name}, ${personalDetails.first_name}`"
@@ -124,27 +140,24 @@
           >
             Edit Role
           </button>
-          <button
-            v-if="userRoles.includes('teacher') && roles.includes('admin')"
-            :title="`Edit department of  ${personalDetails.last_name}, ${personalDetails.first_name}`"
-            @click="toggleEditDepartment"
-          >
-            Edit Department
-          </button>
         </div>
       </div>
+
       <div class="forms">
         <table>
           <thead>
             <tr>
               <td class="td-title">
-                <span>Leave Type</span>
+                <i class="fas fa-list"></i>
+                <span> Leave Type</span>
               </td>
               <td class="td-title">
-                <span>Date start of Leave</span>
+                <i class="fas fa-calendar-day"></i>
+                <span> Date Start</span>
               </td>
               <td class="td-title">
-                <span>Date end of Leave</span>
+                <i class="fas fa-calendar-day"></i>
+                <span> Date End</span>
               </td>
             </tr>
           </thead>

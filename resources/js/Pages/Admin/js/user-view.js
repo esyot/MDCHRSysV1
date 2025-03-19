@@ -3,23 +3,30 @@ import PersonalDetails from "@/Pages/Admin/PersonalDetails.vue";
 import { Inertia } from "@inertiajs/inertia";
 import EditRoleModal from "@/Modals/EditRoleModal.vue";
 import EditDepartmentModal from "@/Modals/EditDepartmentModal.vue";
+import EditStaffModal from "@/Modals/EditStaffModal.vue";
+import EditTeacherModal from "@/Modals/EditTeacherModal.vue";
 
 export default {
     layout: Layout,
+    components: {
+        PersonalDetails,
+        EditRoleModal,
+        EditDepartmentModal,
+        EditStaffModal,
+        EditTeacherModal,
+    },
     props: {
         user_id: String,
         userRoles: Array,
         personalDetails: Object,
         userDepartment: Object,
         forms: Object,
-        roles: {
-            type: Array,
-            default: () => [],
-        },
+        roles: Array,
         roleList: Array,
         departmentList: Array,
         evaluations: Object,
-        is_evaluation: Boolean,
+        positionList: Array,
+        specializationList: Array,
     },
     data() {
         return {
@@ -49,14 +56,12 @@ export default {
             month: "",
             date_report: "",
             week: "",
+            isEditStaff: false,
+            isEditTeacher: false,
+            teacher: this.personalDetails.teacher ?? [],
         };
     },
 
-    components: {
-        PersonalDetails,
-        EditRoleModal,
-        EditDepartmentModal,
-    },
     computed: {
         filteredForms() {
             let filtered = this.forms;
@@ -116,6 +121,7 @@ export default {
             const startYear = 2025;
             const endYear = this.currentYear + 30;
             const years = [];
+
             for (let year = startYear; year <= endYear; year++) {
                 years.push(year);
             }
@@ -123,6 +129,12 @@ export default {
         },
     },
     methods: {
+        toggleEditStaff() {
+            this.isEditStaff = !this.isEditStaff;
+        },
+        toggleEditTeacher() {
+            this.isEditTeacher = !this.isEditTeacher;
+        },
         openEval(type) {
             if (type === "teacher") {
                 Inertia.visit(
