@@ -204,7 +204,7 @@
           <textarea
             id="alternative_description"
             type="text"
-            v-model="formData.class_alternatives_description"
+            v-model="formData.class_description"
             placeholder="Input text here."
             required
           />

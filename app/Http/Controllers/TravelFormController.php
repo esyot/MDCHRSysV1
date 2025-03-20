@@ -66,7 +66,7 @@ class TravelFormController extends Controller
             $formData['user_id'] = Auth::user()->id;
 
             unset($formData['form_id']);
-            unset($formData['class_alternative_description']);
+            unset($formData['class_description']);
 
             $travelForm = TravelForm::create($formData);
 
@@ -96,13 +96,12 @@ class TravelFormController extends Controller
             } else
             {
                 $travelForm->update([
-                    'class_alternatives_description' => $request->formData['class_alternatives_description'],
+                    'class_description' => $request->formData['class_description'],
                 ]);
             }
 
             if ($travelForm)
             {
-
 
                 $notificationController = new NotificationController;
 
@@ -127,7 +126,7 @@ class TravelFormController extends Controller
             $formData = $request->formData;
 
             unset($formData['form_id']);
-            unset($formData['class_alternatives_description']);
+            unset($formData['class_description']);
 
             $travelForm = TravelForm::find($form_id);
 
@@ -159,6 +158,11 @@ class TravelFormController extends Controller
                     Substitute::create($sub);
                 }
 
+            } else
+            {
+                $travelForm->update([
+                    'class_description' => $request->formData['class_description'],
+                ]);
             }
 
 

@@ -30,7 +30,6 @@
           <input
             type="text"
             v-model="family.last_name"
-            class="form-control"
             :placeholder="`e.g. ${family.last_name}`"
             :id="`last_name_${family.id}`"
             @input="handleFieldFocus(`user_families`)"
@@ -44,7 +43,6 @@
           <input
             type="text"
             v-model="family.first_name"
-            class="form-control"
             :placeholder="`e.g. ${family.first_name}`"
             :id="`first_name_${family.id}`"
             @input="handleFieldFocus(`user_families`)"
@@ -58,7 +56,6 @@
           <input
             type="text"
             v-model="family.middle_name"
-            class="form-control"
             :placeholder="`e.g. ${family.middle_name}`"
             :id="`middle_name_${family.id}`"
             @input="handleFieldFocus(`user_families`)"
@@ -72,7 +69,6 @@
           <input
             type="text"
             v-model="family.ext"
-            class="form-control"
             :placeholder="`e.g. ${family.ext}`"
             :id="`ext_${family.id}`"
             @input="handleFieldFocus(`user_families`)"
@@ -85,7 +81,6 @@
           <input
             type="date"
             v-model="family.DOB"
-            class="form-control"
             :placeholder="`e.g. ${family.DOB}`"
             :id="`DOB_${family.id}`"
             @input="handleFieldFocus(`user_families`)"
@@ -97,7 +92,6 @@
           <input
             type="text"
             v-model="family.occupation"
-            class="form-control"
             placeholder="e.g. Teacher, Engineer, Doctor, etc."
             @input="handleFieldFocus('user_families')"
           />
@@ -108,7 +102,6 @@
           <input
             type="text"
             v-model="family.maiden_name"
-            class="form-control"
             placeholder="e.g. Caingles"
             @input="handleFieldFocus('user_families')"
           />
@@ -122,7 +115,6 @@
           <input
             type="text"
             v-model="newFamily.last_name"
-            class="form-control"
             placeholder="e.g. Esteban"
             @input="handleFieldFocus('user_families')"
           />
@@ -133,7 +125,6 @@
           <input
             type="text"
             v-model="newFamily.first_name"
-            class="form-control"
             placeholder="e.g. Reinhard"
             @input="handleFieldFocus('user_families')"
           />
@@ -144,7 +135,6 @@
           <input
             type="text"
             v-model="newFamily.middle_name"
-            class="form-control"
             placeholder="e.g. Lanoy"
             @input="handleFieldFocus('user_families')"
           />
@@ -155,7 +145,6 @@
           <input
             type="text"
             v-model="newFamily.ext"
-            class="form-control"
             placeholder="e.g. Jr., Sr., III, etc."
             @input="handleFieldFocus('user_families')"
           />
@@ -166,7 +155,6 @@
           <input
             type="text"
             v-model="newFamily.occupation"
-            class="form-control"
             placeholder="e.g. Teacher, Engineer, Doctor, etc."
             @input="handleFieldFocus('user_families')"
           />
@@ -177,7 +165,6 @@
           <input
             type="text"
             v-model="newFamily.maidenName"
-            class="form-control"
             placeholder="e.g. Caingles"
             @input="handleFieldFocus('user_families')"
           />

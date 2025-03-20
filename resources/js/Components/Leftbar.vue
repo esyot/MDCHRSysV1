@@ -84,7 +84,14 @@ export default {
           </li>
 
           <Link
-            v-if="!roles.includes('staff')"
+            v-if="
+              roles.includes('dean') ||
+              roles.includes('hr') ||
+              roles.includes('vp-admin') ||
+              roles.includes('vp-acad') ||
+              roles.includes('p-admin') ||
+              roles.includes('admin')
+            "
             :href="'/forms/checking'"
             :class="{ active: currentRoute === '/forms/checking' }"
           >

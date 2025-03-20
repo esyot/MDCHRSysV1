@@ -1,6 +1,8 @@
 <script>
-import { InertiaLink } from "@inertiajs/inertia-vue3";
+import { Link } from "@inertiajs/inertia-vue3";
 import { formatDistanceToNow, differenceInSeconds } from "date-fns";
+import { useToast } from "vue-toastification";
+import { Inertia } from "@inertiajs/inertia";
 
 export default {
   data() {
@@ -17,7 +19,7 @@ export default {
     pageTitle: String,
   },
   components: {
-    InertiaLink,
+    Link,
   },
 
   methods: {
@@ -122,6 +124,41 @@ export default {
         return "not-read";
       }
     },
+
+    readAllNotif() {
+      const toast = useToast();
+      Inertia.visit(`/notifications/read/${this.user.id}/all`, {
+        onSuccess: (response) => {
+          toast.success(response.props.success, {
+            position: "top-center",
+            duration: 1000,
+          });
+        },
+        onError: (errors) => {
+          toast.error(errors.error, {
+            position: "top-center",
+            duration: 1000,
+          });
+        },
+      });
+    },
+    deleteAllNotif() {
+      const toast = useToast();
+      Inertia.visit(`/notifications/delete/${this.user.id}/all`, {
+        onSuccess: (response) => {
+          toast.success(response.props.success, {
+            position: "top-center",
+            duration: 1000,
+          });
+        },
+        onError: (errors) => {
+          toast.error(errors.error, {
+            position: "top-center",
+            duration: 1000,
+          });
+        },
+      });
+    },
   },
   mounted() {
     this.startFetchingNotifications();
@@ -190,33 +227,32 @@ export default {
               v-if="isOpenNotificationsOptions"
               class="notification-options"
             >
-              <InertiaLink :href="`/notifications/read/${user.id}/all`"
-                >Mark all as read</InertiaLink
-              >
-              <InertiaLink :href="`/notifications/delete/${user.id}/all`"
-                >Delete all</InertiaLink
-              >
+              <button @click="readAllNotif()">Mark all as read</button>
+              <button @click="deleteAllNotif()">Delete All</button>
             </div>
           </div>
-          <InertiaLink
-            :href="notification.link"
-            v-for="notification in notifications"
-            :key="notification.id"
-            :class="checkStatus(notification.isReadBy)"
-          >
-            <div class="notif-item">
-              <div class="item-left">
-                <span class="notif-title">{{ notification.title }}</span>
-                <small class="notif-desc">{{ notification.description }}</small>
+          <div class="items">
+            <Link
+              :href="notification.link"
+              v-for="notification in notifications"
+              :key="notification.id"
+              :class="checkStatus(notification.isReadBy)"
+            >
+              <div class="notif-item">
+                <div class="item-left">
+                  <span class="notif-title">{{ notification.title }}</span>
+                  <small class="notif-desc">{{ notification.description }}</small>
+                </div>
+                <div class="item-right">
+                  <small>{{ calculateTimeAgo(notification.created_at) }}</small>
+                </div>
               </div>
-              <div class="item-right">
-                <small>{{ calculateTimeAgo(notification.created_at) }}</small>
-              </div>
-            </div>
-          </InertiaLink>
-          <span class="notif-msg" v-if="notifications.length === 0">
-            No new notifications in this time.
-          </span>
+            </Link>
+
+            <span class="notif-msg" v-if="notifications.length === 0">
+              No new notifications in this time.
+            </span>
+          </div>
         </div>
       </div>
 
@@ -236,13 +272,13 @@ export default {
       </div>
     </div>
     <div class="account-options" v-if="isOpenAccountOptions" ref="accountOptions">
-      <InertiaLink :href="'/account'" class="link" title="Account Settings">
+      <Link :href="'/account'" class="link" title="Account Settings">
         <span class="account"
           ><i class="fas fa-user-cog"></i>
 
           {{ user.first_name }} {{ user.last_name }}
         </span>
-      </InertiaLink>
+      </Link>
 
       <span @click="logoutConfirm" class="logout" title="Logout"
         ><i class="fas fa-sign-out"></i> Logout</span
@@ -255,7 +291,7 @@ export default {
       <h2>Are you sure to log-out?</h2>
       <footer>
         <button @click="logoutConfirm">No, cancel</button>
-        <InertiaLink :href="'/logout'">Yes, proceed. </InertiaLink>
+        <Link :href="'/logout'">Yes, proceed. </Link>
       </footer>
     </section>
   </div>

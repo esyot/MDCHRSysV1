@@ -29,7 +29,7 @@
         <span class="title">Leave Application</span>
         <span @click="closeFormModal" class="x-btn">&times;</span>
       </div>
-      <div class="heading-container">
+      <!-- <div class="heading-container">
         <div class="heading-img">
           <img src="/public/assets/images/mdc-logo.png" alt="MDC LOGO" />
         </div>
@@ -38,7 +38,7 @@
           <text class="second">Tubigon, Bohol</text>
           <text class="third">HUMAN RESOURCE OFFICE</text>
         </div>
-      </div>
+      </div> -->
       <div class="modal-title">
         <text>Leave Application Form</text>
       </div>
@@ -231,7 +231,9 @@
         >
           <div class="modal-subtitle">
             <text>Substitute(s): </text>
-            <span>{{ formData.substitutes.length == 0 ? "None" : "" }}</span>
+            <span class="underline">{{
+              formData.substitutes.length == 0 ? "None" : ""
+            }}</span>
           </div>
 
           <div>
@@ -247,7 +249,7 @@
           <div class="description" v-if="formData.substitutes.length === 0">
             <label for="">Class Alternatives:</label>
             <text>
-              {{ formData.description }}
+              {{ formData.class_description }}
             </text>
           </div>
         </div>
@@ -273,7 +275,7 @@
           <div class="certification-item">
             <text>Date Hired:</text>
             <span class="underline">
-              {{ formData.user_job_detail.date_hired }}
+              {{ date_hired }}
             </span>
           </div>
 
@@ -289,13 +291,11 @@
               <tr>
                 <td>Available leave credits</td>
                 <td class="end">
-                  {{
-                    calculateAvailablePersonalLeave(formData.user_job_detail.date_hired)
-                  }}
+                  {{ calculateAvailablePersonalLeave(date_hired) }}
                   <small> day(s)</small>
                 </td>
                 <td class="end">
-                  {{ calculateAvailableSickLeave(formData.user_job_detail.date_hired) }}
+                  {{ calculateAvailableSickLeave(date_hired) }}
                   <small> day(s)</small>
                 </td>
               </tr>
@@ -368,7 +368,7 @@
                 <td>Remaining leave credits</td>
                 <td class="end">
                   {{
-                    calculateAvailablePersonalLeave(formData.user_job_detail.date_hired) -
+                    calculateAvailablePersonalLeave(date_hired) -
                     (formData.leave_type != "Sick"
                       ? personalLeaveCount + totalCurrentPersonalLeave
                       : totalCurrentPersonalLeave)
@@ -377,7 +377,7 @@
                 </td>
                 <td class="end">
                   {{
-                    calculateAvailableSickLeave(formData.user_job_detail.date_hired) -
+                    calculateAvailableSickLeave(date_hired) -
                     (formData.leave_type == "Sick"
                       ? sickLeaveCount + totalCurrentSickLeave
                       : totalCurrentSickLeave)

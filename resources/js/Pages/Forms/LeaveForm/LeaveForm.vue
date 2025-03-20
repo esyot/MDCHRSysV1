@@ -310,7 +310,7 @@
           <label for="date_end">Please specify the alternatives used to the class.</label>
           <textarea
             type="text"
-            v-model="formData.description"
+            v-model="formData.class_description"
             placeholder="Input text here."
             required
           />

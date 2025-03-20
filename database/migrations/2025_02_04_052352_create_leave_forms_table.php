@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->text('reason')->nullable();
             $table->string('other_reason')->nullable();
             $table->text('description')->nullable();
-            $table->text('class_alternatives_description')->nullable();
+            $table->text('class_description')->nullable();
             $table->enum('status', ['pending', 'dean_approved', 'hr_approved', 'vp_acad_approved', 'vp_admin_approved', 'declined', 'approved'])->default('pending');
             $table->date('date_start');
             $table->date('date_end');

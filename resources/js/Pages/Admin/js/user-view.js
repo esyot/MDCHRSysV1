@@ -28,8 +28,8 @@ export default {
         evaluations: Object,
         positionList: Array,
         specializationList: Array,
-        teacher: Array,
-        staff: Array,
+        teacher: Object,
+        staff: Object,
     },
     data() {
         return {

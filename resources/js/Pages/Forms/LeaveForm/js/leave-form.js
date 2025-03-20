@@ -32,6 +32,7 @@ export default {
                 date_of_confinement: "",
                 date_of_discharge: "",
                 medical_certificate: null,
+                class_description: "",
             },
             teachingSubstitutes: [],
             days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],

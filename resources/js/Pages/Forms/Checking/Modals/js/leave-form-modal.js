@@ -32,6 +32,9 @@ export default {
             isConfirmation: false,
             action: "",
             fetchedYear: "",
+            date_hired: this.formData.user.teacher
+                ? this.formData.user.teacher.date_hired
+                : this.formData.user.staff.date_hired,
         };
     },
     watch: {

@@ -20,7 +20,7 @@
         <span class="title">Travel Form</span>
         <span @click="toggleFormModal" class="x-btn">&times;</span>
       </div>
-      <div class="heading-container">
+      <!-- <div class="heading-container">
         <div class="heading-img">
           <img src="/public/assets/images/mdc-logo.png" alt="MDC LOGO" />
         </div>
@@ -29,7 +29,7 @@
           <text class="second">Tubigon, Bohol</text>
           <text class="third">HUMAN RESOURCE OFFICE</text>
         </div>
-      </div>
+      </div> -->
 
       <div class="modal-container">
         <div class="modal-container-items">
@@ -72,6 +72,19 @@
                 <span v-for="substitute in formData.substitutes">
                   {{ substitute.user.last_name }}, {{ substitute.user.first_name }} -
                   {{ substitute.subject }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="item" v-else>
+            <div class="item-title">
+              <text>Substitutes:</text>
+            </div>
+            <div class="grouped-details">
+              <div class="group">
+                <label> Description: </label>
+                <span class="underline">
+                  {{ formData.class_description }}
                 </span>
               </div>
             </div>
@@ -201,7 +214,11 @@
           <div class="group">
             <label>Date Hired: </label>
             <span class="underline">
-              {{ formData.user_job_detail.date_hired }}
+              {{
+                formData.user.teacher
+                  ? formData.user.teacher.date_hired
+                  : formData.user.staff.date_hired
+              }}
             </span>
           </div>
 

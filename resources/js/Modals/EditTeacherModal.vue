@@ -57,7 +57,6 @@ export default {
           },
         }
       );
-      s;
     },
     toggleConfirmForm() {
       this.isConfirmation = !this.isConfirmation;

@@ -9,7 +9,6 @@
         type="text"
         id="first_name"
         v-model="userDetails.first_name"
-        class="form-control"
         @input="handleFieldFocus('first_name')"
       />
     </div>
@@ -20,7 +19,6 @@
         type="text"
         id="middle_name"
         v-model="userDetails.middle_name"
-        class="form-control"
         @input="handleFieldFocus('middle_name')"
       />
     </div>
@@ -30,7 +28,6 @@
         type="text"
         id="last_name"
         v-model="userDetails.last_name"
-        class="form-control"
         @input="handleFieldFocus('last_name')"
       />
     </div>
@@ -40,7 +37,6 @@
         type="text"
         id="name_extension"
         v-model="userDetails.name_ext"
-        class="form-control"
         @input="handleFieldFocus('name_ext')"
       />
     </div>
@@ -50,7 +46,6 @@
         type="text"
         id="nick_name"
         v-model="userDetails.nickname"
-        class="form-control"
         @input="handleFieldFocus('nickname')"
       />
     </div>
@@ -60,7 +55,6 @@
         type="date"
         id="date_of_birth"
         v-model="userDetails.DOB"
-        class="form-control"
         @input="handleFieldFocus('DOB')"
       />
     </div>
@@ -70,7 +64,6 @@
         type="text"
         id="place_of_birth"
         v-model="userDetails.birthplace"
-        class="form-control"
         @input="handleFieldFocus('birthplace')"
       />
     </div>
@@ -171,7 +164,6 @@
         name="religion"
         id="religion"
         v-model="userDetails.religion"
-        class="form-control"
         @input="handleFieldFocus('religion')"
       />
     </div>
@@ -182,7 +174,6 @@
         name="height"
         id="height"
         v-model="userDetails.height"
-        class="form-control"
         placeholder="Height in Meters"
         min="0"
         step="0.01"
@@ -196,7 +187,6 @@
         name="weight"
         id="weight"
         v-model="userDetails.weight"
-        class="form-control"
         placeholder="Weight in Kgs"
         min="0"
         @click="handleFieldFocus('weight')"
@@ -208,7 +198,6 @@
         name="blood_type"
         id="blood_type"
         v-model="userDetails.blood_type"
-        class="form-control"
         @input="handleFieldFocus('blood_type')"
       >
         <option value="">Select Blood Type</option>
@@ -230,7 +219,6 @@
         name="contact"
         id="contact"
         v-model="userDetails.contact_no"
-        class="form-control"
         placeholder="eg. 09123456789"
         @input="handleFieldFocus('contact_no')"
       />
@@ -301,7 +289,6 @@
         name="fb_link"
         id="fb_link"
         v-model="userDetails.fb_link"
-        class="form-control"
         @input="handleFieldFocus('fb_link')"
       />
     </div>
@@ -319,7 +306,6 @@
           <input
             type="text"
             v-model="userDetails.residential_address.house_no"
-            class="form-control"
             placeholder="House No."
             @input="handleFieldFocus('residential_address.house_no')"
           />
@@ -329,7 +315,6 @@
           <input
             type="text"
             v-model="userDetails.residential_address.street"
-            class="form-control"
             placeholder="Street Name"
             @input="handleFieldFocus('residential_address.street')"
           />
@@ -339,7 +324,6 @@
           <input
             type="text"
             v-model="userDetails.residential_address.subdv"
-            class="form-control"
             placeholder="Subdivision Name"
             @input="handleFieldFocus('residential_address.subdv')"
           />
@@ -349,7 +333,6 @@
           <input
             type="text"
             v-model="userDetails.residential_address.brgy"
-            class="form-control"
             placeholder="Barangay Name"
             @input="handleFieldFocus('residential_address.brgy')"
           />
@@ -359,7 +342,6 @@
           <input
             type="text"
             v-model="userDetails.residential_address.municipality"
-            class="form-control"
             placeholder="City/Municipality Name"
             @input="handleFieldFocus('residential_address.municipality')"
           />
@@ -369,7 +351,6 @@
           <input
             type="text"
             v-model="userDetails.residential_address.province"
-            class="form-control"
             placeholder="Province Name"
             @input="handleFieldFocus('residential_address.province')"
           />
@@ -380,7 +361,6 @@
             type="text"
             id="zip_code"
             v-model="userDetails.residential_address.zip_code"
-            class="form-control"
             placeholder="Zip Code"
             @input="handleFieldFocus('residential_address.zip_code')"
           />
@@ -397,7 +377,6 @@
             name="house_block_lot_no"
             id="house_block_lot_no"
             v-model="userDetails.permanent_address.house_no"
-            class="form-control"
             placeholder="House No."
             @input="handleFieldFocus('permanent_address.house_no')"
           />
@@ -409,7 +388,6 @@
             name="street"
             id="street"
             v-model="userDetails.permanent_address.street"
-            class="form-control"
             placeholder="Street Name"
             @input="handleFieldFocus('permanent_address.street')"
           />
@@ -421,7 +399,6 @@
             name="sub_village"
             id="sub_village"
             v-model="userDetails.permanent_address.subdv"
-            class="form-control"
             placeholder="Subdivision Name"
             @input="handleFieldFocus('permanent_address.subdv')"
           />
@@ -433,7 +410,6 @@
             name="barangay"
             id="barangay"
             v-model="userDetails.permanent_address.brgy"
-            class="form-control"
             placeholder="Barangay Name"
             @input="handleFieldFocus('permanent_address.brgy')"
           />
@@ -445,7 +421,6 @@
             name="city_municipality"
             id="city_municipality"
             v-model="userDetails.permanent_address.municipality"
-            class="form-control"
             placeholder="City/Municipality Name"
             @input="handleFieldFocus('permanent_address.municipality')"
           />
@@ -457,7 +432,6 @@
             name="province"
             id="province"
             v-model="userDetails.permanent_address.province"
-            class="form-control"
             placeholder="Province Name"
             @input="handleFieldFocus('permanent_address.province')"
           />
@@ -469,7 +443,6 @@
             name="zip_code"
             id="zip_code"
             v-model="userDetails.permanent_address.zip_code"
-            class="form-control"
             placeholder="Zip Code"
             @input="handleFieldFocus('permanent_address.zip_code')"
           />

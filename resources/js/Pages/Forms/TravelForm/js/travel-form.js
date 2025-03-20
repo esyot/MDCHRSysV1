@@ -30,7 +30,7 @@ export default {
                 budget_type: "",
                 budget_charged_to: "",
                 othersReason: "",
-                class_alternatives_description: "",
+                class_description: "",
             },
 
             teachingSubstitutes: [],
@@ -136,8 +136,7 @@ export default {
                 filing_date:
                     this.formData.filing_date ??
                     new Date().toISOString().split("T")[0],
-                class_alternatives_description:
-                    this.formData.class_alternatives_description,
+                class_description: this.formData.class_description,
             };
 
             const toast = useToast();

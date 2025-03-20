@@ -62,7 +62,7 @@
             <span class="name"
               >{{ personalDetails.first_name }} {{ personalDetails.last_name }}</span
             >
-            <div class="user-department" v-if="teacher">
+            <div class="user-department" v-if="teacher.department">
               <i class="fas fa-building"></i>
               <div>
                 <span class="role-desc">

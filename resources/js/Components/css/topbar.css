@@ -236,10 +236,19 @@ button:hover {
     top: 3rem;
     width: 400px;
     max-height: 300px;
-    overflow-y: auto;
     border-radius: 10px;
     border: 1px solid #cacaca;
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+.notification-container .items {
+    display: flex;
+    flex-direction: column;
+    max-height: 300px;
+    overflow-y: auto;
+    width: 100%;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
 
 .notification-container .title {
@@ -251,6 +260,8 @@ button:hover {
     padding: 10px;
     background-color: #fff;
     border-bottom: 1px solid #dcdcdc;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
 }
 
 .notification-container .title span {
@@ -319,7 +330,24 @@ button:hover {
     border: 1px solid #d7d7d7;
     border-radius: 10px;
 }
+.notification-options button {
+    border: none;
+    padding: 10px;
+    background-color: #fff;
+}
 
+.notification-options button:first-child {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.notification-options button:last-child {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+.notification-options button:hover {
+    background-color: #ddd;
+}
 .back-btn {
     scale: 1.2;
     margin-right: 5px;
@@ -328,4 +356,9 @@ button:hover {
 .back-btn:hover {
     opacity: 50%;
     cursor: pointer;
+}
+
+.notification-footer {
+    display: flex;
+    position: relative;
 }

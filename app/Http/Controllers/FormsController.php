@@ -102,6 +102,8 @@ class FormsController extends Controller
                 ->with([
                     'substitutes.user',
                     'user',
+                    'user.staff',
+                    'user.teacher',
                     'endorser',
                     'userJobDetail',
 
@@ -112,6 +114,8 @@ class FormsController extends Controller
                 ->with([
                     'substitutes.user',
                     'user',
+                    'user.staff',
+                    'user.teacher',
                     'endorser',
                     'userJobDetail',
 
@@ -128,6 +132,8 @@ class FormsController extends Controller
                 ->with([
                     'substitutes.user',
                     'user',
+                    'user.staff',
+                    'user.teacher',
                     'recommender',
                     'userJobDetail',
 
@@ -139,6 +145,8 @@ class FormsController extends Controller
                 ->with([
                     'substitutes.user',
                     'user',
+                    'user.staff',
+                    'user.teacher',
                     'recommender',
                     'userJobDetail',
 
@@ -155,6 +163,8 @@ class FormsController extends Controller
                 ->with([
                     'substitutes.user',
                     'user',
+                    'user.staff',
+                    'user.teacher',
                     'endorser',
                     'userJobDetail',
                 ])->orderBy('created_at', 'ASC')->get();
@@ -164,6 +174,8 @@ class FormsController extends Controller
                 ->with([
                     'substitutes.user',
                     'user',
+                    'user.staff',
+                    'user.teacher',
                     'endorser',
                     'userJobDetail',
                 ])->orderBy('created_at', 'ASC')->get();
@@ -181,6 +193,8 @@ class FormsController extends Controller
                 ->with([
                     'substitutes.user',
                     'user',
+                    'user.staff',
+                    'user.teacher',
                     'endorser',
                     'userJobDetail',
 
@@ -191,6 +205,8 @@ class FormsController extends Controller
                 ->with([
                     'substitutes.user',
                     'user',
+                    'user.staff',
+                    'user.teacher',
                     'endorser',
                     'userJobDetail',
 
@@ -205,6 +221,8 @@ class FormsController extends Controller
                 ->with([
                     'substitutes.user',
                     'user',
+                    'user.staff',
+                    'user.teacher',
                     'endorser',
                     'userJobDetail',
 
@@ -216,6 +234,8 @@ class FormsController extends Controller
                 ->with([
                     'substitutes.user',
                     'user',
+                    'user.staff',
+                    'user.teacher',
                     'endorser',
                     'userJobDetail',
 

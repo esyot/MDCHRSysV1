@@ -142,10 +142,11 @@ class NotificationController extends Controller
                     $isReadBy[] = $id;
                 }
 
-
                 $notification->isReadBy = json_encode($isReadBy);
                 $notification->save();
             }
+
+
         } else
         {
 
@@ -155,43 +156,52 @@ class NotificationController extends Controller
                 ->whereJsonDoesntContain('isDeletedBy', $id)
                 ->get();
 
-            foreach ($notifications as $notification)
+            if ($notifications->count() > 0)
             {
-
-
-
-                $isReadBy = json_decode($notification->isReadBy, true);
-                $for = json_decode($notification->for, true);
-
-
-
-                if (!is_array($isReadBy))
+                foreach ($notifications as $notification)
                 {
-                    $isReadBy = [];
+                    $isReadBy = json_decode($notification->isReadBy, true);
+                    $for = json_decode($notification->for, true);
+
+                    if (!is_array($isReadBy))
+                    {
+                        $isReadBy = [];
+                    }
+
+
+                    if (!in_array($id, $isReadBy))
+                    {
+                        $isReadBy[] = $id;
+                    }
+
+                    $notification->isReadBy = json_encode($isReadBy);
+                    $notification->save();
+
+
+                    if ($for === $isReadBy)
+                    {
+                        $notification->delete();
+                    }
+
                 }
 
+                return redirect()->back()->with('success', 'Notifications marked as all read successfully!');
 
-                if (!in_array($id, $isReadBy))
-                {
-                    $isReadBy[] = $id;
-                }
-
-                $notification->isReadBy = json_encode($isReadBy);
-                $notification->save();
-
-
-                if ($for === $isReadBy)
-                {
-                    $notification->delete();
-                }
-
+            } else
+            {
+                return back()->withErrors([
+                    'error' => 'No notifications to be mark as read!'
+                ]);
 
             }
 
-            return redirect()->back()->with('success', 'Notifications marked as all read successfully!');
+
+
         }
 
-
+        return back()->withErrors([
+            'error' => "Notification error!",
+        ]);
     }
 
 
@@ -205,31 +215,40 @@ class NotificationController extends Controller
             ->whereJsonDoesntContain('isDeletedBy', $id)
             ->get();
 
-        foreach ($notifications as $notification)
+        if ($notifications->count() > 0)
         {
-
-            $isDeletedBy = json_decode($notification->isDeletedBy, true);
-
-
-            if (!is_array($isDeletedBy))
+            foreach ($notifications as $notification)
             {
-                $isDeletedBy = [];
+
+                $isDeletedBy = json_decode($notification->isDeletedBy, true);
+
+
+                if (!is_array($isDeletedBy))
+                {
+                    $isDeletedBy = [];
+                }
+
+
+                if (!in_array($id, $isDeletedBy))
+                {
+                    $isDeletedBy[] = $id;
+                }
+
+                $notification->isDeletedBy = json_encode($isDeletedBy);
+                $notification->save();
+
+
             }
 
+            return redirect()->back()->with('success', 'Notifications deleted successfully!');
 
-            if (!in_array($id, $isDeletedBy))
-            {
-                $isDeletedBy[] = $id;
-            }
-
-            $notification->isDeletedBy = json_encode($isDeletedBy);
-            $notification->save();
-
+        } else
+        {
+            return back()->withErrors([
+                'error' => 'No notifications to be deleted!'
+            ]);
 
         }
-
-        return redirect()->back()->with('success', 'Notifications deleted successfully!');
-
 
 
     }

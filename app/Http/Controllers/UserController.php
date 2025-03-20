@@ -631,22 +631,28 @@ class UserController extends Controller
 
             foreach ($newUsers as $userData)
             {
+                $exist = User::find($userData['id']);
 
-                $user = User::create([
-                    'id' => $userData['id'],
-                    'user' => $userData['user'],
-                    'first_name' => $userData['fname'],
-                    'last_name' => $userData['lname'],
-                    'email' => $userData['email'],
-                    'password' => $userData['password'],
-                ]);
+                if (!$exist)
+                {
+
+                    $user = User::create([
+                        'id' => $userData['id'],
+                        'user' => $userData['user'],
+                        'first_name' => $userData['fname'],
+                        'last_name' => $userData['lname'],
+                        'email' => $userData['email'],
+                        'password' => $userData['password'],
+                    ]);
 
 
-                Staff::create([
-                    'user_id' => $userData['id'],
-                ]);
+                    Staff::create([
+                        'user_id' => $userData['id'],
+                    ]);
 
-                $user->assignRole('staff');
+                    $user->assignRole('staff');
+                }
+
 
             }
 
