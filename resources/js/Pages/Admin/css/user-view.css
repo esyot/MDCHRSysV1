@@ -107,6 +107,12 @@
 .user-role {
     display: flex;
     gap: 0.5rem;
+    margin-bottom: 2px;
+}
+
+.user-position {
+    display: flex;
+    gap: 0.5rem;
 }
 
 .user-details {

@@ -65,10 +65,10 @@ export default {
           <label>Course:</label>
           <span>{{ developer.course }}</span>
         </div>
-        <div class="item">
+        <!-- <div class="item">
           <label>Date of Birth:</label>
           <span>{{ developer.DOB }}</span>
-        </div>
+        </div> -->
         <div class="item">
           <label>Contact:</label>
           <span>{{ developer.contact_no }}</span>

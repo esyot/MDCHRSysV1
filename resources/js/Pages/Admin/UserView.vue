@@ -3,6 +3,7 @@
 <template>
   <EditStaffModal
     v-if="isEditStaff"
+    :staff="staff"
     :positionList="positionList"
     @toggleEditStaff="toggleEditStaff"
   >
@@ -61,11 +62,11 @@
             <span class="name"
               >{{ personalDetails.first_name }} {{ personalDetails.last_name }}</span
             >
-            <div class="user-department" v-if="userDepartment">
+            <div class="user-department" v-if="teacher">
               <i class="fas fa-building"></i>
               <div>
                 <span class="role-desc">
-                  {{ userDepartment.name }}
+                  {{ teacher.department.name }}
                 </span>
               </div>
             </div>
@@ -73,6 +74,14 @@
               <i class="fas fa-user-cog"></i>
               <div>
                 <span class="role-desc">{{ userRoles.join(", ") }}</span>
+              </div>
+            </div>
+            <div class="user-position" v-if="staff">
+              <i class="fa-solid fa-briefcase"></i>
+              <div>
+                <span class="role-desc">
+                  {{ staff.position }}
+                </span>
               </div>
             </div>
           </div>

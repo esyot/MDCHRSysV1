@@ -9,29 +9,43 @@ export default {
     users: Object,
     department: Object,
     terms: Object,
-    search_value: String,
+    searchValue: String,
     type: String,
+    orderBy: String,
   },
   components: {
     Link,
   },
   data() {
     return {
-      search_bar: this.search_value ?? "",
+      search_value: this.searchValue ?? "",
+      order_by: this.orderBy ?? "ASC",
     };
+  },
+  watch: {
+    search_value(newVal) {
+      if (newVal === "") {
+        Inertia.get(`/evaluations/${this.type}`, {
+          orderBy: this.order_by,
+        });
+      }
+    },
   },
   methods: {
     visitUser(user_id) {
-      Inertia.visit(`/evaluations/user-view/${user_id}`);
+      Inertia.get(`/evaluations/user-view/${user_id}`);
     },
-    searchUsers() {
-      if (this.search_bar) {
-        Inertia.get(`/evaluations/${this.type}`, {
-          search_value: this.search_bar,
-        });
-      } else {
-        Inertia.get(`/evaluations/${this.type}`);
-      }
+    paginationControl(link) {
+      Inertia.get(link, {
+        searchValue: this.search_value,
+        orderBy: this.order_by,
+      });
+    },
+    filterUsers() {
+      Inertia.get(`/evaluations/${this.type}`, {
+        searchValue: this.search_value,
+        orderBy: this.order_by,
+      });
     },
   },
 };
@@ -44,16 +58,26 @@ export default {
         <span class="department-name" v-if="department"> {{ department.name }} </span>
       </div>
 
-      <div class="search-bar">
-        <i class="fa-solid fa-search"></i>
+      <div class="right">
+        <div class="search-bar">
+          <input
+            type="text"
+            name="searchValue"
+            v-model="search_value"
+            placeholder="Search a user..."
+          />
 
-        <input
-          type="text"
-          name="search_value"
-          v-model="search_bar"
-          @input="searchUsers"
-          placeholder="Search a user..."
-        />
+          <i
+            v-if="search_value"
+            @click="filterUsers()"
+            class="fa-solid fa-circle-arrow-right fa-lg"
+          ></i>
+        </div>
+
+        <select name="" id="" v-model="order_by" @change="filterUsers()">
+          <option value="ASC">ASC</option>
+          <option value="DESC">DESC</option>
+        </select>
       </div>
     </div>
 
@@ -88,25 +112,31 @@ export default {
       </table>
     </div>
     <div class="footer">
-      <Link :href="users.first_page_url">
-        <i class="fa-solid fa-angles-left"></i>
-      </Link>
-      <Link :href="users.prev_page_url">
-        <i class="fas fa-arrow-circle-left"></i>
-      </Link>
+      <i
+        @click="paginationControl(users.first_page_url)"
+        class="fa-solid fa-angles-left"
+      ></i>
+
+      <i
+        @click="paginationControl(users.prev_page_url)"
+        class="fas fa-arrow-circle-left"
+      ></i>
 
       <span>Page {{ users.current_page }} of {{ users.last_page }}</span>
-      <Link :href="users.next_page_url">
-        <i class="fas fa-arrow-circle-right"></i>
-      </Link>
 
-      <Link :href="users.last_page_url">
-        <i class="fa-solid fa-angles-right"></i>
-      </Link>
+      <i
+        @click="paginationControl(users.next_page_url)"
+        class="fas fa-arrow-circle-right"
+      ></i>
+
+      <i
+        @click="paginationControl(users.last_page_url)"
+        class="fa-solid fa-angles-right"
+      ></i>
     </div>
   </div>
 </template>
 
 <style scoped>
-@import "./css/evaluation.css";
+@import "./css/user-list.css";
 </style>

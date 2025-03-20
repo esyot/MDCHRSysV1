@@ -1,10 +1,12 @@
 <script>
 import ConfirmationFormModal from "./ConfirmationFormModal.vue";
 import { Inertia } from "@inertiajs/inertia";
+import { useToast } from "vue-toastification";
 export default {
   emits: ["toggleEditStaff"],
   props: {
     user_id: String,
+    staff: Object,
     positionList: Array,
   },
   components: {
@@ -13,8 +15,12 @@ export default {
 
   data() {
     return {
+      formData: {
+        position: this.staff.position ?? "",
+        date_hired: this.staff.date_hired ?? "",
+      },
       isConfirmation: false,
-      message: "Confirm to update user's department?",
+      message: "Are you sure to update staff details?",
     };
   },
   methods: {
@@ -25,10 +31,30 @@ export default {
       this.toggleConfirmForm();
       this.closeModal();
 
-      Inertia.patch(`/users/user-department-update`, {
-        user_id: this.user_id,
-        department_id: this.department_id,
-      });
+      const toast = useToast();
+
+      Inertia.put(
+        `/users/staff/edit-details`,
+        {
+          staff_id: this.staff.id,
+          formData: this.formData,
+        },
+        {
+          onSuccess: (response) => {
+            toast.success(response.props.success, {
+              position: "top-center",
+              duration: 3000,
+            });
+          },
+
+          onError: (errors) => {
+            toast.error(errors.error, {
+              position: "top-center",
+              duration: 3000,
+            });
+          },
+        }
+      );
     },
 
     toggleConfirmForm() {
@@ -54,8 +80,14 @@ export default {
       </div>
 
       <div class="input-group">
-        <label for="">Position: </label>
-        <input type="text" list="positionList" />
+        <label for="position">Position: </label>
+        <input
+          type="text"
+          id="position"
+          name="position"
+          list="positionList"
+          v-model="formData.position"
+        />
         <datalist id="positionList">
           <option
             :value="position"
@@ -68,8 +100,13 @@ export default {
       </div>
 
       <div class="input-group">
-        <label for="">Date Hired: </label>
-        <input type="date" />
+        <label for="date_hired">Date Hired: </label>
+        <input
+          id="date_hired"
+          name="date_hired"
+          type="date"
+          v-model="formData.date_hired"
+        />
       </div>
 
       <div class="buttons">

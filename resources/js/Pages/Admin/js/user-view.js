@@ -20,6 +20,7 @@ export default {
         userRoles: Array,
         personalDetails: Object,
         userDepartment: Object,
+        userPosition: String,
         forms: Object,
         roles: Array,
         roleList: Array,
@@ -27,6 +28,8 @@ export default {
         evaluations: Object,
         positionList: Array,
         specializationList: Array,
+        teacher: Array,
+        staff: Array,
     },
     data() {
         return {
@@ -58,7 +61,6 @@ export default {
             week: "",
             isEditStaff: false,
             isEditTeacher: false,
-            teacher: this.personalDetails.teacher ?? [],
         };
     },
 

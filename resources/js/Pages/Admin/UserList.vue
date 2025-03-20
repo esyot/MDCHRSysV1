@@ -15,15 +15,18 @@
     <div class="container-items">
       <div class="left">
         <div class="search-bar">
-          <i class="fa-solid fa-search"></i>
-
           <input
             type="text"
             name="search_value"
             v-model="search_bar"
-            @input="filterUsers()"
             placeholder="Search a user"
           />
+
+          <i
+            v-if="search_bar"
+            @click="filterUsers()"
+            class="fa-solid fa-circle-arrow-right fa-lg"
+          ></i>
         </div>
       </div>
 
@@ -122,21 +125,21 @@
       </div>
     </div>
     <div class="footer">
-      <Link :href="users.first_page_url">
-        <i class="fa-solid fa-angles-left"></i>
-      </Link>
-      <Link :href="users.prev_page_url">
-        <i class="fas fa-chevron-left"></i>
-      </Link>
+      <i
+        @click="paginationControl(users.first_page_url)"
+        class="fa-solid fa-angles-left"
+      ></i>
+
+      <i @click="paginationControl(users.prev_page_url)" class="fas fa-chevron-left"></i>
 
       <span>Page {{ users.current_page }} of {{ users.last_page }}</span>
-      <Link :href="users.next_page_url">
-        <i class="fas fa-chevron-right"></i>
-      </Link>
 
-      <Link :href="users.last_page_url">
-        <i class="fa-solid fa-angles-right"></i>
-      </Link>
+      <i @click="paginationControl(users.next_page_url)" class="fas fa-chevron-right"></i>
+
+      <i
+        @click="paginationControl(users.last_page_url)"
+        class="fa-solid fa-angles-right"
+      ></i>
     </div>
   </div>
 </template>

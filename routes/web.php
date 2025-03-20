@@ -98,6 +98,9 @@ Route::middleware([Check2WayVerification::class])->group(function () {
 
             // Analytics
             Route::get('/users/analytics/', [AnalyticsController::class, 'index']);
+
+            Route::put('/users/teacher/edit-details', [UserController::class, "teacherUpdate"]);
+            Route::put('/users/staff/edit-details', [UserController::class, 'staffUpdate']);
         });
 
         // Evaluation Template Management (Admin)

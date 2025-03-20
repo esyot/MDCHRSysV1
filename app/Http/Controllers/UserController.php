@@ -22,6 +22,71 @@ use GuzzleHttp\Client;
 
 class UserController extends Controller
 {
+
+    public function staffUpdate(Request $request)
+    {
+
+        $staff = Staff::find($request->staff_id);
+
+        if ($staff)
+        {
+            $formData = $request->formData;
+
+            $staff->update([
+                'position' => $formData['position'],
+                'date_hired' => $formData['date_hired'],
+            ]);
+
+            if ($staff)
+            {
+                return redirect()->back()->with([
+                    'success' => "Staff details has been updated successfully!"
+                ]);
+
+            } else
+            {
+                return back()->withErrors([
+                    'error' => "Staff details update failed!"
+                ]);
+            }
+
+        } else
+        {
+
+            return back()->withErrors([
+                'error' => "Staff not found!"
+            ]);
+        }
+    }
+    public function teacherUpdate(Request $request)
+    {
+
+        if ($request)
+        {
+            $formData = $request->formData;
+            $teacher = Teacher::find($request->teacher_id);
+
+            $teacher->update([
+                'specialization' => $formData['specialization'],
+                'department_id' => $formData['department_id'],
+                'date_hired' => $formData['date_hired'],
+            ]);
+
+            if ($teacher)
+            {
+                return redirect()->back()->with([
+                    'success' => 'Teacher has been updated successfully!'
+                ]);
+            } else
+            {
+                return back()->withErrors([
+                    'error' => "Teacher's update failed!"
+                ]);
+            }
+
+        }
+
+    }
     public function updateProfilePicture(Request $request)
     {
         $validatedData = $request->validate([
@@ -118,11 +183,14 @@ class UserController extends Controller
     {
         $this->globalVariables();
         $roles = $this->roles;
-        $departmentList = Department::all();
+        $roleList = $this->roles;
+        $departmentList = $this->departmentList;
+        $positionList = config('variables.positionList');
 
         $orderBy = $request->orderBy ?? 'ASC';
         $type = $request->type ?? 'user';
         $department = $request->department ?? null;
+
 
         if ($type == 'user')
         {
@@ -142,13 +210,12 @@ class UserController extends Controller
                     $query->where('last_name', 'LIKE', '%' . $search_value . '%')
                         ->orWhere('first_name', 'LIKE', '%' . $search_value . '%');
                 })
-                ->orderBy('last_name')
+                ->orderBy('last_name', $orderBy)
                 ->whereHas('teacher')
                 ->paginate(12);
 
         } else if ($type == 'staff')
         {
-
             $users = User::
 
                 when($department, function ($query, $department) {
@@ -158,13 +225,10 @@ class UserController extends Controller
                     $query->where('last_name', 'LIKE', '%' . $search_value . '%')
                         ->orWhere('first_name', 'LIKE', '%' . $search_value . '%');
                 })
-                ->orderBy('last_name')
                 ->whereHas('staff')
+                ->orderBy('last_name', $orderBy)
                 ->paginate(12);
         }
-
-        $roleList = Role::all();
-
 
 
         return Inertia::render('Pages/Admin/UserList', [
@@ -175,12 +239,13 @@ class UserController extends Controller
             'roles' => $roles,
             'pageTitle' => 'Users',
             'departmentList' => $departmentList,
+            'positionList' => $positionList,
             'roleList' => $roleList,
             'orderBy' => $orderBy,
             'search_value' => $request->search_value ?? null,
+            'success' => session('success') ?? "",
         ]);
     }
-
 
 
     public function userView($id)
@@ -215,7 +280,17 @@ class UserController extends Controller
 
         $userRoles = User::find($id)->getRoleNames();
 
-        $userDepartment = $personalDetails->teacher->department;
+        $teacher = null;
+        if ($personalDetails->teacher)
+        {
+            $teacher = $personalDetails->teacher;
+        }
+
+        $staff = null;
+        if ($personalDetails->staff)
+        {
+            $staff = $personalDetails->staff;
+        }
 
         $this->globalVariables();
         $roles = $this->roles;
@@ -287,10 +362,11 @@ class UserController extends Controller
             'pageTitle' => $pageTitle,
             'roleList' => $roleList,
             'user_id' => $id,
-            'messageSuccess' => session('success') ?? null,
+            'success' => session('success') ?? "",
             'departmentList' => $departmentList,
             'forms' => $flattenedForms,
-            'userDepartment' => $userDepartment,
+            'teacher' => $teacher,
+            'staff' => $staff,
             'positionList' => $positionList,
             'specializationList' => $specializationList
 
@@ -473,9 +549,11 @@ class UserController extends Controller
 
     public function syncUsers($type)
     {
+        ini_set('max_execution_time', 300);
 
         if ($type === 'teacher')
         {
+
             $currentUsers = User::pluck('id')->toArray();
 
             $code = config('variables.api_key');
@@ -503,9 +581,10 @@ class UserController extends Controller
                     'first_name' => $userData['fname'],
                     'last_name' => $userData['lname'],
                     'email' => $userData['email'],
-                    'password' => $userData['password'],
+
                 ]);
 
+                $user->assignRole('teacher');
 
                 if (isset($userData['teacher_account']))
                 {
@@ -516,7 +595,7 @@ class UserController extends Controller
                         'specialization' => $userData['teacher_account']['specialization'],
                     ]);
 
-                    $user->assignRole('teacher');
+
                 }
             }
 

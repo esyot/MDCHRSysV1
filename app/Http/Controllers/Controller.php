@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
@@ -14,6 +15,8 @@ abstract class Controller
     protected $user;
 
     protected $departments;
+
+    protected $departmentList;
 
     protected $parentDepartments;
 
@@ -65,5 +68,7 @@ abstract class Controller
         $this->parentDepartments = $departmentsWithParent;
 
         $this->departments = $departmentsWithNoParent->concat($departmentsWithParent);
+
+        $this->departmentList = Department::all();
     }
 }

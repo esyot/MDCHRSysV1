@@ -1,5 +1,6 @@
 import { Inertia } from "@inertiajs/inertia";
 import ConfirmationFormModal from "@/Modals/ConfirmationFormModal.vue";
+import { useToast } from "vue-toastification";
 export default {
     name: "AddUserModal",
     emits: ["toggleAddUserModal"],
@@ -99,11 +100,31 @@ export default {
                 this.toggleConfirmForm();
                 this.closeModal();
 
-                Inertia.post(`/users/${this.type}/add`, {
-                    formData: this.formData,
-                    selected_id: this.selected_id,
-                    type: this.type,
-                });
+                const toast = useToast();
+
+                Inertia.post(
+                    `/users/${this.type}/add`,
+                    {
+                        formData: this.formData,
+                        selected_id: this.selected_id,
+                        type: this.type,
+                    },
+                    {
+                        onSuccess: (response) => {
+                            toast.success(response.props.success, {
+                                position: "top-center",
+                                duration: 3000,
+                            });
+                        },
+
+                        onError: (errors) => {
+                            toast.error(errors.error, {
+                                position: "top-center",
+                                duration: 3000,
+                            });
+                        },
+                    },
+                );
             }
         },
         toggleConfirmForm() {

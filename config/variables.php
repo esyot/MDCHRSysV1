@@ -145,7 +145,7 @@ return [
         "Game Design",
         "Cybersecurity",
         "Data Science",
-        "Information Technology",
+        "Information & Technology",
         "Software Engineering",
         "Mobile App Development",
         "Database Management",

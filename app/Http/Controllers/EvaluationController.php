@@ -150,17 +150,19 @@ class EvaluationController extends Controller
         $roles = $this->roles;
         $user = $this->user;
 
-        $search_value = $request->search_value;
+        $searchValue = $request->searchValue;
+        $orderBy = $request->orderBy ?? "ASC";
 
         if ($type === 'teacher')
         {
-            $users = User::when($request->search_value, function ($query, $search_value) {
-                $query->where('last_name', 'LIKE', '%' . $search_value . '%')
-                    ->orWhere('first_name', 'LIKE', '%' . $search_value . '%');
+            $users = User::when($request->searchValue, function ($query, $searchValue) {
+                $query->where('last_name', 'LIKE', '%' . $searchValue . '%')
+                    ->orWhere('first_name', 'LIKE', '%' . $searchValue . '%');
             })
                 ->whereNot('id', $user->id)
                 ->whereRelation('teacher', 'department_id', '=', $user->teacher->department_id)
                 ->role(['teacher'])
+                ->orderBy('last_name', $orderBy)
                 ->paginate(12);
 
             $department = Department::find(Teacher::where('id', $user->id)
@@ -169,22 +171,24 @@ class EvaluationController extends Controller
             return inertia('Pages/Evaluation/UserList', [
                 'user' => $user,
                 'type' => $type,
-                'search_value' => $search_value,
+                'searchValue' => $searchValue,
+                'orderBy' => $orderBy,
                 'users' => $users,
                 'department' => $department,
                 'roles' => $roles,
                 'pageTitle' => "Teacher's Evaluation",
-                'is_evaluation' => true,
+
             ]);
 
         } else
         {
-            $users = User::when($request->search_value, function ($query, $search_value) {
-                $query->where('last_name', 'LIKE', '%' . $search_value . '%')
-                    ->orWhere('first_name', 'LIKE', '%' . $search_value . '%');
+            $users = User::when($request->searchValue, function ($query, $searchValue) {
+                $query->where('last_name', 'LIKE', '%' . $searchValue . '%')
+                    ->orWhere('first_name', 'LIKE', '%' . $searchValue . '%');
             })
                 ->whereHas('staff')
                 ->role('staff')
+                ->orderBy('last_name', $orderBy)
                 ->paginate(12);
 
 
@@ -193,12 +197,12 @@ class EvaluationController extends Controller
             return inertia('Pages/Evaluation/UserList', [
                 'user' => $user,
                 'type' => $type,
-                'search_value' => $search_value,
+                'searchValue' => $searchValue,
                 'users' => $users,
                 'department' => $department,
                 'roles' => $roles,
                 'pageTitle' => "Staff's Evaluation",
-                'is_evaluation' => true,
+
             ]);
         }
     }

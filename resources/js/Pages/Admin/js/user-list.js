@@ -35,12 +35,32 @@ export default {
         };
     },
 
+    watch: {
+        search_bar(newVal) {
+            if (newVal === "") {
+                Inertia.get("/users/users-list", {
+                    type: this.user_type,
+                    orderBy: this.order_by,
+                    department: this.department_id,
+                });
+            }
+        },
+    },
+
     methods: {
+        paginationControl(link) {
+            Inertia.get(link, {
+                type: this.user_type,
+                search_value: this.search_bar,
+                orderBy: this.order_by,
+                department: this.department_id,
+            });
+        },
         filterUsers() {
             Inertia.get("/users/users-list", {
                 type: this.user_type,
                 search_value: this.search_bar,
-                orderBy: this.orderBy,
+                orderBy: this.order_by,
                 department: this.department_id,
             });
         },

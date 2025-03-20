@@ -1,6 +1,8 @@
 <script>
 import ConfirmationFormModal from "./ConfirmationFormModal.vue";
 import { Inertia } from "@inertiajs/inertia";
+import { useToast } from "vue-toastification";
+
 export default {
   emits: ["toggleEditTeacher"],
   props: {
@@ -21,7 +23,7 @@ export default {
         department_id: this.teacher.department_id ?? "",
       },
       isConfirmation: false,
-      message: "Confirm to update user's department?",
+      message: "Are sure to update teacher's details?",
     };
   },
   methods: {
@@ -32,12 +34,31 @@ export default {
       this.toggleConfirmForm();
       this.closeModal();
 
-      Inertia.put(`/users/teacher`, {
-        user_id: this.user_id,
-        department_id: this.department_id,
-      });
-    },
+      const toast = useToast();
 
+      Inertia.put(
+        `/users/teacher/edit-details`,
+        {
+          formData: this.formData,
+          teacher_id: this.teacher.id,
+        },
+        {
+          onSuccess: (response) => {
+            toast.success(response.props.success, {
+              position: "top-center",
+              duration: 3000,
+            });
+          },
+          onError: (errors) => {
+            toast.error(errors.message, {
+              position: "top-center",
+              duration: 3000,
+            });
+          },
+        }
+      );
+      s;
+    },
     toggleConfirmForm() {
       this.isConfirmation = !this.isConfirmation;
     },
@@ -100,9 +121,7 @@ export default {
 
       <div class="buttons">
         <button @click="closeModal" class="close-btn">Close</button>
-        <button v-if="department_id" @click="toggleConfirmForm()" class="update-btn">
-          Update
-        </button>
+        <button @click="toggleConfirmForm()" class="update-btn">Update</button>
       </div>
     </div>
   </div>
