@@ -100,16 +100,8 @@
             <option value="Home Medication">Home Medication</option>
           </select>
         </div>
-        <div
-          class="form-section"
-          v-if="
-            formData.leave_type === 'Sick' &&
-            formData.convalescence_place === 'In Hospital'
-          "
-        >
-          <label for="leave_sick_hospital"
-            >If in Hospital, please specify your illness:</label
-          >
+        <div class="form-section" v-if="formData.leave_type === 'Sick'">
+          <label for="leave_sick_hospital">Please specify your illness: </label>
 
           <input
             type="text"
@@ -146,43 +138,6 @@
             class="forms-controller"
             placeholder="eg., Tubigon Center"
             v-model="formData.address"
-            required
-          />
-        </div>
-        <div
-          class="form-section"
-          v-if="
-            formData.leave_type === 'Sick' &&
-            formData.convalescence_place === 'Out Patient'
-          "
-        >
-          <label for="condition">Specify illness:</label>
-          <input
-            type="text"
-            id="condition"
-            class="forms-controller"
-            placeholder="eg., Fever"
-            v-model="formData.illness"
-            required
-          />
-        </div>
-
-        <div
-          class="form-section"
-          v-if="
-            formData.leave_type === 'Sick' &&
-            formData.convalescence_place === 'Home Medication'
-          "
-        >
-          <label for="leave_sick_home_medication"
-            >If Home Medication, please specify ILLNESS:</label
-          >
-          <input
-            type="text"
-            id="leave_sick_home_medication"
-            class="forms-controller"
-            v-model="formData.illness"
-            placeholder="eg., Headache"
             required
           />
         </div>
@@ -275,7 +230,13 @@
             >Upload a photo of supporting document (Medical certificate, Medical Check-up,
             etc.)</label
           >
-          <input type="file" @change="handleFileChange" required />
+          <input
+            type="file"
+            @change="handleFileChange"
+            required
+            accept=".jpg,.jpeg,.png"
+          />
+
           <small>Note: <i>selected file must be in .jpg format</i></small>
         </div>
 
@@ -307,8 +268,12 @@
           </div>
         </div>
         <div v-if="!isSubstitute && roles.includes('teacher')" class="form-section">
-          <label for="date_end">Please specify the alternatives used to the class.</label>
+          <label for="class_description">
+            Please specify the alternatives used in the class during your absence.
+          </label>
+
           <textarea
+            id="class_description"
             type="text"
             v-model="formData.class_description"
             placeholder="Input text here."

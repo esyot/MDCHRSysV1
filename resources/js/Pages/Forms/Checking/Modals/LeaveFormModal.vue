@@ -38,10 +38,10 @@
           <text class="second">Tubigon, Bohol</text>
           <text class="third">HUMAN RESOURCE OFFICE</text>
         </div>
-      </div> -->
+      </div>
       <div class="modal-title">
         <text>Leave Application Form</text>
-      </div>
+      </div> -->
       <div class="modal-details">
         <div>
           <div class="row">
@@ -247,8 +247,8 @@
           </div>
 
           <div class="description" v-if="formData.substitutes.length === 0">
-            <label for="">Class Alternatives:</label>
-            <text>
+            <label for="">Class Description:</label>
+            <text class="underline">
               {{ formData.class_description }}
             </text>
           </div>
@@ -410,6 +410,10 @@
                 </tr>
               </tbody>
             </table>
+
+            <div class="records-table-footer" v-if="forms.length === 0">
+              <span>No records found!</span>
+            </div>
           </div>
 
           <div

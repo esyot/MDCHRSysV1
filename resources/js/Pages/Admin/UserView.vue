@@ -60,7 +60,9 @@
           </div>
           <div class="user-details">
             <span class="name"
-              >{{ personalDetails.first_name }} {{ personalDetails.last_name }}</span
+              >{{ personalDetails.first_name }} {{ personalDetails.last_name }}
+
+              ({{ personalDetails.user }})</span
             >
             <div class="user-department" v-if="teacher.department">
               <i class="fas fa-building"></i>
@@ -89,50 +91,58 @@
       </div>
       <div class="buttons">
         <div class="btn-left">
-          <select
-            v-model="selectedFormType"
-            title="Select type of forms to be displayed in the table below."
-          >
-            <option value="All">All Forms</option>
-            <option value="Travel Form">Travel Forms</option>
-            <option value="Leave Form">Leave Forms</option>
+          <select v-model="form_type">
+            <option value="" disabled selected>Type</option>
+            <option value="all">All</option>
+            <option value="leave">Leave</option>
+            <option value="travel">Travel</option>
           </select>
+
+          <select v-if="form_type === 'leave'" v-model="leave_type">
+            <option value="" disabled selected>Type of Leave</option>
+            <option value="all">All</option>
+            <option value="personal">Personal</option>
+            <option value="sick">Sick</option>
+          </select>
+
           <select
-            v-model="selectedYear"
-            title="Select a year to be filtered in the table below."
+            v-if="form_type === 'leave' && leave_type === 'sick'"
+            v-model="illness_type"
           >
-            <option value="" disabled>Select Year</option>
-            <option v-for="year in years" :key="year" :value="year">
-              {{ year }}
+            <option value="" disabled selected>Type of Illness</option>
+            <option :value="ill" v-for="(ill, index) in illness" :key="ill">
+              {{ ill }}
             </option>
           </select>
-          <select name="" id="" v-model="date_report">
-            <option value="" disabled selected>Select Filter</option>
 
-            <option value="">Annually</option>
-            <option value="Monthly">Monthly</option>
-            <option value="Weekly">Weekly</option>
+          <select v-model="filter_by">
+            <option value="" disabled selected>Filter By</option>
+            <option value="">Year</option>
+            <option value="Month">Month</option>
+            <option value="Week">Week</option>
           </select>
 
-          <select
-            name=""
-            id=""
-            v-model="month"
-            v-if="date_report == 'Monthly' || date_report == 'Weekly'"
-          >
+          <select v-model="selected_year">
+            <option disabled selected value="">Select Year</option>
+            <option value="">All</option>
+            <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+          </select>
+
+          <select v-model="month" v-if="filter_by === 'Month' || filter_by === 'Week'">
             <option disabled selected value="">Select Month</option>
             <option v-for="month in months" :key="month" :value="month">
               {{ month }}
             </option>
           </select>
 
-          <select name="" id="" v-model="week" v-if="date_report == 'Weekly'">
+          <select v-model="week" v-if="filter_by === 'Week'">
             <option value="" disabled selected>Select Week</option>
             <option value="">All Weeks</option>
             <option value="1">1st Week</option>
             <option value="2">2nd Week</option>
             <option value="3">3rd Week</option>
             <option value="4">4th Week</option>
+            <option value="5">5th Week</option>
           </select>
         </div>
         <div class="btn-right">

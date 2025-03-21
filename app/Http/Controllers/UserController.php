@@ -354,6 +354,12 @@ class UserController extends Controller
         $positionList = config('variables.positionList');
         $specializationList = config('variables.specializationList');
 
+        $illness = LeaveForm::
+            where('leave_type', 'Sick')
+            ->where('user_id', $personalDetails->id)
+            ->where('status', 'approved')
+            ->pluck('illness');
+
         return Inertia::render('Pages/Admin/UserView', [
             'user' => Auth::user(),
             'personalDetails' => $personalDetails,
@@ -368,7 +374,8 @@ class UserController extends Controller
             'teacher' => $teacher,
             'staff' => $staff,
             'positionList' => $positionList,
-            'specializationList' => $specializationList
+            'specializationList' => $specializationList,
+            'illness' => $illness
 
 
         ]);

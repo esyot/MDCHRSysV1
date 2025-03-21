@@ -59,12 +59,15 @@ class AnalyticsController extends Controller
             return strtotime($b['created_at']) - strtotime($a['created_at']);
         });
 
+        $illness = LeaveForm::where('status', "approved")->pluck('illness');
+
 
         return inertia('Pages/Admin/Analytics', [
             'user' => $user,
             'roles' => $roles,
             'pageTitle' => "Analytics",
             'forms' => $flattenedForms,
+            'illness' => $illness,
         ]);
     }
 }

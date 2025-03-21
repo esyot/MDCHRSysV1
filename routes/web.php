@@ -61,7 +61,7 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::middleware([CheckUserRole::class . ':dean,hr,v-admin,vp-acad,p-admin,admin'])->group(function () {
             Route::get('/forms/checking', [FormsController::class, 'checking']);
             Route::get('/forms/checking/{action}', [FormsController::class, 'checking']);
-            Route::post('/forms/checking/forward', [FormsController::class, 'forward']);
+            Route::put('/forms/checking/forward', [FormsController::class, 'forward']);
             Route::get('/forms/find/{form_type}/{user_id}/{year}', [FormsController::class, 'find']);
         });
 

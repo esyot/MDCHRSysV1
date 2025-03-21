@@ -1,4 +1,5 @@
 import { Inertia } from "@inertiajs/inertia";
+import { useToast } from "vue-toastification";
 
 export default {
     emits: ["toggleFormModal"],
@@ -47,10 +48,28 @@ export default {
                 disapproval_description: this.disapproval_description,
             };
 
-            Inertia.post("/forms/checking/forward", formData);
+            const toast = useToast();
 
-            this.toggleConfirmForm(this.action);
-            this.closeFormModal;
+            Inertia.put("/forms/checking/forward", formData, {
+                onSuccess: (response) => {
+                    toast.success(response.props.success, {
+                        position: "top-center",
+                        duration: 3000,
+                    });
+
+                    this.toggleConfirmForm(this.action);
+                    this.toggleFormModal();
+                },
+                onError(erorrs) {
+                    toast.error(erorrs.error, {
+                        position: "top-center",
+                        duration: 3000,
+                    });
+
+                    this.toggleConfirmForm(this.action);
+                    this.toggleFormModal();
+                },
+            });
         },
         toggleConfirmForm(action) {
             this.action === action

@@ -3,6 +3,7 @@ import { Link } from "@inertiajs/inertia-vue3";
 import { formatDistanceToNow, differenceInSeconds } from "date-fns";
 import { useToast } from "vue-toastification";
 import { Inertia } from "@inertiajs/inertia";
+import axios from "axios";
 
 export default {
   data() {
@@ -69,18 +70,17 @@ export default {
     },
 
     fetchNotifCount(user) {
-      fetch(`/notifications/${user}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          this.notifications = data ?? null;
+      axios
+        .get(`/notifications/${user}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          this.notifications = response.data ?? null;
         })
         .catch((error) => {
-          console.error("Error fetching leave forms:", error);
+          console.error("Error fetching notifications:", error);
         });
     },
     startFetchingNotifications() {
@@ -101,22 +101,22 @@ export default {
       const secondsAgo = differenceInSeconds(now, createdDate);
 
       if (secondsAgo < 60) {
-        return `${secondsAgo} secs`;
+        return `${secondsAgo} s`;
       }
 
       const timeAgo = formatDistanceToNow(createdDate, { addSuffix: false });
       const regex = /about |ago/gi;
       let result = timeAgo.replace(regex, "").trim();
 
-      result = result.replace(/minute(s)?/gi, (match) =>
-        match.includes("s") ? "mins" : "min"
-      );
-      result = result.replace(/hour(s)?/gi, (match) =>
-        match.includes("s") ? "hrs" : "hr"
-      );
+      result = result.replace(/minute(s)?/gi, "m");
+      result = result.replace(/hour(s)?/gi, "h");
+      result = result.replace(/day(s)?/gi, "d");
+      result = result.replace(/month(s)?/gi, "m");
+      result = result.replace(/year(s)?/gi, "y");
 
       return result;
     },
+
     checkStatus(array) {
       if (array && array.includes(this.user.id)) {
         return "";

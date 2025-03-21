@@ -244,6 +244,11 @@ class FormsController extends Controller
             $leaveForms = $leaveForms->merge($leaveForms);
             $travelForms = $travelForms->merge($travelForms);
 
+        } else
+        {
+            return back()->withErrors([
+                'error' => "Sorry, you are not allowed to do this action."
+            ]);
         }
 
 
@@ -276,7 +281,7 @@ class FormsController extends Controller
             'selected' => $action ?? 'all',
             'forms' => $flattenedForms,
             'roles' => $roles,
-            'messageSuccess' => session('success') ?? null,
+            'success' => session('success') ?? null,
         ]);
 
     }

@@ -1,46 +1,15 @@
 import Layout from "@/Layouts/Layout.vue";
-import PersonalDetails from "@/Pages/Admin/PersonalDetails.vue";
-import { Inertia } from "@inertiajs/inertia";
-import EditRoleModal from "@/Modals/EditRoleModal.vue";
-import EditDepartmentModal from "@/Modals/EditDepartmentModal.vue";
-import EditStaffModal from "@/Modals/EditStaffModal.vue";
-import EditTeacherModal from "@/Modals/EditTeacherModal.vue";
-
 export default {
     layout: Layout,
-    components: {
-        PersonalDetails,
-        EditRoleModal,
-        EditDepartmentModal,
-        EditStaffModal,
-        EditTeacherModal,
-    },
     props: {
-        user_id: String,
-        userRoles: Array,
-        personalDetails: Object,
-        userDepartment: Object,
-        userPosition: String,
         forms: Object,
-        roles: Array,
-        roleList: Array,
-        departmentList: Array,
-        evaluations: Object,
-        positionList: Array,
-        specializationList: Array,
-        teacher: Object,
-        staff: Object,
+        user: Object,
         illness: Array,
     },
     data() {
         return {
-            AdminActiveTab:
-                localStorage.getItem("AdminActiveTab") || "overview",
-            isEditRole: false,
-            isEditDepartment: false,
-            selectedFormType: "All",
-            selectedFilter: "",
-            form_selection: "",
+            form_type: "",
+            leave_type: "",
             currentYear: new Date().getFullYear(),
             selected_year: new Date().getFullYear(),
             months: [
@@ -57,18 +26,13 @@ export default {
                 "November",
                 "December",
             ],
-
-            form_type: "all",
-            leave_type: "",
-            illness_type: "",
             month: "",
-            filter_by: "",
+            filter: "",
             week: "",
-            isEditStaff: false,
-            isEditTeacher: false,
+            search_value: "",
+            illness_type: "",
         };
     },
-
     computed: {
         filteredForms() {
             let filtered = this.forms;
@@ -95,7 +59,7 @@ export default {
                 });
             }
 
-            if (this.filter_by && (this.month || this.week)) {
+            if (this.filter && (this.month || this.week)) {
                 const monthIndex = this.months.indexOf(this.month);
                 filtered = filtered.filter((item) => {
                     const startDate = new Date(item.date_start);
@@ -106,14 +70,14 @@ export default {
                     const endWeek = this.getWeekOfMonth(endDate);
 
                     let isMonthMatch = false;
-                    if (this.filter_by === "Month") {
+                    if (this.filter === "Month") {
                         isMonthMatch =
                             startMonth === monthIndex ||
                             endMonth === monthIndex;
                     }
 
                     let isWeekMatch = false;
-                    if (this.filter_by === "Week" && this.week) {
+                    if (this.filter === "Week" && this.week) {
                         isWeekMatch =
                             (startWeek === parseInt(this.week) &&
                                 startMonth === monthIndex) ||
@@ -142,13 +106,28 @@ export default {
                 });
             }
 
+            if (this.search_value) {
+                filtered = filtered.filter(
+                    (item) =>
+                        item.user.first_name
+                            .toLowerCase()
+                            .includes(this.search_value.toLowerCase()) ||
+                        item.user.last_name
+                            .toLowerCase()
+                            .includes(this.search_value.toLowerCase()) ||
+                        item.user.middle_name
+                            .toLowerCase()
+                            .includes(this.search_value.toLowerCase()),
+                );
+            }
+
             return filtered;
         },
+
         years() {
             const startYear = 2025;
             const endYear = this.currentYear + 30;
             const years = [];
-
             for (let year = startYear; year <= endYear; year++) {
                 years.push(year);
             }
@@ -156,33 +135,6 @@ export default {
         },
     },
     methods: {
-        toggleEditStaff() {
-            this.isEditStaff = !this.isEditStaff;
-        },
-        toggleEditTeacher() {
-            this.isEditTeacher = !this.isEditTeacher;
-        },
-        openEval(type) {
-            if (type === "teacher") {
-                Inertia.visit(
-                    `/forms/evaluation-form/${this.personalDetails.id}/teacher`,
-                );
-            } else if (type === "staff") {
-                Inertia.visit(
-                    `/forms/evaluation-form/${this.personalDetails.id}/staff`,
-                );
-            }
-        },
-        setAdminActiveTab(tab) {
-            this.AdminActiveTab = tab;
-            localStorage.setItem("AdminActiveTab", tab);
-        },
-        toggleEditRole() {
-            this.isEditRole = !this.isEditRole;
-        },
-        toggleEditDepartment() {
-            this.isEditDepartment = !this.isEditDepartment;
-        },
         getWeekNumber(date) {
             const tempDate = new Date(date.getTime());
             tempDate.setMonth(0, 1);
@@ -192,7 +144,6 @@ export default {
             const diff = date - startOfYear;
 
             const millisecondsInWeek = 1000 * 60 * 60 * 24 * 7;
-
             return Math.floor(diff / millisecondsInWeek) + 1;
         },
         formatDate(date) {
@@ -213,6 +164,9 @@ export default {
             const startOfMonth = tempDate.getDay();
             const diff = date.getDate() + startOfMonth - 1;
             return Math.ceil(diff / 7);
+        },
+        clearSearchBar() {
+            this.search_value = "";
         },
     },
 };
