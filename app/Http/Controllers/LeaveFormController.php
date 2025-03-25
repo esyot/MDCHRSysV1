@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NotificationCreate;
 use App\Models\LeaveForm;
 use App\Models\Substitute;
 use App\Models\User;
-use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;

@@ -2,6 +2,7 @@
 import Layout from "@/Layouts/Layout.vue";
 import { Link } from "@inertiajs/inertia-vue3";
 import { Inertia } from "@inertiajs/inertia";
+import { useToast } from "vue-toastification";
 
 export default {
   layout: Layout,
@@ -33,7 +34,15 @@ export default {
   },
   methods: {
     visitUser(user_id) {
-      Inertia.get(`/evaluations/user-view/${user_id}`);
+      const toast = useToast();
+      Inertia.visit(`/evaluations/user-view/${user_id}`, {
+        onError: (errors) => {
+          toast.error(errors.error, {
+            position: "top-center",
+            duration: 3000,
+          });
+        },
+      });
     },
     paginationControl(link) {
       Inertia.get(link, {

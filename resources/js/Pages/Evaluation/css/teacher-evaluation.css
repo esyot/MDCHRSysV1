@@ -1,6 +1,12 @@
+.content {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
 .evaluation-container {
+    background-color: #fff;
     max-width: 90%;
-    margin: auto;
     padding: 20px;
 }
 
@@ -215,4 +221,18 @@ ul {
     gap: 10rem;
     align-items: center;
     margin-top: 5px;
+}
+
+.scroll-to-down {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: 20px;
+}
+
+.scroll-to-down i {
+    scale: 1.4;
+    color: rgb(84, 152, 255);
+    filter: drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.2));
 }

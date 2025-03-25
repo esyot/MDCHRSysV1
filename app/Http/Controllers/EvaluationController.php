@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
-use App\Models\EvalItem;
 use App\Models\EvalTemplate;
 use App\Models\EvalTemplateCategory;
 use App\Models\EvalTemplateItem;
 use App\Models\Evaluation;
 use App\Models\Teacher;
 use App\Models\User;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
-use Illuminate\Support\Str;
 
 class EvaluationController extends Controller
 {
@@ -63,22 +63,49 @@ class EvaluationController extends Controller
             ->get();
 
         $code = config('variables.api_key');
-        $subj_url = 'https://sis.materdeicollege.com/api/hr/subject-classes';
+
 
         foreach ($evaluations as $evaluation)
         {
 
-            $subj_client = new Client();
-            $response = $subj_client->get($subj_url, [
-                'query' => [
-                    'code' => $code,
-                    'term_id' => $evaluation->term_id,
-                    'teacher_id' => $fetchedUser->teacher->id,
-                ],
-                'verify' => false,
-            ]);
+            try
+            {
+                $subj_url = 'https://sis.materdeicollege.com/api/hr/subject-classes';
+                $subj_client = new Client();
+                $response = $subj_client->get($subj_url, [
+                    'query' => [
+                        'code' => $code,
+                        'term_id' => $evaluation->term_id,
+                        'teacher_id' => $fetchedUser->teacher->id,
+                    ],
+                    'verify' => false,
+                ]);
 
-            $subjects = json_decode($response->getBody(), true);
+                $subjects = json_decode($response->getBody(), true);
+
+            } catch (ConnectException $e)
+            {
+
+                return back()->withErrors([
+                    'error' => 'Unable to connect to the server. Please check the domain or your internet connection.'
+                ]);
+            } catch (RequestException $e)
+            {
+
+                if ($e->getCode() === 0)
+                {
+                    return back()->withErrors([
+                        'error' => 'No Internet Connection!'
+                    ]);
+                } else
+                {
+                    return back()->withErrors([
+                        'error' => 'Error fetching data from the server!'
+                    ]);
+                }
+            }
+
+
             $subject = collect($subjects)->firstWhere('id', $evaluation->subject_id);
             $evaluation['subject'] = $subject;
 
@@ -96,18 +123,40 @@ class EvaluationController extends Controller
             $evaluation['maxPoints'] = $total_descriptions_count * 5;
         }
 
+        try
+        {
+            $hr_url = 'https://sis.materdeicollege.com/api/hr/terms';
+            $client = new Client();
+            $response = $client->get($hr_url, [
+                'query' => [
+                    'code' => $code,
+                ],
+                'verify' => false,
+            ]);
 
-        $url = 'https://sis.materdeicollege.com/api/hr/terms';
-        $client = new Client();
-        $response = $client->get($url, [
-            'query' => [
-                'code' => $code,
-            ],
-            'verify' => false,
-        ]);
+            $terms = json_decode($response->getBody(), true);
 
-        $terms = json_decode($response->getBody(), true);
+        } catch (ConnectException $e)
+        {
 
+            return back()->withErrors([
+                'error' => 'Unable to connect to the server. Please check the domain or your internet connection.'
+            ]);
+        } catch (RequestException $e)
+        {
+
+            if ($e->getCode() === 0)
+            {
+                return back()->withErrors([
+                    'error' => 'No Internet Connection!'
+                ]);
+            } else
+            {
+                return back()->withErrors([
+                    'error' => 'Error fetching data from the server!'
+                ]);
+            }
+        }
 
         $annuals = array_filter($terms, function ($item) {
             return $item['type'] === 'annual';
@@ -202,7 +251,6 @@ class EvaluationController extends Controller
                 'department' => $department,
                 'roles' => $roles,
                 'pageTitle' => "Staff's Evaluation",
-
             ]);
         }
     }
@@ -399,7 +447,6 @@ class EvaluationController extends Controller
     public function submitEvaluation(Request $request)
     {
 
-
         if ($request->type === 'teacher')
         {
 
@@ -466,6 +513,7 @@ class EvaluationController extends Controller
             {
                 $semister = "second";
             }
+
             $evaluation = Evaluation::create([
                 'teacher_id' => $request->user_id,
                 'eval_template_id' => $request->template_id,
@@ -480,15 +528,20 @@ class EvaluationController extends Controller
                 'comments' => $request->comments,
             ]);
 
-
             if ($evaluation)
             {
-
-                return redirect()->route('evaluations.user-view', $request->user_id)->with('success', 'Evaluation form submitted successfully!');
-
+                return redirect()->back()->with([
+                    'success' => 'Evaluation submitted successfully!'
+                ]);
+            } else
+            {
+                return back()->withErrors([
+                    'error' => 'Evaluation failed!'
+                ]);
             }
 
         }
+
         if ($request->type === 'staff')
         {
 
@@ -572,9 +625,14 @@ class EvaluationController extends Controller
 
             if ($evaluation)
             {
-
-                return redirect()->route('evaluations.user-view', $request->user_id)->with('success', 'Evaluation form submitted successfully!');
-
+                return redirect()->back()->with([
+                    'success' => 'Evaluation subiited successfully!'
+                ]);
+            } else
+            {
+                return back()->withErrors([
+                    'error' => 'Evaluation failed!'
+                ]);
             }
         }
 
@@ -635,8 +693,10 @@ class EvaluationController extends Controller
                 'user' => $user,
                 'terms' => $terms,
                 'evalCategories' => $evalCategories,
+                'template' => $template,
                 'api_key' => $api_key,
                 'evaluations' => $evaluations,
+                'success' => session('success') ?? null,
 
             ]);
 

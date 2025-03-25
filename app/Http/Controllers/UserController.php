@@ -253,10 +253,6 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Account updated successfully!');
     }
 
-    public function searchU()
-    {
-
-    }
 
     public function users(Request $request)
     {
@@ -274,18 +270,23 @@ class UserController extends Controller
 
         if ($type == 'user')
         {
-            $users = User::when($search_value, function ($query, $search_value) {
-                $query->where('last_name', 'LIKE', '%' . $search_value . '%')
-                    ->orWhere('first_name', 'LIKE', '%' . $search_value . '%');
-            })
+            $users = User::
+                when($search_value, function ($query, $search_value) {
+                    $query->where('last_name', 'LIKE', '%' . $search_value . '%')
+                        ->orWhere('first_name', 'LIKE', '%' . $search_value . '%');
+                })
                 ->orderBy('last_name', $orderBy)
                 ->paginate(12);
 
         } else if ($type == 'teacher')
         {
-            $users = User::whereHas('teacher', function ($query) {
-                $query->where('id', '!=', null);
-            })
+            $users = User::
+                whereHas('teacher', function ($query) {
+                    $query->where('id', '!=', null);
+                })
+                ->when($department, function ($query) use ($department) {
+                    $query->whereRelation('teacher', 'department_id', '=', $department);
+                })
                 ->when($search_value, function ($query) use ($search_value) {
                     $query->where('first_name', 'LIKE', '%' . $search_value . '%')
                         ->orWhere('last_name', 'LIKE', '%' . $search_value . '%');

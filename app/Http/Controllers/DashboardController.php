@@ -7,7 +7,6 @@ use App\Models\Teacher;
 use App\Models\TravelForm;
 use App\Models\User;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
