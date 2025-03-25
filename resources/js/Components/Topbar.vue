@@ -289,10 +289,10 @@ export default {
   <div @click.self="logoutConfirm" id="logoutConfirmModal" class="modal hidden">
     <section class="modal-content">
       <h2>Are you sure to log-out?</h2>
-      <footer>
+      <div class="button-container">
         <button @click="logoutConfirm">No, cancel</button>
         <Link :href="'/logout'">Yes, proceed. </Link>
-      </footer>
+      </div>
     </section>
   </div>
 </template>

@@ -18,14 +18,15 @@
   >
   </EditTeacherModal>
 
-  <EditRoleModal
-    v-if="isEditRole"
+  <EditUserModal
+    v-if="isEditUser"
     :roleList="roleList"
     :userRoles="userRoles"
-    :user_id="user_id"
-    @toggleEditRole="toggleEditRole"
+    :personalDetails="personalDetails"
+    :userId="userId"
+    @toggleEditUser="toggleEditUser"
   >
-  </EditRoleModal>
+  </EditUserModal>
 
   <nav>
     <span
@@ -64,10 +65,10 @@
 
               ({{ personalDetails.user }})</span
             >
-            <div class="user-department" v-if="teacher.department">
+            <div class="user-department" v-if="teacher">
               <i class="fas fa-building"></i>
               <div>
-                <span class="role-desc">
+                <span class="role-desc" v-if="teacher.department">
                   {{ teacher.department.name }}
                 </span>
               </div>
@@ -78,6 +79,7 @@
                 <span class="role-desc">{{ userRoles.join(", ") }}</span>
               </div>
             </div>
+
             <div class="user-position" v-if="staff">
               <i class="fa-solid fa-briefcase"></i>
               <div>
@@ -146,18 +148,26 @@
           </select>
         </div>
         <div class="btn-right">
-          <button v-if="personalDetails.staff" @click="toggleEditStaff">
-            Edit Staff Details
+          <button
+            :title="`Edit Staff details of ${personalDetails.last_name}, ${personalDetails.first_name}`"
+            v-if="personalDetails.staff"
+            @click="toggleEditStaff"
+          >
+            Edit Staff
           </button>
-          <button v-if="personalDetails.teacher" @click="toggleEditTeacher">
-            Edit Teacher Details
+          <button
+            :title="`Edit Teacher details of ${personalDetails.last_name}, ${personalDetails.first_name}`"
+            v-if="personalDetails.teacher"
+            @click="toggleEditTeacher"
+          >
+            Edit Teacher
           </button>
           <button
             v-if="roles.includes('admin')"
-            :title="`Edit role of  ${personalDetails.last_name}, ${personalDetails.first_name}`"
-            @click="toggleEditRole"
+            :title="`Edit User details of ${personalDetails.last_name}, ${personalDetails.first_name}`"
+            @click="toggleEditUser"
           >
-            Edit Role
+            Edit User
           </button>
         </div>
       </div>

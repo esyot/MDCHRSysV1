@@ -1,7 +1,7 @@
 import Layout from "@/Layouts/Layout.vue";
 import PersonalDetails from "@/Pages/Admin/PersonalDetails.vue";
 import { Inertia } from "@inertiajs/inertia";
-import EditRoleModal from "@/Modals/EditRoleModal.vue";
+import EditUserModal from "@/Modals/EditUserModal.vue";
 import EditDepartmentModal from "@/Modals/EditDepartmentModal.vue";
 import EditStaffModal from "@/Modals/EditStaffModal.vue";
 import EditTeacherModal from "@/Modals/EditTeacherModal.vue";
@@ -10,13 +10,13 @@ export default {
     layout: Layout,
     components: {
         PersonalDetails,
-        EditRoleModal,
+        EditUserModal,
         EditDepartmentModal,
         EditStaffModal,
         EditTeacherModal,
     },
     props: {
-        user_id: String,
+        userId: String,
         userRoles: Array,
         personalDetails: Object,
         userDepartment: Object,
@@ -36,8 +36,7 @@ export default {
         return {
             AdminActiveTab:
                 localStorage.getItem("AdminActiveTab") || "overview",
-            isEditRole: false,
-            isEditDepartment: false,
+
             selectedFormType: "All",
             selectedFilter: "",
             form_selection: "",
@@ -66,6 +65,7 @@ export default {
             week: "",
             isEditStaff: false,
             isEditTeacher: false,
+            isEditUser: false,
         };
     },
 
@@ -177,8 +177,8 @@ export default {
             this.AdminActiveTab = tab;
             localStorage.setItem("AdminActiveTab", tab);
         },
-        toggleEditRole() {
-            this.isEditRole = !this.isEditRole;
+        toggleEditUser() {
+            this.isEditUser = !this.isEditUser;
         },
         toggleEditDepartment() {
             this.isEditDepartment = !this.isEditDepartment;

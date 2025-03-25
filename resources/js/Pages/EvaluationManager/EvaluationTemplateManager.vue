@@ -131,8 +131,7 @@ export default {
       <div class="cards">
         <div class="card" v-for="template in templates" :key="template.id">
           <div class="card-header">
-            <label for="">Name:</label>
-            <span> {{ template.name }}</span>
+            <label> {{ template.name }}</label>
           </div>
           <div class="card-body">
             <div class="card-body-item">

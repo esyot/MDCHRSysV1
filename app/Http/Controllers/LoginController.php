@@ -32,6 +32,7 @@ class LoginController extends Controller
 
         $user = User::where('user', $validatedData['user'])->first();
 
+
         $responseData = [
             'user' => [
                 'value' => $validatedData['user'],
@@ -43,6 +44,16 @@ class LoginController extends Controller
             ],
             'errorMessage' => '',
         ];
+
+        if ($user->is_active === 0)
+        {
+            $responseData['user']['errorMessage'] = 'This account has been deactivated.';
+
+            return redirect()->route('login')->with([
+                'responseData' => $responseData,
+            ]);
+        }
+
 
         if (!$user)
         {

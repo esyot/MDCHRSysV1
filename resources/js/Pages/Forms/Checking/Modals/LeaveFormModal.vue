@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  <div class="modal" :key="formData.id" @click.self="closeFormModal">
+  <div class="modal" :key="formData.id" @click.self="toggleFormModal">
     <ImageViewer
       v-if="src"
       :src="src"
@@ -27,7 +27,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <span class="title">Leave Application</span>
-        <span @click="closeFormModal" class="x-btn">&times;</span>
+        <span @click="toggleFormModal" class="x-btn">&times;</span>
       </div>
       <!-- <div class="heading-container">
         <div class="heading-img">
@@ -275,7 +275,11 @@
           <div class="certification-item">
             <text>Date Hired:</text>
             <span class="underline">
-              {{ date_hired }}
+              {{
+                formData.user.teacher
+                  ? formData.user.teacher.date_hired
+                  : formData.user.staff.date_hired
+              }}
             </span>
           </div>
 
@@ -549,7 +553,7 @@
           type="button"
           class="close-btn"
           title="Close the form"
-          @click="closeFormModal"
+          @click="toggleFormModal"
         >
           Close
         </button>
@@ -582,7 +586,7 @@
           type="button"
           class="close-btn"
           title="Close the form"
-          @click="closeFormModal"
+          @click="toggleFormModal"
         >
           Close
         </button>
@@ -615,7 +619,7 @@
           type="button"
           class="close-btn"
           title="Close the form"
-          @click="closeFormModal"
+          @click="toggleFormModal"
         >
           Close
         </button>
@@ -648,7 +652,7 @@
           type="button"
           class="close-btn"
           title="Close the form"
-          @click="closeFormModal"
+          @click="toggleFormModal"
         >
           Close
         </button>
@@ -683,7 +687,7 @@
           type="button"
           class="close-btn"
           title="Close the form"
-          @click="closeFormModal"
+          @click="toggleFormModal"
         >
           Close
         </button>

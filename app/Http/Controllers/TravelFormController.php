@@ -73,9 +73,7 @@ class TravelFormController extends Controller
             if ($request->substitutes)
             {
 
-                $array = $request->substitutes;
-
-                $substitutes = json_decode($array, true);
+                $substitutes = $request->substitutes;
 
                 foreach ($substitutes as $sub)
                 {
@@ -84,7 +82,6 @@ class TravelFormController extends Controller
 
                     unset($sub['days']);
                     unset($sub['teacher']);
-
 
                     $days = isset($sub['days']) && is_array($sub['days']) ? implode(', ', $sub['days']) : '';
 

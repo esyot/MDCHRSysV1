@@ -2,6 +2,7 @@ import Layout from "@/Layouts/Layout.vue";
 import { Inertia } from "@inertiajs/inertia";
 import ConfirmationFormModal from "@/Modals/ConfirmationFormModal.vue";
 import { useToast } from "vue-toastification";
+import axios from "axios";
 
 export default {
     layout: Layout,
@@ -41,7 +42,7 @@ export default {
             isSubstitute: false,
             suggestions: [],
             isDisplaySuggestion: false,
-            users: [],
+            teachers: [],
             message: "Are you sure you want to submit?",
         };
     },
@@ -174,30 +175,23 @@ export default {
             this.searchTeacher = true;
 
             if (value) {
-                fetch(`/users/search/${value}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                })
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error(
-                                `HTTP error! Status: ${response.status}`,
-                            );
-                        }
-                        return response.json();
+                axios
+                    .get(`/teachers/search/${value}`, {
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
                     })
-                    .then((data) => {
+                    .then((response) => {
+                        const data = response.data;
                         if (Array.isArray(data)) {
-                            this.users = data.length > 0 ? data : [];
+                            this.teachers = data.length > 0 ? data : [];
                         } else {
-                            this.users = [];
+                            this.teachers = [];
                         }
                     })
                     .catch((error) => {
                         console.error("Error fetching users:", error);
-                        this.users = [];
+                        this.teachers = [];
                     });
 
                 this.teachingSubstitutes[index].user_id = "";
@@ -205,13 +199,12 @@ export default {
                 this.searchTeacher = false;
             }
         },
-
         selectTeacher(id, index) {
-            const user = this.users.find((user) => user.id === id);
-            if (user) {
+            const teacher = this.teachers.find((teacher) => teacher.id === id);
+            if (teacher) {
                 this.teachingSubstitutes[index].user_id = `${id}`;
                 this.teachingSubstitutes[index].teacher =
-                    `${user.last_name}, ${user.first_name}`;
+                    `${teacher.last_name}, ${teacher.first_name}`;
             }
             this.searchTeacher = false;
         },

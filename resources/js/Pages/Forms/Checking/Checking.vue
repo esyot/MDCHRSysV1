@@ -209,6 +209,17 @@ export default {
               <span></span>
             </td>
 
+            <td
+              v-if="
+                !form.recommender &&
+                (roles.includes('vp-admin') ||
+                  roles.includes('p-admin') ||
+                  roles.includes('vp-acad'))
+              "
+            >
+              <span></span>
+            </td>
+
             <td v-if="form.recommender">
               {{ form.recommender.last_name }}, {{ form.recommender.first_name }}
               {{ form.recommender.middle_name[0] }}.

@@ -2,6 +2,7 @@ import Layout from "@/Layouts/Layout.vue";
 import { Inertia } from "@inertiajs/inertia";
 import ConfirmationFormModal from "@/Modals/ConfirmationFormModal.vue";
 import { useToast } from "vue-toastification";
+import axios from "axios";
 
 export default {
     layout: Layout,
@@ -49,7 +50,7 @@ export default {
             loading: false,
             suggestions: "",
             isDisplaySuggestion: false,
-            users: [],
+            teachers: [],
         };
     },
 
@@ -151,17 +152,13 @@ export default {
         },
         submitForm() {
             const form = new FormData();
+
             if (this.formData.medical_certificate) {
                 form.append(
                     "medical_certificate",
                     this.formData.medical_certificate,
                 );
             }
-
-            form.append(
-                "substitutes",
-                JSON.stringify(this.teachingSubstitutes),
-            );
 
             for (const key in this.formData) {
                 if (this.formData.hasOwnProperty(key)) {
@@ -172,6 +169,13 @@ export default {
             if (this.formDataToEditCopy) {
                 form.append("form_id", this.formDataToEditCopy.id);
                 form.append("user_id", this.formDataToEditCopy.user_id);
+            }
+
+            if (this.teachingSubstitutes.length > 0) {
+                form.append(
+                    "substitutes",
+                    JSON.stringify(this.teachingSubstitutes),
+                );
             }
 
             const toast = useToast();
@@ -194,30 +198,23 @@ export default {
             this.searchTeacher = true;
 
             if (value) {
-                fetch(`/users/search/${value}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                })
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error(
-                                `HTTP error! Status: ${response.status}`,
-                            );
-                        }
-                        return response.json();
+                axios
+                    .get(`/teachers/search/${value}`, {
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
                     })
-                    .then((data) => {
+                    .then((response) => {
+                        const data = response.data;
                         if (Array.isArray(data)) {
-                            this.users = data.length > 0 ? data : [];
+                            this.teachers = data.length > 0 ? data : [];
                         } else {
-                            this.users = [];
+                            this.teachers = [];
                         }
                     })
                     .catch((error) => {
                         console.error("Error fetching users:", error);
-                        this.users = [];
+                        this.teachers = [];
                     });
 
                 this.teachingSubstitutes[index].user_id = "";
@@ -227,11 +224,11 @@ export default {
         },
 
         selectTeacher(id, index) {
-            const user = this.users.find((user) => user.id === id);
-            if (user) {
+            const teacher = this.teachers.find((teacher) => teacher.id === id);
+            if (teacher) {
                 this.teachingSubstitutes[index].user_id = `${id}`;
                 this.teachingSubstitutes[index].teacher =
-                    `${user.last_name}, ${user.first_name}`;
+                    `${teacher.last_name}, ${teacher.first_name}`;
             }
             this.searchTeacher = false;
         },

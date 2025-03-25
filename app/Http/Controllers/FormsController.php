@@ -94,6 +94,7 @@ class FormsController extends Controller
         if ($user->role('dean'))
         {
             $userDepartmentId = $user->teacher->department_id;
+
             $userIds = User::whereRelation('teacher', 'department_id', '=', $userDepartmentId)
                 ->pluck('id');
 

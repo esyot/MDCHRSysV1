@@ -75,6 +75,7 @@ export default {
             this.action === action
                 ? (this.action = null)
                 : (this.action = action);
+
             this.isConfirmation = !this.isConfirmation;
         },
         submitForm() {
@@ -114,7 +115,7 @@ export default {
             });
         },
 
-        closeFormModal() {
+        toggleFormModal() {
             this.$emit("toggleFormModal");
         },
 

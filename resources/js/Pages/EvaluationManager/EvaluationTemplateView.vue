@@ -101,8 +101,8 @@ export default {
             <span>{{ category.title }}</span>
           </div>
           <ul>
-            <li v-for="item in category.items" :key="item.id">
-              <span> {{ item.description }}</span>
+            <li v-for="(item, index) in category.items" :key="item.id">
+              <span>{{ index + 1 }}. {{ item.description }}</span>
 
               <i class="blue fas fa-pencil" @click="toggleIsEditItem(item)"></i>
               <i class="red fas fa-trash" @click="toggleConfirmForm(item)"></i>

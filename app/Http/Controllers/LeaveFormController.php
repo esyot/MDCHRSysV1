@@ -57,6 +57,8 @@ class LeaveFormController extends Controller
         {
             $formData = $request->toArray();
 
+
+
             unset($formData['medical_certificate']);
 
             unset($formData['substitutes']);
@@ -104,7 +106,9 @@ class LeaveFormController extends Controller
 
             $formData['user_id'] = Auth::user()->id;
 
-            $leave_form = LeaveForm::create($formData);
+            $leaveForm = LeaveForm::create($formData);
+
+
 
             if ($request->hasFile('medical_certificate'))
             {
@@ -127,11 +131,11 @@ class LeaveFormController extends Controller
                 $extension = $file->getClientOriginalExtension();
 
                 $dateTimeNow = Carbon::now()->format('Y-m-d-H-i-s');
-                $fileName = $leave_form->user_id . '-' . $dateTimeNow . '.' . $extension;
+                $fileName = $leaveForm->user_id . '-' . $dateTimeNow . '.' . $extension;
 
                 Storage::putFileAs($path, $file, $fileName);
 
-                $leave_form->update([
+                $leaveForm->update([
                     'medical_certificate' => $fileName,
                 ]);
             }
@@ -140,16 +144,17 @@ class LeaveFormController extends Controller
             if ($request->substitutes)
             {
 
-                $array = $request->substitutes;
+                $substitutes = $request->substitutes;
 
-                $substitutes = json_decode($array, true);
+                $substitutes = json_decode($substitutes, true);
 
                 foreach ($substitutes as $sub)
                 {
 
-                    $sub['leave_form_id'] = $leave_form->id;
+                    $sub['leave_form_id'] = $leaveForm->id;
 
                     unset($sub['teacher']);
+                    unset($sub['user']);
 
                     $sub['days'] = implode(', ', $sub['days']);
 
@@ -157,9 +162,13 @@ class LeaveFormController extends Controller
 
                 }
 
+            } else
+            {
+
+                $leaveForm->update([
+                    'class_description' => $formData['class_description'],
+                ]);
             }
-
-
 
 
             $notificationController = new NotificationController;

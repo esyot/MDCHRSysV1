@@ -64,10 +64,6 @@
     padding-left: 1rem;
 }
 
-.category ul {
-    list-style: decimal;
-}
-
 .category ul li {
     display: flex;
     gap: 1rem;

@@ -324,13 +324,13 @@
             <div class="dropdown-teachers">
               <ul v-if="searchTeacher">
                 <li
-                  @click="selectTeacher(user.id, index)"
-                  v-for="user in users"
-                  :key="user.id"
+                  @click="selectTeacher(teacher.id, index)"
+                  v-for="teacher in teachers"
+                  :key="teacher.id"
                 >
-                  {{ user.last_name }}, {{ user.first_name }}
+                  {{ teacher.last_name }}, {{ teacher.first_name }}
                 </li>
-                <li class="empty-msg" v-if="users.length === 0">
+                <li class="empty-msg" v-if="teachers.length === 0">
                   <small class="error-msg" v-if="!teachingSubstitutes[index].user_id"
                     >No match found!</small
                   >

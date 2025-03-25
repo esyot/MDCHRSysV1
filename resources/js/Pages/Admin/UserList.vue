@@ -4,7 +4,6 @@
   <AddUserModal
     v-if="isAddUser"
     :type="type"
-    :departments="departments"
     :roleList="roleList"
     :specializationList="specializationList"
     :positionList="positionList"

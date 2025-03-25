@@ -12,7 +12,7 @@ use Inertia\Inertia;
 
 class AccountController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
 
         $this->globalVariables();
@@ -96,6 +96,7 @@ class AccountController extends Controller
             $auth = false;
         }
 
+
         return Inertia::render('Pages/Account/Account', [
             'user' => $user,
             'roles' => $roles,
@@ -104,6 +105,8 @@ class AccountController extends Controller
             'success' => session('success') ?? null,
             'pageTitle' => 'Account',
             'overviewData' => $overview,
+            'tab' => $request->tab ?? "overview",
+            'isDefaultPass' => $request->is_default_pass * 1 ?? 0,
         ]);
     }
 

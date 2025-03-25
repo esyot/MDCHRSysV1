@@ -23,6 +23,8 @@ return new class extends Migration {
             $table->enum('period', ['midterm', 'final']);
             $table->string('overall_points');
             $table->string('overall_mean');
+            $table->json('ratings');
+            $table->json('comments');
             $table->timestamps();
         });
     }

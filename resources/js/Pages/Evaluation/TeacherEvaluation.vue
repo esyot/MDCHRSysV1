@@ -1,6 +1,7 @@
 <script>
 import { Inertia } from "@inertiajs/inertia";
 import axios from "axios";
+import { useToast } from "vue-toastification";
 
 export default {
   props: {
@@ -76,19 +77,40 @@ export default {
 
     submitForm(event) {
       event.preventDefault();
+      const toast = useToast();
 
-      Inertia.post(`/evaluations/evaluation-submit`, {
-        type: "teacher",
-        user_id: this.user.id,
-        template_id: this.template_id,
-        term_id: this.term_id,
-        subject_id: this.subject_id,
-        overallPoints: this.overallPoints,
-        overallMean: this.overallMean.toFixed(2),
-      });
+      Inertia.post(
+        `/evaluations/evaluation-submit`,
+        {
+          type: "teacher",
+          user_id: this.user.id,
+          template_id: this.template_id,
+          term_id: this.term_id,
+          subject_id: this.subject_id,
+          overallPoints: this.overallPoints,
+          overallMean: this.overallMean.toFixed(2),
+          ratings: localStorage.getItem("ratings"),
+          comments: localStorage.getItem("comments"),
+        },
+        {
+          onSucess: (response) => {
+            toast.success(response.props.success, {
+              position: "top-center",
+              duration: 3000,
+            });
 
-      localStorage.removeItem("ratings");
-      localStorage.removeItem("comments");
+            localStorage.removeItem("ratings");
+            localStorage.removeItem("comments");
+          },
+
+          onError: (errors) => {
+            toast.error(errors.error, {
+              position: "top-center",
+              duration: 3000,
+            });
+          },
+        }
+      );
     },
 
     saveToLocalStorage() {

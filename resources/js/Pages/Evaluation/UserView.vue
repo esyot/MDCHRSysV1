@@ -27,22 +27,37 @@ export default {
 
   computed: {
     firstSem() {
-      return this.evaluations.filter((evaluation) =>
-        evaluation.semister === "first" &&
-        evaluation.acad_term_id === this.selectedTerm &&
-        this.selectedEvaluationType === "staff"
-          ? evaluation.eval_template.for === "staff"
-          : evaluation.eval_template.type === this.selectedEvaluationType
-      );
+      return this.evaluations.filter((evaluation) => {
+        const isFirstSemester = evaluation.semister === "first";
+        const isSelectedTerm = evaluation.acad_term_id === this.selectedTerm;
+        const isStaffEvaluation =
+          this.selectedEvaluationType === "staff" &&
+          evaluation.eval_template.for === "staff";
+        const isTypeEvaluation =
+          this.selectedEvaluationType !== "staff" &&
+          evaluation.eval_template.type === this.selectedEvaluationType;
+
+        return (
+          isFirstSemester && isSelectedTerm && (isStaffEvaluation || isTypeEvaluation)
+        );
+      });
     },
+
     secondSem() {
-      return this.evaluations.filter((evaluation) =>
-        evaluation.semister === "second" &&
-        evaluation.acad_term_id === this.selectedTerm &&
-        this.selectedEvaluationType === "staff"
-          ? evaluation.eval_template.for === "staff"
-          : evaluation.eval_template.type === this.selectedEvaluationType
-      );
+      return this.evaluations.filter((evaluation) => {
+        const isSecondSemester = evaluation.semister === "second";
+        const isSelectedTerm = evaluation.acad_term_id === this.selectedTerm;
+        const isStaffEvaluation =
+          this.selectedEvaluationType === "staff" &&
+          evaluation.eval_template.for === "staff";
+        const isTypeEvaluation =
+          this.selectedEvaluationType !== "staff" &&
+          evaluation.eval_template.type === this.selectedEvaluationType;
+
+        return (
+          isSecondSemester && isSelectedTerm && (isStaffEvaluation || isTypeEvaluation)
+        );
+      });
     },
   },
 
@@ -207,7 +222,6 @@ export default {
 
           <select
             v-model="selectedTerm"
-            v-if="selectedEvaluationType === 'teacher'"
             title="Select a year to be filtered in the table below."
           >
             <option v-for="(term, index) in terms" :key="index" :value="term.id">

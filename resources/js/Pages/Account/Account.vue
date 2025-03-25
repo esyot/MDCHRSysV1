@@ -5,6 +5,7 @@ import PersonalDetails from "@/Pages/Account/Components/PersonalDetails.vue";
 import Security from "@/Pages/Account/Components/Security.vue";
 import Cropper from "@/Components/Cropper.vue";
 import Authentication from "../Login/Authentication.vue";
+import { useToast } from "vue-toastification";
 
 export default {
   layout: Layout,
@@ -16,10 +17,23 @@ export default {
     roles: Object,
     authError: String,
     overviewData: Object,
+    tab: String,
+    isDefaultPass: Number,
+  },
+  mounted() {
+    if (this.isDefaultPass === 1) {
+      localStorage.setItem("activeTab", this.tab);
+      const toast = useToast();
+
+      toast.warning("You need to change your password first before using the system.", {
+        position: "top-center",
+        duration: 3000,
+      });
+    }
   },
   data() {
     return {
-      activeTab: localStorage.getItem("activeTab") || "overview",
+      activeTab: this.tab ? this.tab : localStorage.getItem("activeTab"),
       showModal: false,
       userCredentials: {
         user: "",
@@ -30,6 +44,7 @@ export default {
       user_job_details: this.personalDetails.user_job_details,
     };
   },
+
   components: {
     Overview,
     PersonalDetails,
@@ -117,8 +132,10 @@ export default {
         </div>
 
         <div class="user-details">
-          <span class="name">{{ user.first_name }} {{ user.last_name }}</span>
-          <div class="user-role" v-if="user.teacher">
+          <span class="name"
+            >{{ user.first_name }} {{ user.last_name }} ({{ user.user }})</span
+          >
+          <div class="user-role" v-if="user.teacher.department">
             <i class="fas fa-globe"></i>
             <div>
               <span class="role-desc">

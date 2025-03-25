@@ -399,6 +399,7 @@ class EvaluationController extends Controller
     public function submitEvaluation(Request $request)
     {
 
+
         if ($request->type === 'teacher')
         {
 
@@ -475,7 +476,8 @@ class EvaluationController extends Controller
                 'semister' => $semister,
                 'overall_points' => $request->overallPoints,
                 'overall_mean' => $request->overallMean,
-
+                'ratings' => $request->ratings,
+                'comments' => $request->comments,
             ]);
 
 
@@ -486,6 +488,94 @@ class EvaluationController extends Controller
 
             }
 
+        }
+        if ($request->type === 'staff')
+        {
+
+            $code = config('variables.api_key');
+
+
+            $url = 'https://sis.materdeicollege.com/api/hr/terms';
+
+            $client = new Client();
+
+            $response = $client->get($url, [
+                'query' => [
+                    'code' => $code,
+                ],
+                'verify' => false,
+            ]);
+
+            $terms = json_decode($response->getBody(), true);
+
+            $term = collect($terms)->where('id', $request->term_id)->first();
+
+            $selectedTerm = $term;
+
+            $semester = null;
+            foreach ($terms as $term)
+            {
+                if ($term['id'] == $request->term_id)
+                {
+                    $semester = $term;
+                    break;
+                }
+            }
+
+            if (!$semester)
+            {
+                return response()->json(['message' => 'Semester not found.'], 404);
+            }
+
+            $academicYear = null;
+            foreach ($terms as $term)
+            {
+                if ($term['type'] == 'annual')
+                {
+
+                    $semesterStart = Carbon::parse($semester['start']);
+                    $semesterEnd = Carbon::parse($semester['end']);
+                    $academicYearStart = Carbon::parse($term['start']);
+                    $academicYearEnd = Carbon::parse($term['end']);
+
+                    if ($semesterStart >= $academicYearStart && $semesterEnd <= $academicYearEnd)
+                    {
+                        $academicYear = $term;
+                        break;
+                    }
+                }
+            }
+
+            $semister = "";
+
+            if (strpos($selectedTerm['name'], "1st") !== false)
+            {
+                $semister = 'first';
+            } else if (strpos($selectedTerm['name'], "2nd") !== false)
+            {
+                $semister = "second";
+            }
+            $evaluation = Evaluation::create([
+                'teacher_id' => $request->user_id,
+                'eval_template_id' => $request->template_id,
+                'term_id' => $request->term_id,
+                'acad_term_id' => $academicYear['id'],
+                'evaluator_id' => Auth::user()->id,
+                'semister' => $semister,
+                'overall_points' => $request->overallPoints,
+                'overall_mean' => $request->overallMean,
+                'ratings' => $request->ratings,
+                'comments' => $request->comments,
+
+            ]);
+
+
+            if ($evaluation)
+            {
+
+                return redirect()->route('evaluations.user-view', $request->user_id)->with('success', 'Evaluation form submitted successfully!');
+
+            }
         }
 
     }

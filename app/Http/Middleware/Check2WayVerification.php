@@ -19,26 +19,29 @@ class Check2WayVerification
      */
     public function handle(Request $request, Closure $next)
     {
-       
-        $user = User::find( Auth::user()->id);
-        
-        $code = Session::get('code'); 
 
-       
-        if ($user->is_two_step_verification == true &&  !$code) {
-                    
-            return redirect()->route('verification'); 
 
-        }else{
+        $user = User::find(Auth::user()->id);
+
+        $code = Session::get('code');
+
+
+        if ($user->is_two_step_verification === 1 && !$code)
+        {
+
+            return redirect()->route('verification');
+
+        } else
+        {
 
             $user->update([
-                'code'=> null,
+                'code' => null,
             ]);
-            
+
             return $next($request);
         }
 
-      
+
     }
 }
 

@@ -65,6 +65,13 @@
             {{ substitute.subject }}
           </span>
         </div>
+
+        <div v-else class="substitute-item">
+          <label for="">Substitutes:</label>
+          <span>None</span>
+          <label for="">Class Alternatives:</label>
+          <span>{{ formData.class_description }}</span>
+        </div>
       </div>
 
       <h3 class="title">Budgetary Requirements</h3>

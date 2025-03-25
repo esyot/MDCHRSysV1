@@ -1,6 +1,7 @@
 import { Inertia } from "@inertiajs/inertia";
 import ConfirmationFormModal from "@/Modals/ConfirmationFormModal.vue";
 import { useToast } from "vue-toastification";
+import axios from "axios";
 export default {
     name: "AddUserModal",
     emits: ["toggleAddUserModal"],
@@ -22,7 +23,7 @@ export default {
             selected_id: "",
             searchValue: "",
             isSearchUser: false,
-            users: [],
+            staffs: [],
             isConfirmation: false,
             errors: {
                 department: false,
@@ -130,38 +131,23 @@ export default {
         toggleConfirmForm() {
             this.isConfirmation = !this.isConfirmation;
         },
-        searchUser(type, value) {
-            if (value) {
-                this.isSearchUser = true;
-                fetch(`/users/search/${type}/${value}`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+        searchUser(value) {
+            if (!value) return (this.isSearchUser = false);
+
+            this.isSearchUser = true;
+            axios
+                .get("/users/search/", {
+                    params: { search_value: value },
+                    headers: { "Content-Type": "application/json" },
                 })
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error(
-                                `HTTP error! Status: ${response.status}`,
-                            );
-                        }
-                        return response.json();
-                    })
-                    .then((data) => {
-                        if (Array.isArray(data)) {
-                            this.users = data.length > 0 ? data : [];
-                        } else {
-                            this.users = [];
-                            this.selected_id = "";
-                        }
-                    })
-                    .catch((error) => {
-                        console.error("Error fetching users:", error);
-                        this.users = [];
-                    });
-            } else {
-                this.isSearchUser = false;
-            }
+                .then(({ data }) => {
+                    this.staffs = Array.isArray(data) ? data : [];
+                    if (!data.length) this.selected_id = "";
+                })
+                .catch(() => {
+                    console.error("Error fetching users");
+                    this.staffs = [];
+                });
         },
         selectUser(id, name) {
             this.selected_id = id;
@@ -172,16 +158,5 @@ export default {
             this.selected_id = "";
             this.searchValue = "";
         },
-    },
-    render(h) {
-        return this.isConfirmation
-            ? h(ConfirmationFormModal, {
-                  props: { isConfirmation: this.isConfirmation },
-                  on: {
-                      toggleConfirmForm: this.toggleConfirmForm,
-                      submitForm: this.submitForm,
-                  },
-              })
-            : null;
     },
 };

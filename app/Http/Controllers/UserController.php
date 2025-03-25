@@ -23,6 +23,79 @@ use GuzzleHttp\Client;
 class UserController extends Controller
 {
 
+    public function userUpdate(Request $request)
+    {
+
+        $user = User::find($request->userId);
+
+        if (!$user)
+        {
+            return redirect()->back()->withErrors([
+                'error' => "User not found!"
+            ]);
+        }
+
+        try
+        {
+            $user->update([
+                'user' => $request->formData['user'],
+                'is_active' => $request->formData['is_active'] === true ? 1 : 0,
+            ]);
+
+        } catch (\Exception $e)
+        {
+            return redirect()->back()->withErrors([
+                'error' => "Failed to update user details: " . $e->getMessage()
+            ]);
+        }
+
+
+        if ($request->formData['password'])
+        {
+            try
+            {
+                $user->password = Hash::make($request->formData['password']);
+                $user->is_default_pass = 1;
+                $user->save();
+            } catch (\Exception $e)
+            {
+                return redirect()->back()->withErrors([
+                    'error' => "Failed to update password: " . $e->getMessage()
+                ]);
+            }
+        }
+
+
+        try
+        {
+            $user->syncRoles([]);
+        } catch (\Exception $e)
+        {
+            return redirect()->back()->withErrors([
+                'error' => "Failed to synchronize roles: " . $e->getMessage()
+            ]);
+        }
+
+
+        if (!empty($request->formData['roles']))
+        {
+            try
+            {
+                $user->assignRole($request->formData['roles']);
+            } catch (\Exception $e)
+            {
+                return redirect()->back()->withErrors([
+                    'error' => "Failed to assign roles: " . $e->getMessage()
+                ]);
+            }
+        }
+
+        return redirect()->back()->with([
+            'success' => "User details updated successfully!"
+        ]);
+    }
+
+
     public function staffUpdate(Request $request)
     {
 
@@ -172,11 +245,17 @@ class UserController extends Controller
         if ($request->filled('password'))
         {
             $user->password = Hash::make($request->password);
+            $user->is_default_pass = 0;
         }
 
         $user->save();
 
         return redirect()->back()->with('success', 'Account updated successfully!');
+    }
+
+    public function searchU()
+    {
+
     }
 
     public function users(Request $request)
@@ -191,10 +270,11 @@ class UserController extends Controller
         $type = $request->type ?? 'user';
         $department = $request->department ?? null;
 
+        $search_value = $request->search_value;
 
         if ($type == 'user')
         {
-            $users = User::when($request->search_value, function ($query, $search_value) {
+            $users = User::when($search_value, function ($query, $search_value) {
                 $query->where('last_name', 'LIKE', '%' . $search_value . '%')
                     ->orWhere('first_name', 'LIKE', '%' . $search_value . '%');
             })
@@ -203,31 +283,33 @@ class UserController extends Controller
 
         } else if ($type == 'teacher')
         {
-            $users = User::when($department, function ($query, $department) {
-                $query->whereRelation('teacher', 'department_id', '=', $department);
+            $users = User::whereHas('teacher', function ($query) {
+                $query->where('id', '!=', null);
             })
-                ->when($request->search_value, function ($query, $search_value) {
-                    $query->where('last_name', 'LIKE', '%' . $search_value . '%')
-                        ->orWhere('first_name', 'LIKE', '%' . $search_value . '%');
+                ->when($search_value, function ($query) use ($search_value) {
+                    $query->where('first_name', 'LIKE', '%' . $search_value . '%')
+                        ->orWhere('last_name', 'LIKE', '%' . $search_value . '%');
                 })
-                ->orderBy('last_name', $orderBy)
-                ->whereHas('teacher')
+                ->with('teacher')
                 ->paginate(12);
+
 
         } else if ($type == 'staff')
         {
             $users = User::
-
-                when($department, function ($query, $department) {
-                    $query->whereRelation('teacher', 'department_id', '=', $department);
+                whereHas('staff', function ($query) {
+                    $query->where('id', '!=', null);
                 })
-                ->when($request->search_value, function ($query, $search_value) {
+                ->when($search_value, function ($query, $search_value) {
                     $query->where('last_name', 'LIKE', '%' . $search_value . '%')
                         ->orWhere('first_name', 'LIKE', '%' . $search_value . '%');
                 })
-                ->whereHas('staff')
                 ->orderBy('last_name', $orderBy)
+                ->with([
+                    'staff'
+                ])
                 ->paginate(12);
+
         }
 
 
@@ -242,7 +324,7 @@ class UserController extends Controller
             'positionList' => $positionList,
             'roleList' => $roleList,
             'orderBy' => $orderBy,
-            'search_value' => $request->search_value ?? null,
+            'search_value' => $search_value ?? null,
             'success' => session('success') ?? "",
         ]);
     }
@@ -294,8 +376,6 @@ class UserController extends Controller
 
         $this->globalVariables();
         $roles = $this->roles;
-
-
 
         $roleList = Role::all();
         $departmentList = Department::all();
@@ -367,7 +447,7 @@ class UserController extends Controller
             'userRoles' => $userRoles,
             'pageTitle' => $pageTitle,
             'roleList' => $roleList,
-            'user_id' => $id,
+            'userId' => $id,
             'success' => session('success') ?? "",
             'departmentList' => $departmentList,
             'forms' => $flattenedForms,
@@ -467,19 +547,7 @@ class UserController extends Controller
         }
     }
 
-    public function userUpdateRole($user_id, Request $request)
-    {
 
-        $user = User::find($user_id);
-
-        $user->syncRoles([]);
-
-        if ($request->roles && !empty($request->roles))
-        {
-            $user->assignRole($request->roles);
-        }
-
-    }
 
     public function updateUserDepartment(Request $request)
     {

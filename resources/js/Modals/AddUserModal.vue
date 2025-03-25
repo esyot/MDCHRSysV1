@@ -4,6 +4,12 @@
 </style>
 
 <template>
+  <ConfirmationFormModal
+    v-if="isConfirmation"
+    :isConfirmation="isConfirmation"
+    @toggleConfirmForm="toggleConfirmForm"
+    @submitForm="submitForm"
+  ></ConfirmationFormModal>
   <div class="modal" @click.self="closeModal">
     <div class="modal-content">
       <form @submit.prevent="submitForm" class="form">
@@ -50,7 +56,7 @@
               type="text"
               placeholder="Search a user"
               v-model="searchValue"
-              @input="searchUser(type, searchValue)"
+              @input="searchUser(searchValue)"
               :disabled="selected_id !== null && selected_id !== ''"
               required
             />
@@ -65,13 +71,13 @@
           <div class="dropdown-users">
             <ul v-if="isSearchUser">
               <li
-                @click="selectUser(user.id, `${user.last_name}, ${user.first_name}`)"
-                v-for="user in users"
-                :key="user.id"
+                @click="selectUser(staff.id, `${staff.last_name}, ${staff.first_name}`)"
+                v-for="staff in staffs"
+                :key="staff.id"
               >
-                {{ user.last_name + ", " + user.first_name }}
+                {{ staff.last_name + ", " + staff.first_name }}
               </li>
-              <li class="empty-msg" v-if="users.length === 0">
+              <li class="empty-msg" v-if="!staffs">
                 <small class="error-msg">No match found!</small>
               </li>
             </ul>
