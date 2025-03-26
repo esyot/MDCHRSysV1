@@ -81,39 +81,34 @@ export default {
     @toggleConfirmForm="toggleConfirmForm"
     @submitForm="submitForm"
   ></ConfirmationFormModal>
+  <div class="top-nav">
+    <div class="title">
+      <span>View & Edit - {{ template.name }}</span>
+    </div>
+    <div class="top-nav-buttons">
+      <button @click="toggleNewCategory"><i class="fa fa-plus"></i> Add Category</button>
+      <button @click="toggleNewItem"><i class="fa fa-plus"></i> Add Item</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="category" v-for="(category, index) in categories" :key="category.id">
+      <div class="category-header">
+        <div class="category-header-item">
+          <span>{{ String.fromCharCode(65 + (index % 26)) }}. {{ category.title }}</span>
+        </div>
+        <ul>
+          <li v-for="(item, index) in category.items" :key="item.id">
+            <span>{{ index + 1 }}. {{ item.description }}</span>
 
-  <div class="main-container">
-    <div class="top-nav">
-      <div class="title">
-        <span>View & Edit - {{ template.name }}</span>
-      </div>
-      <div class="top-nav-buttons">
-        <button @click="toggleNewCategory">
-          <i class="fa fa-plus"></i> Add Category
-        </button>
-        <button @click="toggleNewItem"><i class="fa fa-plus"></i> Add Item</button>
+            <i class="blue fas fa-pencil" @click="toggleIsEditItem(item)"></i>
+            <i class="red fas fa-trash" @click="toggleConfirmForm(item)"></i>
+          </li>
+        </ul>
       </div>
     </div>
-    <ul class="content">
-      <li class="category" v-for="category in categories" :key="category.id">
-        <div class="category-header">
-          <div class="category-header-item">
-            <span>{{ category.title }}</span>
-          </div>
-          <ul>
-            <li v-for="(item, index) in category.items" :key="item.id">
-              <span>{{ index + 1 }}. {{ item.description }}</span>
-
-              <i class="blue fas fa-pencil" @click="toggleIsEditItem(item)"></i>
-              <i class="red fas fa-trash" @click="toggleConfirmForm(item)"></i>
-            </li>
-          </ul>
-        </div>
-      </li>
-    </ul>
   </div>
 </template>
-s
+
 <style scoped>
 @import "./css/evaluation-view.css";
 </style>

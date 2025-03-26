@@ -57,7 +57,7 @@ export default {
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="cancel-btn">Cancel</button>
+        <button type="button" class="cancel-btn" @click="closeModal">Cancel</button>
         <button type="button" class="submit-btn" @click="toggleConfirmForm">
           Submit
         </button>

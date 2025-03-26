@@ -162,7 +162,7 @@ export default {
 
     <section class="security-items">
       <div class="title-container">
-        <span class="title">Account Settings</span>
+        <span class="title">Account Details</span>
       </div>
       <form @submit.prevent="accountSettingFormSubmit">
         <div class="form-group">
@@ -172,9 +172,11 @@ export default {
 
         <div class="form-group">
           <label for="email">Email:</label>
-          <input type="email" id="email" v-model="user.email" />
+          <input type="email" id="email" v-model="user.email" disabled />
         </div>
-
+        <div class="title-container">
+          <span class="title">Change Password:</span>
+        </div>
         <div class="form-group">
           <label for="old-password">Input Old Password:</label>
           <div class="form-field-password">
