@@ -10,14 +10,22 @@ export default {
         ConfirmationFormModal,
     },
     props: {
+        user: Object,
         roles: Array,
         formDataToEdit: Object,
+        terms: Array,
+        api_key: String,
+        errors: Object,
+    },
+    mounted() {
+        this.fetchSubjects();
     },
 
     data() {
         return {
             formDataToEditCopy: this.formDataToEdit ?? null,
             formData: {
+                term_id: "",
                 leave_type: "",
                 leave_type_option: "",
                 vacation_option: "",
@@ -51,6 +59,7 @@ export default {
             suggestions: "",
             isDisplaySuggestion: false,
             teachers: [],
+            subjects: [],
         };
     },
 
@@ -117,9 +126,51 @@ export default {
             },
             deep: true,
         },
+
+        "formData.term_id"(newVal) {
+            if (newVal) {
+                this.fetchSubjects();
+            }
+        },
     },
 
     methods: {
+        isSubjectDisabled(subject_id) {
+            if (
+                this.teachingSubstitutes.some(
+                    (substitute) => substitute.subject_id === subject_id,
+                )
+            ) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        fetchSubjects() {
+            const params = {
+                code: this.api_key,
+                teacher_id: this.user.teacher.id,
+                term_id: this.formData.term_id,
+            };
+
+            const queryString = new URLSearchParams(params).toString();
+
+            try {
+                axios
+                    .get(
+                        `https://sis.materdeicollege.com/api/hr/subject-classes/?${queryString}`,
+                    )
+                    .then((response) => {
+                        this.subjects = response.data;
+                    })
+                    .catch((error) => {
+                        console.error("error fetching data:", error);
+                    });
+            } catch (error) {
+                console.error("error method:", error);
+            }
+        },
+
         saveToLocalStorage() {
             const dataToSave = {
                 formData: this.formData,
@@ -137,7 +188,7 @@ export default {
         },
         addTeachingSubstitute() {
             const newSubstitute = {
-                subject: "",
+                subject_id: "",
                 user_id: "",
                 teacher: "",
                 days: [],
@@ -191,6 +242,18 @@ export default {
                     localStorage.removeItem("leaveFormData");
 
                     Inertia.visit("/forms/tracking");
+                },
+
+                onError: () => {
+                    this.toggleConfirmForm();
+
+                    toast.error(
+                        "There was an error submitting the form. Please check the fields.",
+                        {
+                            position: "top-center",
+                            duration: 3000,
+                        },
+                    );
                 },
             });
         },

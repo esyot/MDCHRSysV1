@@ -3,6 +3,7 @@
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
@@ -124,7 +125,11 @@ Route::middleware([Check2WayVerification::class])->group(function () {
         Route::get('/notifications/read/{id}/{type}', [NotificationController::class, 'read']);
         Route::get('/notifications/delete/{id}/{type}', [NotificationController::class, 'delete']);
 
+
+        Route::get('/api/hr/subject-classes', [ApiController::class, 'subjectClasses']);
     });
+
+
 });
 
 

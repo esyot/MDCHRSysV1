@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LeaveFormRequest;
 use App\Models\LeaveForm;
 use App\Models\Substitute;
 use App\Models\User;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 
 class LeaveFormController extends Controller
@@ -17,6 +20,7 @@ class LeaveFormController extends Controller
     {
 
         $this->globalVariables();
+        $user = $this->user;
         $roles = $this->roles;
 
         $personalDetails = User::with([
@@ -28,6 +32,7 @@ class LeaveFormController extends Controller
             ->where('users.id', Auth::user()->id)
             ->first();
 
+
         $users = User::whereNot('id', Auth::user()->id)
             ->orderBy('last_name')
             ->get([
@@ -36,25 +41,55 @@ class LeaveFormController extends Controller
                 'last_name'
             ]);
 
+        $code = config('variables.api_key');
+
+        $url = 'https://sis.materdeicollege.com/api/hr/terms';
+
+        $client = new Client();
+
+        $response = $client->get($url, [
+            'query' => [
+                'code' => $code,
+            ],
+            'verify' => false,
+        ]);
+
+        $terms = json_decode($response->getBody(), true);
+
+        $annuals = array_filter($terms, function ($item) {
+            return $item['type'] === 'sem';
+        });
+
+        $terms = array_values($annuals);
+
+        usort($terms, function ($a, $b) {
+            return strtotime($b['start']) - strtotime($a['start']);
+        });
+
+
         return inertia('Pages/Forms/LeaveForm/LeaveForm', [
 
-            'user' => Auth::user(),
+            'user' => $user,
             'roles' => $roles,
             'personalDetails' => $personalDetails->toArray(),
             'pageTitle' => 'Leave Form',
             'users' => $users->toArray(),
+            'terms' => $terms,
+            'api_key' => $code
         ]);
     }
 
-    public function submit(Request $request)
+    public function submit(LeaveFormRequest $request)
     {
 
-        $name = Auth::user()->last_name . ', ' . Auth::user()->first_name;
+        $this->globalVariables();
+        $name = $this->name;
+
+        $formData = $request->toArray();
+
 
         if (!$request->form_id)
         {
-            $formData = $request->toArray();
-
 
 
             unset($formData['medical_certificate']);
@@ -229,7 +264,7 @@ class LeaveFormController extends Controller
                 unset($formData['date_of_confinement']);
                 unset($formData['date_of_discharge']);
                 unset($formData['medical_certificate']);
-            } elseif ($formData['Personal'])
+            } elseif ($formData['leave_type'] === 'Personal')
             {
                 unset($formData['convalescence_place']);
                 unset($formData['sick_type']);
@@ -268,10 +303,10 @@ class LeaveFormController extends Controller
                 }
 
                 $record->save();
+
             }
 
             $formData['status'] = 'Pending';
-
 
             LeaveForm::where('id', $form_id)
                 ->first()
@@ -345,8 +380,8 @@ class LeaveFormController extends Controller
 
             return redirect()->route('forms.tracking')->with('success', 'Leave request submitted successfully!.');
 
-
         }
+
     }
 
 }

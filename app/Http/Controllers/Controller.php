@@ -22,6 +22,10 @@ abstract class Controller
 
     protected $roleList;
 
+    protected $name;
+
+    protected $apiKey;
+
 
 
     protected function globalVariables()
@@ -40,5 +44,9 @@ abstract class Controller
 
 
         $this->departmentList = Department::all();
+
+        $this->name = Auth::user()->last_name . ', ' . Auth::user()->first_name;
+
+        $this->apiKey = config('variables.api_key');
     }
 }

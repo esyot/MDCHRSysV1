@@ -34,7 +34,7 @@
     background-color: #fff;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
     border: 1px solid #d8d8d8;
-    border-radius: 5px;
+    border-radius: 10px;
     margin-inline: 5px;
 }
 .modal-header {
@@ -44,8 +44,8 @@
     padding-inline: 10px;
     padding-top: 3px;
     border-bottom: 1px solid #b3b3b3;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
     background-color: #0e8dd6;
     color: #fff;
 }
@@ -163,6 +163,8 @@
     padding: 10px;
     gap: 0.3rem;
     background-color: #eeeeee;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
 
 .btn-container button {

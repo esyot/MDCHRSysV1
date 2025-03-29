@@ -19,6 +19,18 @@
         </div>
 
         <div class="form-section">
+          <label for="term">Term:</label>
+          <select name="" id="" v-model="formData.term_id" required>
+            <option value="" disabled selected>Select Term</option>
+            <option :value="term.id" v-for="(term, index) in terms" :key="index">
+              {{ term.name }}
+            </option>
+          </select>
+
+          <small class="error-msg" v-if="errors.term_id"> {{ errors.term_id }}</small>
+        </div>
+
+        <div class="form-section">
           <label for="leave_name">TYPE OF LEAVE:</label>
           <select
             id="leave_name"
@@ -34,6 +46,10 @@
             <option value="Educational">Educational</option>
             <option value="Others">Others</option>
           </select>
+
+          <small class="error-msg" v-if="errors.leave_type">
+            {{ errors.leave_type }}</small
+          >
         </div>
 
         <div class="form-section" v-if="formData.leave_type == 'Personal'">
@@ -49,6 +65,10 @@
             <option value="Fiesta">Fiesta Leave</option>
             <option value="Birthday">Birthday Leave</option>
           </select>
+
+          <small class="error-msg" v-if="errors.leave_type_option">
+            {{ errors.leave_type_option }}</small
+          >
         </div>
 
         <div class="form-section" v-if="formData.leave_type_option === 'Vacation'">
@@ -58,6 +78,10 @@
             <option value="Within the Philippines">Within the Philippines</option>
             <option value="Abroad">Abroad</option>
           </select>
+
+          <small class="error-msg" v-if="errors.vacation_option">
+            {{ errors.vacation_option }}</small
+          >
         </div>
 
         <div
@@ -78,6 +102,8 @@
             placeholder="eg., Bohol, Tubigon"
             required
           />
+
+          <small class="error-msg" v-if="errors.address">{{ errors.address }}</small>
         </div>
         <div class="form-section" v-if="formData.vacation_option === 'Abroad'">
           <label for="leave_vacation_abroad">If Abroad, please specify:</label>
@@ -89,6 +115,7 @@
             placeholder="eg., Tokyo, Japan"
             required
           />
+          <small class="error-msg" v-if="errors.address">{{ errors.address }}</small>
         </div>
         <div class="form-section" v-if="formData.leave_type === 'Sick'">
           <label for="leave_type_sick">In case of Sick Leave:</label>
@@ -99,6 +126,10 @@
             <option value="Out Patient">Out Patient</option>
             <option value="Home Medication">Home Medication</option>
           </select>
+
+          <small class="error-msg" v-if="errors.convalescence_place">
+            {{ errors.convalescence_place }}</small
+          >
         </div>
         <div class="form-section" v-if="formData.leave_type === 'Sick'">
           <label for="leave_sick_hospital">Please specify your illness: </label>
@@ -110,6 +141,8 @@
             @input="fetchCondition(formData.illness)"
             placeholder="Search for a condition..."
           />
+
+          <small class="error-msg" v-if="errors.illness"> {{ errors.illness }}</small>
 
           <div v-if="isDisplaySuggestion" class="condition-suggestions">
             <span
@@ -140,6 +173,7 @@
             v-model="formData.address"
             required
           />
+          <small class="error-msg" v-if="errors.address">{{ errors.address }}</small>
         </div>
 
         <div class="form-section" v-if="formData.leave_type === 'Educational'">
@@ -154,6 +188,8 @@
             <option value="Board Examination Review">Board Examination Review</option>
             <option value="Others">Others</option>
           </select>
+
+          <small class="error-msg" v-if="errors.reason">{{ errors.reason }}</small>
         </div>
         <div
           class="form-section"
@@ -168,6 +204,10 @@
             placeholder="eg., Completion of Certification"
             required
           />
+
+          <small class="error-msg" v-if="errors.other_reason">
+            {{ errors.other_reason }}</small
+          >
         </div>
 
         <div class="form-section" v-if="formData.leave_type === 'Others'">
@@ -180,6 +220,10 @@
             v-model="formData.other_reason"
             required
           />
+
+          <small class="error-msg" v-if="errors.other_reason"
+            >{{ errors.other_reason }}
+          </small>
         </div>
         <div class="form-section" v-if="formData.leave_type === 'Sick'">
           <label for="date_of_confinement">Date of confinement:</label>
@@ -190,6 +234,9 @@
             v-model="formData.date_of_confinement"
             required
           />
+          <small class="error-msg" v-if="errors.date_of_confinement">
+            {{ errors.date_of_confinement }}</small
+          >
         </div>
 
         <div class="form-section" v-if="formData.leave_type === 'Sick'">
@@ -201,6 +248,10 @@
             v-model="formData.date_of_discharge"
             required
           />
+
+          <small class="error-msg" v-if="errors.date_of_discharge">
+            {{ errors.date_of_discharge }}</small
+          >
         </div>
 
         <div class="form-section">
@@ -212,6 +263,10 @@
             v-model="formData.date_start"
             required
           />
+
+          <small class="error-msg" v-if="errors.date_start">{{
+            errors.date_start
+          }}</small>
         </div>
 
         <div class="form-section">
@@ -223,6 +278,7 @@
             v-model="formData.date_end"
             required
           />
+          <small class="error-msg" v-if="errors.date_end">{{ errors.date_end }}</small>
         </div>
 
         <div class="form-section" v-if="formData.leave_type === 'Sick'">
@@ -238,6 +294,9 @@
           />
 
           <small>Note: <i>selected file must be in .jpg format</i></small>
+          <small class="error-msg" v-if="errors.medical_certificate">{{
+            errors.medical_certificate
+          }}</small>
         </div>
 
         <div class="form-section" v-if="roles.includes('teacher')">
@@ -297,14 +356,23 @@
         >
           <div class="form-section">
             <label for="'subject' + index">Subject</label>
-            <input
-              type="text"
+
+            <select
               :id="'subject' + index"
               class="forms-controller"
-              v-model="substitute.subject"
-              placeholder="eg., Math 101"
+              v-model="teachingSubstitutes[index].subject_id"
               required
-            />
+            >
+              <option value="" selected disabled>Select a subject</option>
+              <option
+                :disabled="isSubjectDisabled(subject.id)"
+                :value="subject.id"
+                v-for="(subject, index) in subjects"
+                :key="index"
+              >
+                {{ subject.course_no }} - {{ subject.description }}
+              </option>
+            </select>
           </div>
 
           <div class="form-section">
@@ -364,6 +432,7 @@
               required
               class="forms-controller"
               v-model="substitute.start_time"
+              value="00:00"
             />
           </div>
 
@@ -374,12 +443,17 @@
               :id="'end_time' + index"
               class="forms-controller"
               v-model="substitute.end_time"
+              value="00:00"
               required
             />
           </div>
 
           <div class="button-container">
-            <button @click="removeTeachingSubstitute(index)" class="remove-btn">
+            <button
+              type="button"
+              @click="removeTeachingSubstitute(index)"
+              class="remove-btn"
+            >
               <i class="fa fa-trash"></i> Remove
             </button>
           </div>

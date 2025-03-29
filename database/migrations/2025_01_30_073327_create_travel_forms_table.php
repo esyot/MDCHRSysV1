@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('travel_forms', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('term_id')->unsigned()->nullable();
             $table->date('date_start');
             $table->date('date_end');
             $table->string('destination');
@@ -24,13 +25,12 @@ return new class extends Migration {
             $table->string('budget_charged_to');
             $table->text('description');
             $table->text('class_description')->nullable();
-            $table->enum('term', ['1st', '2nd', 'summer']);
             $table->enum('status', ['pending', 'dean_approved', 'hr_approved', 'vp_acad_approved', 'vp_admin_approved', 'declined', 'approved'])->default('pending');
             $table->date('filing_date');
-            $table->bigInteger('recommended_by')->unsigned()->nullable();
-            $table->bigInteger('endorsed_by')->unsigned()->nullable();
-            $table->bigInteger('approved_by')->unsigned()->nullable();
-            $table->bigInteger('disapproved_by')->unsigned()->nullable();
+            $table->string('recommended_by')->nullable();
+            $table->string('endorsed_by')->nullable();
+            $table->string('approved_by')->nullable();
+            $table->string('disapproved_by')->nullable();
             $table->string('disapproval_description')->nullable();
             $table->timestamps();
 

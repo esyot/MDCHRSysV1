@@ -63,11 +63,9 @@ class NotificationController extends Controller
         } else if ($for === 'dean')
         {
 
-            $departmentId = Teacher::where('user_id', Auth::user()->id)->pluck('department_id')->first();
+            $departmentId = Teacher::where('user_id', '=', Auth::user()->id)->pluck('department_id')->first();
 
-            $userIds = User::whereHas('teacher', function ($query) use ($departmentId) {
-                $query->where('department_id', $departmentId);
-            })
+            $userIds = User::whereRelation('teacher', 'department_id', '=', $departmentId)
                 ->role('dean')
                 ->pluck('id');
 

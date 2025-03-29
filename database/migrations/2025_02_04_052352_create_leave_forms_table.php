@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('leave_forms', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned();
+            $table->bigInteger('term_id')->unsigned()->nullable();
             $table->string('leave_type')->nullable();
             $table->string('leave_type_option')->nullable();
             $table->string('vacation_option')->nullable();
@@ -33,9 +34,9 @@ return new class extends Migration {
             $table->integer('days_with_pay')->nullable();
             $table->integer('days_without_pay')->nullable();
             $table->integer('others')->nullable();
-            $table->bigInteger('endorsed_by')->unsigned()->nullable();
-            $table->bigInteger('recommended_by')->unsigned()->nullable();
-            $table->bigInteger('disapproved_by')->unsigned()->nullable();
+            $table->string('endorsed_by')->nullable();
+            $table->string('recommended_by')->nullable();
+            $table->string('disapproved_by')->nullable();
             $table->string('disapproval_description')->nullable();
             $table->timestamps();
 

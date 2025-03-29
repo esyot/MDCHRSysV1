@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LeaveForm;
 use App\Models\TravelForm;
 use App\Models\User;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,11 +15,11 @@ class FormsController extends Controller
     {
         $this->globalVariables();
         $roles = $this->roles;
-        $user = Auth::user();
+        $user = $this->user;
+        $code = $this->apiKey;
 
         $notificationsController = new NotificationController();
         $notificationsController->read(Auth::user()->id, 'tracking');
-
 
         $travelForms = TravelForm::where('user_id', $user->id)
             ->with([
@@ -27,7 +28,6 @@ class FormsController extends Controller
             ])
             ->orderBy('created_at', 'ASC')
             ->get();
-
 
         $leaveForms = LeaveForm::where('user_id', Auth::user()->id)
             ->with([
@@ -38,6 +38,94 @@ class FormsController extends Controller
             ->get();
 
 
+        foreach ($travelForms as $form)
+        {
+
+            $term_client = new Client();
+            $term_url = 'https://sis.materdeicollege.com/api/hr/terms';
+
+            $response = $term_client->get($term_url, [
+                'query' => [
+                    'code' => $code,
+                ],
+                'verify' => false
+            ]);
+
+            $terms = json_decode($response->getBody(), true);
+
+            $term = collect($terms)->firstWhere('id', $form->term_id);
+
+            $form['term'] = $term;
+
+            foreach ($form->substitutes as $substitute)
+            {
+
+                $subject_id = $substitute->subject_id;
+                $subj_url = 'https://sis.materdeicollege.com/api/hr/subject-classes';
+                $subj_client = new Client();
+                $response = $subj_client->get($subj_url, [
+                    'query' => [
+                        'code' => $code,
+                        'term_id' => $form->term_id,
+                        'teacher_id' => $user->teacher->id,
+                    ],
+                    'verify' => false,
+                ]);
+
+                $subjects = json_decode($response->getBody(), true);
+
+                $subject = collect($subjects)->firstWhere('id', $subject_id);
+
+                $substitute['subject'] = $subject;
+            }
+        }
+
+
+
+
+        foreach ($leaveForms as $form)
+        {
+
+            $term_client = new Client();
+            $term_url = 'https://sis.materdeicollege.com/api/hr/terms';
+
+            $response = $term_client->get($term_url, [
+                'query' => [
+                    'code' => $code,
+                ],
+                'verify' => false
+            ]);
+
+            $terms = json_decode($response->getBody(), true);
+
+            $term = collect($terms)->firstWhere('id', $form->term_id);
+
+            $form['term'] = $term;
+
+            foreach ($form->substitutes as $substitute)
+            {
+
+                $subject_id = $substitute->subject_id;
+                $subj_url = 'https://sis.materdeicollege.com/api/hr/subject-classes';
+                $subj_client = new Client();
+                $response = $subj_client->get($subj_url, [
+                    'query' => [
+                        'code' => $code,
+                        'term_id' => $form->term_id,
+                        'teacher_id' => $user->teacher->id,
+                    ],
+                    'verify' => false,
+                ]);
+
+                $subjects = json_decode($response->getBody(), true);
+
+                $subject = collect($subjects)->firstWhere('id', $subject_id);
+
+
+                $substitute['subject'] = $subject;
+            }
+        }
+
 
         $travelForms->transform(function ($form) use ($user) {
             $form->first_name = $user->first_name;
@@ -45,7 +133,6 @@ class FormsController extends Controller
             $form->middle_name = $user->middle_name;
             return $form;
         });
-
 
 
         $forms = [];
@@ -67,7 +154,6 @@ class FormsController extends Controller
             return strtotime($b['created_at']) - strtotime($a['created_at']);
         });
 
-
         return inertia('Pages/Forms/Tracking/Tracking', [
             'roles' => $roles,
             'user' => $user,
@@ -83,6 +169,9 @@ class FormsController extends Controller
         $this->globalVariables();
         $roles = $this->roles;
         $user = $this->user;
+        $code = $this->apiKey;
+
+
 
         $notificationsController = new NotificationController();
         $notificationsController->read($user->id, 'checking');
@@ -102,6 +191,7 @@ class FormsController extends Controller
                 ->whereIn('user_id', $userIds)
                 ->with([
                     'substitutes.user',
+                    'substitutes.user.teacher',
                     'user',
                     'user.staff',
                     'user.teacher',
@@ -114,6 +204,7 @@ class FormsController extends Controller
                 ->orderBy('created_at', 'ASC')
                 ->with([
                     'substitutes.user',
+                    'substitutes.user.teacher',
                     'user',
                     'user.staff',
                     'user.teacher',
@@ -132,6 +223,7 @@ class FormsController extends Controller
             $leaveForms = LeaveForm::where('status', 'dean_approved')
                 ->with([
                     'substitutes.user',
+                    'substitutes.user.teacher',
                     'user',
                     'user.staff',
                     'user.teacher',
@@ -145,6 +237,7 @@ class FormsController extends Controller
                 ->orderBy('created_at', 'ASC')
                 ->with([
                     'substitutes.user',
+                    'substitutes.user.teacher',
                     'user',
                     'user.staff',
                     'user.teacher',
@@ -163,6 +256,7 @@ class FormsController extends Controller
             $leaveForms = LeaveForm::where('status', 'hr_approved')
                 ->with([
                     'substitutes.user',
+                    'substitutes.user.teacher',
                     'user',
                     'user.staff',
                     'user.teacher',
@@ -174,6 +268,7 @@ class FormsController extends Controller
                 ->orderBy('created_at', 'ASC')
                 ->with([
                     'substitutes.user',
+                    'substitutes.user.teacher',
                     'user',
                     'user.staff',
                     'user.teacher',
@@ -193,6 +288,7 @@ class FormsController extends Controller
             $leaveForms = LeaveForm::where('status', 'vp_admin_approved')
                 ->with([
                     'substitutes.user',
+                    'substitutes.user.teacher',
                     'user',
                     'user.staff',
                     'user.teacher',
@@ -205,6 +301,7 @@ class FormsController extends Controller
                 ->orderBy('created_at', 'ASC')
                 ->with([
                     'substitutes.user',
+                    'substitutes.user.teacher',
                     'user',
                     'user.staff',
                     'user.teacher',
@@ -221,6 +318,8 @@ class FormsController extends Controller
             $leaveForms = LeaveForm::where('status', 'vp_acad_approved')
                 ->with([
                     'substitutes.user',
+                    'substitutes.user.teacher',
+
                     'user',
                     'user.staff',
                     'user.teacher',
@@ -234,6 +333,7 @@ class FormsController extends Controller
                 ->orderBy('created_at', 'ASC')
                 ->with([
                     'substitutes.user',
+                    'substitutes.user.teacher',
                     'user',
                     'user.staff',
                     'user.teacher',
@@ -251,6 +351,72 @@ class FormsController extends Controller
                 'error' => "Sorry, you are not allowed to do this action."
             ]);
         }
+
+
+
+        foreach ($leaveForms as $form)
+        {
+
+            foreach ($form->substitutes as $substitute)
+            {
+
+
+                $subject_id = $substitute->subject_id;
+                $subj_url = 'https://sis.materdeicollege.com/api/hr/subject-classes';
+                $subj_client = new Client();
+                $response = $subj_client->get($subj_url, [
+                    'query' => [
+                        'code' => $code,
+                        'term_id' => $form->term_id,
+                        'teacher_id' => $form->user->teacher->id,
+                    ],
+                    'verify' => false,
+                ]);
+
+                $subjects = json_decode($response->getBody(), true);
+
+                $subject = collect($subjects)->firstWhere('id', $subject_id);
+
+
+                $substitute['subject'] = $subject;
+
+
+
+            }
+        }
+
+        foreach ($travelForms as $form)
+        {
+
+            foreach ($form->substitutes as $substitute)
+            {
+
+
+                $subject_id = $substitute->subject_id;
+                $subj_url = 'https://sis.materdeicollege.com/api/hr/subject-classes';
+                $subj_client = new Client();
+                $response = $subj_client->get($subj_url, [
+                    'query' => [
+                        'code' => $code,
+                        'term_id' => $form->term_id,
+                        'teacher_id' => $form->user->teacher->id,
+                    ],
+                    'verify' => false,
+                ]);
+
+                $subjects = json_decode($response->getBody(), true);
+
+                $subject = collect($subjects)->firstWhere('id', $subject_id);
+
+
+                $substitute['subject'] = $subject;
+
+
+
+            }
+        }
+
+
 
 
         $forms = [];
@@ -578,6 +744,31 @@ class FormsController extends Controller
         $user = $this->user;
         $roles = $this->roles;
 
+        $code = config('variables.api_key');
+
+        $url = 'https://sis.materdeicollege.com/api/hr/terms';
+
+        $client = new Client();
+
+        $response = $client->get($url, [
+            'query' => [
+                'code' => $code,
+            ],
+            'verify' => false,
+        ]);
+
+        $terms = json_decode($response->getBody(), true);
+
+        $annuals = array_filter($terms, function ($item) {
+            return $item['type'] === 'sem';
+        });
+
+        $terms = array_values($annuals);
+
+        usort($terms, function ($a, $b) {
+            return strtotime($b['start']) - strtotime($a['start']);
+        });
+
         $users = User::whereNot('id', Auth::user()->id)
             ->orderBy('last_name')
             ->get([
@@ -591,6 +782,7 @@ class FormsController extends Controller
 
             $formData = LeaveForm::where('id', $id)->with([
                 'substitutes.user',
+                'substitutes.user.teacher',
             ])->first();
 
             foreach ($formData->substitutes as $sub)
@@ -600,23 +792,26 @@ class FormsController extends Controller
 
                 $sub['days'] = explode(', ', $sub['days']);
             }
-
 
             return inertia('Pages/Forms/LeaveForm/LeaveForm', [
                 'formDataToEdit' => $formData,
                 'user' => $user,
                 'roles' => $roles,
-                'users' => $users
+                'users' => $users,
+                'terms' => $terms,
+                'api_key' => $code,
 
             ]);
+
         } elseif ($type === 'Travel Form')
         {
             $formData = TravelForm::where('id', $id)->with([
                 'substitutes.user',
+                'substitutes.user.teacher',
             ])->first();
 
-            $budgetTypes = config('local_variables.budget_types');
-            $budgetCharges = config('local_variables.budget_charges');
+            $budgetTypes = config('variables.budgetTypes');
+            $budgetCharges = config('variables.budgetCharges');
 
             foreach ($formData->substitutes as $sub)
             {
@@ -625,6 +820,7 @@ class FormsController extends Controller
 
                 $sub['days'] = explode(', ', $sub['days']);
             }
+
 
 
 
@@ -634,7 +830,10 @@ class FormsController extends Controller
                 'roles' => $roles,
                 'users' => $users,
                 'budgetTypes' => $budgetTypes,
-                'budgetCharges' => $budgetCharges
+                'budgetCharges' => $budgetCharges,
+                'terms' => $terms,
+                'api_key' => $code,
+
 
             ]);
         }

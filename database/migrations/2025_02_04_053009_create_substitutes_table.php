@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->bigInteger('leave_form_id')->unsigned()->nullable();
             $table->bigInteger('travel_form_id')->unsigned()->nullable();
-            $table->string('subject');
+            $table->string('subject_id');
             $table->bigInteger('user_id')->unsigned();
             $table->string('days');
             $table->time('start_time');

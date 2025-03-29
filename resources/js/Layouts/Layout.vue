@@ -34,6 +34,7 @@ export default {
     display: none;
   }
 }
+
 @keyframes increaseOpacity {
   0% {
     background-color: rgba(0, 0, 0, 0);
@@ -53,6 +54,7 @@ export default {
     opacity: 1;
   }
 }
+
 .hidden {
   display: none;
 }
@@ -90,5 +92,9 @@ export default {
   overflow-x: hidden;
   width: 100%;
   background: linear-gradient(to bottom, #2986c0, #02041d);
+}
+
+.error-msg {
+  color: red;
 }
 </style>

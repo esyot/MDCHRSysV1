@@ -69,9 +69,18 @@
             </div>
             <div class="grouped-details">
               <div class="group">
-                <span v-for="substitute in formData.substitutes">
-                  {{ substitute.user.last_name }}, {{ substitute.user.first_name }} -
-                  {{ substitute.subject }}
+                <span
+                  :title="
+                    substitute.subject.description +
+                    ' (' +
+                    substitute.subject.course_no +
+                    ')'
+                  "
+                  v-for="substitute in formData.substitutes"
+                >
+                  {{ substitute.subject.course_no }} | {{ substitute.days }} |
+                  {{ substitute.user.last_name[0] }}.
+                  {{ substitute.user.first_name }}
                 </span>
               </div>
             </div>
@@ -220,9 +229,27 @@
                   : formData.user.staff.date_hired
               }}
             </span>
+            <span
+              class="error-msg"
+              v-if="
+                !(formData.user.teacher
+                  ? formData.user.teacher.date_hired
+                  : formData.user.staff.date_hired) != null
+              "
+            >
+              {{ formData.user.last_name[0] }}. {{ formData.user.first_name }}'s hire date
+              not found.</span
+            >
           </div>
 
-          <table v-if="roles.includes('hr')">
+          <table
+            v-if="
+              roles.includes('hr') &&
+              (formData.user.teacher
+                ? formData.user.teacher.date_hired
+                : formData.user.staff.date_hired) != null
+            "
+          >
             <thead>
               <tr>
                 <th></th>

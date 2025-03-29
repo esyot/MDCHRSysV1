@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TravelFormRequest;
 use App\Models\Substitute;
 use App\Models\TravelForm;
 use App\Models\User;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,6 +41,31 @@ class TravelFormController extends Controller
         $budgetTypes = config('variables.budgetTypes');
         $budgetCharges = config('variables.budgetCharges');
 
+        $code = config('variables.api_key');
+
+        $url = 'https://sis.materdeicollege.com/api/hr/terms';
+
+        $client = new Client();
+
+        $response = $client->get($url, [
+            'query' => [
+                'code' => $code,
+            ],
+            'verify' => false,
+        ]);
+
+        $terms = json_decode($response->getBody(), true);
+
+        $annuals = array_filter($terms, function ($item) {
+            return $item['type'] === 'sem';
+        });
+
+        $terms = array_values($annuals);
+
+        usort($terms, function ($a, $b) {
+            return strtotime($b['start']) - strtotime($a['start']);
+        });
+
         return inertia('Pages/Forms/TravelForm/TravelForm', [
             'user' => $user,
             'users' => $users,
@@ -48,22 +75,24 @@ class TravelFormController extends Controller
             'budgetCharges' => $budgetCharges,
             'formData' => $request ?? null,
             'pageTitle' => 'Travel Form',
-            'formDataToEdit' => null
+            'formDataToEdit' => null,
+            'terms' => $terms
 
         ]);
     }
 
 
-    public function submit(Request $request)
+    public function submit(TravelFormRequest $request)
     {
-        $name = Auth::user()->last_name . ', ' . Auth::user()->first_name;
+        $this->globalVariables();
+        $name = $this->name;
+        $formData = $request->toArray();
 
-        if (!$request->formData['form_id'])
+        if (!isset($formData['form_id']))
         {
-            $formData = $request->formData;
-
             $formData['user_id'] = Auth::user()->id;
 
+            unset($formData['substitutes']);
             unset($formData['form_id']);
             unset($formData['class_description']);
 
@@ -72,19 +101,21 @@ class TravelFormController extends Controller
             if ($request->substitutes)
             {
 
-                $substitutes = $request->substitutes;
+                $substitutes = json_decode($request->substitutes, true);
+
+
 
                 foreach ($substitutes as $sub)
                 {
 
                     $sub['travel_form_id'] = $travelForm->id;
 
-                    unset($sub['days']);
                     unset($sub['teacher']);
 
                     $days = isset($sub['days']) && is_array($sub['days']) ? implode(', ', $sub['days']) : '';
 
                     $sub['days'] = $days;
+
 
                     Substitute::create($sub);
                 }
@@ -92,7 +123,7 @@ class TravelFormController extends Controller
             } else
             {
                 $travelForm->update([
-                    'class_description' => $request->formData['class_description'],
+                    'class_description' => $request->class_description,
                 ]);
             }
 
@@ -117,12 +148,12 @@ class TravelFormController extends Controller
 
         } else
         {
-            $form_id = $request->formData['form_id'];
-
-            $formData = $request->formData;
+            $form_id = $formData['form_id'];
 
             unset($formData['form_id']);
             unset($formData['class_description']);
+            unset($formData['substitutes']);
+
 
             $travelForm = TravelForm::find($form_id);
 
@@ -157,7 +188,7 @@ class TravelFormController extends Controller
             } else
             {
                 $travelForm->update([
-                    'class_description' => $request->formData['class_description'],
+                    'class_description' => $request->class_description,
                 ]);
             }
 

@@ -14,11 +14,15 @@ export default {
         budgetCharges: Object,
         formDataToEdit: Object,
         roles: Array,
+        terms: Object,
+        errors: Object,
     },
+
     data() {
         return {
             formDataToEditCopy: this.formDataToEdit ?? null,
             formData: {
+                term_id: "",
                 date_start: "",
                 date_end: "",
                 destination: "",
@@ -26,7 +30,6 @@ export default {
                 contact_person: "",
                 contact_person_no: "",
                 description: "",
-                term: "",
                 amount: "",
                 budget_type: "",
                 budget_charged_to: "",
@@ -43,6 +46,7 @@ export default {
             suggestions: [],
             isDisplaySuggestion: false,
             teachers: [],
+            subjects: [],
             message: "Are you sure you want to submit?",
         };
     },
@@ -94,6 +98,35 @@ export default {
         }
     },
     methods: {
+        isSubjectDisabled(subject_id) {
+            if (
+                this.teachingSubstitutes.some(
+                    (substitute) => substitute.subject_id === subject_id,
+                )
+            ) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        fetchSubjects() {
+            try {
+                axios
+                    .get(`/api/hr/subject-classes`, {
+                        params: {
+                            term_id: this.formData.term_id,
+                        },
+                    })
+                    .then((response) => {
+                        this.subjects = response.data;
+                    })
+                    .catch((error) => {
+                        console.error("error fetching data:", error);
+                    });
+            } catch (error) {
+                console.error("error method:", error);
+            }
+        },
         toggleConfirmForm() {
             this.isConfirmation = !this.isConfirmation;
         },
@@ -108,7 +141,7 @@ export default {
         },
         addTeachingSubstitute() {
             const newSubstitute = {
-                subject: "",
+                subject_id: "",
                 user_id: "",
                 teacher: "",
                 days: [],
@@ -122,54 +155,69 @@ export default {
             this.teachingSubstitutes.splice(index, 1);
         },
         submitForm() {
-            let formData = {
-                form_id: this.formDataToEdit ? this.formDataToEdit.id : null,
-                date_start: this.formData.date_start,
-                date_end: this.formData.date_end,
-                description: this.formData.description,
-                destination: this.formData.destination,
-                purpose: this.formData.purpose,
-                contact_person: this.formData.contact_person,
-                contact_person_no: this.formData.contact_person_no,
-                amount: this.formData.amount,
-                budget_type: this.formData.budget_type,
-                budget_charged_to: this.formData.budget_charged_to,
-                filing_date:
-                    this.formData.filing_date ??
+            let formData = new FormData();
+
+            if (this.formDataToEdit) {
+                formData.append("form_id", this.formDataToEdit.id);
+            }
+
+            formData.append("term_id", this.formData.term_id);
+            formData.append("date_start", this.formData.date_start);
+            formData.append("date_end", this.formData.date_end);
+            formData.append("description", this.formData.description);
+            formData.append("destination", this.formData.destination);
+            formData.append("purpose", this.formData.purpose);
+            formData.append("contact_person", this.formData.contact_person);
+            formData.append(
+                "contact_person_no",
+                this.formData.contact_person_no,
+            );
+            formData.append("amount", this.formData.amount);
+            formData.append("budget_type", this.formData.budget_type);
+            formData.append(
+                "budget_charged_to",
+                this.formData.budget_charged_to,
+            );
+            formData.append(
+                "filing_date",
+                this.formData.filing_date ??
                     new Date().toISOString().split("T")[0],
-                class_description: this.formData.class_description,
-            };
+            );
+            formData.append(
+                "class_description",
+                this.formData.class_description,
+            );
+
+            formData.append(
+                "substitutes",
+                JSON.stringify(this.teachingSubstitutes),
+            );
 
             const toast = useToast();
 
-            Inertia.post(
-                "/forms/travel-form-submit",
-                {
-                    formData: formData,
-                    substitutes: this.teachingSubstitutes,
+            Inertia.post("/forms/travel-form-submit", formData, {
+                onSuccess: () => {
+                    toast.success("Form submitted successfully", {
+                        position: "top-center",
+                    });
+
+                    this.toggleConfirmForm();
+
+                    localStorage.removeItem("travelFormData");
+
+                    Inertia.visit("/forms/tracking");
                 },
-                {
-                    onSuccess: () => {
-                        toast.success("Form submitted successfully", {
+                onError: (errors) => {
+                    this.toggleConfirmForm();
+                    toast.error(
+                        "There was an error submitting the form. Please check the fields.",
+                        {
                             position: "top-center",
-                        });
-
-                        this.toggleConfirmForm();
-
-                        localStorage.removeItem("travelFormData");
-
-                        Inertia.visit("/forms/tracking");
-                    },
-                    onError: () => {
-                        toast.error(
-                            "An error occurred while submitting the form",
-                            {
-                                position: "top-center",
-                            },
-                        );
-                    },
+                            duration: 3000,
+                        },
+                    );
                 },
-            );
+            });
         },
         toggleSearchTeacher(value, index) {
             this.searchTeacher = true;
@@ -208,36 +256,26 @@ export default {
             }
             this.searchTeacher = false;
         },
+
         fetchPlaceSuggestions(term) {
             this.isDisplaySuggestion = true;
-            fetch(
-                `https://nominatim.openstreetmap.org/search?q=${term}&format=json&limit=5&addressdetails=1`,
-                {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
+
+            axios
+                .get("https://nominatim.openstreetmap.org/search", {
+                    params: {
+                        q: term,
+                        format: "json",
+                        limit: 5,
+                        addressdetails: 1,
                     },
-                },
-            )
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error(
-                            `HTTP error! Status: ${response.status}`,
-                        );
-                    }
-                    return response.json();
                 })
-                .then((data) => {
-                    if (data && Array.isArray(data)) {
-                        this.suggestions = data.map(
-                            (place) => place.display_name,
-                        );
-                    } else {
-                        this.suggestions = [];
-                    }
+                .then(({ data }) => {
+                    this.suggestions = Array.isArray(data)
+                        ? data.map((place) => place.display_name)
+                        : [];
                 })
-                .catch((error) => {
-                    console.error("Error fetching place suggestions:", error);
+                .catch(() => {
+                    console.error("Error fetching place suggestions");
                     this.suggestions = [];
                 });
         },
@@ -270,6 +308,12 @@ export default {
                 this.storeToLocalStorage();
             },
             deep: true,
+        },
+
+        "formData.term_id"(newVal) {
+            if (newVal) {
+                this.fetchSubjects();
+            }
         },
     },
 };

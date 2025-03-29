@@ -17,6 +17,17 @@
           <span class="title">Travel details</span>
         </div>
         <div class="form-section">
+          <label for="term">Select Term:</label>
+          <select id="term" class="form-control" v-model="formData.term_id" required>
+            <option value="" disabled selected>Select Term</option>
+            <option :value="term.id" v-for="(term, index) in terms" :key="index">
+              {{ term.name }}
+            </option>
+          </select>
+
+          <small class="error-msg" v-if="errors.term_id"> {{ errors.term_id }}</small>
+        </div>
+        <div class="form-section">
           <label for="date_start">Date Start of Travel:</label>
           <input
             type="date"
@@ -25,6 +36,10 @@
             class="form-control"
             required
           />
+
+          <small class="error-msg" v-if="errors.date_start">
+            {{ errors.date_start }}
+          </small>
         </div>
 
         <div class="form-section">
@@ -36,6 +51,8 @@
             class="form-control"
             required
           />
+
+          <small class="error-msg" v-if="errors.date_end"> {{ errors.date_end }}</small>
         </div>
 
         <div class="form-section">
@@ -49,7 +66,9 @@
             required
             @input="fetchPlaceSuggestions(formData.destination)"
           />
-
+          <small class="error-msg" v-if="errors.destination">
+            {{ errors.destination }}
+          </small>
           <div v-if="isDisplaySuggestion" class="suggestions">
             <span
               v-for="(suggestion, index) in suggestions"
@@ -71,6 +90,8 @@
             placeholder="Enter the purpose or event"
             required
           />
+
+          <small class="errors-msg" v-if="errors.purpose"> {{ errors.purpose }}</small>
         </div>
 
         <div class="form-section">
@@ -83,6 +104,10 @@
             placeholder="Enter the organizer or contact person"
             required
           />
+
+          <small class="error-msg" v-if="errors.contact_person">
+            {{ errors.contact_person }}</small
+          >
         </div>
 
         <div class="form-section">
@@ -95,6 +120,10 @@
             placeholder="Enter the organizer or contact person's contact number"
             required
           />
+
+          <small class="error-msg" v-if="errors.contact_person_no">
+            {{ errors.contact_person_no }}</small
+          >
         </div>
 
         <div class="form-section">
@@ -107,6 +136,10 @@
             rows="4"
             required
           ></textarea>
+
+          <small class="error-msg" v-if="errors.description">
+            {{ errors.description }}</small
+          >
         </div>
       </div>
 
@@ -130,6 +163,9 @@
               />
               <label :for="item.id">{{ item.label }}</label>
             </div>
+            <small class="error-msg" v-if="errors.budget_type">{{
+              errors.budget_type
+            }}</small>
           </div>
 
           <div class="grid">
@@ -146,6 +182,9 @@
               />
               <label :for="item.value">{{ item.label }}</label>
             </div>
+            <small class="error-msg" v-if="errors.budget_charged_to">
+              {{ errors.budget_charged_to }}</small
+            >
           </div>
         </div>
 
@@ -159,16 +198,10 @@
             placeholder="Enter amount requested"
             required
           />
+
+          <small class="error-msg" v-if="errors.amount"> {{ errors.amount }}</small>
         </div>
-        <div class="form-section">
-          <label for="term">Select Term:</label>
-          <select id="term" class="form-control" v-model="formData.term" required>
-            <option value="" disabled selected>Select Term</option>
-            <option value="1st">1st Semister</option>
-            <option value="2nd">2nd Semister</option>
-            <option value="Summer">Summer</option>
-          </select>
-        </div>
+
         <div class="form-section" v-if="roles.includes('teacher')">
           <label for="isSubstitute">Do you have a substitute teacher?</label>
 
@@ -227,14 +260,22 @@
         >
           <div class="form-section">
             <label :for="'subject' + index">Subject:</label>
-            <input
-              type="text"
+            <select
               :id="'subject' + index"
               class="forms-controller"
-              v-model="substitute.subject"
-              placeholder="eg., Math 101"
+              v-model="teachingSubstitutes[index].subject_id"
               required
-            />
+            >
+              <option value="" selected disabled>Select a subject</option>
+              <option
+                :disabled="isSubjectDisabled(subject.id)"
+                :value="subject.id"
+                v-for="(subject, index) in subjects"
+                :key="index"
+              >
+                {{ subject.course_no }} - {{ subject.description }}
+              </option>
+            </select>
           </div>
 
           <div class="form-section">

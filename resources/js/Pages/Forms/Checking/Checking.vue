@@ -178,10 +178,7 @@ export default {
             :key="form.id"
             @click="toggleFormModal(form.id, form.form_type, form)"
           >
-            <td>
-              {{ form.user.last_name }}, {{ form.user.first_name }}
-              {{ form.user.middle_name[0] }}.
-            </td>
+            <td>{{ form.user.last_name }}, {{ form.user.first_name }}</td>
             <td>{{ form.form_type }}</td>
             <td class="td-status">
               <div class="status-item" v-if="statusMap[form.status]">
@@ -203,7 +200,6 @@ export default {
 
             <td v-if="form.endorser">
               {{ form.endorser.last_name }}, {{ form.endorser.first_name }}
-              {{ form.endorser.middle_name[0] }}.
             </td>
             <td v-if="!form.endorser && roles.includes('hr')">
               <span></span>
@@ -222,7 +218,6 @@ export default {
 
             <td v-if="form.recommender">
               {{ form.recommender.last_name }}, {{ form.recommender.first_name }}
-              {{ form.recommender.middle_name[0] }}.
             </td>
             <td>{{ formatDate(form.created_at) }}</td>
             <td class="td-action">

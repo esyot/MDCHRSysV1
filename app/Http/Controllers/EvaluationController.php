@@ -671,6 +671,7 @@ class EvaluationController extends Controller
 
             $terms = array_values($annuals);
 
+
             usort($terms, fn($a, $b) => strcmp($b['start'], $a['start']) ?: strcmp($b['end'], $a['end']));
 
 

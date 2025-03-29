@@ -1,6 +1,5 @@
 import { Inertia } from "@inertiajs/inertia";
 import axios from "axios";
-import { layouts } from "chart.js";
 import { useToast } from "vue-toastification";
 import Layout from "@/Layouts/Evaluation.vue";
 
