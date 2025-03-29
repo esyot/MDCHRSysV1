@@ -135,6 +135,84 @@ export default {
     },
 
     methods: {
+        submit() {
+            if (this.isSubstitute) {
+                this.validateSubstitutes();
+            } else {
+                this.toggleConfirmForm();
+            }
+        },
+        validateSubstitutes() {
+            const toast = useToast();
+
+            let isValidatedDays = true;
+            let isValidatedUsers = true;
+            let isValidatedTimeStartAndEnd = true;
+
+            this.teachingSubstitutes.forEach((substitute) => {
+                if (!substitute.user_id) {
+                    isValidatedUsers = false;
+                }
+            });
+
+            this.teachingSubstitutes.forEach((substitute) => {
+                if (!substitute.days || substitute.days.length === 0) {
+                    isValidatedDays = false;
+                }
+            });
+
+            this.teachingSubstitutes.forEach((substitute) => {
+                const end_time = substitute.end_time;
+                const start_time = substitute.start_time;
+
+                const convertTimeToMinutes = (time) => {
+                    const [hours, minutes] = time.split(":").map(Number);
+                    return hours * 60 + minutes;
+                };
+
+                const start_time_in_minutes = convertTimeToMinutes(start_time);
+                const end_time_in_minutes = convertTimeToMinutes(end_time);
+
+                if (start_time_in_minutes > end_time_in_minutes) {
+                    isValidatedTimeStartAndEnd = false;
+                }
+            });
+
+            if (!isValidatedDays) {
+                toast.error(
+                    "At least one day must be selected for each substitute!",
+                    {
+                        position: "top-center",
+                        duration: 3000,
+                    },
+                );
+            }
+
+            if (!isValidatedUsers) {
+                toast.error("Please select a valid teacher!", {
+                    position: "top-center",
+                    duration: 3000,
+                });
+            }
+
+            if (!isValidatedTimeStartAndEnd) {
+                toast.error(
+                    "Time start must be greater than or equal to the time end!",
+                    {
+                        position: "top-center",
+                        duration: 3000,
+                    },
+                );
+            }
+
+            if (
+                isValidatedDays &&
+                isValidatedUsers &&
+                isValidatedTimeStartAndEnd
+            ) {
+                this.toggleConfirmForm();
+            }
+        },
         isSubjectDisabled(subject_id) {
             if (
                 this.teachingSubstitutes.some(

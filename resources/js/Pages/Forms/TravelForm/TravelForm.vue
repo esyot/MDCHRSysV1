@@ -1,7 +1,4 @@
 <script src="./js/travel-form.js"></script>
-<style scoped>
-@import "./css/travel-form.css";
-</style>
 <template>
   <ConfirmationFormModal
     :isConfirmation="isConfirmation"
@@ -10,11 +7,11 @@
     @toggleConfirmForm="toggleConfirmForm"
   ></ConfirmationFormModal>
 
-  <form @submit.prevent="toggleConfirmForm">
+  <form @submit.prevent="submit">
     <div class="forms-container">
       <div class="forms">
         <div class="forms-title">
-          <span class="title">Travel details</span>
+          <span class="title">Travel Details</span>
         </div>
         <div class="form-section">
           <label for="term">Select Term:</label>
@@ -367,14 +364,13 @@
     </div>
 
     <div class="form-submit">
-      <button
-        type="button"
-        class="submit"
-        title="Submit for approval"
-        @click="validateForm"
-      >
+      <button type="submit" class="submit" title="Submit for approval">
         {{ formDataToEditCopy ? "Re-Submit Application" : "Submit Application" }}
       </button>
     </div>
   </form>
 </template>
+
+<style scoped>
+@import "./css/travel-form.css";
+</style>

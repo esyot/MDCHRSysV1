@@ -1,7 +1,4 @@
 <script src="./js/leave-form.js"></script>
-<style scoped>
-@import "./css/leave-form.css";
-</style>
 
 <template>
   <ConfirmationFormModal
@@ -11,11 +8,11 @@
     @toggleConfirmForm="toggleConfirmForm"
   ></ConfirmationFormModal>
 
-  <form @submit.prevent="toggleConfirmForm">
+  <form @submit.prevent="submit">
     <div class="forms-container">
       <div class="forms">
         <div class="forms-title">
-          <span class="title">DETAILS OF APPLICATION</span>
+          <span class="title">Leave Details</span>
         </div>
 
         <div class="form-section">
@@ -342,11 +339,10 @@
       </div>
       <div class="forms" v-if="isSubstitute">
         <div class="forms-title">
-          <span class="title">SUBSTITUTE</span>
+          <span class="title">Substitute</span>
           <button type="button" @click="addTeachingSubstitute">
             <i class="fas fa-plus"></i> Add
           </button>
-          <small><i>(For MDC Teaching Employee only)</i></small>
         </div>
 
         <div
@@ -422,6 +418,12 @@
                 <span>{{ day }}</span>
               </div>
             </div>
+            <small
+              v-if="substitute.days && substitute.days.length === 0"
+              class="error-msg"
+            >
+              At least one day must be selected.
+            </small>
           </div>
 
           <div class="form-section">
@@ -468,3 +470,6 @@
     </div>
   </form>
 </template>
+<style scoped>
+@import "./css/leave-form.css";
+</style>
