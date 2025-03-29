@@ -322,10 +322,17 @@
                   :id="'day' + index + '-' + dayIndex"
                   :value="day"
                   v-model="substitute.days"
+                  @change="validateDays(index)"
                 />
                 <span>{{ day }}</span>
               </div>
             </div>
+            <small
+              v-if="substitute.days && substitute.days.length === 0"
+              class="error-msg"
+            >
+              At least one day must be selected.
+            </small>
           </div>
 
           <div class="form-section">
@@ -360,7 +367,12 @@
     </div>
 
     <div class="form-submit">
-      <button type="submit" class="submit" title="Submit for approval">
+      <button
+        type="button"
+        class="submit"
+        title="Submit for approval"
+        @click="validateForm"
+      >
         {{ formDataToEditCopy ? "Re-Submit Application" : "Submit Application" }}
       </button>
     </div>

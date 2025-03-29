@@ -98,6 +98,36 @@ export default {
         }
     },
     methods: {
+        validateForm() {
+            let isValidated = true;
+
+            this.teachingSubstitutes.forEach((substitute) => {
+                if (!substitute.days || substitute.days.length === 0) {
+                    isValidated = false;
+                }
+            });
+
+            if (!isValidated) {
+                const toast = useToast();
+                toast.error(
+                    "At least one day must be selected for each substitute!",
+                    {
+                        position: "top-center",
+                        duration: 3000,
+                    },
+                );
+            } else {
+                this.toggleConfirmForm();
+            }
+        },
+        validateDays(index) {
+            const substitute = this.teachingSubstitutes[index];
+            if (!substitute.days || substitute.days.length === 0) {
+                substitute.daysError = true;
+            } else {
+                substitute.daysError = false;
+            }
+        },
         isSubjectDisabled(subject_id) {
             if (
                 this.teachingSubstitutes.some(

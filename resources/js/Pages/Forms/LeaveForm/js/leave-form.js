@@ -147,28 +147,18 @@ export default {
             }
         },
         fetchSubjects() {
-            const params = {
-                code: this.api_key,
-                teacher_id: this.user.teacher.id,
-                term_id: this.formData.term_id,
-            };
-
-            const queryString = new URLSearchParams(params).toString();
-
-            try {
-                axios
-                    .get(
-                        `https://sis.materdeicollege.com/api/hr/subject-classes/?${queryString}`,
-                    )
-                    .then((response) => {
-                        this.subjects = response.data;
-                    })
-                    .catch((error) => {
-                        console.error("error fetching data:", error);
-                    });
-            } catch (error) {
-                console.error("error method:", error);
-            }
+            axios
+                .get(`/api/hr/subject-classes`, {
+                    params: {
+                        term_id: this.formData.term_id,
+                    },
+                })
+                .then((response) => {
+                    this.subjects = response.data;
+                })
+                .catch((error) => {
+                    console.error("error fetching data:", error);
+                });
         },
 
         saveToLocalStorage() {
@@ -262,11 +252,7 @@ export default {
 
             if (value) {
                 axios
-                    .get(`/teachers/search/${value}`, {
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    })
+                    .get(`/teachers/search/${value}`)
                     .then((response) => {
                         const data = response.data;
                         if (Array.isArray(data)) {
@@ -301,30 +287,15 @@ export default {
 
         fetchCondition(term) {
             this.isDisplaySuggestion = true;
-            fetch(
-                `https://clinicaltables.nlm.nih.gov/api/conditions/v3/search?terms=${term}`,
-                {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
+            axios
+                .get(
+                    `https://clinicaltables.nlm.nih.gov/api/conditions/v3/search`,
+                    {
+                        params: { terms: term },
                     },
-                },
-            )
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error(
-                            `HTTP error! Status: ${response.status}`,
-                        );
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    if (data && Array.isArray(data) && data[3]) {
-                        this.suggestions = data[3].flat();
-                    } else {
-                        this.suggestions = [];
-                    }
-                })
+                )
+                .then((response) => response.data[3]?.flat() || [])
+                .then((data) => (this.suggestions = data))
                 .catch((error) => {
                     console.error("Error fetching suggestions:", error);
                     this.suggestions = [];
