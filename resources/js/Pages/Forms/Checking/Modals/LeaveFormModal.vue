@@ -26,19 +26,7 @@
         <span class="title">Leave Application</span>
         <span @click="toggleFormModal" class="x-btn">&times;</span>
       </div>
-      <!-- <div class="heading-container">
-        <div class="heading-img">
-          <img src="/public/assets/images/mdc-logo.png" alt="MDC LOGO" />
-        </div>
-        <div class="heading-text">
-          <text class="first">Mater Dei College</text>
-          <text class="second">Tubigon, Bohol</text>
-          <text class="third">HUMAN RESOURCE OFFICE</text>
-        </div>
-      </div>
-      <div class="modal-title">
-        <text>Leave Application Form</text>
-      </div> -->
+
       <div class="modal-details">
         <div>
           <div class="row">
@@ -169,23 +157,25 @@
           <div class="section-dates" v-if="formData.leave_type === 'Sick'">
             <div class="input-date">
               <label for="date_of_confinement">Date of Confinement: </label>
-              <span class="underline">{{ formData.date_of_confinement }}</span>
+              <span class="underline">{{
+                formatDate(formData.date_of_confinement)
+              }}</span>
             </div>
 
             <div class="input-date">
               <label for="date_of_discharge">Date of Discharge:</label>
-              <span class="underline">{{ formData.date_of_discharge }}</span>
+              <span class="underline">{{ formatDate(formData.date_of_discharge) }}</span>
             </div>
           </div>
           <div class="section-dates">
             <div class="input-date">
               <label for="date_start">Leave Date Start: </label>
-              <span class="underline">{{ formData.date_start }}</span>
+              <span class="underline">{{ formatDate(formData.date_start) }}</span>
             </div>
 
             <div class="input-date">
               <label for="date_end">Leave Date End:</label>
-              <span class="underline">{{ formData.date_end }}</span>
+              <span class="underline">{{ formatDate(formData.date_end) }}</span>
             </div>
           </div>
 
@@ -281,11 +271,20 @@
 
           <div class="certification-item">
             <text>Date Hired:</text>
-            <span class="underline">
-              {{
+            <span
+              class="underline"
+              v-if="
                 formData.user.teacher
                   ? formData.user.teacher.date_hired
                   : formData.user.staff.date_hired
+              "
+            >
+              {{
+                formatDate(
+                  formData.user.teacher
+                    ? formData.user.teacher.date_hired
+                    : formData.user.staff.date_hired
+                )
               }}
             </span>
             <span
@@ -293,7 +292,7 @@
               v-if="
                 !(formData.user.teacher
                   ? formData.user.teacher.date_hired
-                  : formData.user.staff.date_hired) != null
+                  : formData.user.staff.date_hired)
               "
             >
               {{ formData.user.last_name[0] }}. {{ formData.user.first_name }}'s hire date

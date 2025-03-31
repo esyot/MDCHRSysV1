@@ -25,7 +25,7 @@
           <small class="error-msg" v-if="errors.term_id"> {{ errors.term_id }}</small>
         </div>
         <div class="form-item-section">
-          <label for="date_start">Date Start of Travel:</label>
+          <label for="date_start">Start of Travel:</label>
           <input type="date" id="date_start" v-model="formData.date_start" required />
 
           <small class="error-msg" v-if="errors.date_start">
@@ -34,7 +34,7 @@
         </div>
 
         <div class="form-item-section">
-          <label for="date_end">Date End of Travel:</label>
+          <label for="date_end">End of Travel:</label>
           <input type="date" id="date_end" v-model="formData.date_end" required />
 
           <small class="error-msg" v-if="errors.date_end"> {{ errors.date_end }}</small>

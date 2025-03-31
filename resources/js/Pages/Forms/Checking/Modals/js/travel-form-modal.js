@@ -29,9 +29,6 @@ export default {
                 month: "short",
                 day: "numeric",
                 year: "numeric",
-                hour: "numeric",
-                minute: "numeric",
-                hour12: true,
             };
             return convertedDate.toLocaleDateString("en-US", options);
         },

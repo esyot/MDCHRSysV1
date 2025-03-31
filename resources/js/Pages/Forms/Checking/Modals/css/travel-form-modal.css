@@ -550,3 +550,7 @@ td {
     flex-direction: column;
     gap: 0.2rem;
 }
+
+.destination {
+    width: 200px;
+}

@@ -20,16 +20,6 @@
         <span class="title">Travel Form</span>
         <span @click="toggleFormModal" class="x-btn">&times;</span>
       </div>
-      <!-- <div class="heading-container">
-        <div class="heading-img">
-          <img src="/public/assets/images/mdc-logo.png" alt="MDC LOGO" />
-        </div>
-        <div class="heading-text">
-          <text class="first">Mater Dei College</text>
-          <text class="second">Tubigon, Bohol</text>
-          <text class="third">HUMAN RESOURCE OFFICE</text>
-        </div>
-      </div> -->
 
       <div class="modal-container">
         <div class="modal-container-items">
@@ -46,7 +36,7 @@
                 <span class="underline">{{ formatDate(formData.date_end) }} </span>
 
                 <label>Destination: </label>
-                <span class="underline">{{ formData.destination }}</span>
+                <span class="underline destination">{{ formData.destination }}</span>
 
                 <label>Purpose/Event: </label>
                 <span class="underline">{{ formData.purpose }}</span>
@@ -216,25 +206,34 @@
             <span class="underline">
               {{ formData.user.last_name }}
               {{ formData.user.first_name }}
-              {{ formData.user.middle_name[0] }}.
             </span>
           </div>
 
           <div class="group">
             <label>Date Hired: </label>
-            <span class="underline">
-              {{
+            <span
+              class="underline"
+              v-if="
                 formData.user.teacher
                   ? formData.user.teacher.date_hired
                   : formData.user.staff.date_hired
+              "
+            >
+              {{
+                formatDate(
+                  formData.user.teacher
+                    ? formData.user.teacher.date_hired
+                    : formData.user.staff.date_hired
+                )
               }}
             </span>
+
             <span
               class="error-msg"
               v-if="
                 !(formData.user.teacher
                   ? formData.user.teacher.date_hired
-                  : formData.user.staff.date_hired) != null
+                  : formData.user.staff.date_hired)
               "
             >
               {{ formData.user.last_name[0] }}. {{ formData.user.first_name }}'s hire date
