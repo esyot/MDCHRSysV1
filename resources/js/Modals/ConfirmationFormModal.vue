@@ -1,22 +1,4 @@
-<script>
-export default {
-  name: "ConfirmationFormModal",
-  emits: ["submitForm", "toggleConfirmForm"],
-  props: {
-    isConfirmation: Boolean,
-    message: String,
-  },
-  methods: {
-    submitForm() {
-      this.$emit("submitForm");
-    },
-
-    toggleConfirmForm() {
-      this.$emit("toggleConfirmForm");
-    },
-  },
-};
-</script>
+<script src="./js/confirmation-form-modal.js"></script>
 
 <template>
   <div class="confirmation-modal" v-if="isConfirmation" @click.self="toggleConfirmForm">

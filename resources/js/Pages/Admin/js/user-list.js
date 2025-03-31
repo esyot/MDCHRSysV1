@@ -1,6 +1,6 @@
 import Layout from "@/Layouts/Layout.vue";
-import { Inertia } from "@inertiajs/inertia";
-import { Link } from "@inertiajs/inertia-vue3";
+import { router } from "@inertiajs/vue3";
+import { Link } from "@inertiajs/vue3";
 import AddUserModal from "@/Modals/AddUserModal.vue";
 import { useToast } from "vue-toastification";
 
@@ -38,7 +38,7 @@ export default {
     watch: {
         search_bar(newVal) {
             if (newVal === "") {
-                Inertia.get("/users/users-list", {
+                router.get("/users/users-list", {
                     type: this.user_type,
                     orderBy: this.order_by,
                     department: this.department_id,
@@ -49,7 +49,7 @@ export default {
 
     methods: {
         paginationControl(link) {
-            Inertia.get(link, {
+            router.get(link, {
                 type: this.user_type,
                 search_value: this.search_bar,
                 orderBy: this.order_by,
@@ -57,7 +57,7 @@ export default {
             });
         },
         filterUsers() {
-            Inertia.get("/users/users-list", {
+            router.get("/users/users-list", {
                 type: this.user_type,
                 search_value: this.search_bar,
                 orderBy: this.order_by,
@@ -66,7 +66,7 @@ export default {
         },
 
         visitUser(user) {
-            Inertia.visit(`/users/user-list/${user.id}/false`);
+            router.visit(`/users/user-list/${user.id}/false`);
         },
 
         toggleAddUserModal() {
@@ -83,7 +83,7 @@ export default {
             const success_msg = `${type} have been synced successfully.`;
             const error_msg = `Failed to sync ${type}. Please try again.`;
 
-            Inertia.visit(`/users/sync/${userType}`, {
+            router.visit(`/users/sync/${userType}`, {
                 onSuccess() {
                     toast.success(success_msg, {
                         position: "top-center",

@@ -41,30 +41,16 @@ class LeaveFormController extends Controller
                 'last_name'
             ]);
 
-        $code = config('variables.api_key');
-
-        $url = 'https://sis.materdeicollege.com/api/hr/terms';
-
         $client = new Client();
-
-        $response = $client->get($url, [
-            'query' => [
-                'code' => $code,
-            ],
+        $response = $client->get('https://sis.materdeicollege.com/api/hr/terms', [
+            'query' => ['code' => config('variables.api_key')],
             'verify' => false,
         ]);
 
         $terms = json_decode($response->getBody(), true);
+        $terms = array_values(array_filter($terms, fn($item) => $item['type'] === 'sem'));
+        usort($terms, fn($a, $b) => strtotime($b['start']) - strtotime($a['start']));
 
-        $annuals = array_filter($terms, function ($item) {
-            return $item['type'] === 'sem';
-        });
-
-        $terms = array_values($annuals);
-
-        usort($terms, function ($a, $b) {
-            return strtotime($b['start']) - strtotime($a['start']);
-        });
 
 
         return inertia('Pages/Forms/LeaveForm/LeaveForm', [
@@ -75,7 +61,6 @@ class LeaveFormController extends Controller
             'pageTitle' => 'Leave Form',
             'users' => $users->toArray(),
             'terms' => $terms,
-            'api_key' => $code
         ]);
     }
 

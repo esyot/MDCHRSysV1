@@ -1,41 +1,4 @@
-<script>
-import ConfirmationFormModal from "./ConfirmationFormModal.vue";
-import { Inertia } from "@inertiajs/inertia";
-export default {
-  emits: ["toggleIsEditItem"],
-  components: {
-    ConfirmationFormModal,
-  },
-  data() {
-    return {
-      formData: {
-        item_id: this.selectediItem.id,
-        description: this.selectediItem.description,
-      },
-      isConfirmation: false,
-      message: "Are you sure to update description?",
-    };
-  },
-  props: {
-    selectediItem: Object,
-  },
-  methods: {
-    closeModal() {
-      this.$emit("toggleIsEditItem");
-    },
-    toggleConfirmForm() {
-      this.isConfirmation = !this.isConfirmation;
-    },
-
-    submitForm() {
-      const formData = this.formData;
-      Inertia.put("/evaluations/template/update-item", formData);
-      this.toggleConfirmForm();
-      this.closeModal();
-    },
-  },
-};
-</script>
+<script src="./js/edit-item-modal.js"></script>
 <template>
   <ConfirmationFormModal
     v-if="isConfirmation"

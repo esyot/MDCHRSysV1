@@ -1,7 +1,7 @@
 import Layout from "@/Layouts/Layout.vue";
 import AddDepartmentModal from "@/Modals/AddDepartmentModal.vue";
 import ConfirmationDeleteModal from "@/Modals/ConfirmationDeleteModal.vue";
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/vue3";
 import { useToast } from "vue-toastification";
 
 export default {
@@ -26,7 +26,7 @@ export default {
         toggleSyncDepartments() {
             const toast = useToast();
 
-            Inertia.visit(`/departments/sync/`, {
+            router.visit(`/departments/sync/`, {
                 onSuccess() {
                     toast.success("Users synced successfully!", {
                         position: "top-center",

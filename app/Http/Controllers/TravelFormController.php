@@ -9,13 +9,13 @@ use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 
 class TravelFormController extends Controller
 {
     public function index(Request $request)
     {
-
         $this->globalVariables();
         $roles = $this->roles;
 
@@ -25,50 +25,26 @@ class TravelFormController extends Controller
             'personalDetails',
             'personalDetails.permanentAddress',
             'personalDetails.residentialAddress',
-
         ])
             ->where('users.id', Auth::user()->id)
             ->first();
 
-        $users = User::whereNot('id', $user->id)->select([
-            'id',
-            'first_name',
-            'middle_name',
-            'last_name'
-        ])->get();
-
-
         $budgetTypes = config('variables.budgetTypes');
         $budgetCharges = config('variables.budgetCharges');
 
-        $code = config('variables.api_key');
-
-        $url = 'https://sis.materdeicollege.com/api/hr/terms';
-
         $client = new Client();
-
-        $response = $client->get($url, [
-            'query' => [
-                'code' => $code,
-            ],
+        $response = $client->get('https://sis.materdeicollege.com/api/hr/terms', [
+            'query' => ['code' => config('variables.api_key')],
             'verify' => false,
         ]);
 
         $terms = json_decode($response->getBody(), true);
+        $terms = array_values(array_filter($terms, fn($item) => $item['type'] === 'sem'));
+        usort($terms, fn($a, $b) => strtotime($b['start']) - strtotime($a['start']));
 
-        $annuals = array_filter($terms, function ($item) {
-            return $item['type'] === 'sem';
-        });
 
-        $terms = array_values($annuals);
-
-        usort($terms, function ($a, $b) {
-            return strtotime($b['start']) - strtotime($a['start']);
-        });
-
-        return inertia('Pages/Forms/TravelForm/TravelForm', [
+        return Inertia::render('Pages/Forms/TravelForm/TravelForm', [
             'user' => $user,
-            'users' => $users,
             'roles' => $roles,
             'personalDetails' => $personalDetails->toArray(),
             'budgetTypes' => $budgetTypes,
@@ -76,8 +52,7 @@ class TravelFormController extends Controller
             'formData' => $request ?? null,
             'pageTitle' => 'Travel Form',
             'formDataToEdit' => null,
-            'terms' => $terms
-
+            'terms' => $terms,
         ]);
     }
 

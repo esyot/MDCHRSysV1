@@ -1,3 +1,28 @@
+<script>
+import { router } from "@inertiajs/vue3";
+import Layout from "@/Layouts/Layout.vue";
+
+export default {
+  name: "Dashboard",
+  layout: Layout,
+  props: {
+    teacherCount: Number,
+    staffCount: Number,
+    leaveRequestCount: Number,
+    travelRequestCount: Number,
+    userOnLeave: Number,
+    userOnTravel: Number,
+    roles: Array,
+  },
+
+  methods: {
+    toFormsChecking(action) {
+      router.get(`/forms/checking/${action}`);
+    },
+  },
+};
+</script>
+
 <template>
   <div class="container-body">
     <div class="content-container">
@@ -50,32 +75,6 @@
     </div>
   </div>
 </template>
-
-<script>
-import { Inertia } from "@inertiajs/inertia";
-import Layout from "@/Layouts/Layout.vue";
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "BarChartComponent",
-  layout: Layout,
-  props: {
-    teacherCount: Number,
-    staffCount: Number,
-    leaveRequestCount: Number,
-    travelRequestCount: Number,
-    userOnLeave: Number,
-    userOnTravel: Number,
-    roles: Array,
-  },
-
-  methods: {
-    toFormsChecking(action) {
-      Inertia.get(`/forms/checking/${action}`);
-    },
-  },
-});
-</script>
 
 <style scoped>
 @import "./css/dashboard.css";

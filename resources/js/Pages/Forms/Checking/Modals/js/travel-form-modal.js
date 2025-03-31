@@ -1,4 +1,4 @@
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/vue3";
 import { useToast } from "vue-toastification";
 
 export default {
@@ -47,7 +47,7 @@ export default {
 
             const toast = useToast();
 
-            Inertia.put("/forms/checking/forward", formData, {
+            router.put("/forms/checking/forward", formData, {
                 onSuccess: (response) => {
                     toast.success(response.props.success, {
                         position: "top-center",

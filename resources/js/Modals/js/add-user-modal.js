@@ -1,4 +1,4 @@
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/vue3";
 import ConfirmationFormModal from "@/Modals/ConfirmationFormModal.vue";
 import { useToast } from "vue-toastification";
 import axios from "axios";
@@ -103,7 +103,7 @@ export default {
 
                 const toast = useToast();
 
-                Inertia.post(
+                router.post(
                     `/users/${this.type}/add`,
                     {
                         formData: this.formData,

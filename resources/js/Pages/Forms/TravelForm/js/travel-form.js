@@ -1,5 +1,5 @@
 import Layout from "@/Layouts/Layout.vue";
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/vue3";
 import ConfirmationFormModal from "@/Modals/ConfirmationFormModal.vue";
 import { useToast } from "vue-toastification";
 import axios from "axios";
@@ -275,7 +275,7 @@ export default {
 
             const toast = useToast();
 
-            Inertia.post("/forms/travel-form-submit", formData, {
+            router.post("/forms/travel-form-submit", formData, {
                 onSuccess: () => {
                     toast.success("Form submitted successfully", {
                         position: "top-center",
@@ -285,7 +285,7 @@ export default {
 
                     localStorage.removeItem("travelFormData");
 
-                    Inertia.visit("/forms/tracking");
+                    router.visit("/forms/tracking");
                 },
                 onError: (errors) => {
                     this.toggleConfirmForm();

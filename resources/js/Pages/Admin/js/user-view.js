@@ -1,6 +1,6 @@
 import Layout from "@/Layouts/Layout.vue";
 import PersonalDetails from "@/Pages/Admin/PersonalDetails.vue";
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/vue3";
 import EditUserModal from "@/Modals/EditUserModal.vue";
 import EditDepartmentModal from "@/Modals/EditDepartmentModal.vue";
 import EditStaffModal from "@/Modals/EditStaffModal.vue";
@@ -164,11 +164,11 @@ export default {
         },
         openEval(type) {
             if (type === "teacher") {
-                Inertia.visit(
+                router.visit(
                     `/forms/evaluation-form/${this.personalDetails.id}/teacher`,
                 );
             } else if (type === "staff") {
-                Inertia.visit(
+                router.visit(
                     `/forms/evaluation-form/${this.personalDetails.id}/staff`,
                 );
             }

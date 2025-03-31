@@ -1,42 +1,4 @@
-<script>
-import ConfirmationFormModal from "@/Modals/ConfirmationFormModal.vue";
-import { Inertia } from "@inertiajs/inertia";
-export default {
-  emits: ["toggleAddDepartmentModal"],
-  components: {
-    ConfirmationFormModal,
-  },
-  props: {
-    parentDepartments: Array,
-    isAddDepartment: Boolean,
-    departmentList: Object,
-  },
-  methods: {
-    closeModal() {
-      this.$emit("toggleAddDepartmentModal");
-    },
-
-    toggleConfirmForm() {
-      this.isConfirmation = !this.isConfirmation;
-    },
-    submitForm() {
-      this.toggleConfirmForm();
-      this.closeModal();
-      Inertia.post("/departments/department-add", this.formData);
-    },
-  },
-  data() {
-    return {
-      formData: {
-        name: "",
-        acronym: "",
-        parent_id: "",
-      },
-      isConfirmation: false,
-    };
-  },
-};
-</script>
+<script src="./js/add-department-modal.js"></script>
 
 <template>
   <ConfirmationFormModal

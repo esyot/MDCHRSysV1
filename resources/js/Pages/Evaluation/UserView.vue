@@ -1,6 +1,6 @@
 <script>
 import Layout from "@/Layouts/Layout.vue";
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/vue3";
 export default {
   layout: Layout,
   props: {
@@ -64,9 +64,9 @@ export default {
   methods: {
     openEval(type) {
       if (type === "teaching" || type === "work") {
-        Inertia.visit(`/evaluations/evaluate/${type}/${this.personalDetails.id}`);
+        router.visit(`/evaluations/evaluate/${type}/${this.personalDetails.id}`);
       } else if (type === "staff") {
-        Inertia.visit(`/evaluations/evaluate/${type}/${this.personalDetails.id}`);
+        router.visit(`/evaluations/evaluate/${type}/${this.personalDetails.id}`);
       }
     },
     toggleEvaluationDropDown() {

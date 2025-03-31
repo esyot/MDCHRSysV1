@@ -19,7 +19,6 @@ export default {
         return;
       }
 
-      // Simulate an API call to update the password
       setTimeout(() => {
         this.successMessage = "Password updated successfully!";
         this.errorMessage = "";

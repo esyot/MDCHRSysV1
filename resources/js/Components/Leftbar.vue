@@ -1,6 +1,9 @@
+<script setup>
+import { Link } from "@inertiajs/vue3";
+</script>
+
 <script>
-import { usePage } from "@inertiajs/inertia-vue3";
-import { Link } from "@inertiajs/inertia-vue3";
+import { usePage } from "@inertiajs/vue3";
 
 export default {
   setup() {
@@ -14,9 +17,7 @@ export default {
     roles: Object,
     user: Object,
   },
-  components: {
-    Link,
-  },
+
   methods: {
     openSubMenu(menuName) {
       const submenuId = `submenu-${menuName.toLowerCase().replace(" ", "-")}`;
@@ -63,13 +64,22 @@ export default {
             </div>
 
             <ul id="submenu-services" class="submenu">
-              <Link :href="'/forms/travel-form-request'">
+              <Link
+                :href="'/forms/travel-form-request'"
+                :prefetch="['mount']"
+                cache-for="1m"
+              >
                 <li :class="{ active: currentRoute === '/forms/travel-form-request' }">
                   <span>Travel Form</span>
                 </li>
               </Link>
 
-              <Link :href="'/forms/leave-form-request'" class="link">
+              <Link
+                :href="'/forms/leave-form-request'"
+                class="link"
+                :prefetch="['mount']"
+                cache-for="1m"
+              >
                 <li :class="{ active: currentRoute === '/forms/leave-form-request' }">
                   <span>Leave Form</span>
                 </li>

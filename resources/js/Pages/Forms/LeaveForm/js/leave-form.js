@@ -1,5 +1,5 @@
 import Layout from "@/Layouts/Layout.vue";
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/vue3";
 import ConfirmationFormModal from "@/Modals/ConfirmationFormModal.vue";
 import { useToast } from "vue-toastification";
 import axios from "axios";
@@ -299,7 +299,7 @@ export default {
 
             const toast = useToast();
 
-            Inertia.post("/leave-form-submit", form, {
+            router.post("/leave-form-submit", form, {
                 onSuccess: () => {
                     toast.success("Leave form submitted successfully", {
                         position: "top-center",

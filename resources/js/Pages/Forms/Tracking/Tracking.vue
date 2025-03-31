@@ -1,6 +1,6 @@
 <script>
 import Layout from "@/Layouts/Layout.vue";
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/vue3";
 import Modal from "@/Pages/Forms/Tracking/TrackingModal.vue";
 import DeleteModal from "@/Modals/ConfirmationDeleteModal.vue";
 import { useToast } from "vue-toastification";
@@ -77,7 +77,7 @@ export default {
 
     deleteForm() {
       const toast = useToast();
-      Inertia.delete(
+      router.delete(
         `/form/delete/${this.selected_type_to_delete}/${this.selected_id_to_delete}`,
         {
           onSuccess: () => {
@@ -95,7 +95,7 @@ export default {
     },
 
     redirectToEditForm(id, type) {
-      Inertia.visit(`/forms/edit-mode/${id}/${type}`);
+      router.visit(`/forms/edit-mode/${id}/${type}`);
     },
   },
 };

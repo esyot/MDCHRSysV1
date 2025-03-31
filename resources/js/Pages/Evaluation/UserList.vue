@@ -1,7 +1,7 @@
 <script>
 import Layout from "@/Layouts/Layout.vue";
-import { Link } from "@inertiajs/inertia-vue3";
-import { Inertia } from "@inertiajs/inertia";
+import { Link } from "@inertiajs/vue3";
+import { router } from "@inertiajs/vue3";
 import { useToast } from "vue-toastification";
 
 export default {
@@ -26,7 +26,7 @@ export default {
   watch: {
     search_value(newVal) {
       if (newVal === "") {
-        Inertia.get(`/evaluations/${this.type}`, {
+        router.get(`/evaluations/${this.type}`, {
           orderBy: this.order_by,
         });
       }
@@ -35,7 +35,7 @@ export default {
   methods: {
     visitUser(user_id) {
       const toast = useToast();
-      Inertia.visit(`/evaluations/user-view/${user_id}`, {
+      router.visit(`/evaluations/user-view/${user_id}`, {
         onError: (errors) => {
           toast.error(errors.error, {
             position: "top-center",
@@ -45,13 +45,13 @@ export default {
       });
     },
     paginationControl(link) {
-      Inertia.get(link, {
+      router.get(link, {
         searchValue: this.search_value,
         orderBy: this.order_by,
       });
     },
     filterUsers() {
-      Inertia.get(`/evaluations/${this.type}`, {
+      router.get(`/evaluations/${this.type}`, {
         searchValue: this.search_value,
         orderBy: this.order_by,
       });

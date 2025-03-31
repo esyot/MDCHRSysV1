@@ -1,8 +1,8 @@
 <script>
-import { Link } from "@inertiajs/inertia-vue3";
+import { Link } from "@inertiajs/vue3";
 import { formatDistanceToNow, differenceInSeconds } from "date-fns";
 import { useToast } from "vue-toastification";
-import { Inertia } from "@inertiajs/inertia";
+import { router } from "@inertiajs/vue3";
 import axios from "axios";
 
 export default {
@@ -127,7 +127,7 @@ export default {
 
     readAllNotif() {
       const toast = useToast();
-      Inertia.visit(`/notifications/read/${this.user.id}/all`, {
+      router.visit(`/notifications/read/${this.user.id}/all`, {
         onSuccess: (response) => {
           toast.success(response.props.success, {
             position: "top-center",
@@ -144,7 +144,7 @@ export default {
     },
     deleteAllNotif() {
       const toast = useToast();
-      Inertia.visit(`/notifications/delete/${this.user.id}/all`, {
+      router.visit(`/notifications/delete/${this.user.id}/all`, {
         onSuccess: (response) => {
           toast.success(response.props.success, {
             position: "top-center",
