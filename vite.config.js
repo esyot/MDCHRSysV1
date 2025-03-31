@@ -11,8 +11,14 @@ export default defineConfig({
         vue(),
     ],
     server: {
-        host: 'localhost',
+        host: "localhost",
         port: 5173,
         cors: true,
-    }
+        hmr: {
+            clientPort: 5173,
+        },
+        watch: {
+            usePolling: true,
+        },
+    },
 });

@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 
 class LeaveFormController extends Controller
@@ -30,37 +31,29 @@ class LeaveFormController extends Controller
 
         ])
             ->where('users.id', Auth::user()->id)
-            ->first();
-
-
-        $users = User::whereNot('id', Auth::user()->id)
-            ->orderBy('last_name')
-            ->get([
-                'id',
-                'first_name',
-                'last_name'
-            ]);
-
-        $client = new Client();
-        $response = $client->get('https://sis.materdeicollege.com/api/hr/terms', [
-            'query' => ['code' => config('variables.api_key')],
-            'verify' => false,
-        ]);
-
-        $terms = json_decode($response->getBody(), true);
-        $terms = array_values(array_filter($terms, fn($item) => $item['type'] === 'sem'));
-        usort($terms, fn($a, $b) => strtotime($b['start']) - strtotime($a['start']));
+            ->first()
+            ->toArray();
 
 
 
         return inertia('Pages/Forms/LeaveForm/LeaveForm', [
-
             'user' => $user,
             'roles' => $roles,
-            'personalDetails' => $personalDetails->toArray(),
+            'personalDetails' => $personalDetails,
             'pageTitle' => 'Leave Form',
-            'users' => $users->toArray(),
-            'terms' => $terms,
+            'terms' => Inertia::defer(function () {
+                $client = new Client();
+                $response = $client->get('https://sis.materdeicollege.com/api/hr/terms', [
+                    'query' => ['code' => config('variables.api_key')],
+                    'verify' => false,
+                ]);
+
+                $terms = json_decode($response->getBody(), true);
+                $terms = array_values(array_filter($terms, fn($item) => $item['type'] === 'sem'));
+                usort($terms, fn($a, $b) => strtotime($b['start']) - strtotime($a['start']));
+
+                return $terms;
+            }),
         ]);
     }
 

@@ -1,13 +1,16 @@
 import Layout from "@/Layouts/Layout.vue";
-import { router } from "@inertiajs/vue3";
+import { router, WhenVisible } from "@inertiajs/vue3";
 import ConfirmationFormModal from "@/Modals/ConfirmationFormModal.vue";
 import { useToast } from "vue-toastification";
 import axios from "axios";
+import FormLoader from "@/Components/FormLoader.vue";
 
 export default {
     layout: Layout,
     components: {
         ConfirmationFormModal,
+        WhenVisible,
+        FormLoader,
     },
     props: {
         budgetTypes: Object,

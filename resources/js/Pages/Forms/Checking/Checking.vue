@@ -2,9 +2,17 @@
 import Layout from "@/Layouts/Layout.vue";
 import LeaveFormModal from "./Modals/LeaveFormModal.vue";
 import TravelFormModal from "./Modals/TravelFormModal.vue";
+import { WhenVisible } from "@inertiajs/vue3";
+import Loader from "@/Components/FormLoader.vue";
 
 export default {
   layout: Layout,
+  components: {
+    LeaveFormModal,
+    TravelFormModal,
+    WhenVisible,
+    Loader,
+  },
   props: {
     forms: {
       type: Array,
@@ -55,10 +63,7 @@ export default {
       },
     };
   },
-  components: {
-    LeaveFormModal,
-    TravelFormModal,
-  },
+
   methods: {
     formatDate(date) {
       const convertedDate = new Date(date);
@@ -130,110 +135,117 @@ export default {
       </select>
     </div>
     <div class="content">
-      <table>
-        <thead>
-          <tr>
-            <td class="td-title">
-              <i class="fa-solid fa-address-card"></i>
-              <span>Name</span>
-            </td>
-            <td class="td-title">
-              <i class="fa-solid fa-paperclip"></i>
-              <span>Type</span>
-            </td>
-            <td class="td-title">
-              <i class="fa-solid fa-temperature-empty"></i>
-              <span>Status</span>
-            </td>
-            <td
-              class="td-title"
-              v-if="
-                roles.includes('vp-admin') ||
-                roles.includes('vp-acad') ||
-                roles.includes('p-admin')
-              "
-            >
-              <i class="fa-solid fa-user-cog"></i>
-              <span>Endorsed by</span>
-            </td>
+      <WhenVisible data="forms">
+        <template #fallback>
+          <Loader :message="'fetching forms, please wait.'"></Loader>
+        </template>
 
-            <td class="td-title" v-if="roles.includes('hr')">
-              <i class="fa-solid fa-user-cog"></i>
-              <span>Recommended by</span>
-            </td>
-            <td class="td-title">
-              <i class="fa-solid fa-share-from-square"></i>
-              <span>Filed on</span>
-            </td>
-            <td class="td-action">
-              <i class="fa-solid fa-gear"></i>
-              <span>Action</span>
-            </td>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr
-            v-for="form in filteredForms"
-            :key="form.id"
-            @click="toggleFormModal(form.id, form.form_type, form)"
-          >
-            <td>{{ form.user.last_name }}, {{ form.user.first_name }}</td>
-            <td>{{ form.form_type }}</td>
-            <td class="td-status">
-              <div class="status-item" v-if="statusMap[form.status]">
-                <span>{{ statusMap[form.status].text }} </span>
-                <i
-                  v-if="statusMap[form.status].icon !== 'loading'"
-                  :class="`fas ${statusMap[form.status].icon} ${
-                    statusMap[form.status].color
-                  }`"
-                ></i>
-                <img
-                  v-else
-                  class="loading"
-                  src="/public/assets/loader/loading.gif"
-                  alt=""
-                />
-              </div>
-            </td>
-
-            <td v-if="form.endorser">
-              {{ form.endorser.last_name }}, {{ form.endorser.first_name }}
-            </td>
-            <td v-if="!form.endorser && roles.includes('hr')">
-              <span></span>
-            </td>
-
-            <td
-              v-if="
-                !form.recommender &&
-                (roles.includes('vp-admin') ||
-                  roles.includes('p-admin') ||
-                  roles.includes('vp-acad'))
-              "
-            >
-              <span></span>
-            </td>
-
-            <td v-if="form.recommender">
-              {{ form.recommender.last_name }}, {{ form.recommender.first_name }}
-            </td>
-            <td>{{ formatDate(form.created_at) }}</td>
-            <td class="td-action">
-              <button
-                @click="toggleFormModal(form.id, form.form_type, form)"
-                class="edit-btn"
+        <table>
+          <thead>
+            <tr>
+              <td class="td-title">
+                <i class="fa-solid fa-address-card"></i>
+                <span>Name</span>
+              </td>
+              <td class="td-title">
+                <i class="fa-solid fa-paperclip"></i>
+                <span>Type</span>
+              </td>
+              <td class="td-title">
+                <i class="fa-solid fa-temperature-empty"></i>
+                <span>Status</span>
+              </td>
+              <td
+                class="td-title"
+                v-if="
+                  roles.includes('vp-admin') ||
+                  roles.includes('vp-acad') ||
+                  roles.includes('p-admin')
+                "
               >
-                <i class="fas fa-eye"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="empty-msg" v-if="forms.length == 0">
-        <span>There have been no submissions yet.</span>
-      </div>
+                <i class="fa-solid fa-user-cog"></i>
+                <span>Endorsed by</span>
+              </td>
+
+              <td class="td-title" v-if="roles.includes('hr')">
+                <i class="fa-solid fa-user-cog"></i>
+                <span>Recommended by</span>
+              </td>
+              <td class="td-title">
+                <i class="fa-solid fa-share-from-square"></i>
+                <span>Filed on</span>
+              </td>
+              <td class="td-action">
+                <i class="fa-solid fa-gear"></i>
+                <span>Action</span>
+              </td>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr
+              v-for="form in filteredForms"
+              :key="form.id"
+              @click="toggleFormModal(form.id, form.form_type, form)"
+            >
+              <td>{{ form.user.last_name }}, {{ form.user.first_name }}</td>
+              <td>{{ form.form_type }}</td>
+              <td class="td-status">
+                <div class="status-item" v-if="statusMap[form.status]">
+                  <span>{{ statusMap[form.status].text }} </span>
+                  <i
+                    v-if="statusMap[form.status].icon !== 'loading'"
+                    :class="`fas ${statusMap[form.status].icon} ${
+                      statusMap[form.status].color
+                    }`"
+                  ></i>
+                  <img
+                    v-else
+                    class="loading"
+                    src="/public/assets/loader/loading.gif"
+                    alt=""
+                  />
+                </div>
+              </td>
+
+              <td v-if="form.endorser">
+                {{ form.endorser.last_name }}, {{ form.endorser.first_name }}
+              </td>
+              <td v-if="!form.endorser && roles.includes('hr')">
+                <span></span>
+              </td>
+
+              <td
+                v-if="
+                  !form.recommender &&
+                  (roles.includes('vp-admin') ||
+                    roles.includes('p-admin') ||
+                    roles.includes('vp-acad'))
+                "
+              >
+                <span></span>
+              </td>
+
+              <td v-if="form.recommender">
+                {{ form.recommender.last_name }}, {{ form.recommender.first_name }}
+              </td>
+              <td>{{ formatDate(form.created_at) }}</td>
+              <td class="td-action">
+                <button
+                  @click="toggleFormModal(form.id, form.form_type, form)"
+                  class="edit-btn"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="empty-msg" v-if="forms && forms.length === 0">
+          <span>There have been no submissions yet.</span>
+        </div>
+      </WhenVisible>
     </div>
   </div>
 </template>

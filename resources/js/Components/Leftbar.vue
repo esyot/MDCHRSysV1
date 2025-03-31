@@ -1,16 +1,19 @@
-<script setup>
-import { Link } from "@inertiajs/vue3";
-</script>
-
 <script>
-import { usePage } from "@inertiajs/vue3";
+import { Link, usePage } from "@inertiajs/vue3";
 
 export default {
+  components: {
+    Link,
+    usePage,
+  },
   setup() {
-    const { url } = usePage();
+    const { props, url, version, component } = usePage();
 
     return {
-      currentRoute: url,
+      pageProps: props,
+      pageUrl: url,
+      pageVersion: version,
+      pageComponent: component,
     };
   },
   props: {
@@ -48,8 +51,10 @@ export default {
       <hr />
       <div id="menu" class="menu">
         <ul id="menu-items">
-          <!-- Dashboard Link -->
-          <Link :href="'/dashboard'" :class="{ active: currentRoute === '/dashboard' }">
+          <Link
+            :href="'/dashboard'"
+            :class="{ active: pageComponent === 'Pages/Dashboard/Dashboard' }"
+          >
             <li title="Home" class="menu-li">
               <i class="fas fa-gauge"></i>
               <span>Dashboard</span>
@@ -64,12 +69,12 @@ export default {
             </div>
 
             <ul id="submenu-services" class="submenu">
-              <Link
-                :href="'/forms/travel-form-request'"
-                :prefetch="['mount']"
-                cache-for="1m"
-              >
-                <li :class="{ active: currentRoute === '/forms/travel-form-request' }">
+              <Link :href="'/forms/travel-form-request'" prefetch cache-for="1m">
+                <li
+                  :class="{
+                    active: pageComponent === 'Pages/Forms/TravelForm/TravelForm',
+                  }"
+                >
                   <span>Travel Form</span>
                 </li>
               </Link>
@@ -77,16 +82,20 @@ export default {
               <Link
                 :href="'/forms/leave-form-request'"
                 class="link"
-                :prefetch="['mount']"
+                prefetch
                 cache-for="1m"
               >
-                <li :class="{ active: currentRoute === '/forms/leave-form-request' }">
+                <li
+                  :class="{ active: pageComponent === 'Pages/Forms/LeaveForm/LeaveForm' }"
+                >
                   <span>Leave Form</span>
                 </li>
               </Link>
 
               <Link :href="'/forms/tracking'" class="link">
-                <li :class="{ active: currentRoute === '/forms/tracking' }">
+                <li
+                  :class="{ active: pageComponent === 'Pages/Forms/Tracking/Tracking' }"
+                >
                   <span>Track Forms</span>
                 </li>
               </Link>
@@ -103,7 +112,7 @@ export default {
               roles.includes('admin')
             "
             :href="'/forms/checking'"
-            :class="{ active: currentRoute === '/forms/checking' }"
+            :class="{ active: pageComponent === 'Pages/Forms/Checking/Checking' }"
           >
             <li class="menu-li" title="Check Forms">
               <i class="fas fa-desktop"></i>
@@ -120,12 +129,12 @@ export default {
 
             <ul id="submenu-evaluation" class="submenu">
               <Link :href="'/evaluations/teacher'">
-                <li :class="{ active: currentRoute === '/evaluations/teacher' }">
+                <li :class="{ active: pageUrl === '/evaluations/teacher' }">
                   <span>Teacher Evaluation</span>
                 </li>
               </Link>
               <Link v-if="roles.includes('hr')" :href="'/evaluations/staff'" class="link">
-                <li :class="{ active: currentRoute === '/evaluations/staff' }">
+                <li :class="{ active: pageUrl === '/evaluations/staff' }">
                   <span>Staff Evaluation</span>
                 </li>
               </Link>
@@ -141,14 +150,14 @@ export default {
 
             <ul id="submenu-admin-panel" class="submenu">
               <Link :href="'/users/users-list'">
-                <li :class="{ active: currentRoute === '/users/users-list' }">
+                <li :class="{ active: pageUrl === '/users/users-list' }">
                   <span>Users</span>
                 </li>
               </Link>
 
               <Link v-if="roles.includes('admin')" :href="'/departments'">
                 <li
-                  :class="{ active: currentRoute === '/departments' }"
+                  :class="{ active: pageUrl === '/departments' }"
                   title="Add/Edit Departments"
                 >
                   <span>Departments</span>
@@ -156,15 +165,13 @@ export default {
               </Link>
 
               <Link :href="'/evaluations/evaluation-manager'">
-                <li
-                  :class="{ active: currentRoute === '/evaluations/evaluation-manager' }"
-                >
+                <li :class="{ active: pageUrl === '/evaluations/evaluation-manager' }">
                   <span>Evaluation Manager</span>
                 </li>
               </Link>
 
               <Link :href="'/users/analytics'">
-                <li :class="{ active: currentRoute === '/users/analytics' }">
+                <li :class="{ active: pageUrl === '/users/analytics' }">
                   <span>Analytics</span>
                 </li>
               </Link>
@@ -172,7 +179,7 @@ export default {
           </li>
 
           <!-- About Link -->
-          <Link :href="'/about'" :class="{ active: currentRoute === '/about' }">
+          <Link :href="'/about'" :class="{ active: pageUrl === '/about' }">
             <li class="menu-li" title="View About">
               <i class="fa-solid fa-info-circle"></i>
               <span>About</span>

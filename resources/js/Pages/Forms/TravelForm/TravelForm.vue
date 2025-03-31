@@ -1,4 +1,5 @@
 <script src="./js/travel-form.js"></script>
+
 <template>
   <ConfirmationFormModal
     :isConfirmation="isConfirmation"
@@ -13,17 +14,25 @@
         <div class="form-item-title">
           <span>Travel Details</span>
         </div>
+
         <div class="form-item-section">
           <label for="term">Select Term:</label>
-          <select id v-model="formData.term_id" required>
-            <option value="" disabled selected>Select Term</option>
-            <option :value="term.id" v-for="(term, index) in terms" :key="index">
-              {{ term.name }}
-            </option>
-          </select>
 
-          <small class="error-msg" v-if="errors.term_id"> {{ errors.term_id }}</small>
+          <WhenVisible data="terms">
+            <template #fallback>
+              <FormLoader :message="'fetching terms, please wait.'"></FormLoader>
+            </template>
+            <select id v-model="formData.term_id" required>
+              <option value="" disabled selected>Select Term</option>
+              <option :value="term.id" v-for="(term, index) in terms" :key="index">
+                {{ term.name }}
+              </option>
+            </select>
+
+            <small class="error-msg" v-if="errors.term_id"> {{ errors.term_id }}</small>
+          </WhenVisible>
         </div>
+
         <div class="form-item-section">
           <label for="date_start">Start of Travel:</label>
           <input type="date" id="date_start" v-model="formData.date_start" required />

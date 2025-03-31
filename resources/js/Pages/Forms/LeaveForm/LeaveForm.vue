@@ -17,14 +17,19 @@
 
         <div class="form-item-section">
           <label for="term">Term:</label>
-          <select name="" id="" v-model="formData.term_id" required>
-            <option value="" disabled selected>Select Term</option>
-            <option :value="term.id" v-for="(term, index) in terms" :key="index">
-              {{ term.name }}
-            </option>
-          </select>
+          <WhenVisible data="terms">
+            <template #fallback>
+              <FormLoader :message="'fetching terms, please wait.'"></FormLoader>
+            </template>
+            <select name="" id="" v-model="formData.term_id" required>
+              <option value="" disabled selected>Select Term</option>
+              <option :value="term.id" v-for="(term, index) in terms" :key="index">
+                {{ term.name }}
+              </option>
+            </select>
 
-          <small class="error-msg" v-if="errors.term_id"> {{ errors.term_id }}</small>
+            <small class="error-msg" v-if="errors.term_id"> {{ errors.term_id }}</small>
+          </WhenVisible>
         </div>
 
         <div class="form-item-section">

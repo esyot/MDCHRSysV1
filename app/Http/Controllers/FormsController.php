@@ -8,6 +8,8 @@ use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use PHPUnit\Framework\Attributes\After;
 
 class FormsController extends Controller
 {
@@ -16,151 +18,154 @@ class FormsController extends Controller
         $this->globalVariables();
         $roles = $this->roles;
         $user = $this->user;
-        $code = $this->apiKey;
 
-        $notificationsController = new NotificationController();
-        $notificationsController->read(Auth::user()->id, 'tracking');
-
-        $travelForms = TravelForm::where('user_id', $user->id)
-            ->with([
-                'substitutes',
-                'substitutes.user'
-            ])
-            ->orderBy('created_at', 'ASC')
-            ->get();
-
-        $leaveForms = LeaveForm::where('user_id', Auth::user()->id)
-            ->with([
-                'substitutes',
-                'substitutes.user'
-            ])
-            ->orderBy('created_at', 'ASC')
-            ->get();
-
-
-        foreach ($travelForms as $form)
-        {
-
-            $term_client = new Client();
-            $term_url = 'https://sis.materdeicollege.com/api/hr/terms';
-
-            $response = $term_client->get($term_url, [
-                'query' => [
-                    'code' => $code,
-                ],
-                'verify' => false
-            ]);
-
-            $terms = json_decode($response->getBody(), true);
-
-            $term = collect($terms)->firstWhere('id', $form->term_id);
-
-            $form['term'] = $term;
-
-            foreach ($form->substitutes as $substitute)
-            {
-
-                $subject_id = $substitute->subject_id;
-                $subj_url = 'https://sis.materdeicollege.com/api/hr/subject-classes';
-                $subj_client = new Client();
-                $response = $subj_client->get($subj_url, [
-                    'query' => [
-                        'code' => $code,
-                        'term_id' => $form->term_id,
-                        'teacher_id' => $user->teacher->id,
-                    ],
-                    'verify' => false,
-                ]);
-
-                $subjects = json_decode($response->getBody(), true);
-
-                $subject = collect($subjects)->firstWhere('id', $subject_id);
-
-                $substitute['subject'] = $subject;
-            }
-        }
-
-
-
-
-        foreach ($leaveForms as $form)
-        {
-
-            $term_client = new Client();
-            $term_url = 'https://sis.materdeicollege.com/api/hr/terms';
-
-            $response = $term_client->get($term_url, [
-                'query' => [
-                    'code' => $code,
-                ],
-                'verify' => false
-            ]);
-
-            $terms = json_decode($response->getBody(), true);
-
-            $term = collect($terms)->firstWhere('id', $form->term_id);
-
-            $form['term'] = $term;
-
-            foreach ($form->substitutes as $substitute)
-            {
-
-                $subject_id = $substitute->subject_id;
-                $subj_url = 'https://sis.materdeicollege.com/api/hr/subject-classes';
-                $subj_client = new Client();
-                $response = $subj_client->get($subj_url, [
-                    'query' => [
-                        'code' => $code,
-                        'term_id' => $form->term_id,
-                        'teacher_id' => $user->teacher->id,
-                    ],
-                    'verify' => false,
-                ]);
-
-                $subjects = json_decode($response->getBody(), true);
-
-                $subject = collect($subjects)->firstWhere('id', $subject_id);
-
-
-                $substitute['subject'] = $subject;
-            }
-        }
-
-
-        $travelForms->transform(function ($form) use ($user) {
-            $form->first_name = $user->first_name;
-            $form->last_name = $user->last_name;
-            $form->middle_name = $user->middle_name;
-            return $form;
-        });
-
-
-        $forms = [];
-        $forms['Travel Form'] = $travelForms;
-        $forms['Leave Form'] = $leaveForms;
-
-
-        $flattenedForms = [];
-        foreach ($forms as $formType => $formArray)
-        {
-            foreach ($formArray as $form)
-            {
-                $form['form_type'] = $formType;
-                $flattenedForms[] = $form;
-            }
-        }
-
-        usort($flattenedForms, function ($a, $b) {
-            return strtotime($b['created_at']) - strtotime($a['created_at']);
-        });
 
         return inertia('Pages/Forms/Tracking/Tracking', [
             'roles' => $roles,
             'user' => $user,
-            'forms' => $flattenedForms,
+            'forms' => Inertia::defer(function () {
+                $this->globalVariables();
+                $user = $this->user;
+                $code = $this->apiKey;
+
+                $travelForms = TravelForm::where('user_id', $user->id)
+                    ->with([
+                        'substitutes',
+                        'substitutes.user'
+                    ])
+                    ->orderBy('created_at', 'ASC')
+                    ->get();
+
+                $leaveForms = LeaveForm::where('user_id', Auth::user()->id)
+                    ->with([
+                        'substitutes',
+                        'substitutes.user'
+                    ])
+                    ->orderBy('created_at', 'ASC')
+                    ->get();
+
+
+                foreach ($travelForms as $form)
+                {
+
+                    $term_client = new Client();
+                    $term_url = 'https://sis.materdeicollege.com/api/hr/terms';
+
+                    $response = $term_client->get($term_url, [
+                        'query' => [
+                            'code' => $code,
+                        ],
+                        'verify' => false
+                    ]);
+
+                    $terms = json_decode($response->getBody(), true);
+
+                    $term = collect($terms)->firstWhere('id', $form->term_id);
+
+                    $form['term'] = $term;
+
+                    foreach ($form->substitutes as $substitute)
+                    {
+
+                        $subject_id = $substitute->subject_id;
+                        $subj_url = 'https://sis.materdeicollege.com/api/hr/subject-classes';
+                        $subj_client = new Client();
+                        $response = $subj_client->get($subj_url, [
+                            'query' => [
+                                'code' => $code,
+                                'term_id' => $form->term_id,
+                                'teacher_id' => $user->teacher->id,
+                            ],
+                            'verify' => false,
+                        ]);
+
+                        $subjects = json_decode($response->getBody(), true);
+
+                        $subject = collect($subjects)->firstWhere('id', $subject_id);
+
+                        $substitute['subject'] = $subject;
+                    }
+                }
+
+
+
+
+                foreach ($leaveForms as $form)
+                {
+
+                    $term_client = new Client();
+                    $term_url = 'https://sis.materdeicollege.com/api/hr/terms';
+
+                    $response = $term_client->get($term_url, [
+                        'query' => [
+                            'code' => $code,
+                        ],
+                        'verify' => false
+                    ]);
+
+                    $terms = json_decode($response->getBody(), true);
+
+                    $term = collect($terms)->firstWhere('id', $form->term_id);
+
+                    $form['term'] = $term;
+
+                    foreach ($form->substitutes as $substitute)
+                    {
+
+                        $subject_id = $substitute->subject_id;
+                        $subj_url = 'https://sis.materdeicollege.com/api/hr/subject-classes';
+                        $subj_client = new Client();
+                        $response = $subj_client->get($subj_url, [
+                            'query' => [
+                                'code' => $code,
+                                'term_id' => $form->term_id,
+                                'teacher_id' => $user->teacher->id,
+                            ],
+                            'verify' => false,
+                        ]);
+
+                        $subjects = json_decode($response->getBody(), true);
+
+                        $subject = collect($subjects)->firstWhere('id', $subject_id);
+
+
+                        $substitute['subject'] = $subject;
+                    }
+                }
+
+
+                $travelForms->transform(function ($form) use ($user) {
+                    $form->first_name = $user->first_name;
+                    $form->last_name = $user->last_name;
+                    $form->middle_name = $user->middle_name;
+                    return $form;
+                });
+
+
+                $forms = [];
+                $forms['Travel Form'] = $travelForms;
+                $forms['Leave Form'] = $leaveForms;
+
+
+                $flattenedForms = [];
+                foreach ($forms as $formType => $formArray)
+                {
+                    foreach ($formArray as $form)
+                    {
+                        $form['form_type'] = $formType;
+                        $flattenedForms[] = $form;
+                    }
+                }
+
+                usort($flattenedForms, function ($a, $b) {
+                    return strtotime($b['created_at']) - strtotime($a['created_at']);
+                });
+
+
+                return $flattenedForms;
+            }),
             'pageTitle' => 'Track Forms'
         ]);
-
     }
 
     public function checking($action = null)
@@ -177,276 +182,281 @@ class FormsController extends Controller
         $notificationsController->read($user->id, 'checking');
 
 
-        $travelForms = [];
-        $leaveForms = [];
-
-        if ($user->role('dean'))
-        {
-            $userDepartmentId = $user->teacher->department_id;
-
-            $userIds = User::whereRelation('teacher', 'department_id', '=', $userDepartmentId)
-                ->pluck('id');
-
-            $leaveForms = LeaveForm::where('status', 'pending')
-                ->whereIn('user_id', $userIds)
-                ->with([
-                    'substitutes.user',
-                    'substitutes.user.teacher',
-                    'user',
-                    'user.staff',
-                    'user.teacher',
-                    'endorser',
-                    'userJobDetail',
-
-                ])->orderBy('created_at', 'ASC')->get();
-
-            $travelForms = TravelForm::where('status', 'pending')
-                ->orderBy('created_at', 'ASC')
-                ->with([
-                    'substitutes.user',
-                    'substitutes.user.teacher',
-                    'user',
-                    'user.staff',
-                    'user.teacher',
-                    'endorser',
-                    'userJobDetail',
-
-                ])->orderBy('created_at', 'ASC')->get();
-
-            $leaveForms = $leaveForms->merge($leaveForms);
-            $travelForms = $travelForms->merge($travelForms);
-
-
-        } else if ($user->role('hr'))
-        {
-
-            $leaveForms = LeaveForm::where('status', 'dean_approved')
-                ->with([
-                    'substitutes.user',
-                    'substitutes.user.teacher',
-                    'user',
-                    'user.staff',
-                    'user.teacher',
-                    'recommender',
-                    'userJobDetail',
-
-                ])->orderBy('created_at', 'ASC')->get();
-
-            $travelForms = TravelForm::where('status', 'dean_approved')
-
-                ->orderBy('created_at', 'ASC')
-                ->with([
-                    'substitutes.user',
-                    'substitutes.user.teacher',
-                    'user',
-                    'user.staff',
-                    'user.teacher',
-                    'recommender',
-                    'userJobDetail',
-
-                ])->orderBy('created_at', 'ASC')->get();
-
-
-            $leaveForms = $leaveForms->merge($leaveForms);
-            $travelForms = $travelForms->merge($travelForms);
-
-        } else if ($user->role('vp-admin'))
-        {
-
-            $leaveForms = LeaveForm::where('status', 'hr_approved')
-                ->with([
-                    'substitutes.user',
-                    'substitutes.user.teacher',
-                    'user',
-                    'user.staff',
-                    'user.teacher',
-                    'endorser',
-                    'userJobDetail',
-                ])->orderBy('created_at', 'ASC')->get();
-
-            $travelForms = TravelForm::where('status', 'hr_approved')
-                ->orderBy('created_at', 'ASC')
-                ->with([
-                    'substitutes.user',
-                    'substitutes.user.teacher',
-                    'user',
-                    'user.staff',
-                    'user.teacher',
-                    'endorser',
-                    'userJobDetail',
-                ])->orderBy('created_at', 'ASC')->get();
-
-            $leaveForms = $leaveForms->merge($leaveForms);
-            $travelForms = $travelForms->merge($travelForms);
-
-
-
-        } else if ($user->role('vp-acad'))
-        {
-
-
-            $leaveForms = LeaveForm::where('status', 'vp_admin_approved')
-                ->with([
-                    'substitutes.user',
-                    'substitutes.user.teacher',
-                    'user',
-                    'user.staff',
-                    'user.teacher',
-                    'endorser',
-                    'userJobDetail',
-
-                ])->orderBy('created_at', 'ASC')->get();
-
-            $travelForms = TravelForm::where('status', 'vp_admin_approved')
-                ->orderBy('created_at', 'ASC')
-                ->with([
-                    'substitutes.user',
-                    'substitutes.user.teacher',
-                    'user',
-                    'user.staff',
-                    'user.teacher',
-                    'endorser',
-                    'userJobDetail',
-
-                ])->orderBy('created_at', 'ASC')->get();
-
-            $leaveForms = $leaveForms->merge($leaveForms);
-            $travelForms = $travelForms->merge($travelForms);
-
-        } else if ($user->role('p-admin'))
-        {
-            $leaveForms = LeaveForm::where('status', 'vp_acad_approved')
-                ->with([
-                    'substitutes.user',
-                    'substitutes.user.teacher',
-
-                    'user',
-                    'user.staff',
-                    'user.teacher',
-                    'endorser',
-                    'userJobDetail',
-
-                ])->orderBy('created_at', 'ASC')->get();
-
-
-            $travelForms = TravelForm::where('status', 'vp_acad_approved')
-                ->orderBy('created_at', 'ASC')
-                ->with([
-                    'substitutes.user',
-                    'substitutes.user.teacher',
-                    'user',
-                    'user.staff',
-                    'user.teacher',
-                    'endorser',
-                    'userJobDetail',
-
-                ])->orderBy('created_at', 'ASC')->get();
-
-            $leaveForms = $leaveForms->merge($leaveForms);
-            $travelForms = $travelForms->merge($travelForms);
-
-        } else
-        {
-            return back()->withErrors([
-                'error' => "Sorry, you are not allowed to do this action."
-            ]);
-        }
-
-
-
-        foreach ($leaveForms as $form)
-        {
-
-            foreach ($form->substitutes as $substitute)
-            {
-
-
-                $subject_id = $substitute->subject_id;
-                $subj_url = 'https://sis.materdeicollege.com/api/hr/subject-classes';
-                $subj_client = new Client();
-                $response = $subj_client->get($subj_url, [
-                    'query' => [
-                        'code' => $code,
-                        'term_id' => $form->term_id,
-                        'teacher_id' => $form->user->teacher->id,
-                    ],
-                    'verify' => false,
-                ]);
-
-                $subjects = json_decode($response->getBody(), true);
-
-                $subject = collect($subjects)->firstWhere('id', $subject_id);
-
-
-                $substitute['subject'] = $subject;
-
-
-
-            }
-        }
-
-        foreach ($travelForms as $form)
-        {
-
-            foreach ($form->substitutes as $substitute)
-            {
-
-
-                $subject_id = $substitute->subject_id;
-                $subj_url = 'https://sis.materdeicollege.com/api/hr/subject-classes';
-                $subj_client = new Client();
-                $response = $subj_client->get($subj_url, [
-                    'query' => [
-                        'code' => $code,
-                        'term_id' => $form->term_id,
-                        'teacher_id' => $form->user->teacher->id,
-                    ],
-                    'verify' => false,
-                ]);
-
-                $subjects = json_decode($response->getBody(), true);
-
-                $subject = collect($subjects)->firstWhere('id', $subject_id);
-
-
-                $substitute['subject'] = $subject;
-
-
-
-            }
-        }
-
-
-
-
-        $forms = [];
-        $forms['Travel Form'] = $travelForms;
-        $forms['Leave Form'] = $leaveForms;
-
-
-        $flattenedForms = [];
-        foreach ($forms as $formType => $formArray)
-        {
-            foreach ($formArray as $form)
-            {
-                $form['form_type'] = $formType;
-
-                $form['endorser'] = $form['endorser'] ? $form['endorser']->toArray() : null;
-                $form['user_job_detail'] = $form['user_job_detail'] ? $form['user_job_detail']->toArray() : null;
-
-                $flattenedForms[] = $form;
-            }
-        }
-
-        usort($flattenedForms, function ($a, $b) {
-            return strtotime($b['created_at']) - strtotime($a['created_at']);
-        });
-
         return inertia('Pages/Forms/Checking/Checking', [
             'user' => $user,
             'pageTitle' => 'Checking',
             'selected' => $action ?? 'all',
-            'forms' => $flattenedForms,
+            'forms' => Inertia::defer(function () {
+
+                $this->globalVariables();
+                $user = $this->user;
+                $code = $this->apiKey;
+
+                $travelForms = [];
+                $leaveForms = [];
+
+                if ($user->role('dean'))
+                {
+                    $userDepartmentId = $user->teacher->department_id;
+
+                    $userIds = User::whereRelation('teacher', 'department_id', '=', $userDepartmentId)
+                        ->pluck('id');
+
+                    $leaveForms = LeaveForm::where('status', 'pending')
+                        ->whereIn('user_id', $userIds)
+                        ->with([
+                            'substitutes.user',
+                            'substitutes.user.teacher',
+                            'user',
+                            'user.staff',
+                            'user.teacher',
+                            'endorser',
+                            'userJobDetail',
+
+                        ])->orderBy('created_at', 'ASC')->get();
+
+                    $travelForms = TravelForm::where('status', 'pending')
+                        ->orderBy('created_at', 'ASC')
+                        ->with([
+                            'substitutes.user',
+                            'substitutes.user.teacher',
+                            'user',
+                            'user.staff',
+                            'user.teacher',
+                            'endorser',
+                            'userJobDetail',
+
+                        ])->orderBy('created_at', 'ASC')->get();
+
+                    $leaveForms = $leaveForms->merge($leaveForms);
+                    $travelForms = $travelForms->merge($travelForms);
+
+
+                } else if ($user->role('hr'))
+                {
+
+                    $leaveForms = LeaveForm::where('status', 'dean_approved')
+                        ->with([
+                            'substitutes.user',
+                            'substitutes.user.teacher',
+                            'user',
+                            'user.staff',
+                            'user.teacher',
+                            'recommender',
+                            'userJobDetail',
+
+                        ])->orderBy('created_at', 'ASC')->get();
+
+                    $travelForms = TravelForm::where('status', 'dean_approved')
+
+                        ->orderBy('created_at', 'ASC')
+                        ->with([
+                            'substitutes.user',
+                            'substitutes.user.teacher',
+                            'user',
+                            'user.staff',
+                            'user.teacher',
+                            'recommender',
+                            'userJobDetail',
+
+                        ])->orderBy('created_at', 'ASC')->get();
+
+
+                    $leaveForms = $leaveForms->merge($leaveForms);
+                    $travelForms = $travelForms->merge($travelForms);
+
+                } else if ($user->role('vp-admin'))
+                {
+
+                    $leaveForms = LeaveForm::where('status', 'hr_approved')
+                        ->with([
+                            'substitutes.user',
+                            'substitutes.user.teacher',
+                            'user',
+                            'user.staff',
+                            'user.teacher',
+                            'endorser',
+                            'userJobDetail',
+                        ])->orderBy('created_at', 'ASC')->get();
+
+                    $travelForms = TravelForm::where('status', 'hr_approved')
+                        ->orderBy('created_at', 'ASC')
+                        ->with([
+                            'substitutes.user',
+                            'substitutes.user.teacher',
+                            'user',
+                            'user.staff',
+                            'user.teacher',
+                            'endorser',
+                            'userJobDetail',
+                        ])->orderBy('created_at', 'ASC')->get();
+
+                    $leaveForms = $leaveForms->merge($leaveForms);
+                    $travelForms = $travelForms->merge($travelForms);
+
+
+
+                } else if ($user->role('vp-acad'))
+                {
+
+
+                    $leaveForms = LeaveForm::where('status', 'vp_admin_approved')
+                        ->with([
+                            'substitutes.user',
+                            'substitutes.user.teacher',
+                            'user',
+                            'user.staff',
+                            'user.teacher',
+                            'endorser',
+                            'userJobDetail',
+
+                        ])->orderBy('created_at', 'ASC')->get();
+
+                    $travelForms = TravelForm::where('status', 'vp_admin_approved')
+                        ->orderBy('created_at', 'ASC')
+                        ->with([
+                            'substitutes.user',
+                            'substitutes.user.teacher',
+                            'user',
+                            'user.staff',
+                            'user.teacher',
+                            'endorser',
+                            'userJobDetail',
+
+                        ])->orderBy('created_at', 'ASC')->get();
+
+                    $leaveForms = $leaveForms->merge($leaveForms);
+                    $travelForms = $travelForms->merge($travelForms);
+
+                } else if ($user->role('p-admin'))
+                {
+                    $leaveForms = LeaveForm::where('status', 'vp_acad_approved')
+                        ->with([
+                            'substitutes.user',
+                            'substitutes.user.teacher',
+
+                            'user',
+                            'user.staff',
+                            'user.teacher',
+                            'endorser',
+                            'userJobDetail',
+
+                        ])->orderBy('created_at', 'ASC')->get();
+
+
+                    $travelForms = TravelForm::where('status', 'vp_acad_approved')
+                        ->orderBy('created_at', 'ASC')
+                        ->with([
+                            'substitutes.user',
+                            'substitutes.user.teacher',
+                            'user',
+                            'user.staff',
+                            'user.teacher',
+                            'endorser',
+                            'userJobDetail',
+
+                        ])->orderBy('created_at', 'ASC')->get();
+
+                    $leaveForms = $leaveForms->merge($leaveForms);
+                    $travelForms = $travelForms->merge($travelForms);
+
+                } else
+                {
+                    return back()->withErrors([
+                        'error' => "Sorry, you are not allowed to do this action."
+                    ]);
+                }
+
+
+
+                foreach ($leaveForms as $form)
+                {
+
+                    foreach ($form->substitutes as $substitute)
+                    {
+
+
+                        $subject_id = $substitute->subject_id;
+                        $subj_url = 'https://sis.materdeicollege.com/api/hr/subject-classes';
+                        $subj_client = new Client();
+                        $response = $subj_client->get($subj_url, [
+                            'query' => [
+                                'code' => $code,
+                                'term_id' => $form->term_id,
+                                'teacher_id' => $form->user->teacher->id,
+                            ],
+                            'verify' => false,
+                        ]);
+
+                        $subjects = json_decode($response->getBody(), true);
+
+                        $subject = collect($subjects)->firstWhere('id', $subject_id);
+
+
+                        $substitute['subject'] = $subject;
+
+
+
+                    }
+                }
+
+                foreach ($travelForms as $form)
+                {
+
+                    foreach ($form->substitutes as $substitute)
+                    {
+
+
+                        $subject_id = $substitute->subject_id;
+                        $subj_url = 'https://sis.materdeicollege.com/api/hr/subject-classes';
+                        $subj_client = new Client();
+                        $response = $subj_client->get($subj_url, [
+                            'query' => [
+                                'code' => $code,
+                                'term_id' => $form->term_id,
+                                'teacher_id' => $form->user->teacher->id,
+                            ],
+                            'verify' => false,
+                        ]);
+
+                        $subjects = json_decode($response->getBody(), true);
+
+                        $subject = collect($subjects)->firstWhere('id', $subject_id);
+
+
+                        $substitute['subject'] = $subject;
+
+
+
+                    }
+                }
+
+
+                $forms = [];
+                $forms['Travel Form'] = $travelForms;
+                $forms['Leave Form'] = $leaveForms;
+
+
+                $flattenedForms = [];
+                foreach ($forms as $formType => $formArray)
+                {
+                    foreach ($formArray as $form)
+                    {
+                        $form['form_type'] = $formType;
+
+                        $form['endorser'] = $form['endorser'] ? $form['endorser']->toArray() : null;
+                        $form['user_job_detail'] = $form['user_job_detail'] ? $form['user_job_detail']->toArray() : null;
+
+                        $flattenedForms[] = $form;
+                    }
+                }
+
+                usort($flattenedForms, function ($a, $b) {
+                    return strtotime($b['created_at']) - strtotime($a['created_at']);
+                });
+
+                return $flattenedForms;
+            }),
             'roles' => $roles,
             'success' => session('success') ?? null,
         ]);

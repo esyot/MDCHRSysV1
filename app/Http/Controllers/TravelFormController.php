@@ -32,15 +32,7 @@ class TravelFormController extends Controller
         $budgetTypes = config('variables.budgetTypes');
         $budgetCharges = config('variables.budgetCharges');
 
-        $client = new Client();
-        $response = $client->get('https://sis.materdeicollege.com/api/hr/terms', [
-            'query' => ['code' => config('variables.api_key')],
-            'verify' => false,
-        ]);
 
-        $terms = json_decode($response->getBody(), true);
-        $terms = array_values(array_filter($terms, fn($item) => $item['type'] === 'sem'));
-        usort($terms, fn($a, $b) => strtotime($b['start']) - strtotime($a['start']));
 
 
         return Inertia::render('Pages/Forms/TravelForm/TravelForm', [
@@ -52,7 +44,19 @@ class TravelFormController extends Controller
             'formData' => $request ?? null,
             'pageTitle' => 'Travel Form',
             'formDataToEdit' => null,
-            'terms' => $terms,
+            'terms' => Inertia::defer(function () {
+                $client = new Client();
+                $response = $client->get('https://sis.materdeicollege.com/api/hr/terms', [
+                    'query' => ['code' => config('variables.api_key')],
+                    'verify' => false,
+                ]);
+
+                $terms = json_decode($response->getBody(), true);
+                $terms = array_values(array_filter($terms, fn($item) => $item['type'] === 'sem'));
+                usort($terms, fn($a, $b) => strtotime($b['start']) - strtotime($a['start']));
+
+                return $terms;
+            }),
         ]);
     }
 
