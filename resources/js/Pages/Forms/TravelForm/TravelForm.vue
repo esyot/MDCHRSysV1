@@ -8,14 +8,14 @@
   ></ConfirmationFormModal>
 
   <form @submit.prevent="submit">
-    <div class="forms-container">
-      <div class="forms">
-        <div class="forms-title">
-          <span class="title">Travel Details</span>
+    <div class="form-container">
+      <div class="form-item">
+        <div class="form-item-title">
+          <span>Travel Details</span>
         </div>
-        <div class="form-section">
+        <div class="form-item-section">
           <label for="term">Select Term:</label>
-          <select id="term" class="form-control" v-model="formData.term_id" required>
+          <select id v-model="formData.term_id" required>
             <option value="" disabled selected>Select Term</option>
             <option :value="term.id" v-for="(term, index) in terms" :key="index">
               {{ term.name }}
@@ -24,41 +24,28 @@
 
           <small class="error-msg" v-if="errors.term_id"> {{ errors.term_id }}</small>
         </div>
-        <div class="form-section">
+        <div class="form-item-section">
           <label for="date_start">Date Start of Travel:</label>
-          <input
-            type="date"
-            id="date_start"
-            v-model="formData.date_start"
-            class="form-control"
-            required
-          />
+          <input type="date" id="date_start" v-model="formData.date_start" required />
 
           <small class="error-msg" v-if="errors.date_start">
             {{ errors.date_start }}
           </small>
         </div>
 
-        <div class="form-section">
+        <div class="form-item-section">
           <label for="date_end">Date End of Travel:</label>
-          <input
-            type="date"
-            id="date_end"
-            v-model="formData.date_end"
-            class="form-control"
-            required
-          />
+          <input type="date" id="date_end" v-model="formData.date_end" required />
 
           <small class="error-msg" v-if="errors.date_end"> {{ errors.date_end }}</small>
         </div>
 
-        <div class="form-section">
+        <div class="form-item-section">
           <label for="destination">Destination:</label>
           <input
             type="text"
             id="destination"
             v-model="formData.destination"
-            class="form-control"
             placeholder="Enter the destination of travel eg. 'Tokyo, Japan'"
             required
             @input="fetchPlaceSuggestions(formData.destination)"
@@ -66,24 +53,23 @@
           <small class="error-msg" v-if="errors.destination">
             {{ errors.destination }}
           </small>
-          <div v-if="isDisplaySuggestion" class="suggestions">
-            <span
+          <div v-if="isDisplaySuggestion" class="form-item-section-dropdown">
+            <ul
               v-for="(suggestion, index) in suggestions"
               :key="index"
               @click="selectedSuggestion(suggestion)"
             >
-              {{ suggestion }}
-            </span>
+              <li>{{ suggestion }}</li>
+            </ul>
           </div>
         </div>
 
-        <div class="form-section">
+        <div class="form-item-section">
           <label for="purpose">Purpose/Event:</label>
           <input
             type="text"
             id="purpose"
             v-model="formData.purpose"
-            class="form-control"
             placeholder="Enter the purpose or event"
             required
           />
@@ -91,13 +77,12 @@
           <small class="errors-msg" v-if="errors.purpose"> {{ errors.purpose }}</small>
         </div>
 
-        <div class="form-section">
+        <div class="form-item-section">
           <label for="contact_person">Contact Person:</label>
           <input
             type="text"
             id="contact_person"
             v-model="formData.contact_person"
-            class="form-control"
             placeholder="Enter the organizer or contact person"
             required
           />
@@ -107,13 +92,12 @@
           >
         </div>
 
-        <div class="form-section">
+        <div class="form-item-section">
           <label for="contact_person_no">Organizer/Contact Person's No:</label>
           <input
             type="text"
             id="contact_person_no"
             v-model="formData.contact_person_no"
-            class="form-control"
             placeholder="Enter the organizer or contact person's contact number"
             required
           />
@@ -123,12 +107,11 @@
           >
         </div>
 
-        <div class="form-section">
+        <div class="form-item-section">
           <label for="description">Short Description:</label>
           <textarea
             id="description"
             v-model="formData.description"
-            class="form-control"
             placeholder="Enter a short description of the purpose or event"
             rows="4"
             required
@@ -140,18 +123,22 @@
         </div>
       </div>
 
-      <div class="forms">
-        <div class="forms-title">
-          <span class="title">Budget Requirements</span>
+      <div class="form-item">
+        <div class="form-item-title">
+          <span>Budget Requirements</span>
         </div>
 
-        <div class="forms-separation">
-          <div class="grid">
-            <div class="sub-section-title">
-              <label class="section-title">Budget Type:</label>
+        <div class="form-item-section-devided">
+          <div class="form-item-section-devided-item">
+            <div class="form-item-section-devided-title">
+              <label>Budget type:</label>
             </div>
 
-            <div class="radio-item" v-for="item in budgetTypes" :key="item.id">
+            <div
+              class="form-item-section-devided-radio"
+              v-for="item in budgetTypes"
+              :key="item.id"
+            >
               <input
                 type="radio"
                 :id="item.value"
@@ -165,12 +152,16 @@
             }}</small>
           </div>
 
-          <div class="grid">
-            <div class="sub-section-title">
-              <label class="section-title">Budget Charged To:</label>
+          <div class="form-item-section-devided-item">
+            <div class="form-item-section-devided-title">
+              <label>Budget charged to:</label>
             </div>
 
-            <div class="radio-item" v-for="item in budgetCharges" :key="item.id">
+            <div
+              class="form-item-section-devided-radio"
+              v-for="item in budgetCharges"
+              :key="item.id"
+            >
               <input
                 type="radio"
                 :id="item.value"
@@ -185,13 +176,12 @@
           </div>
         </div>
 
-        <div class="form-section">
+        <div class="form-item-section">
           <label for="amount">Budget Amount:</label>
           <input
             type="number"
             id="amount"
             v-model="formData.amount"
-            class="form-control"
             placeholder="Enter amount requested"
             required
           />
@@ -199,15 +189,14 @@
           <small class="error-msg" v-if="errors.amount"> {{ errors.amount }}</small>
         </div>
 
-        <div class="form-section" v-if="roles.includes('teacher')">
+        <div class="form-item-section" v-if="roles.includes('teacher')">
           <label for="isSubstitute">Do you have a substitute teacher?</label>
 
-          <div id="isSubstitute" class="radio-container">
+          <div id="isSubstitute" class="form-item-section-radio-1">
             <div class="radio" for="yes-substitute">
               <input
                 type="radio"
                 id="yes-substitute"
-                class="forms-controller"
                 v-model="isSubstitute"
                 :value="true"
               />
@@ -218,7 +207,6 @@
               <input
                 type="radio"
                 id="no-substitute"
-                class="forms-controller"
                 v-model="isSubstitute"
                 :value="false"
               />
@@ -226,7 +214,7 @@
             </div>
           </div>
         </div>
-        <div v-if="!isSubstitute" class="form-section">
+        <div v-if="!isSubstitute" class="form-item-section">
           <label for="alternative_description">
             Please specify the alternatives used in the class during your absence.
           </label>
@@ -240,9 +228,9 @@
           />
         </div>
       </div>
-      <div class="forms" v-if="isSubstitute">
-        <div class="forms-title">
-          <span class="title">Substitute</span>
+      <div class="form-item" v-if="isSubstitute">
+        <div class="form-item-title">
+          <span>Substitute</span>
           <div>
             <button type="button" @click="addTeachingSubstitute">
               <i class="fas fa-plus"></i> Add
@@ -255,11 +243,10 @@
           :key="index"
           class="substitute-form"
         >
-          <div class="form-section">
+          <div class="form-item-section">
             <label :for="'subject' + index">Subject:</label>
             <select
               :id="'subject' + index"
-              class="forms-controller"
               v-model="teachingSubstitutes[index].subject_id"
               required
             >
@@ -275,21 +262,20 @@
             </select>
           </div>
 
-          <div class="form-section">
+          <div class="form-item-section">
             <label :for="'teacher' + index">Substitute Teacher:</label>
-            <div class="search-bar">
-              <input
-                title="Add teacher"
-                type="text"
-                :id="'teacher' + index"
-                v-model="teachingSubstitutes[index].teacher"
-                placeholder="Click to search teacher"
-                @input="toggleSearchTeacher(teachingSubstitutes[index].teacher, index)"
-                required
-              />
-            </div>
 
-            <div class="dropdown-teachers">
+            <input
+              title="Add teacher"
+              type="text"
+              :id="'teacher' + index"
+              v-model="teachingSubstitutes[index].teacher"
+              placeholder="Click to search teacher"
+              @input="toggleSearchTeacher(teachingSubstitutes[index].teacher, index)"
+              required
+            />
+
+            <div class="form-item-section-dropdown">
               <ul v-if="searchTeacher">
                 <li
                   @click="selectTeacher(teacher.id, index)"
@@ -310,10 +296,10 @@
             >
           </div>
 
-          <div class="form-section">
+          <div class="form-item-section">
             <label :for="'days' + index">Days:</label>
-            <div class="days">
-              <div class="days-item" v-for="(day, dayIndex) in days" :key="dayIndex">
+            <div class="form-item-section-radio-2">
+              <div class="radio" v-for="(day, dayIndex) in days" :key="dayIndex">
                 <input
                   type="checkbox"
                   :id="'day' + index + '-' + dayIndex"
@@ -332,38 +318,39 @@
             </small>
           </div>
 
-          <div class="form-section">
+          <div class="form-item-section">
             <label :for="'start_time' + index">Start Time:</label>
             <input
               type="time"
               :id="'start_time' + index"
               required
-              class="forms-controller"
               v-model="substitute.start_time"
             />
           </div>
 
-          <div class="form-section">
+          <div class="form-item-section">
             <label :for="'end_time' + index">End Time</label>
             <input
               type="time"
               :id="'end_time' + index"
-              class="forms-controller"
               v-model="substitute.end_time"
               required
             />
           </div>
 
-          <div class="button-container">
-            <button @click="removeTeachingSubstitute(index)" class="remove-btn">
-              <i class="fa fa-trash"></i> Remove
-            </button>
+          <div class="form-item-section">
+            <div class="form-item-section-button">
+              <button @click="removeTeachingSubstitute(index)" class="remove-button">
+                <i class="fa fa-trash"></i>
+                <span> Remove</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="form-submit">
+    <div class="form-item-section-submit">
       <button type="submit" class="submit" title="Submit for approval">
         {{ formDataToEditCopy ? "Re-Submit Application" : "Submit Application" }}
       </button>
@@ -371,6 +358,6 @@
   </form>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 @import "./css/travel-form.css";
 </style>

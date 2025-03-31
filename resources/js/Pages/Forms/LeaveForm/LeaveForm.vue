@@ -9,13 +9,13 @@
   ></ConfirmationFormModal>
 
   <form @submit.prevent="submit">
-    <div class="forms-container">
-      <div class="forms">
-        <div class="forms-title">
-          <span class="title">Leave Details</span>
+    <div class="form-container">
+      <div class="form-item">
+        <div class="form-item-title">
+          <span>Leave Details</span>
         </div>
 
-        <div class="form-section">
+        <div class="form-item-section">
           <label for="term">Term:</label>
           <select name="" id="" v-model="formData.term_id" required>
             <option value="" disabled selected>Select Term</option>
@@ -27,14 +27,9 @@
           <small class="error-msg" v-if="errors.term_id"> {{ errors.term_id }}</small>
         </div>
 
-        <div class="form-section">
+        <div class="form-item-section">
           <label for="leave_name">TYPE OF LEAVE:</label>
-          <select
-            id="leave_name"
-            v-model="formData.leave_type"
-            class="forms-controller"
-            required
-          >
+          <select id="leave_name" v-model="formData.leave_type" required>
             <option value="" disabled selected>Select type of leave</option>
             <option value="Personal">Personal</option>
             <option value="Maternity">Maternity</option>
@@ -49,14 +44,9 @@
           >
         </div>
 
-        <div class="form-section" v-if="formData.leave_type == 'Personal'">
+        <div class="form-item-section" v-if="formData.leave_type == 'Personal'">
           <label for="leave_name">Select type of Personal leave:</label>
-          <select
-            id="leave_name"
-            v-model="formData.leave_type_option"
-            class="forms-controller"
-            required
-          >
+          <select id="leave_name" v-model="formData.leave_type_option" required>
             <option value="" disabled selected>Select type of Personal Leave</option>
             <option value="Vacation">Vacation Leave</option>
             <option value="Fiesta">Fiesta Leave</option>
@@ -68,7 +58,7 @@
           >
         </div>
 
-        <div class="form-section" v-if="formData.leave_type_option === 'Vacation'">
+        <div class="form-item-section" v-if="formData.leave_type_option === 'Vacation'">
           <label for="leave_type_vacation">In case of Vacation Leave:</label>
           <select id="leave_type_vacation" v-model="formData.vacation_option" required>
             <option value="" disabled selected>Select a country</option>
@@ -82,7 +72,7 @@
         </div>
 
         <div
-          class="form-section"
+          class="form-item-section"
           v-if="
             formData.leave_type_option === 'Vacation' &&
             formData.vacation_option === 'Within the Philippines'
@@ -94,7 +84,6 @@
           <input
             type="text"
             id="leave_vacation_phil"
-            class="forms-controller"
             v-model="formData.address"
             placeholder="eg., Bohol, Tubigon"
             required
@@ -102,19 +91,18 @@
 
           <small class="error-msg" v-if="errors.address">{{ errors.address }}</small>
         </div>
-        <div class="form-section" v-if="formData.vacation_option === 'Abroad'">
+        <div class="form-item-section" v-if="formData.vacation_option === 'Abroad'">
           <label for="leave_vacation_abroad">If Abroad, please specify:</label>
           <input
             type="text"
             id="leave_vacation_abroad"
-            class="forms-controller"
             v-model="formData.address"
             placeholder="eg., Tokyo, Japan"
             required
           />
           <small class="error-msg" v-if="errors.address">{{ errors.address }}</small>
         </div>
-        <div class="form-section" v-if="formData.leave_type === 'Sick'">
+        <div class="form-item-section" v-if="formData.leave_type === 'Sick'">
           <label for="leave_type_sick">In case of Sick Leave:</label>
 
           <select id="leave_type_sick" v-model="formData.convalescence_place" required>
@@ -128,12 +116,10 @@
             {{ errors.convalescence_place }}</small
           >
         </div>
-        <div class="form-section" v-if="formData.leave_type === 'Sick'">
+        <div class="form-item-section" v-if="formData.leave_type === 'Sick'">
           <label for="leave_sick_hospital">Please specify your illness: </label>
-
           <input
             type="text"
-            class="forms-controller"
             v-model="formData.illness"
             @input="fetchCondition(formData.illness)"
             placeholder="Search for a condition..."
@@ -141,19 +127,21 @@
 
           <small class="error-msg" v-if="errors.illness"> {{ errors.illness }}</small>
 
-          <div v-if="isDisplaySuggestion" class="condition-suggestions">
-            <span
-              v-for="(suggestion, index) in suggestions"
-              :key="index"
-              @click="selectedSuggestion(suggestion)"
-            >
-              {{ suggestion }}
-            </span>
+          <div v-if="isDisplaySuggestion" class="form-item-section-dropdown">
+            <ul>
+              <li
+                v-for="(suggestion, index) in suggestions"
+                :key="index"
+                @click="selectedSuggestion(suggestion)"
+              >
+                {{ suggestion }}
+              </li>
+            </ul>
           </div>
         </div>
 
         <div
-          class="form-section"
+          class="form-item-section"
           v-if="
             formData.leave_type === 'Sick' &&
             formData.convalescence_place === 'In Hospital'
@@ -165,7 +153,6 @@
           <input
             type="text"
             id="leave_sick_hospital_address"
-            class="forms-controller"
             placeholder="eg., Tubigon Center"
             v-model="formData.address"
             required
@@ -173,7 +160,7 @@
           <small class="error-msg" v-if="errors.address">{{ errors.address }}</small>
         </div>
 
-        <div class="form-section" v-if="formData.leave_type === 'Educational'">
+        <div class="form-item-section" v-if="formData.leave_type === 'Educational'">
           <label for="leave_type_educational"> In case of Educational Leave: </label>
           <select id="leave_type_educational" v-model="formData.reason" required>
             <option value="Completion of Doctor's Degree">
@@ -189,14 +176,13 @@
           <small class="error-msg" v-if="errors.reason">{{ errors.reason }}</small>
         </div>
         <div
-          class="form-section"
+          class="form-item-section"
           v-if="formData.leave_type == 'Educational' && formData.reason === 'Others'"
         >
           <label for="leave_educ_others">Please specify:</label>
           <input
             type="text"
             id="leave_educ_others"
-            class="forms-controller"
             v-model="formData.other_reason"
             placeholder="eg., Completion of Certification"
             required
@@ -207,12 +193,11 @@
           >
         </div>
 
-        <div class="form-section" v-if="formData.leave_type === 'Others'">
+        <div class="form-item-section" v-if="formData.leave_type === 'Others'">
           <label for="leave_type_others">If Others, please specify:</label>
           <input
             type="text"
             id="leave_type_others"
-            class="forms-controller"
             placeholder="Enter details..."
             v-model="formData.other_reason"
             required
@@ -222,12 +207,11 @@
             >{{ errors.other_reason }}
           </small>
         </div>
-        <div class="form-section" v-if="formData.leave_type === 'Sick'">
+        <div class="form-item-section" v-if="formData.leave_type === 'Sick'">
           <label for="date_of_confinement">Date of confinement:</label>
           <input
             type="date"
             id="date_of_confinement"
-            class="forms-controller"
             v-model="formData.date_of_confinement"
             required
           />
@@ -236,12 +220,11 @@
           >
         </div>
 
-        <div class="form-section" v-if="formData.leave_type === 'Sick'">
+        <div class="form-item-section" v-if="formData.leave_type === 'Sick'">
           <label for="date_of_discharge">Date of discharge:</label>
           <input
             type="date"
             id="date_of_discharge"
-            class="forms-controller"
             v-model="formData.date_of_discharge"
             required
           />
@@ -251,34 +234,22 @@
           >
         </div>
 
-        <div class="form-section">
+        <div class="form-item-section">
           <label for="date_start">Date start of leave:</label>
-          <input
-            type="date"
-            id="date_start"
-            class="forms-controller"
-            v-model="formData.date_start"
-            required
-          />
+          <input type="date" id="date_start" v-model="formData.date_start" required />
 
           <small class="error-msg" v-if="errors.date_start">{{
             errors.date_start
           }}</small>
         </div>
 
-        <div class="form-section">
+        <div class="form-item-section">
           <label for="date_end">Date end of leave:</label>
-          <input
-            type="date"
-            id="date_end"
-            class="forms-controller"
-            v-model="formData.date_end"
-            required
-          />
+          <input type="date" id="date_end" v-model="formData.date_end" required />
           <small class="error-msg" v-if="errors.date_end">{{ errors.date_end }}</small>
         </div>
 
-        <div class="form-section" v-if="formData.leave_type === 'Sick'">
+        <div class="form-item-section" v-if="formData.leave_type === 'Sick'">
           <label for=""
             >Upload a photo of supporting document (Medical certificate, Medical Check-up,
             etc.)</label
@@ -296,15 +267,14 @@
           }}</small>
         </div>
 
-        <div class="form-section" v-if="roles.includes('teacher')">
+        <div class="form-item-section" v-if="roles.includes('teacher')">
           <label for="date_end">Do you have a substitute teacher?</label>
 
-          <div class="radio-container">
+          <div class="form-item-section-radio-1">
             <div class="radio" for="yes-substitute">
               <input
                 type="radio"
                 id="yes-substitute"
-                class="forms-controller"
                 v-model="isSubstitute"
                 :value="true"
               />
@@ -315,7 +285,6 @@
               <input
                 type="radio"
                 id="no-substitute"
-                class="forms-controller"
                 v-model="isSubstitute"
                 :value="false"
               />
@@ -323,7 +292,7 @@
             </div>
           </div>
         </div>
-        <div v-if="!isSubstitute && roles.includes('teacher')" class="form-section">
+        <div v-if="!isSubstitute && roles.includes('teacher')" class="form-item-section">
           <label for="class_description">
             Please specify the alternatives used in the class during your absence.
           </label>
@@ -337,9 +306,10 @@
           />
         </div>
       </div>
-      <div class="forms" v-if="isSubstitute">
-        <div class="forms-title">
-          <span class="title">Substitute</span>
+
+      <div class="form-item" v-if="isSubstitute">
+        <div class="form-item-title">
+          <span>Substitute</span>
           <button type="button" @click="addTeachingSubstitute">
             <i class="fas fa-plus"></i> Add
           </button>
@@ -350,12 +320,11 @@
           :key="index"
           class="substitute-form"
         >
-          <div class="form-section">
+          <div class="form-item-section">
             <label for="'subject' + index">Subject</label>
 
             <select
               :id="'subject' + index"
-              class="forms-controller"
               v-model="teachingSubstitutes[index].subject_id"
               required
             >
@@ -371,21 +340,19 @@
             </select>
           </div>
 
-          <div class="form-section">
+          <div class="form-item-section">
             <label :for="'teacher' + index">Substitute Teacher:</label>
-            <div class="search-bar">
-              <input
-                title="Add teacher"
-                type="text"
-                :id="'teacher' + index"
-                v-model="teachingSubstitutes[index].teacher"
-                placeholder="Click to search teacher"
-                @input="toggleSearchTeacher(teachingSubstitutes[index].teacher, index)"
-                required
-              />
-            </div>
+            <input
+              title="Add teacher"
+              type="text"
+              :id="'teacher' + index"
+              v-model="teachingSubstitutes[index].teacher"
+              placeholder="Click to search teacher"
+              @input="toggleSearchTeacher(teachingSubstitutes[index].teacher, index)"
+              required
+            />
 
-            <div class="dropdown-teachers">
+            <div class="form-item-section-dropdown">
               <ul v-if="searchTeacher">
                 <li
                   @click="selectTeacher(teacher.id, index)"
@@ -406,9 +373,9 @@
             >
           </div>
 
-          <div class="form-section">
-            <div class="days">
-              <div class="days-item" v-for="(day, dayIndex) in days" :key="dayIndex">
+          <div class="form-item-section">
+            <div class="form-item-section-radio-2">
+              <div class="radio" v-for="(day, dayIndex) in days" :key="dayIndex">
                 <input
                   type="checkbox"
                   :id="'day' + index + '-' + dayIndex"
@@ -426,50 +393,50 @@
             </small>
           </div>
 
-          <div class="form-section">
+          <div class="form-item-section">
             <label for="'start_time' + index">Start Time</label>
             <input
               type="time"
               :id="'start_time' + index"
               required
-              class="forms-controller"
               v-model="substitute.start_time"
               value="00:00"
             />
           </div>
 
-          <div class="form-section">
+          <div class="form-item-section">
             <label for="'end_time' + index">End Time</label>
             <input
               type="time"
               :id="'end_time' + index"
-              class="forms-controller"
               v-model="substitute.end_time"
               value="00:00"
               required
             />
           </div>
 
-          <div class="button-container">
-            <button
-              type="button"
-              @click="removeTeachingSubstitute(index)"
-              class="remove-btn"
-            >
-              <i class="fa fa-trash"></i> Remove
-            </button>
+          <div class="form-item-section">
+            <div class="form-item-section-button">
+              <button
+                type="button"
+                @click="removeTeachingSubstitute(index)"
+                class="remove-button"
+              >
+                <i class="fa fa-trash"></i> Remove
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="form-submit">
-      <button type="submit" class="submit" title="Submit for approval">
+    <div class="form-item-section-submit">
+      <button type="submit" title="Submit for approval">
         {{ formDataToEditCopy ? "Re-Submit Application" : "Submit Application" }}
       </button>
     </div>
   </form>
 </template>
-<style scoped>
+<style lang="scss" scoped>
 @import "./css/leave-form.css";
 </style>
