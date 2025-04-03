@@ -19,7 +19,7 @@ export default {
 
 <template>
   <div class="container">
-    <Leftbar :roles="roles" :user="user" />
+    <Leftbar :pageTitle="pageTitle" :roles="roles" :user="user" />
     <div class="main-content">
       <Topbar :pageTitle="pageTitle" :user="user" />
       <slot> </slot>
