@@ -27,13 +27,13 @@ export default {
             const toast = useToast();
 
             router.visit(`/departments/sync/`, {
-                onSuccess() {
-                    toast.success("Users synced successfully!", {
+                onSuccess(response) {
+                    toast.success(response.props.success, {
                         position: "top-center",
                     });
                 },
-                onError() {
-                    toast.error("Failed to sync users. Please try again.", {
+                onError(errors) {
+                    toast.error(errors.error, {
                         position: "top-center",
                     });
                 },

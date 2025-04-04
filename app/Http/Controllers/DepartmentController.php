@@ -24,7 +24,7 @@ class DepartmentController extends Controller
             'departments' => $departments,
             'departmentList' => $departmentList,
             'parentDepartments' => $parentDepartments,
-            'messageSuccess' => session('success') ?? null,
+            'success' => session('success') ?? null,
             'pageTitle' => 'Departments'
         ]);
     }
