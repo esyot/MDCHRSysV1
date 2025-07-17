@@ -1,8 +1,8 @@
 import Layout from "@/Layouts/Layout.vue";
-import AddCategoryModal from "./Modals/AddCategoryModal.vue";
+import AddCategoryModal from "../Modals/AddCategoryModal.vue";
 import AddItemModal from "../Modals/AddItemModal.vue";
 import EditItemModal from "../Modals/EditItemModal.vue";
-import ConfirmationFormModal from "./Modals/ConfirmationFormModal.vue";
+import ConfirmationFormModal from "../Modals/ConfirmationFormModal.vue";
 import { router } from "@inertiajs/vue3";
 
 export default {

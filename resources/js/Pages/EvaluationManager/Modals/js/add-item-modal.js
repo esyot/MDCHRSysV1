@@ -1,5 +1,5 @@
 import { router } from "@inertiajs/vue3";
-import ConfirmationFormModal from "./ConfirmationFormModal.vue";
+import ConfirmationFormModal from "../ConfirmationFormModal.vue";
 export default {
     emits: ["toggleNewItem"],
     components: {

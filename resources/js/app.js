@@ -9,7 +9,14 @@ import Toast from "vue-toastification";
 InertiaProgress.init();
 
 createInertiaApp({
-    resolve: (name) => import(`./${name}.vue`),
+    resolve: (name) => {
+        const pages = import.meta.glob("./Pages/**/*.vue", { eager: true });
+        const page = pages[`./${name}.vue`];
+        if (!page) {
+            throw new Error(`Page './Pages/${name}.vue' not found.`);
+        }
+        return page.default;
+    },
     setup({ el, App, props }) {
         const app = createApp({
             render: () => h(App, props),

@@ -1,5 +1,5 @@
 import { router } from "@inertiajs/vue3";
-import ConfirmationFormModal from "./ConfirmationFormModal.vue";
+import ConfirmationFormModal from "@/Modals/ConfirmationFormModal.vue";
 export default {
     emits: ["toggleNewCategory"],
     components: {

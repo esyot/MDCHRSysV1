@@ -1,4 +1,4 @@
-import ConfirmationFormModal from "./ConfirmationFormModal.vue";
+import ConfirmationFormModal from "@/Modals/ConfirmationFormModal.vue";
 import { router } from "@inertiajs/vue3";
 export default {
     emits: ["toggleIsEditItem"],
